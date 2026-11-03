@@ -58,7 +58,7 @@ end $$;
 
 -- Returns a one-time 8-character code the child types into the student app. Valid 7 days.
 create or replace function create_student_invite(p_student uuid) returns text
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 declare fid uuid; c text;
 begin
   select family_id into fid from students where id = p_student;

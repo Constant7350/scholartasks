@@ -3,6 +3,8 @@
 -- parents allow; every change to a child's data lands in a tamper-evident,
 -- append-only audit log.
 
+-- On Supabase pgcrypto already lives in the "extensions" schema; functions
+-- that use it set search_path = public, extensions.
 create extension if not exists pgcrypto;
 
 -- ---------- Families and members ----------
@@ -152,7 +154,7 @@ create index audit_log_family on audit_log (family_id, at);
 -- Each entry's hash covers its content and the previous entry's hash, so any
 -- edited or deleted row breaks the chain (see verify_audit_chain).
 create or replace function audit_log_chain() returns trigger
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 declare last text;
 begin
   perform pg_advisory_xact_lock(hashtext('audit_log_chain'));
@@ -177,7 +179,7 @@ create trigger audit_log_no_truncate before truncate on audit_log
   for each statement execute function audit_log_block_changes();
 
 create or replace function verify_audit_chain() returns table (broken_at bigint)
-language sql stable as $$
+language sql stable set search_path = public, extensions as $$
   select id from (
     select id, prev_hash, lag(hash) over (order by id) as expected,
            hash, encode(digest(prev_hash || '|' || at::text || '|' || coalesce(actor_id::text,'') || '|' ||

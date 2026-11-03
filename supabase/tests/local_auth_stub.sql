@@ -1,3 +1,6 @@
+-- Mirror Supabase: pgcrypto lives in the extensions schema.
+create schema if not exists extensions;
+create extension if not exists pgcrypto schema extensions;
 -- Local-only stand-in for Supabase's auth schema so migrations can be tested
 -- on plain PostgreSQL. Never run this against Supabase.
 create schema if not exists auth;
