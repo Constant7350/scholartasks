@@ -15,7 +15,7 @@ const SOON = [
   { icon: "🤖", title: "AI counselor", text: "Ask anything about colleges, aid and deadlines. It builds a plan around your student." },
   { icon: "💰", title: "Scholarship matches", text: "Scholarships your student qualifies for, kept up to date for you." },
   { icon: "📝", title: "SAT and ACT practice", text: "Short daily practice and full practice tests with a score plan." },
-  { icon: "📚", title: "Grades and study skills", text: "For grades 8 to 11: track grades and get nudges before they slip." },
+  { icon: "📚", title: "Study skills and nudges", text: "For grades 8 to 11: short lessons and nudges before grades slip." },
 ];
 
 export default function Home() {
@@ -95,11 +95,11 @@ export default function Home() {
           <span>Track every college, scholarship and form, with email reminders before each deadline.</span>
           <span className="tile-go">Open the plan →</span>
         </a>
-        <a className="tile" href="/tools/hope">
+        <a className="tile" href="/grades">
           <span className="tile-icon">🎓</span>
-          <b>HOPE and Zell Miller checker</b>
-          <span>Enter grades to see if your student is on track for Georgia's scholarships.</span>
-          <span className="tile-go">Open the checker →</span>
+          <b>Grades and HOPE tracker</b>
+          <span>Save grades and test scores and see if your student is on track for HOPE and Zell Miller.</span>
+          <span className="tile-go">Open grades →</span>
         </a>
         <div className="tile">
           <span className="tile-icon">📅</span>
