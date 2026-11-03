@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "1.4.0",
     "@scholartasks/core": "workspace:*",
     "@supabase/supabase-js": "2.117.3",
     "next": "15.5.28",
