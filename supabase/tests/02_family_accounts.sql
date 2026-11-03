@@ -1,7 +1,5 @@
 \set ON_ERROR_STOP on
 \o /dev/null
-grant select, insert, update, delete on all tables in schema public to authenticated;
-grant execute on all functions in schema public to authenticated;
 -- Test 01 deliberately tampers with an early row; only check entries written here.
 create temp table start_id as select coalesce(max(id), 0) as id from audit_log;
 grant select on start_id to authenticated;
