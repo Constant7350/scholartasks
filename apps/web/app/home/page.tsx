@@ -12,7 +12,6 @@ interface Student { id: string; first_name: string; grade_level: number }
 interface Invite { student_id: string; accepted_at: string | null }
 
 const SOON = [
-  { icon: "🤖", title: "AI counselor", text: "Ask anything about colleges, aid and deadlines. It builds a plan around your student." },
   { icon: "💰", title: "Scholarship matches", text: "Scholarships your student qualifies for, kept up to date for you." },
   { icon: "📝", title: "SAT and ACT practice", text: "Short daily practice and full practice tests with a score plan." },
   { icon: "📚", title: "Study skills and nudges", text: "For grades 8 to 11: short lessons and nudges before grades slip." },
@@ -100,6 +99,12 @@ export default function Home() {
           <b>Grades and HOPE tracker</b>
           <span>Save grades and test scores and see if your student is on track for HOPE and Zell Miller.</span>
           <span className="tile-go">Open grades →</span>
+        </a>
+        <a className="tile" href="/counselor">
+          <span className="tile-icon">🤖</span>
+          <b>AI counselor</b>
+          <span>Ask anything about colleges, aid and deadlines. Answers are built around your student's grades and plan.</span>
+          <span className="tile-go">Ask a question →</span>
         </a>
         <div className="tile">
           <span className="tile-icon">📅</span>

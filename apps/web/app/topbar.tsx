@@ -49,6 +49,7 @@ export function TopBar() {
                   <a role="menuitem" href="/family">👪 Add a student</a>
                   <a role="menuitem" href="/family">🔒 Family and permissions</a>
                   <a role="menuitem" href="/grades">🎓 Grades and HOPE</a>
+                  <a role="menuitem" href="/counselor">🤖 AI counselor</a>
                   <a role="menuitem" href="/join">🔑 I'm a student: join with a code</a>
                   <hr />
                   <button role="menuitem" onClick={signOut}>Sign out</button>

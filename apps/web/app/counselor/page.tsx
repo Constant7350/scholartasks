@@ -1,0 +1,189 @@
+"use client";
+
+import { Fragment, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { supabase } from "../../lib/supabase";
+import { NotConfigured, Page } from "../ui";
+
+interface Student { id: string; first_name: string; grade_level: number; permissions: Record<string, boolean> }
+interface Msg { role: "user" | "assistant"; content: string }
+
+const STARTERS = [
+  "What should we be doing this month?",
+  "Is my student on track for HOPE and Zell Miller?",
+  "Which deadlines are coming up first?",
+  "How do the FAFSA and the GSFAPP differ?",
+];
+const storeKey = (id: string) => `st-counselor-${id}`;
+
+/** Bold, bullet and numbered lists only; everything is rendered as text, never as HTML. */
+function inline(text: string): ReactNode[] {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") && part.length > 4 ? <strong key={i}>{part.slice(2, -2)}</strong> : <Fragment key={i}>{part}</Fragment>,
+  );
+}
+function Formatted({ text }: { text: string }) {
+  const blocks = text.trim().split(/\n{2,}/);
+  return (
+    <>
+      {blocks.map((b, i) => {
+        const lines = b.split("\n");
+        if (lines.every((l) => /^\s*[-*•]\s+/.test(l))) return <ul key={i}>{lines.map((l, j) => <li key={j}>{inline(l.replace(/^\s*[-*•]\s+/, ""))}</li>)}</ul>;
+        if (lines.every((l) => /^\s*\d+[.)]\s+/.test(l))) return <ol key={i}>{lines.map((l, j) => <li key={j}>{inline(l.replace(/^\s*\d+[.)]\s+/, ""))}</li>)}</ol>;
+        return <p key={i}>{lines.map((l, j) => <Fragment key={j}>{j > 0 && <br />}{inline(l.replace(/^#+\s*/, ""))}</Fragment>)}</p>;
+      })}
+    </>
+  );
+}
+
+export default function CounselorPage() {
+  const sb = supabase();
+  const [role, setRole] = useState<"parent" | "student" | null | undefined>(undefined);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [current, setCurrent] = useState<string | null>(null);
+  const [msgs, setMsgs] = useState<Msg[]>([]);
+  const [draft, setDraft] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const endRef = useRef<HTMLDivElement>(null);
+
+  const load = useCallback(async () => {
+    if (!sb) return;
+    const { data: s } = await sb.auth.getSession();
+    if (!s.session) return window.location.replace("/signin?next=/counselor");
+    const [mem, st] = await Promise.all([
+      sb.from("family_members").select("role, student_id").eq("user_id", s.session.user.id),
+      sb.from("students").select("id, first_name, grade_level, permissions").order("first_name"),
+    ]);
+    const m = (mem.data as { role: "parent" | "student"; student_id: string | null }[]) ?? [];
+    const asStudent = m.find((r) => r.role === "student");
+    setRole(m.some((r) => r.role === "parent") ? "parent" : asStudent ? "student" : null);
+    const list = (st.data as Student[]) ?? [];
+    setStudents(list);
+    setCurrent((c) => c ?? asStudent?.student_id ?? list[0]?.id ?? null);
+  }, [sb]);
+  useEffect(() => { void load(); }, [load]);
+
+  // The conversation stays in this browser tab only; it is not saved to the database.
+  useEffect(() => {
+    if (!current) return;
+    try { setMsgs(JSON.parse(sessionStorage.getItem(storeKey(current)) ?? "[]") as Msg[]); } catch { setMsgs([]); }
+  }, [current]);
+  useEffect(() => {
+    if (!current || busy) return;
+    try { sessionStorage.setItem(storeKey(current), JSON.stringify(msgs)); } catch { /* private mode */ }
+  }, [msgs, current, busy]);
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [msgs]);
+
+  const send = async (text: string) => {
+    const content = text.trim();
+    if (!sb || !current || !content || busy) return;
+    setError(null);
+    setDraft("");
+    const history: Msg[] = [...msgs, { role: "user", content }];
+    setMsgs([...history, { role: "assistant", content: "" }]);
+    setBusy(true);
+    try {
+      const { data: s } = await sb.auth.getSession();
+      const res = await fetch("/api/counselor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${s.session?.access_token ?? ""}` },
+        body: JSON.stringify({ studentId: current, messages: history.slice(-20) }),
+      });
+      if (!res.ok || !res.body) {
+        const e = (await res.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(e?.error ?? "The counselor couldn't answer. Please try again.");
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let answer = "";
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        answer += decoder.decode(value, { stream: true });
+        setMsgs([...history, { role: "assistant", content: answer }]);
+      }
+      if (!answer.trim()) throw new Error("The counselor didn't answer. Please try again.");
+    } catch (e) {
+      setError((e as Error).message);
+      setMsgs(history.slice(0, -1));
+      setDraft(content);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const title = "AI counselor";
+  if (!sb) return <Page title={title}><NotConfigured /></Page>;
+  if (role === undefined) return <Page title={title}><p className="hint">Loading…</p></Page>;
+  const student = students.find((s) => s.id === current);
+  if (!role || !student)
+    return (
+      <Page title={title}>
+        <div className="panel family-card">
+          <div>
+            <h2>Add your student first</h2>
+            <p className="hint" style={{ margin: 0 }}>The counselor builds its advice around your student's grades, colleges and deadlines.</p>
+          </div>
+          <a className="btn btn-inline link-btn" href="/family">Add a student</a>
+        </div>
+      </Page>
+    );
+  const blocked = role === "student" && !student.permissions?.ai_chat;
+
+  return (
+    <Page title={title}>
+      <p className="hint" style={{ marginTop: -8 }}>
+        Ask about colleges, scholarships, aid forms and deadlines. Answers use {student.first_name}'s saved grades, college list and deadlines.
+      </p>
+      {role === "parent" && students.length > 1 && (
+        <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
+          {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
+        </div>
+      )}
+
+      {blocked ? (
+        <p className="note note-info">Your parent has turned off the AI counselor for your account. Ask them to turn on "AI chat" in Family and permissions.</p>
+      ) : (
+        <section className="panel chat">
+          {msgs.length === 0 ? (
+            <div className="chat-empty">
+              <span className="tile-icon">🤖</span>
+              <b>Where would you like to start?</b>
+              <div className="chips">
+                {STARTERS.map((q) => <button key={q} className="chip" onClick={() => void send(q)}>{q}</button>)}
+              </div>
+            </div>
+          ) : (
+            <div className="chat-log" aria-live="polite">
+              {msgs.map((m, i) => (
+                <div key={i} className={`bubble bubble-${m.role}`}>
+                  {m.role === "assistant" ? (m.content ? <Formatted text={m.content} /> : <span className="typing">Thinking…</span>) : m.content}
+                </div>
+              ))}
+              <div ref={endRef} />
+            </div>
+          )}
+
+          {error && <p className="note note-err" role="alert">{error}</p>}
+          <form className="chat-input" onSubmit={(e) => { e.preventDefault(); void send(draft); }}>
+            <textarea
+              className="input"
+              rows={2}
+              maxLength={4000}
+              placeholder="Ask the counselor…"
+              aria-label="Your question"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(draft); } }}
+            />
+            <button className="btn btn-inline" disabled={busy || !draft.trim()}>{busy ? "…" : "Send"}</button>
+          </form>
+          <div className="chat-foot">
+            <span className="hint">AI can make mistakes. Check dates and amounts on the official sites. Never share passwords, FSA IDs or Social Security numbers.</span>
+            {msgs.length > 0 && !busy && <button className="linklike" onClick={() => { setMsgs([]); setError(null); }}>Start over</button>}
+          </div>
+        </section>
+      )}
+    </Page>
+  );
+}
