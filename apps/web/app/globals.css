@@ -111,3 +111,37 @@ a { color: var(--navy); }
 .topbar nav a:hover { color: var(--navy); }
 .page { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
 .page h1 { letter-spacing: -0.01em; }
+
+/* ---------- Family + join pages ---------- */
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; margin: 16px 0; }
+.panel h2 { margin: 0 0 6px; font-size: 20px; }
+.panel .hint { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.row > .field { flex: 1 1 180px; margin: 0; }
+.btn-inline { width: auto; padding: 12px 18px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); margin: 0 0 6px; }
+
+.steps { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0; margin: 8px 0 20px; }
+.steps li { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.steps .n { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 12px; background: #eef1f7; color: var(--muted); }
+.steps li.now { border-color: var(--navy); color: var(--ink); font-weight: 600; }
+.steps li.now .n { background: var(--navy); color: #fff; }
+.steps li.done .n { background: var(--ok); color: #fff; }
+@media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+
+.code-box { background: var(--gold-soft); border: 1.5px dashed var(--gold); border-radius: 12px; padding: 16px; margin-top: 14px; }
+.code-box .code { font-size: 30px; font-weight: 800; letter-spacing: 0.18em; color: var(--navy); font-family: ui-monospace, "SF Mono", Consolas, monospace; }
+.code-box ol { margin: 10px 0 0; padding-left: 20px; color: var(--ink); font-size: 14px; }
+
+details.perm summary { cursor: pointer; font-weight: 600; color: var(--navy); margin-top: 14px; }
+details.perm label { display: flex; gap: 10px; align-items: center; margin: 8px 0; font-size: 15px; }
+.code-input { font-size: 24px; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; font-family: ui-monospace, "SF Mono", Consolas, monospace; }
+.note-ok { background: var(--ok-soft); color: var(--ok); }
+.note-info { background: #eef2f9; color: var(--navy); }
+.topbar nav a { white-space: nowrap; }
+@media (max-width: 480px) {
+  .topbar-inner { padding: 12px 16px; }
+  .topbar .brand { font-size: 17px; gap: 8px; }
+  .topbar .brand-mark { width: 30px; height: 30px; }
+  .topbar nav { gap: 12px; font-size: 14px; }
+}
