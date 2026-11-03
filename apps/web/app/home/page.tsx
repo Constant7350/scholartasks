@@ -5,16 +5,18 @@ import type { StatePack } from "@scholartasks/core";
 import gaPack from "../../../../packs/states/GA.json";
 import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { GpaScorecard } from "../grades/scorecard";
 
 const GA = gaPack as unknown as StatePack;
 
-interface Student { id: string; first_name: string; grade_level: number }
+interface Student { id: string; first_name: string; grade_level: number; state: string }
+interface Grade { student_id: string; course: string; grade: "A" | "B" | "C" | "D" | "F"; level: "standard" | "honors" | "AP" | "IB" | "DE"; core: boolean; grade_level: number; term: string }
 interface Invite { student_id: string; accepted_at: string | null }
 
 const SOON = [
   { icon: "💰", title: "Scholarship matches", text: "Scholarships your student qualifies for, kept up to date for you." },
   { icon: "📝", title: "SAT and ACT practice", text: "Short daily practice and full practice tests with a score plan." },
-  { icon: "📚", title: "Study skills and nudges", text: "For grades 8 to 11: short lessons and nudges before grades slip." },
+  { icon: "📚", title: "Study skills and nudges", text: "For grades 8 to 12: short lessons and nudges before grades slip." },
 ];
 
 export default function Home() {
@@ -23,6 +25,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [students, setStudents] = useState<Student[]>([]);
   const [invites, setInvites] = useState<Invite[]>([]);
+  const [grades, setGrades] = useState<Grade[]>([]);
 
   useEffect(() => {
     if (!sb) return;
@@ -31,10 +34,12 @@ export default function Home() {
       setSignedIn(!!data.session);
       if (!data.session) return;
       setEmail(data.session.user.email ?? "");
-      const [st, inv] = await Promise.all([
-        sb.from("students").select("id, first_name, grade_level").order("first_name"),
+      const [st, inv, gr] = await Promise.all([
+        sb.from("students").select("id, first_name, grade_level, state").order("first_name"),
         sb.from("family_invites").select("student_id, accepted_at"),
+        sb.from("course_grades").select("student_id, course, grade, level, core, grade_level, term"),
       ]);
+      setGrades((gr.data as Grade[]) ?? []);
       setStudents((st.data as Student[]) ?? []);
       setInvites((inv.data as Invite[]) ?? []);
     })();
@@ -85,6 +90,10 @@ export default function Home() {
           </>
         )}
       </div>
+
+      {students.filter((s) => s.state === GA.state).map((s) => (
+        <GpaScorecard key={s.id} rows={grades.filter((g) => g.student_id === s.id)} currentGrade={s.grade_level} pack={GA} name={s.first_name} compact href="/grades" />
+      ))}
 
       <h2 className="section-title">Try it now</h2>
       <div className="tiles">

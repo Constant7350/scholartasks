@@ -272,3 +272,29 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
   .import-row { grid-template-columns: auto 1fr 1fr; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
   .import-row > .import-course { grid-column: 2 / -1; }
 }
+
+/* GPA scorecard */
+.scorecard { border-left: 5px solid var(--line); }
+.scorecard-ok { border-left-color: var(--ok); }
+.scorecard-close { border-left-color: var(--gold); }
+.scorecard-below { border-left-color: var(--err); }
+.score-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.score-grid { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr); gap: 16px; margin-top: 8px; align-items: end; }
+.score-main { display: grid; gap: 4px; }
+.score-num { font-size: 48px; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; line-height: 1; }
+.score-bar { position: relative; height: 8px; border-radius: 99px; background: #eef1f7; margin-top: 6px; }
+.score-bar span { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--navy); }
+.score-bar i { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--gold); }
+.score-side { display: grid; gap: 6px; font-size: 14px; color: var(--muted); }
+.score-side b { color: var(--ink); font-size: 18px; }
+.trend-up { color: var(--ok); }
+.trend-down { color: var(--err); }
+.score-fine { margin: 12px 0 0; color: var(--ok); font-weight: 600; font-size: 14px; }
+.score-attn { margin-top: 14px; display: grid; gap: 6px; }
+.score-attn ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.score-attn li { display: flex; gap: 10px; align-items: center; font-size: 14px; }
+.score-attn .grade-chip { flex-shrink: 0; }
+.attn-urgent .grade-chip { background: var(--err-soft); color: var(--err); }
+.attn-watch .grade-chip { background: var(--gold-soft); color: #8a6514; }
+.scorecard .tile-go { display: inline-block; margin-top: 12px; text-decoration: none; }
+@media (max-width: 720px) { .score-grid { grid-template-columns: 1fr; } }
