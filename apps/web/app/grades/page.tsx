@@ -9,13 +9,14 @@ import { CoursePicker } from "./course-picker";
 import { levelFromName } from "./courses";
 import { ImportCard } from "./import-card";
 import { GpaScorecard } from "./scorecard";
+import { GoalsCard } from "./goals-card";
 
 const GA = gaPack as unknown as StatePack;
 const LETTERS = ["A", "B", "C", "D", "F"] as const;
 const LEVELS: Record<string, string> = { standard: "Standard", honors: "Honors", AP: "AP", IB: "IB", DE: "Dual enrollment" };
 const TERMS = ["Fall", "Spring", "Full year", "Summer"];
 
-interface Student { id: string; first_name: string; grade_level: number; state: string; sat: number | null; act: number | null; permissions: Record<string, boolean>; weight_rigor?: number; weight_honors?: number }
+interface Student { id: string; first_name: string; grade_level: number; state: string; sat: number | null; act: number | null; permissions: Record<string, boolean>; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string }
 interface Row { id: string; student_id: string; term: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number }
 
 export default function GradesPage() {
@@ -103,8 +104,19 @@ export default function GradesPage() {
           rows={mine}
           currentGrade={student.grade_level}
           pack={GA}
+          goal={student.goal_gpa == null ? null : Number(student.goal_gpa)}
+          minGrade={student.min_grade}
           weights={{ rigor: Number(student.weight_rigor ?? 1), honors: Number(student.weight_honors ?? 0.5) }}
           onSaveWeights={canEdit ? (w) => run(() => sb.rpc("set_school_weights", { p_student: student.id, p_rigor: w.rigor, p_honors: w.honors })) : undefined}
+        />
+      )}
+      {student.state === GA.state && (
+        <GoalsCard
+          name={student.first_name}
+          goal={student.goal_gpa == null ? null : Number(student.goal_gpa)}
+          minGrade={student.min_grade ?? "B"}
+          canEdit={canEdit}
+          onSave={(g, m) => run(() => sb.rpc("set_student_goal", { p_student: student.id, p_goal_gpa: g, p_min_grade: m }))}
         />
       )}
 

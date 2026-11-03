@@ -14,8 +14,10 @@ const STATUS = {
  * The always-visible GPA scorecard: HOPE GPA against the goal, the trend,
  * an overall GPA, rigor progress and what needs attention this year.
  */
-export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, weights, onSaveWeights }: {
+export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, goal, minGrade, weights, onSaveWeights }: {
   rows: Row[]; currentGrade: number; pack: StatePack; name?: string; compact?: boolean; href?: string;
+  /** The family's own goal and standard; defaults to the HOPE 3.0 and B. */
+  goal?: number | null; minGrade?: string;
   /** The school's extra points for AP/IB/dual enrollment and for honors. */
   weights?: { rigor: number; honors: number };
   /** Shown when the viewer may change the school's weighting. */
@@ -26,10 +28,10 @@ export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, we
   const hope = pack.programs.find((p) => p.rules.gpa_formula);
   const formula = hope?.rules.gpa_formula ? pack.gpa_formulas[hope.rules.gpa_formula] : undefined;
   if (!hope || !formula) return null;
-  const target = hope.rules.min_gpa ?? 3;
+  const target = goal ?? hope.rules.min_gpa ?? 3;
   const grades: CourseGrade[] = rows.map((r) => ({ term: r.term, course: r.course, grade: r.grade, level: r.level, core: r.core, gradeLevel: r.grade_level }));
   const w = weights ?? { rigor: 1, honors: 0.5 };
-  const s = buildScorecard(grades, { currentGrade, formula, target, rigorNeeded: hope.rules.rigor_courses, rigorLevels: hope.rules.rigor_levels, schoolWeights: w });
+  const s = buildScorecard(grades, { currentGrade, formula, target, rigorNeeded: hope.rules.rigor_courses, rigorLevels: hope.rules.rigor_levels, schoolWeights: w, minGrade: (minGrade || "B") as CourseGrade["grade"] });
   const trend = s.stateGpa !== null && s.stateGpaBefore !== null ? s.stateGpa - s.stateGpaBefore : null;
   const shown = compact ? s.attention.slice(0, 3) : s.attention;
   const gpaName = hope.name.replace(/ Scholarship$/, "");

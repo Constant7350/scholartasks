@@ -33,9 +33,11 @@ describe("GPA scorecard", () => {
     expect(s.attention.map((a) => [a.course, a.severity])).toEqual([["PE", "urgent"], ["Math", "watch"]]);
   });
 
-  it("a higher goal flags a B, and the status shows how close the GPA is", () => {
+  it("uses the family's own standard, and the status shows how close the GPA is to the goal", () => {
+    const grades = [c("Math", "B", 10), c("English", "B", 10), c("History", "A", 10), c("Science", "C", 10)];
+    expect(buildScorecard(grades, { currentGrade: 10, formula: hope, target: 3, minGrade: "A" }).attention.map((a) => a.course)).toEqual(["English", "Math", "Science"]);
+    expect(buildScorecard(grades, { currentGrade: 10, formula: hope, target: 3, minGrade: "C" }).attention).toEqual([]);
     const s = card([c("Math", "B", 10), c("English", "B", 10), c("History", "A", 10), c("Science", "A", 10)], 10, 3.7);
-    expect(s.attention.map((a) => a.course)).toEqual(["English", "Math"]);
     expect(s.status).toBe("close");
     expect(card([c("Math", "C", 10)], 10, 3).status).toBe("below");
   });
