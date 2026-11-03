@@ -33,7 +33,7 @@ export default function SignIn() {
     setState("sending");
     setError(null);
     const requested = new URLSearchParams(window.location.search).get("next");
-    const next = requested?.startsWith("/") && !requested.startsWith("//") ? requested : role === "student" ? "/join" : "/family";
+    const next = requested?.startsWith("/") && !requested.startsWith("//") ? requested : role === "student" ? "/join" : "/home";
     const { error } = await sb.auth.signInWithOtp({ email: email.trim(), options: { emailRedirectTo: window.location.origin + next } });
     if (error) {
       setError(friendly(error));
@@ -92,7 +92,7 @@ export default function SignIn() {
               <div className="roles" role="group" aria-label="I am a">
                 <button type="button" className="role" aria-pressed={role === "parent"} onClick={() => setRole("parent")}>
                   <b>I'm a parent</b>
-                  <span>Set up your family</span>
+                  <span>Plan for your family</span>
                 </button>
                 <button type="button" className="role" aria-pressed={role === "student"} onClick={() => setRole("student")}>
                   <b>I'm a student</b>
