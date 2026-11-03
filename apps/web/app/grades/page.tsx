@@ -10,6 +10,7 @@ import { levelFromName } from "./courses";
 import { ImportCard } from "./import-card";
 import { GpaScorecard } from "./scorecard";
 import { GoalsCard } from "./goals-card";
+import { NextYearCard } from "./next-year-card";
 
 const GA = gaPack as unknown as StatePack;
 const LETTERS = ["A", "B", "C", "D", "F"] as const;
@@ -151,6 +152,10 @@ export default function GradesPage() {
           {canEdit && <button className="btn btn-inline">{saved ? "✓ Saved" : "Save scores"}</button>}
         </form>
       </section>
+
+      {student.state === GA.state && (
+        <NextYearCard sb={sb} studentId={student.id} name={student.first_name} gradeLevel={student.grade_level} aiAllowed={role === "parent" || !!student.permissions?.ai_chat} />
+      )}
 
       {canEdit && <ImportCard sb={sb} studentId={student.id} onSaved={() => void load()} />}
 

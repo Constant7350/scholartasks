@@ -305,3 +305,6 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 @media (max-width: 720px) { .score-weights { grid-template-columns: 1fr 1fr; } .score-weights > div:last-child { grid-column: 1 / -1; } }
 .goal-advice { margin-top: 12px; }
 .goal-advice li { margin-bottom: 4px; }
+.advice-title { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.advice-title .pill { margin: 0; }
+.advice-row .item-main .hint { display: block; margin-top: 4px; }
