@@ -21,11 +21,14 @@ const GENERAL_STARTERS = [
 ];
 const storeKey = (id: string | null) => `st-counselor-${id}`;
 
-/** Bold, bullet and numbered lists only; everything is rendered as text, never as HTML. */
+/** Bold, https links, bullet and numbered lists only; everything is rendered as text, never as HTML. */
 function inline(text: string): ReactNode[] {
-  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
-    part.startsWith("**") && part.endsWith("**") && part.length > 4 ? <strong key={i}>{part.slice(2, -2)}</strong> : <Fragment key={i}>{part}</Fragment>,
-  );
+  return text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https:\/\/[^\s)]+\))/g).map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**") && part.length > 4) return <strong key={i}>{part.slice(2, -2)}</strong>;
+    const link = /^\[([^\]]+)\]\((https:\/\/[^\s)]+)\)$/.exec(part);
+    if (link) return <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer">{link[1]}</a>;
+    return <Fragment key={i}>{part}</Fragment>;
+  });
 }
 function Formatted({ text }: { text: string }) {
   const blocks = text.trim().split(/\n{2,}/);
