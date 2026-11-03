@@ -13,7 +13,13 @@ const STARTERS = [
   "Which deadlines are coming up first?",
   "How do the FAFSA and the GSFAPP differ?",
 ];
-const storeKey = (id: string) => `st-counselor-${id}`;
+const GENERAL_STARTERS = [
+  "What should a high school senior be doing this month?",
+  "How does the HOPE Scholarship work?",
+  "What's the difference between Early Action and Early Decision?",
+  "How do the FAFSA and the GSFAPP differ?",
+];
+const storeKey = (id: string | null) => `st-counselor-${id}`;
 
 /** Bold, bullet and numbered lists only; everything is rendered as text, never as HTML. */
 function inline(text: string): ReactNode[] {
@@ -65,18 +71,18 @@ export default function CounselorPage() {
 
   // The conversation stays in this browser tab only; it is not saved to the database.
   useEffect(() => {
-    if (!current) return;
+    if (role === undefined) return;
     try { setMsgs(JSON.parse(sessionStorage.getItem(storeKey(current)) ?? "[]") as Msg[]); } catch { setMsgs([]); }
-  }, [current]);
+  }, [current, role]);
   useEffect(() => {
-    if (!current || busy) return;
+    if (role === undefined || busy) return;
     try { sessionStorage.setItem(storeKey(current), JSON.stringify(msgs)); } catch { /* private mode */ }
-  }, [msgs, current, busy]);
+  }, [msgs, current, busy, role]);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [msgs]);
 
   const send = async (text: string) => {
     const content = text.trim();
-    if (!sb || !current || !content || busy) return;
+    if (!sb || !content || busy) return;
     setError(null);
     setDraft("");
     const history: Msg[] = [...msgs, { role: "user", content }];
@@ -87,7 +93,7 @@ export default function CounselorPage() {
       const res = await fetch("/api/counselor", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${s.session?.access_token ?? ""}` },
-        body: JSON.stringify({ studentId: current, messages: history.slice(-20).map(({ role, content }) => ({ role, content })) }),
+        body: JSON.stringify({ studentId: current ?? "", messages: history.slice(-20).map(({ role, content }) => ({ role, content })) }),
       });
       if (!res.ok || !res.body) {
         const e = (await res.json().catch(() => null)) as { error?: string } | null;
@@ -117,24 +123,13 @@ export default function CounselorPage() {
   if (!sb) return <Page title={title}><NotConfigured /></Page>;
   if (role === undefined) return <Page title={title}><p className="hint">Loading…</p></Page>;
   const student = students.find((s) => s.id === current);
-  if (!role || !student)
-    return (
-      <Page title={title}>
-        <div className="panel family-card">
-          <div>
-            <h2>Add your student first</h2>
-            <p className="hint" style={{ margin: 0 }}>The counselor builds its advice around your student's grades, colleges and deadlines.</p>
-          </div>
-          <a className="btn btn-inline link-btn" href="/family">Add a student</a>
-        </div>
-      </Page>
-    );
-  const blocked = role === "student" && !student.permissions?.ai_chat;
+  const blocked = role === "student" && !!student && !student.permissions?.ai_chat;
 
   return (
     <Page title={title}>
       <p className="hint" style={{ marginTop: -8 }}>
-        Ask about colleges, scholarships, aid forms and deadlines. Answers use {student.first_name}'s saved grades, college list and deadlines.
+        Ask about colleges, scholarships, aid forms and deadlines.{" "}
+        {student ? <>Answers use {student.first_name}'s saved grades, college list and deadlines.</> : <>For advice built around your own student, <a href="/family">add them</a> any time.</>}
       </p>
       {role === "parent" && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
@@ -151,7 +146,7 @@ export default function CounselorPage() {
               <span className="tile-icon">🤖</span>
               <b>Where would you like to start?</b>
               <div className="chips">
-                {STARTERS.map((q) => <button key={q} className="chip" onClick={() => void send(q)}>{q}</button>)}
+                {(student ? STARTERS : GENERAL_STARTERS).map((q) => <button key={q} className="chip" onClick={() => void send(q)}>{q}</button>)}
               </div>
             </div>
           ) : (
