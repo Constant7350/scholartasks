@@ -1,0 +1,11 @@
+{
+  "kind": "region",
+  "id": "ACM",
+  "name": "Academic Common Market (SREB)",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "members": ["AL", "AR", "DE", "FL", "GA", "KY", "LA", "MD", "MS", "OK", "SC", "TN", "TX", "VA", "WV"],
+  "summary": "In-state tuition at participating out-of-state public colleges for approved majors not offered in the student's home state.",
+  "source_url": "https://www.sreb.org/academic-common-market",
+  "verification": { "last_verified": null, "verified_by": null, "note": "DRAFT. Member list from a third-party summary; verify with SREB." }
+}

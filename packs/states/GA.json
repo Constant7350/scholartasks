@@ -1,0 +1,75 @@
+{
+  "kind": "state",
+  "state": "GA",
+  "name": "Georgia",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": ["ACM"],
+  "agency": { "name": "Georgia Student Finance Commission (GSFC)", "url": "https://gsfc.georgia.gov" },
+  "gpa_formulas": {
+    "ga_hope_gpa": {
+      "description": "HOPE GPA: core courses grades 9-12 on a flat 4.0 scale; +0.5 for B-F grades in AP, IB and dual enrollment core courses; no rounding.",
+      "courses": "core_only",
+      "grade_levels": [9, 10, 11, 12],
+      "scale": { "A": 4, "B": 3, "C": 2, "D": 1, "F": 0 },
+      "weights": [{ "levels": ["AP", "IB", "DE"], "add": 0.5, "applies_to": ["B", "C", "D", "F"] }],
+      "rounding": "none"
+    }
+  },
+  "programs": [
+    {
+      "id": "ga-hope",
+      "name": "HOPE Scholarship",
+      "type": "merit",
+      "summary": "Tuition help at Georgia public and eligible private colleges for students with a 3.0 HOPE GPA and 4 rigor courses.",
+      "rules": { "gpa_formula": "ga_hope_gpa", "min_gpa": 3.0, "rigor_courses": 4, "rigor_levels": ["AP", "IB", "DE"] },
+      "award": { "summary": "Per-credit-hour amount set each year by college (e.g. about $5,017 a semester at UGA in 2026-27); flat $2,985 a semester at private colleges." },
+      "application": ["FAFSA", "GSFAPP"],
+      "source_url": "https://gsfc.georgia.gov"
+    },
+    {
+      "id": "ga-zell",
+      "name": "Zell Miller Scholarship",
+      "type": "merit",
+      "summary": "Full standard tuition at Georgia public colleges for students with a 3.7 HOPE GPA, 4 rigor courses and a 1200 SAT or 25 ACT.",
+      "rules": {
+        "gpa_formula": "ga_hope_gpa",
+        "min_gpa": 3.7,
+        "rigor_courses": 4,
+        "rigor_levels": ["AP", "IB", "DE"],
+        "tests_any": { "sat": 1200, "act": 25 }
+      },
+      "award": { "summary": "100% of standard tuition at public colleges." },
+      "application": ["FAFSA", "GSFAPP"],
+      "source_url": "https://gsfc.georgia.gov"
+    }
+  ],
+  "forms": ["FAFSA", "GSFAPP"],
+  "deadlines": [
+    {
+      "id": "ga-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; also counts for HOPE)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": ["Student and parent StudentAid.gov accounts (FSA IDs)", "2026 federal tax return info", "Bank and investment balances"],
+      "grade_levels": [12]
+    },
+    {
+      "id": "ga-gsfapp-2028-29",
+      "title": "Complete the GSFAPP on GAfutures (alternative to the FAFSA for HOPE and Zell)",
+      "form": "GSFAPP",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://www.gafutures.org",
+      "documents": ["GAfutures account"],
+      "grade_levels": [12]
+    }
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries. Every rule, amount and date must be verified with GSFC before this pack moves to review. GSFC's rigor-course list is broader than AP/IB/DE (it also names some advanced math, science and foreign-language courses); model that before beta."
+  }
+}
