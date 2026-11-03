@@ -7,7 +7,7 @@ import { searchCourses, subjectOf } from "./courses";
  * A course box with a dropdown of common courses grouped by subject (A to Z)
  * that filters as you type. Any course name can still be typed by hand.
  */
-export function CoursePicker({ value, onChange, onPick }: { value: string; onChange: (v: string) => void; onPick: (course: string, core: boolean) => void }) {
+export function CoursePicker({ value, onChange, onPick, id = "g-course" }: { value: string; onChange: (v: string) => void; onPick: (course: string, core: boolean) => void; id?: string }) {
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -20,20 +20,20 @@ export function CoursePicker({ value, onChange, onPick }: { value: string; onCha
   return (
     <div className="picker" ref={box}>
       <input
-        id="g-course"
+        id={id}
         className="input"
         placeholder="Search or pick a course"
         autoComplete="off"
         role="combobox"
         aria-expanded={open}
-        aria-controls="course-list"
+        aria-controls={`${id}-list`}
         value={value}
         onFocus={() => setOpen(true)}
         onChange={(e) => { onChange(e.target.value); setOpen(true); }}
         onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); }}
       />
       {open && (
-        <div className="picker-list" id="course-list" role="listbox">
+        <div className="picker-list" id={`${id}-list`} role="listbox">
           {groups.length === 0 ? (
             <p className="hint" style={{ margin: 8 }}>Not in the list. That's fine, the name you typed will be used.</p>
           ) : (
