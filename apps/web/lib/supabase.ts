@@ -21,6 +21,11 @@ export function friendly(e: unknown): string {
   if (m.includes("invalid or expired")) return "That code is not valid or has expired. Ask your parent for a new one.";
   if (m.includes("already has an app account")) return "This child is already connected to the student app.";
   if (m.includes("not allowed")) return "You don't have access to do that.";
+  if (/invalid login credentials/i.test(m)) return "That email and password don't match. Try again, or tap Forgot password.";
+  if (/already registered|already exists/i.test(m)) return "You already have an account with this email. Sign in instead.";
+  if (/email not confirmed/i.test(m)) return "Please confirm your email first. Check your inbox for the link we sent.";
+  if (/password should be|weak password|at least \d+ characters/i.test(m)) return "Please choose a stronger password: at least 8 characters, mixing letters and numbers.";
+  if (/same.*password|different from the old/i.test(m)) return "Please choose a password you haven't used before.";
   if (/rate limit|too many/i.test(m)) return "Too many sign-in emails were sent in a short time. Please wait a few minutes and try again.";
   return m;
 }
