@@ -138,7 +138,7 @@ const BANK_SCHEMA = {
  * would fit any Georgia family). If so, saves a version with every personal
  * detail removed, as "pending" until ScholarTasks staff approve it.
  */
-async function suggestForBank(client: Anthropic, sb: SupabaseClient, studentId: string, question: string, answer: string) {
+async function suggestForBank(client: Anthropic, sb: SupabaseClient, studentId: string | null, question: string, answer: string) {
   try {
     const res = await client.messages.create({
       model: "claude-haiku-5-5",
@@ -168,10 +168,11 @@ export async function POST(req: Request) {
 
   let body: { studentId?: unknown; messages?: unknown };
   try { body = await req.json(); } catch { return json(400, "Bad request."); }
-  const studentId = typeof body.studentId === "string" ? body.studentId : "";
+  // No student yet means a general chat (families can try it before adding a child).
+  const studentId = typeof body.studentId === "string" && body.studentId ? body.studentId : null;
   const messages = Array.isArray(body.messages) ? (body.messages as ChatMessage[]).slice(-MAX_TURNS) : [];
   const valid =
-    studentId && messages.length > 0 && messages[messages.length - 1]?.role === "user" &&
+    messages.length > 0 && messages[messages.length - 1]?.role === "user" &&
     messages.every((m, i) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim().length > 0 && m.content.length <= MAX_CHARS && (i === 0 ? m.role === "user" : m.role !== messages[i - 1]!.role));
   if (!valid) return json(400, "Messages must be under 4,000 characters.");
 
@@ -198,17 +199,22 @@ export async function POST(req: Request) {
   if (turn.data === false) return json(429, `You've reached today's limit of ${DAILY_LIMIT} counselor messages. It resets at midnight.`);
 
   const [st, mem] = await Promise.all([
-    sb.from("students").select("id, first_name, birth_date, grade_level, state, sat, act, income_band, permissions").eq("id", studentId).maybeSingle(),
+    studentId
+      ? sb.from("students").select("id, first_name, birth_date, grade_level, state, sat, act, income_band, permissions").eq("id", studentId).maybeSingle()
+      : Promise.resolve({ data: null }),
     sb.from("family_members").select("role, student_id").eq("user_id", user.user.id),
   ]);
   const student = st.data as Student | null;
-  if (!student) return json(403, "You don't have access to this student.");
+  if (studentId && !student) return json(403, "You don't have access to this student.");
   const isParent = ((mem.data as { role: string }[]) ?? []).some((m) => m.role === "parent");
 
   const today = todayEastern();
   let system: ReturnType<typeof systemPrompt>;
   try {
-    system = systemPrompt(isParent ? "parent" : "student", await studentContext(sb, student, isParent, today), today);
+    const context = student
+      ? await studentContext(sb, student, isParent, today)
+      : "No student has been added yet; this parent is looking around first. Give general Georgia guidance, and when personal details (grades, scores, colleges) would change the answer, say that adding their student in ScholarTasks lets you tailor it.";
+    system = systemPrompt(student && !isParent ? "student" : "parent", context, today);
   } catch (e) {
     return json(500, (e as Error).message);
   }
