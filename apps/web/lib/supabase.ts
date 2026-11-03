@@ -21,5 +21,6 @@ export function friendly(e: unknown): string {
   if (m.includes("invalid or expired")) return "That code is not valid or has expired. Ask your parent for a new one.";
   if (m.includes("already has an app account")) return "This child is already connected to the student app.";
   if (m.includes("not allowed")) return "You don't have access to do that.";
+  if (/rate limit|too many/i.test(m)) return "Too many sign-in emails were sent in a short time. Please wait a few minutes and try again.";
   return m;
 }
