@@ -1,9 +1,7 @@
 -- Run after the migration on a scratch database. Any failed check raises an error.
 \set ON_ERROR_STOP on
 \o /dev/null
-grant usage on schema public, auth to authenticated;
-grant select, insert, update, delete on all tables in schema public to authenticated;
-grant execute on all functions in schema public to authenticated;
+grant usage on schema auth to authenticated;
 
 -- Ids: f* families, a* students, b* parent users, c* student users.
 insert into families (id, name) values
