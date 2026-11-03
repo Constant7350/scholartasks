@@ -12,3 +12,9 @@ do $$ begin
   if not exists (select 1 from pg_roles where rolname = 'anon') then create role anon; end if;
 end $$;
 grant usage on schema auth to anon, authenticated;
+-- Minimal auth.users and service_role so reminder functions can be created and tested.
+create table if not exists auth.users (id uuid primary key, email text);
+do $$ begin
+  if not exists (select 1 from pg_roles where rolname = 'service_role') then create role service_role; end if;
+end $$;
+grant usage on schema auth to service_role;

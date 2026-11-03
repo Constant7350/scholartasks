@@ -45,6 +45,7 @@ export function TopBar() {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
                 </summary>
                 <div className="menu-list" role="menu">
+                  <a role="menuitem" href="/plan">🗂️ College list and deadlines</a>
                   <a role="menuitem" href="/family">👪 Add a student</a>
                   <a role="menuitem" href="/family">🔒 Family and permissions</a>
                   <a role="menuitem" href="/tools/hope">🎓 HOPE and Zell checker</a>

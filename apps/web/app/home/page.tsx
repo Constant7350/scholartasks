@@ -89,6 +89,12 @@ export default function Home() {
 
       <h2 className="section-title">Try it now</h2>
       <div className="tiles">
+        <a className="tile" href="/plan">
+          <span className="tile-icon">🗂️</span>
+          <b>College list and deadlines</b>
+          <span>Track every college, scholarship and form, with email reminders before each deadline.</span>
+          <span className="tile-go">Open the plan →</span>
+        </a>
         <a className="tile" href="/tools/hope">
           <span className="tile-icon">🎓</span>
           <b>HOPE and Zell Miller checker</b>
