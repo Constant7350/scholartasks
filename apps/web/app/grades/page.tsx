@@ -8,6 +8,7 @@ import { NotConfigured, Page } from "../ui";
 import { CoursePicker } from "./course-picker";
 import { levelFromName } from "./courses";
 import { ImportCard } from "./import-card";
+import { GpaScorecard } from "./scorecard";
 
 const GA = gaPack as unknown as StatePack;
 const LETTERS = ["A", "B", "C", "D", "F"] as const;
@@ -96,6 +97,8 @@ export default function GradesPage() {
       )}
       {error && <p className="note note-err" role="alert">{error}</p>}
       {!canEdit && <p className="note note-info">Your parent has turned off grade entry for your account, so this page is view-only.</p>}
+
+      {student.state === GA.state && <GpaScorecard rows={mine} currentGrade={student.grade_level} pack={GA} />}
 
       <section className="tiles" style={{ marginTop: 8 }}>
         {results.map((r) => (
