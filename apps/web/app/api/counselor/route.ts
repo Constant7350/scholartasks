@@ -10,8 +10,9 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const GA = gaPack as unknown as StatePack;
-const MODEL = "claude-opus-5-5";
-const DAILY_LIMIT = 50;
+// Sonnet keeps each answer around a cent; the daily cap bounds the worst case per person.
+const MODEL = "claude-sonnet-5-5";
+const DAILY_LIMIT = 10;
 const MAX_TURNS = 20;
 const MAX_CHARS = 4000;
 
@@ -163,23 +164,36 @@ export async function POST(req: Request) {
   }
 
   const client = new Anthropic({ apiKey });
-  const stream = client.beta.messages.stream({
+  const request = {
     model: MODEL,
-    max_tokens: 16000,
-    betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
-    output_config: { effort: "low" },
+    max_tokens: 8000,
+    output_config: { effort: "low" as const },
     system,
     messages: messages.map((m) => ({ role: m.role, content: m.content })),
-  });
+  };
+  // Server-side fallback re-runs a declined question on a backup model. If the API
+  // ever rejects the option for this model, retry once without it.
+  const open = (withFallback: boolean) =>
+    withFallback
+      ? client.beta.messages.stream({ ...request, betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" })
+      : client.beta.messages.stream(request);
+  let stream = open(true);
 
   const encoder = new TextEncoder();
   const out = new ReadableStream<Uint8Array>({
     async start(controller) {
+      let sent = false;
       try {
+        try {
+          await stream.emitted("connect");
+        } catch (e) {
+          if (e instanceof Anthropic.BadRequestError && /fallback/i.test(e.message)) stream = open(false);
+          else throw e;
+        }
         for await (const event of stream) {
           if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
             controller.enqueue(encoder.encode(event.delta.text));
+            sent = true;
           }
         }
         const final = await stream.finalMessage();
@@ -190,7 +204,7 @@ export async function POST(req: Request) {
         }
       } catch (e) {
         console.error("counselor stream failed", e);
-        controller.enqueue(encoder.encode("\n\nSorry, the counselor hit a problem. Please try again in a minute."));
+        controller.enqueue(encoder.encode((sent ? "\n\n" : "") + "Sorry, the counselor hit a problem. Please try again in a minute."));
       } finally {
         controller.close();
       }
