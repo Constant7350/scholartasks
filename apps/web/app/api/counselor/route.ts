@@ -90,16 +90,12 @@ async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean,
   return lines.join("\n");
 }
 
-function systemPrompt(talkingTo: "parent" | "student", context: string, today: string): string {
-  const pack = GA;
-  const deadlines = pack.deadlines.map((d) => `- ${d.date}: ${d.title} (${d.where})`).join("\n");
-  const programs = pack.programs.map((p) => `- ${p.name}: ${p.summary} ${p.award?.summary ?? ""} Source: ${p.source_url}`).join("\n");
-  return `You are the ScholarTasks counselor, a warm, practical college and financial-aid advisor for families. Today is ${today}.
-
-You are talking with the student's ${talkingTo === "parent" ? "parent or guardian" : "own self: the student"}. Write in plain, friendly language a busy parent or a teenager can act on. Keep answers short (a few sentences or a short list) unless asked for more, and end with the single most useful next step when there is one.
-
-What you know about this family (from their ScholarTasks account):
-${context}
+// The first block is the same for every family, so it is cached on the AI side
+// (cheaper repeat questions). Family-specific details go in the second block.
+const STATIC_PROMPT = (() => {
+  const deadlines = GA.deadlines.map((d) => `- ${d.date}: ${d.title} (${d.where})`).join("\n");
+  const programs = GA.programs.map((p) => `- ${p.name}: ${p.summary} ${p.award?.summary ?? ""} Source: ${p.source_url}`).join("\n");
+  return `You are the ScholarTasks counselor, a warm, practical college and financial-aid advisor for families. Write in plain, friendly language a busy parent or a teenager can act on. Keep answers short (a few sentences or a short list) unless asked for more, and end with the single most useful next step when there is one.
 
 Georgia programs in ScholarTasks (draft data still being verified with the Georgia Student Finance Commission):
 ${programs}
@@ -108,13 +104,21 @@ Georgia dates in ScholarTasks (draft):
 ${deadlines}
 
 How to help:
-- Build advice around this student's actual grades, scores, college list and deadlines above. If something important is missing, say what to add in ScholarTasks (Grades and HOPE page, or College list and deadlines page).
+- Build advice around this student's actual grades, scores, college list and deadlines in the family details that follow. If something important is missing, say what to add in ScholarTasks (Grades and HOPE page, or College list and deadlines page).
 - Dates, amounts and rules change every year. When you state one, say it should be confirmed on the official site (studentaid.gov, gafutures.org, gsfc.georgia.gov, or the college's own admissions or aid page). Never invent a scholarship, deadline or amount; if you aren't sure, say so.
 - For essays, help the student brainstorm, outline and improve their own writing, and give feedback. Don't write a whole essay for them to submit as their own.
 - Families file the FAFSA and GSFAPP themselves with their own accounts. Never ask for or accept Social Security numbers, FSA IDs, passwords or bank details; if someone shares one, tell them not to and don't repeat it.
 - You are not a lawyer, tax preparer or the college's official aid office. For appeals, tax questions or special circumstances, explain the options and point them to the college's financial aid office or the school counselor.
 - If a student seems stressed or overwhelmed, be kind and encouraging, and suggest talking with a parent or school counselor. If anyone mentions thoughts of self-harm or being unsafe, tell them they can call or text 988 (Suicide and Crisis Lifeline) right now, and encourage them to reach a trusted adult.
 - Stay on school, college, careers, test prep, scholarships and paying for college. Politely steer other topics back.`;
+})();
+
+function systemPrompt(talkingTo: "parent" | "student", context: string, today: string) {
+  const who = talkingTo === "parent" ? "the student's parent or guardian" : "the student themself";
+  return [
+    { type: "text" as const, text: STATIC_PROMPT, cache_control: { type: "ephemeral" as const } },
+    { type: "text" as const, text: `Today is ${today}. You are talking with ${who}.\n\nWhat you know about this family (from their ScholarTasks account):\n${context}` },
+  ];
 }
 
 export async function POST(req: Request) {
@@ -156,7 +160,7 @@ export async function POST(req: Request) {
   const isParent = ((mem.data as { role: string }[]) ?? []).some((m) => m.role === "parent");
 
   const today = todayEastern();
-  let system: string;
+  let system: ReturnType<typeof systemPrompt>;
   try {
     system = systemPrompt(isParent ? "parent" : "student", await studentContext(sb, student, isParent, today), today);
   } catch (e) {
