@@ -5,6 +5,9 @@ import { displayGpa, evaluateStatePrograms, type CourseGrade, type StatePack } f
 import gaPack from "../../../../packs/states/GA.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { CoursePicker } from "./course-picker";
+import { levelFromName } from "./courses";
+import { ImportCard } from "./import-card";
 
 const GA = gaPack as unknown as StatePack;
 const LETTERS = ["A", "B", "C", "D", "F"] as const;
@@ -126,6 +129,8 @@ export default function GradesPage() {
         </form>
       </section>
 
+      {canEdit && <ImportCard sb={sb} studentId={student.id} onSaved={() => void load()} />}
+
       <section className="panel">
         <h2>Courses and grades</h2>
         <p className="hint">Add final grades for each course. Core courses (English, math, science, social studies and world languages) count toward HOPE.</p>
@@ -140,13 +145,14 @@ export default function GradesPage() {
               if (ok) setForm({ ...form, course: "" });
             }}
           >
-            <div className="field"><label htmlFor="g-course">Course</label><input id="g-course" className="input" placeholder="e.g. AP Biology" value={form.course} onChange={(e) => setForm({ ...form, course: e.target.value })} /></div>
+            <div className="field"><label htmlFor="g-course">Course</label>
+              <CoursePicker value={form.course} onChange={(course) => setForm({ ...form, course })} onPick={(course, core) => setForm({ ...form, course, core, level: levelFromName(course) })} /></div>
             <div className="field" style={{ flex: "0 1 90px" }}><label htmlFor="g-grade">Grade</label>
               <select id="g-grade" className="input" value={form.grade} onChange={(e) => setForm({ ...form, grade: e.target.value as CourseGrade["grade"] })}>{LETTERS.map((l) => <option key={l}>{l}</option>)}</select></div>
             <div className="field" style={{ flex: "0 1 170px" }}><label htmlFor="g-level">Level</label>
               <select id="g-level" className="input" value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value as CourseGrade["level"] })}>{Object.entries(LEVELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></div>
             <div className="field" style={{ flex: "0 1 120px" }}><label htmlFor="g-year">Year</label>
-              <select id="g-year" className="input" value={form.grade_level} onChange={(e) => setForm({ ...form, grade_level: e.target.value })}>{[9, 10, 11, 12].map((y) => <option key={y} value={y}>Grade {y}</option>)}</select></div>
+              <select id="g-year" className="input" value={form.grade_level} onChange={(e) => setForm({ ...form, grade_level: e.target.value })}>{[8, 9, 10, 11, 12].map((y) => <option key={y} value={y}>Grade {y}</option>)}</select></div>
             <div className="field" style={{ flex: "0 1 140px" }}><label htmlFor="g-term">Term</label>
               <select id="g-term" className="input" value={form.term} onChange={(e) => setForm({ ...form, term: e.target.value })}>{TERMS.map((t) => <option key={t}>{t}</option>)}</select></div>
             <label className="toggle" style={{ border: 0, margin: 0, padding: "0 0 12px" }}><input type="checkbox" checked={form.core} onChange={(e) => setForm({ ...form, core: e.target.checked })} /> Core course</label>

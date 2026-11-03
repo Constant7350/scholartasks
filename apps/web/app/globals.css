@@ -254,3 +254,21 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .bank-note { display: block; margin-top: 8px; font-size: 12px; color: var(--ok); }
 .review { display: grid; gap: 10px; }
 .review textarea { min-height: 140px; }
+
+/* ---------- Course picker and report card import ---------- */
+.picker { position: relative; }
+.picker-list { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 4px); max-height: 320px; overflow-y: auto; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(12, 31, 61, 0.14); padding: 4px 0; min-width: 260px; }
+.picker-group { margin: 8px 12px 4px; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.picker-item { display: block; width: 100%; text-align: left; font: inherit; font-size: 15px; background: none; border: 0; padding: 8px 14px; cursor: pointer; color: var(--ink); }
+.picker-item:hover, .picker-item[aria-selected="true"] { background: #eef2f9; color: var(--navy); }
+.upload-btn { cursor: pointer; display: inline-flex; }
+.import-table { display: grid; gap: 8px; }
+.import-row { display: grid; grid-template-columns: auto minmax(140px, 2fr) 64px 1fr 76px 1fr auto; gap: 8px; align-items: center; }
+.import-row .input { padding: 8px 10px; font-size: 14px; }
+.import-off { opacity: 0.45; }
+.import-core { font-size: 13px; display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+.import-orig { grid-column: 2 / -1; font-size: 12px; margin-top: -4px; }
+@media (max-width: 720px) {
+  .import-row { grid-template-columns: auto 1fr 1fr; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
+  .import-row > .import-course { grid-column: 2 / -1; }
+}
