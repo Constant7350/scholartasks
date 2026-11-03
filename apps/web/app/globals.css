@@ -196,3 +196,11 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .label-row { display: flex; justify-content: space-between; align-items: baseline; }
 .text-btn { font: inherit; font-size: 14px; background: none; border: 0; padding: 0; color: var(--navy); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 .switch { text-align: center; color: var(--muted); font-size: 14px; margin: 14px 0 0; }
+
+/* ---------- Legal + footer ---------- */
+.legal h2 { font-size: 18px; margin: 24px 0 8px; }
+.legal p, .legal li { font-size: 15px; color: var(--ink); }
+.legal ul { padding-left: 20px; }
+.legal li { margin: 6px 0; }
+.site-footer { max-width: 720px; margin: 0 auto; padding: 8px 16px 40px; display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; color: var(--muted); }
+.site-footer a { color: var(--muted); }

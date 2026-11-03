@@ -242,7 +242,10 @@ export default function SignIn() {
                   <path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z" />
                   <path d="m9 12 2 2 4-4" />
                 </svg>
-                <span>Your family's information is private, encrypted and only visible to people you allow. We never sell student data.</span>
+                <span>
+                  Your family's information is private, encrypted and only visible to people you allow. We never sell student data. By continuing you agree to our{" "}
+                  <a href="/terms">Terms</a> and <a href="/privacy">Privacy policy</a>.
+                </span>
               </div>
             </div>
           )}

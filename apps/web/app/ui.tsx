@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { Footer } from "./legal";
 import { TopBar } from "./topbar";
 
 export const card: CSSProperties = { background: "#fff", borderRadius: 14, padding: 20, margin: "16px 0", border: "1px solid #e3e7ee" };
@@ -11,6 +12,7 @@ export function Page({ title, children }: { title?: string; children: ReactNode 
         {title && <h1>{title}</h1>}
         {children}
       </main>
+      <Footer />
     </>
   );
 }
