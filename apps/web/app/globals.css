@@ -185,3 +185,14 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .dates { list-style: none; padding: 0; margin: 4px 0; display: grid; gap: 8px; font-size: 14px; }
 .dates li { display: grid; gap: 2px; }
 .dates .date { font-weight: 700; color: var(--navy); font-size: 13px; }
+
+/* ---------- Sign-in options ---------- */
+.btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--ink); background: #fff; }
+.or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; margin: 18px 0; }
+.or::before, .or::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; background: #eef1f7; border-radius: 10px; padding: 4px; margin-bottom: 18px; }
+.tabs button { font: inherit; font-size: 14px; font-weight: 600; border: 0; background: none; padding: 9px; border-radius: 8px; color: var(--muted); cursor: pointer; }
+.tabs button[aria-selected="true"] { background: #fff; color: var(--navy); box-shadow: 0 1px 3px rgba(12, 31, 61, 0.12); }
+.label-row { display: flex; justify-content: space-between; align-items: baseline; }
+.text-btn { font: inherit; font-size: 14px; background: none; border: 0; padding: 0; color: var(--navy); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.switch { text-align: center; color: var(--muted); font-size: 14px; margin: 14px 0 0; }
