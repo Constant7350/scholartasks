@@ -45,6 +45,16 @@ describe("GPA scorecard", () => {
     expect(s.attention.map((a) => a.course)).toEqual(["Math"]);
   });
 
+  it("adds the school's own weighting for the weighted GPA", () => {
+    const grades = [c("AP Bio", "B", 11, { level: "AP" }), c("Honors English", "A", 11, { level: "honors" }), c("PE", "A", 11, { core: false })];
+    const s = buildScorecard(grades, { currentGrade: 11, formula: hope, target: 3, schoolWeights: { rigor: 1, honors: 0.5 } });
+    expect(s.overallGpa).toBeCloseTo(11 / 3);
+    expect(s.schoolGpa).toBe(4.17); // (4 + 4.5 + 4) / 3
+    expect(s.stateGpa).toBe(3.75); // HOPE: B in AP = 3.5, honors gets nothing, PE not core
+    const none = buildScorecard(grades, { currentGrade: 11, formula: hope, target: 3, schoolWeights: { rigor: 0, honors: 0 } });
+    expect(none.schoolGpa).toBe(3.67);
+  });
+
   it("counts rigor courses", () => {
     expect(card([c("AP Bio", "B", 11, { level: "AP" }), c("DE English", "A", 11, { level: "DE" })], 11).rigorDone).toBe(2);
   });

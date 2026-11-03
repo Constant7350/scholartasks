@@ -15,7 +15,7 @@ const LETTERS = ["A", "B", "C", "D", "F"] as const;
 const LEVELS: Record<string, string> = { standard: "Standard", honors: "Honors", AP: "AP", IB: "IB", DE: "Dual enrollment" };
 const TERMS = ["Fall", "Spring", "Full year", "Summer"];
 
-interface Student { id: string; first_name: string; grade_level: number; state: string; sat: number | null; act: number | null; permissions: Record<string, boolean> }
+interface Student { id: string; first_name: string; grade_level: number; state: string; sat: number | null; act: number | null; permissions: Record<string, boolean>; weight_rigor?: number; weight_honors?: number }
 interface Row { id: string; student_id: string; term: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number }
 
 export default function GradesPage() {
@@ -35,7 +35,7 @@ export default function GradesPage() {
     if (!s.session) return window.location.replace("/signin?next=/grades");
     const [mem, st, gr] = await Promise.all([
       sb.from("family_members").select("role, student_id").eq("user_id", s.session.user.id),
-      sb.from("students").select("id, first_name, grade_level, state, sat, act, permissions").order("first_name"),
+      sb.from("students").select("*").order("first_name"),
       sb.from("course_grades").select("id, student_id, term, course, grade, level, core, grade_level").order("grade_level").order("created_at"),
     ]);
     const m = (mem.data as { role: "parent" | "student"; student_id: string | null }[]) ?? [];
@@ -98,7 +98,15 @@ export default function GradesPage() {
       {error && <p className="note note-err" role="alert">{error}</p>}
       {!canEdit && <p className="note note-info">Your parent has turned off grade entry for your account, so this page is view-only.</p>}
 
-      {student.state === GA.state && <GpaScorecard rows={mine} currentGrade={student.grade_level} pack={GA} />}
+      {student.state === GA.state && (
+        <GpaScorecard
+          rows={mine}
+          currentGrade={student.grade_level}
+          pack={GA}
+          weights={{ rigor: Number(student.weight_rigor ?? 1), honors: Number(student.weight_honors ?? 0.5) }}
+          onSaveWeights={canEdit ? (w) => run(() => sb.rpc("set_school_weights", { p_student: student.id, p_rigor: w.rigor, p_honors: w.honors })) : undefined}
+        />
+      )}
 
       <section className="tiles" style={{ marginTop: 8 }}>
         {results.map((r) => (

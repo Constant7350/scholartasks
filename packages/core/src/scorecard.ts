@@ -17,6 +17,8 @@ export interface Scorecard {
   stateGpaBefore: number | null;
   /** Every course entered, unweighted 4.0 scale. */
   overallGpa: number | null;
+  /** Every course entered, with the school's own extra points for harder classes. */
+  schoolGpa: number | null;
   target: number;
   status: "none" | "ok" | "close" | "below";
   rigorDone: number;
@@ -39,13 +41,27 @@ const UNWEIGHTED: GpaFormula = {
  */
 export function buildScorecard(
   grades: CourseGrade[],
-  opts: { currentGrade: number; formula: GpaFormula; target: number; rigorNeeded?: number; rigorLevels?: CourseLevel[] },
+  opts: {
+    currentGrade: number; formula: GpaFormula; target: number; rigorNeeded?: number; rigorLevels?: CourseLevel[];
+    /** The school's weighting: extra points for AP/IB/dual enrollment and for honors (A to D grades). */
+    schoolWeights?: { rigor: number; honors: number };
+  },
 ): Scorecard {
   const { formula, target } = opts;
   const stateGpa = computeGpa(grades, formula).gpa;
   const earlier = grades.filter((g) => g.gradeLevel < opts.currentGrade);
   const stateGpaBefore = earlier.length < grades.length ? computeGpa(earlier, formula).gpa : null;
   const overallGpa = computeGpa(grades, UNWEIGHTED).gpa;
+  const w = opts.schoolWeights ?? { rigor: 1, honors: 0.5 };
+  const schoolGpa = computeGpa(grades, {
+    ...UNWEIGHTED,
+    description: "School weighted GPA",
+    rounding: "two_decimals",
+    weights: [
+      { levels: ["AP", "IB", "DE"], add: w.rigor, applies_to: ["A", "B", "C", "D"] },
+      { levels: ["honors"], add: w.honors, applies_to: ["A", "B", "C", "D"] },
+    ],
+  }).gpa;
 
   const levels = opts.rigorLevels ?? ["AP", "IB", "DE"];
   const rigorDone = grades.filter((g) => levels.includes(g.level)).length;
@@ -66,5 +82,5 @@ export function buildScorecard(
   attention.sort((a, b) => (a.severity === b.severity ? a.course.localeCompare(b.course) : a.severity === "urgent" ? -1 : 1));
 
   const status = stateGpa === null ? "none" : stateGpa >= target ? "ok" : stateGpa >= target - 0.2 ? "close" : "below";
-  return { stateGpa, stateGpaBefore, overallGpa, target, status, rigorDone, rigorNeeded: opts.rigorNeeded ?? 0, attention };
+  return { stateGpa, stateGpaBefore, overallGpa, schoolGpa, target, status, rigorDone, rigorNeeded: opts.rigorNeeded ?? 0, attention };
 }
