@@ -12,7 +12,7 @@ Website: https://scholartasks.com
 | `packs/states`, `packs/regions` | State and region packs (data, not code). Georgia and the Academic Common Market are drafts |
 | `supabase/migrations` | Database schema: parent-owned family accounts, student permissions, row-level security, tamper-evident audit log |
 | `supabase/tests` | Database checks for permissions and the audit log |
-| `apps/web` | Website (Next.js). Currently a preview page with a Georgia HOPE / Zell Miller checker |
+| `apps/web` | Website (Next.js): Georgia HOPE / Zell Miller checker, sign-in, parent family page (add children, invite codes, permissions), student join page |
 | `apps/mobile` | Phone app (Expo), not started yet |
 
 Planning documents: [market research](https://claude.ai/artifact/JPXxjFU7KnEGAmu5fr5kDz), [product plan](https://claude.ai/artifact/6MVmoDnFyhei4Sen2zzNiq), [MVP build spec](https://claude.ai/artifact/3FGoj7yxL9nBxufCAgCqXu).
@@ -26,6 +26,16 @@ pnpm test               # rules engine tests
 pnpm --filter @scholartasks/web dev   # website on http://localhost:3000
 ./supabase/tests/run.sh # database checks (needs a local PostgreSQL; set PGHOST/PGUSER)
 ```
+
+## Turning on sign-in
+
+Sign-in uses Supabase (email links, no passwords).
+
+1. Create a free project at supabase.com.
+2. Run the files in `supabase/migrations` in order (SQL editor, or `supabase db push`).
+3. Copy `apps/web/.env.example` to `apps/web/.env.local` and fill in the project URL and anon key.
+
+Without the keys, the sign-in, family and join pages show a "not connected yet" notice.
 
 ## Switching on a new state
 

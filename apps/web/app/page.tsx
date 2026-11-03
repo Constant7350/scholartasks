@@ -7,6 +7,7 @@ export default function Home() {
       <p style={{ marginTop: 0, color: "#555" }}>
         Your plan for college: grades, test prep, scholarships, state aid and every deadline in one place.
       </p>
+      <p><a href="/signin">Sign in</a> · <a href="/family">Your family</a> · <a href="/join">Student: join your family</a></p>
       <HopeChecker />
       <p style={{ fontSize: 12, color: "#777" }}>
         Preview only. Georgia rules come from a draft data pack that has not yet been verified with GSFC.

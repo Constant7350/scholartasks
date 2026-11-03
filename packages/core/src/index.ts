@@ -3,4 +3,5 @@ export * from "./schema";
 export * from "./gpa";
 export * from "./eligibility";
 export * from "./reminders";
+export * from "./permissions";
 export { selectableStates, regionsForState, type LoadedPacks } from "./selection";
