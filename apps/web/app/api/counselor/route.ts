@@ -164,6 +164,37 @@ async function suggestForBank(client: Anthropic, sb: SupabaseClient, studentId: 
   }
 }
 
+const MATCH_SCHEMA = {
+  type: "object",
+  properties: { match: { type: "integer" } },
+  required: ["match"],
+  additionalProperties: false,
+};
+
+/**
+ * When the wording differs, a small, cheap model checks whether one of the
+ * closest reviewed questions asks the same thing. Returns its id, or null.
+ */
+async function matchBank(client: Anthropic, candidates: { id: string; question: string }[], question: string): Promise<string | null> {
+  if (candidates.length === 0) return null;
+  try {
+    const res = await client.messages.create({
+      model: "claude-haiku-5-5",
+      max_tokens: 200,
+      output_config: { effort: "low", format: { type: "json_schema", schema: MATCH_SCHEMA } },
+      system: `You match a family's question to a library of reviewed answers for a Georgia college and financial-aid app. Return the number of the library question that asks the same thing, so its saved answer fully answers the family's question. Return 0 if none does, if the family's question is about their own student (their grades, scores, colleges, deadlines or money), or if it asks for more than the saved question covers. When unsure, return 0.`,
+      messages: [{ role: "user", content: `<library>\n${candidates.map((c, i) => `${i + 1}. ${c.question}`).join("\n")}\n</library>\n<family_question>\n${question}\n</family_question>` }],
+    });
+    if (res.stop_reason !== "end_turn") return null;
+    const text = res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+    const n = (JSON.parse(text) as { match: number }).match;
+    return Number.isInteger(n) && n >= 1 && n <= candidates.length ? candidates[n - 1]!.id : null;
+  } catch (e) {
+    console.error("answer bank match failed", e);
+    return null;
+  }
+}
+
 export async function POST(req: Request) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -193,7 +224,12 @@ export async function POST(req: Request) {
   if (firstQuestion) {
     const hit = await sb.rpc("answer_bank_lookup", { p_student: studentId, p_question: firstQuestion });
     if (hit.error && /not allowed/.test(hit.error.message)) return json(403, "AI chat is turned off for this student. A parent can turn it on in Family and permissions.");
-    const saved = (hit.data as { answer: string }[] | null)?.[0];
+    let saved = (hit.data as { answer: string }[] | null)?.[0];
+    if (!saved && !hit.error) {
+      const cands = await sb.rpc("answer_bank_candidates", { p_student: studentId, p_question: firstQuestion, p_limit: 25 });
+      const id = cands.error ? null : await matchBank(new Anthropic({ apiKey }), (cands.data as { id: string; question: string }[]) ?? [], firstQuestion);
+      if (id) saved = ((await sb.rpc("answer_bank_take", { p_student: studentId, p_id: id })).data as { answer: string }[] | null)?.[0];
+    }
     if (saved) return new Response(saved.answer, { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store", "X-Answer-Source": "bank" } });
   }
 
