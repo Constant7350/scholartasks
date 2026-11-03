@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CourseGrade } from "@scholartasks/core";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { friendly } from "../../lib/supabase";
@@ -29,7 +29,12 @@ async function readAsBase64(file: File): Promise<string> {
   return btoa(s);
 }
 
-export function ImportCard({ sb, studentId, onSaved }: { sb: SupabaseClient; studentId: string; onSaved: () => void }) {
+export function ImportCard({ sb, studentId, onSaved, file }: {
+  sb: SupabaseClient; studentId: string; onSaved: () => void;
+  /** A stored transcript to read, handed over from the transcripts card. */
+  file?: File | null;
+}) {
+  const box = useRef<HTMLElement>(null);
   const [busy, setBusy] = useState<"reading" | "saving" | null>(null);
   const [found, setFound] = useState<Found[] | null>(null);
   const [note, setNote] = useState("");
@@ -60,6 +65,13 @@ export function ImportCard({ sb, studentId, onSaved }: { sb: SupabaseClient; stu
     }
   };
 
+  useEffect(() => {
+    if (!file) return;
+    box.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    void read(file);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [file]);
+
   const save = async () => {
     if (!found) return;
     const rows = found.filter((f) => f.keep && f.course.trim()).map((f) => ({
@@ -78,7 +90,7 @@ export function ImportCard({ sb, studentId, onSaved }: { sb: SupabaseClient; stu
   const keepCount = found?.filter((f) => f.keep).length ?? 0;
 
   return (
-    <section className="panel">
+    <section className="panel" ref={box}>
       <h2>Add grades from a report card</h2>
       <p className="hint">Take a photo of a report card or transcript, or choose a PDF. The AI reads the courses and grades, and you check them before anything is saved.</p>
       <label className="btn btn-ghost btn-inline upload-btn">
