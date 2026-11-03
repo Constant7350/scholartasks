@@ -1,17 +1,19 @@
-import { HopeChecker } from "./hope-checker";
+import { SignedInRedirect } from "./signed-in-redirect";
+import { Page } from "./ui";
 
-export default function Home() {
+export default function Landing() {
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: "32px 16px" }}>
-      <h1 style={{ marginBottom: 4 }}>ScholarTasks</h1>
-      <p style={{ marginTop: 0, color: "#555" }}>
-        Your plan for college: grades, test prep, scholarships, state aid and every deadline in one place.
+    <Page>
+      <SignedInRedirect />
+      <section className="hero">
+        <p className="eyebrow">Built in Georgia</p>
+        <h1>College, scholarships and aid, handled</h1>
+        <p className="hint">One plan for your family: grades, test prep, applications and every deadline.</p>
+      </section>
+      <p style={{ marginTop: 20 }}>
+        <a className="btn btn-inline link-btn" href="/signin">Get started free</a>{" "}
+        <a className="btn btn-ghost btn-inline link-btn" href="/tools/hope">Try the HOPE checker</a>
       </p>
-      <p><a href="/signin">Sign in</a> · <a href="/family">Your family</a> · <a href="/join">Student: join your family</a></p>
-      <HopeChecker />
-      <p style={{ fontSize: 12, color: "#777" }}>
-        Preview only. Georgia rules come from a draft data pack that has not yet been verified with GSFC.
-      </p>
-    </main>
+    </Page>
   );
 }

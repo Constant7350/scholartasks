@@ -151,3 +151,37 @@ details.perm label { display: flex; gap: 10px; align-items: center; margin: 8px 
 .share-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .share-btn { text-decoration: none; display: inline-flex; align-items: center; gap: 6px; color: #fff; }
 @media (max-width: 480px) { .share-row > * { flex: 1 1 45%; text-align: center; justify-content: center; } }
+
+/* ---------- Menu ---------- */
+.topbar nav { align-items: center; }
+details.menu { position: relative; }
+details.menu summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; color: var(--navy); font-weight: 600; padding: 6px 10px; border: 1.5px solid var(--line); border-radius: 999px; }
+details.menu summary::-webkit-details-marker { display: none; }
+details.menu[open] summary { background: #eef2f9; border-color: var(--navy); }
+.menu-list { position: absolute; right: 0; top: calc(100% + 8px); background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px rgba(12, 31, 61, 0.14); padding: 6px; min-width: 250px; z-index: 20; display: grid; }
+.menu-list a, .menu-list button { text-align: left; font: inherit; font-size: 15px; color: var(--ink) !important; text-decoration: none; padding: 10px 12px; border-radius: 8px; background: none; border: 0; cursor: pointer; white-space: nowrap; }
+.menu-list a:hover, .menu-list button:hover { background: #eef1f7; }
+.menu-list hr { border: 0; border-top: 1px solid var(--line); margin: 4px 0; }
+
+/* ---------- Home ---------- */
+.hero h1 { margin: 0 0 6px; font-size: clamp(26px, 5vw, 34px); }
+.hero .hint { color: var(--muted); margin: 0; font-size: 16px; }
+.family-card { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 22px; }
+.family-card > div { flex: 1 1 300px; }
+.link-btn { text-decoration: none; display: inline-block; }
+.kids { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #eef1f7; color: var(--muted); margin-left: 4px; }
+.pill-ok { background: var(--ok-soft); color: var(--ok); }
+.section-title { font-size: 18px; margin: 28px 0 10px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.tile { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 6px; align-content: start; color: var(--ink); text-decoration: none; }
+a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61, 0.08); }
+.tile b { font-size: 16px; }
+.tile > span { color: var(--muted); font-size: 14px; }
+.tile .tile-icon { font-size: 26px; }
+.tile .tile-go { color: var(--navy); font-weight: 600; margin-top: 4px; }
+.tile-soon { background: #fafbfd; border-style: dashed; }
+.tile-soon b::after { content: "Soon"; margin-left: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #8a6514; background: var(--gold-soft); padding: 2px 6px; border-radius: 6px; vertical-align: 2px; }
+.dates { list-style: none; padding: 0; margin: 4px 0; display: grid; gap: 8px; font-size: 14px; }
+.dates li { display: grid; gap: 2px; }
+.dates .date { font-weight: 700; color: var(--navy); font-size: 13px; }

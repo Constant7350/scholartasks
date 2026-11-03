@@ -27,18 +27,30 @@ export function HopeChecker() {
   };
 
   return (
-    <section style={{ background: "#fff", borderRadius: 12, padding: 16, margin: "24px 0", border: "1px solid #e4e4e0" }}>
-      <h2 style={{ marginTop: 0 }}>Georgia HOPE and Zell Miller checker</h2>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-        <input aria-label="Core course" placeholder="Core course" value={course} onChange={(e) => setCourse(e.target.value)} />
-        <select aria-label="Grade" value={grade} onChange={(e) => setGrade(e.target.value as CourseGrade["grade"])}>
-          {LETTERS.map((l) => <option key={l}>{l}</option>)}
-        </select>
-        <select aria-label="Level" value={level} onChange={(e) => setLevel(e.target.value as CourseGrade["level"])}>
-          {LEVELS.map((l) => <option key={l}>{l}</option>)}
-        </select>
-        <button onClick={add}>Add course</button>
-        <input aria-label="SAT score" placeholder="SAT (optional)" value={sat} inputMode="numeric" onChange={(e) => setSat(e.target.value.replace(/\D/g, ""))} />
+    <section className="panel">
+      <h2>Georgia HOPE and Zell Miller checker</h2>
+      <div className="row">
+        <div className="field">
+          <label htmlFor="hc-course">Core course</label>
+          <input id="hc-course" className="input" placeholder="e.g. Algebra II" value={course} onChange={(e) => setCourse(e.target.value)} />
+        </div>
+        <div className="field" style={{ flex: "0 1 90px" }}>
+          <label htmlFor="hc-grade">Grade</label>
+          <select id="hc-grade" className="input" value={grade} onChange={(e) => setGrade(e.target.value as CourseGrade["grade"])}>
+            {LETTERS.map((l) => <option key={l}>{l}</option>)}
+          </select>
+        </div>
+        <div className="field" style={{ flex: "0 1 130px" }}>
+          <label htmlFor="hc-level">Level</label>
+          <select id="hc-level" className="input" value={level} onChange={(e) => setLevel(e.target.value as CourseGrade["level"])}>
+            {LEVELS.map((l) => <option key={l}>{l}</option>)}
+          </select>
+        </div>
+        <button className="btn btn-inline" onClick={add} disabled={!course.trim()}>Add course</button>
+      </div>
+      <div className="field" style={{ maxWidth: 220, marginTop: 14 }}>
+        <label htmlFor="hc-sat">SAT score (optional)</label>
+        <input id="hc-sat" className="input" placeholder="e.g. 1200" value={sat} inputMode="numeric" onChange={(e) => setSat(e.target.value.replace(/\D/g, ""))} />
       </div>
       <ul>
         {grades.map((g, i) => (

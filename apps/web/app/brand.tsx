@@ -11,9 +11,9 @@ export function BrandMark({ className = "brand-mark" }: { className?: string }) 
   );
 }
 
-export function Brand() {
+export function Brand({ href = "/" }: { href?: string }) {
   return (
-    <a className="brand" href="/">
+    <a className="brand" href={href}>
       <BrandMark />
       <span>ScholarTasks</span>
     </a>
