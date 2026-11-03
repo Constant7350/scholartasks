@@ -13,6 +13,9 @@ export default function Join() {
 
   useEffect(() => {
     sb?.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    // Invite links carry the code (?code=ABCD2345) so the student doesn't have to type it.
+    const fromLink = new URLSearchParams(window.location.search).get("code");
+    if (fromLink) setCode(fromLink.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10));
   }, [sb]);
 
   if (!sb) return <Page title="Join your family"><NotConfigured /></Page>;
@@ -21,8 +24,8 @@ export default function Join() {
       <Page title="Join your family">
         <div className="panel">
           <h2>Sign in first</h2>
-          <p className="hint">Use your own email address, not your parent's.</p>
-          <a className="btn btn-inline" style={{ display: "inline-block", textDecoration: "none" }} href="/signin?next=/join">Sign in as a student</a>
+          <p className="hint">Use your own email address, not your parent's.{code ? " Your family code is saved and will be filled in for you." : ""}</p>
+          <a className="btn btn-inline" style={{ display: "inline-block", textDecoration: "none" }} href={`/signin?next=${encodeURIComponent(code ? `/join?code=${code}` : "/join")}`}>Sign in as a student</a>
         </div>
       </Page>
     );
