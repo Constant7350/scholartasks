@@ -68,6 +68,11 @@ export default function CounselorPage() {
     setCurrent((c) => c ?? asStudent?.student_id ?? list[0]?.id ?? null);
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
+  // A question handed over from another page (e.g. "Ask the AI counselor about this goal").
+  useEffect(() => {
+    const ask = new URLSearchParams(window.location.search).get("ask");
+    if (ask) setDraft(ask.slice(0, 4000));
+  }, []);
 
   // The conversation stays in this browser tab only; it is not saved to the database.
   useEffect(() => {

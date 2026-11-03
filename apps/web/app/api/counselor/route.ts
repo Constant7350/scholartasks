@@ -21,6 +21,7 @@ interface ChatMessage { role: "user" | "assistant"; content: string }
 interface Student {
   id: string; first_name: string; birth_date: string; grade_level: number; state: string;
   sat: number | null; act: number | null; income_band: string | null; permissions: Record<string, boolean>;
+  goal_gpa?: number | null; min_grade?: string | null;
 }
 
 const json = (status: number, error: string) => Response.json({ error }, { status });
@@ -58,6 +59,9 @@ async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean,
   const lines: string[] = [
     `Student: ${s.first_name}, age ${age(s.birth_date, today)}, grade ${s.grade_level}, lives in ${s.state}.`,
     `Test scores: SAT ${s.sat ?? "not entered"}, ACT ${s.act ?? "not entered"}.`,
+    s.goal_gpa != null
+      ? `Family's goal: HOPE GPA ${Number(s.goal_gpa).toFixed(1)}; lowest grade they're OK with in a core class: ${s.min_grade ?? "B"}.`
+      : "Family's goal: not set yet (the app assumes 3.0 for HOPE and a B standard).",
   ];
   if (isParent || s.permissions?.see_income_and_costs) {
     lines.push(`Family income band: ${s.income_band ?? "not entered"}.`);
@@ -108,6 +112,9 @@ How to help:
 - Build advice around this student's actual grades, scores, college list and deadlines in the family details that follow. If something important is missing, say what to add in ScholarTasks (Grades and HOPE page, or College list and deadlines page).
 - Dates, amounts and rules change every year. When you state one, say it should be confirmed on the official site (studentaid.gov, gafutures.org, gsfc.georgia.gov, or the college's own admissions or aid page). Never invent a scholarship, deadline or amount; if you aren't sure, say so.
 - For essays, help the student brainstorm, outline and improve their own writing, and give feedback. Don't write a whole essay for them to submit as their own.
+- The family sets the student's GPA goal and grade standard. Measure progress and advice against their goal, not against straight A's. If the goal is below what a scholarship needs (HOPE needs a 3.0 HOPE GPA; Zell Miller 3.7), say so kindly and explain the tradeoff, but the choice is theirs.
+- When a grade is below the family's standard, ask a few short questions to find the cause (tests or homework, missing work, a hard topic, time, the teacher) before suggesting a small step-by-step plan.
+- Don't do homework, projects or graded work for the student. Teach instead: ask what they've tried, give a hint, and work a similar example.
 - Families file the FAFSA and GSFAPP themselves with their own accounts. Never ask for or accept Social Security numbers, FSA IDs, passwords or bank details; if someone shares one, tell them not to and don't repeat it.
 - You are not a lawyer, tax preparer or the college's official aid office. For appeals, tax questions or special circumstances, explain the options and point them to the college's financial aid office or the school counselor.
 - If a student seems stressed or overwhelmed, be kind and encouraging, and suggest talking with a parent or school counselor. If anyone mentions thoughts of self-harm or being unsafe, tell them they can call or text 988 (Suicide and Crisis Lifeline) right now, and encourage them to reach a trusted adult.
@@ -200,7 +207,7 @@ export async function POST(req: Request) {
 
   const [st, mem] = await Promise.all([
     studentId
-      ? sb.from("students").select("id, first_name, birth_date, grade_level, state, sat, act, income_band, permissions").eq("id", studentId).maybeSingle()
+      ? sb.from("students").select("*").eq("id", studentId).maybeSingle()
       : Promise.resolve({ data: null }),
     sb.from("family_members").select("role, student_id").eq("user_id", user.user.id),
   ]);

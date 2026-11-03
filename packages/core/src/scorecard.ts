@@ -5,7 +5,7 @@ export interface AttentionItem {
   course: string;
   grade: CourseGrade["grade"];
   gradeLevel: number;
-  /** "urgent" for a D or F, "watch" for a core grade under the goal. */
+  /** "urgent" for a D or F, "watch" for a core grade under the family's standard. */
   severity: "urgent" | "watch";
   message: string;
 }
@@ -20,11 +20,14 @@ export interface Scorecard {
   /** Every course entered, with the school's own extra points for harder classes. */
   schoolGpa: number | null;
   target: number;
+  minGrade: CourseGrade["grade"];
   status: "none" | "ok" | "close" | "below";
   rigorDone: number;
   rigorNeeded: number;
   attention: AttentionItem[];
 }
+
+const ORDER = ["A", "B", "C", "D", "F"];
 
 const UNWEIGHTED: GpaFormula = {
   description: "All courses, unweighted",
@@ -45,6 +48,8 @@ export function buildScorecard(
     currentGrade: number; formula: GpaFormula; target: number; rigorNeeded?: number; rigorLevels?: CourseLevel[];
     /** The school's weighting: extra points for AP/IB/dual enrollment and for honors (A to D grades). */
     schoolWeights?: { rigor: number; honors: number };
+    /** The lowest grade the family is happy with in a core class (default B). */
+    minGrade?: CourseGrade["grade"];
   },
 ): Scorecard {
   const { formula, target } = opts;
@@ -71,16 +76,17 @@ export function buildScorecard(
   const latest = grades.some((g) => g.gradeLevel === opts.currentGrade)
     ? opts.currentGrade
     : Math.max(-1, ...grades.filter((g) => g.gradeLevel <= opts.currentGrade).map((g) => g.gradeLevel));
+  const minGrade = opts.minGrade ?? "B";
   const attention: AttentionItem[] = [];
   for (const g of grades.filter((c) => c.gradeLevel === latest)) {
     if (g.grade === "D" || g.grade === "F") {
       attention.push({ course: g.course, grade: g.grade, gradeLevel: g.gradeLevel, severity: "urgent", message: g.grade === "F" ? "Failing: talk with the teacher this week." : "At risk of failing: make a plan this week." });
-    } else if (g.core && (formula.scale[g.grade] ?? 0) < target) {
-      attention.push({ course: g.course, grade: g.grade, gradeLevel: g.gradeLevel, severity: "watch", message: `Below the ${target.toFixed(1)} goal: this grade pulls the GPA down.` });
+    } else if (g.core && ORDER.indexOf(g.grade) > ORDER.indexOf(minGrade)) {
+      attention.push({ course: g.course, grade: g.grade, gradeLevel: g.gradeLevel, severity: "watch", message: `Below the ${minGrade} standard you set.` });
     }
   }
   attention.sort((a, b) => (a.severity === b.severity ? a.course.localeCompare(b.course) : a.severity === "urgent" ? -1 : 1));
 
   const status = stateGpa === null ? "none" : stateGpa >= target ? "ok" : stateGpa >= target - 0.2 ? "close" : "below";
-  return { stateGpa, stateGpaBefore, overallGpa, schoolGpa, target, status, rigorDone, rigorNeeded: opts.rigorNeeded ?? 0, attention };
+  return { stateGpa, stateGpaBefore, overallGpa, schoolGpa, target, minGrade, status, rigorDone, rigorNeeded: opts.rigorNeeded ?? 0, attention };
 }
