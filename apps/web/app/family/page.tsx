@@ -16,6 +16,46 @@ interface Student {
 interface Family { id: string; name: string }
 interface Invite { student_id: string; code: string; expires_at: string; accepted_at: string | null }
 
+function inviteMessage(name: string, code: string, expires: string) {
+  const link = `${window.location.origin}/join?code=${code}`;
+  const until = new Date(expires).toLocaleDateString();
+  return {
+    link,
+    subject: `Join our family on ScholarTasks`,
+    body: `Hi ${name}! I set up ScholarTasks for our college and scholarship planning. Tap this link and sign in with your own email: ${link}\n\nYour family code is ${code} (it works until ${until}).`,
+  };
+}
+
+function ShareInvite({ name, code, expires }: { name: string; code: string; expires: string }) {
+  const [copied, setCopied] = useState(false);
+  const [canShare, setCanShare] = useState(false);
+  useEffect(() => setCanShare(typeof navigator !== "undefined" && !!navigator.share), []);
+  const m = inviteMessage(name, code, expires);
+  return (
+    <div className="share">
+      <p className="share-title">Send it to {name}</p>
+      <div className="share-row">
+        <a className="btn btn-inline share-btn" href={`sms:?&body=${encodeURIComponent(m.body)}`}>💬 Text it</a>
+        <a className="btn btn-inline share-btn" href={`mailto:?subject=${encodeURIComponent(m.subject)}&body=${encodeURIComponent(m.body)}`}>✉️ Email it</a>
+        {canShare && (
+          <button className="btn btn-ghost btn-inline" onClick={() => navigator.share({ title: m.subject, text: m.body }).catch(() => {})}>
+            More ways…
+          </button>
+        )}
+        <button
+          className="btn btn-ghost btn-inline"
+          onClick={async () => {
+            try { await navigator.clipboard.writeText(m.body); setCopied(true); setTimeout(() => setCopied(false), 2500); } catch {}
+          }}
+        >
+          {copied ? "✓ Copied" : "Copy message"}
+        </button>
+      </div>
+      <p className="hint" style={{ margin: "8px 0 0", fontSize: 13 }}>Your phone or email app opens with the message ready. You pick {name}'s number or email and press send.</p>
+    </div>
+  );
+}
+
 function Steps({ step }: { step: 1 | 2 | 3 | 4 }) {
   const items = ["Name your family", "Add your student", "Invite them to the student app"];
   return (
@@ -172,13 +212,14 @@ export default function FamilyPage() {
                         <div>Code for {s.first_name}:</div>
                         <div className="code">{code.code}</div>
                         <ol>
-                          <li>On {s.first_name}'s phone, open <strong>{typeof window !== "undefined" ? window.location.host : ""}/signin</strong></li>
-                          <li>Choose <strong>I'm a student</strong> and sign in with {s.first_name}'s own email</li>
-                          <li>Type this code and tap <strong>Join my family</strong></li>
+                          <li>Send {s.first_name} the code with the buttons below, or open <strong>{typeof window !== "undefined" ? window.location.host : ""}/join</strong> on their phone</li>
+                          <li>{s.first_name} signs in with their own email</li>
+                          <li>The code fills in for them. They tap <strong>Join my family</strong></li>
                         </ol>
                         <p className="hint" style={{ margin: "10px 0 0", fontSize: 13 }}>
                           Works for 7 days (until {new Date(code.expires_at).toLocaleDateString()}). Making a new code cancels this one.
                         </p>
+                        <ShareInvite name={s.first_name} code={code.code} expires={code.expires_at} />
                       </div>
                     ) : (
                       <button className="btn btn-inline" onClick={() => run(() => sb.rpc("create_student_invite", { p_student: s.id }))}>

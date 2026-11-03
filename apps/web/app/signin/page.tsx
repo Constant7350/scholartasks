@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { Brand } from "../brand";
 import { NotConfigured, Page } from "../ui";
@@ -17,6 +17,9 @@ const PERKS = [
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("parent");
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("next")?.startsWith("/join")) setRole("student");
+  }, []);
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
   const sb = supabase();
