@@ -26,6 +26,8 @@ export function friendly(e: unknown): string {
   if (/email not confirmed/i.test(m)) return "Please confirm your email first. Check your inbox for the link we sent.";
   if (/password should be|weak password|at least \d+ characters/i.test(m)) return "Please choose a stronger password: at least 8 characters, mixing letters and numbers.";
   if (/same.*password|different from the old/i.test(m)) return "Please choose a password you haven't used before.";
+  if (/unable to exchange external code|invalid_client|unauthorized_client/i.test(m)) return "Google sign-in isn't set up correctly yet (the Google client ID or secret doesn't match). Please use an email link for now.";
+  if (/link is invalid or has expired|otp_expired/i.test(m)) return "That sign-in link has expired or was already used. Please ask for a new one.";
   if (/rate limit|too many/i.test(m)) return "Too many sign-in emails were sent in a short time. Please wait a few minutes and try again.";
   return m;
 }
