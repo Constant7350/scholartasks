@@ -18,3 +18,12 @@ do $$ begin
   if not exists (select 1 from pg_roles where rolname = 'service_role') then create role service_role; end if;
 end $$;
 grant usage on schema auth to service_role;
+-- Minimal stand-in for Supabase Storage so bucket and file policies can be tested.
+create schema if not exists storage;
+create table if not exists storage.buckets (id text primary key, name text not null, public boolean default false,
+  file_size_limit bigint, allowed_mime_types text[]);
+create table if not exists storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text references storage.buckets(id),
+  name text not null, owner uuid default auth.uid(), unique (bucket_id, name));
+alter table storage.objects enable row level security;
+grant usage on schema storage to authenticated;
+grant select, insert, delete on storage.objects to authenticated;

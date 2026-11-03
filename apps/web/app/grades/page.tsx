@@ -11,6 +11,7 @@ import { ImportCard } from "./import-card";
 import { GpaScorecard } from "./scorecard";
 import { GoalsCard } from "./goals-card";
 import { NextYearCard } from "./next-year-card";
+import { TranscriptsCard } from "./transcripts-card";
 
 const GA = gaPack as unknown as StatePack;
 const LETTERS = ["A", "B", "C", "D", "F"] as const;
@@ -28,6 +29,7 @@ export default function GradesPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [importFile, setImportFile] = useState<File | null>(null);
   const [scores, setScores] = useState({ sat: "", act: "" });
   const [form, setForm] = useState({ course: "", grade: "A" as CourseGrade["grade"], level: "standard" as CourseGrade["level"], core: true, grade_level: "", term: "Fall" });
 
@@ -157,7 +159,16 @@ export default function GradesPage() {
         <NextYearCard sb={sb} studentId={student.id} name={student.first_name} gradeLevel={student.grade_level} aiAllowed={role === "parent" || !!student.permissions?.ai_chat} />
       )}
 
-      {canEdit && <ImportCard sb={sb} studentId={student.id} onSaved={() => void load()} />}
+      {canEdit && <ImportCard sb={sb} studentId={student.id} file={importFile} onSaved={() => void load()} />}
+
+      <TranscriptsCard sb={sb} studentId={student.id} name={student.first_name} canEdit={canEdit} onRead={(f) => setImportFile(f)} />
+      <section className="panel family-card">
+        <div>
+          <h2>Self-reported academic record</h2>
+          <p className="hint" style={{ margin: 0 }}>A printable summary of {student.first_name}&apos;s courses, grades, GPAs and test scores, for colleges that let you report grades yourself. It&apos;s marked unofficial.</p>
+        </div>
+        <a className="btn btn-inline link-btn" href={`/grades/record?student=${student.id}`}>Open the record</a>
+      </section>
 
       <section className="panel">
         <h2>Courses and grades</h2>

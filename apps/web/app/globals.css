@@ -308,3 +308,29 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .advice-title { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .advice-title .pill { margin: 0; }
 .advice-row .item-main .hint { display: block; margin-top: 4px; }
+
+/* Self-reported academic record (screen and print) */
+.record-sheet { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; color: #111; }
+.record-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; border-bottom: 2px solid #111; padding-bottom: 10px; margin-bottom: 14px; }
+.record-head h2 { margin: 0; font-size: 24px; }
+.record-kicker { margin: 0 0 2px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #a33; }
+.record-date { font-size: 13px; color: #555; white-space: nowrap; }
+.record-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px 16px; margin: 0 0 16px; }
+.record-facts dt { font-size: 12px; color: #555; }
+.record-facts dd { margin: 0; font-weight: 600; }
+.record-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.record-table th, .record-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #ddd; }
+.record-table thead th { font-size: 12px; color: #555; font-weight: 600; border-bottom: 1px solid #999; }
+.record-table td:last-child, .record-table thead th:last-child { text-align: right; }
+.record-summary { margin-bottom: 18px; }
+.record-summary th { font-weight: 500; }
+.record-year { break-inside: avoid; margin-top: 16px; }
+.record-year h3 { margin: 0 0 4px; font-size: 16px; }
+.record-foot { margin-top: 20px; padding-top: 10px; border-top: 1px solid #999; font-size: 12px; color: #444; }
+@media (max-width: 560px) { .record-sheet { padding: 16px; } .record-head { flex-direction: column; gap: 4px; } .record-table { font-size: 13px; } .record-table th, .record-table td { padding: 5px 4px; } }
+@media print {
+  .topbar, .site-footer, .no-print { display: none !important; }
+  body { background: #fff !important; }
+  .page { max-width: none; padding: 0; }
+  .record-sheet { border: 0; padding: 0; }
+}
