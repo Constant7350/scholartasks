@@ -178,7 +178,7 @@ Sources: [UGA Admissions: Early Action FAQ](https://admissions.uga.edu/blog/2024
 
 Source: [GSFC HOPE program summary](https://gsfc.georgia.gov/document/document/fy22hope-program-summarydigitalpdf/download)"""),
 ("Can I get both HOPE and Zell Miller?",
-"""No. You can receive HOPE or Zell Miller, but not both at the same time. If your college GPA falls below the 3.3 needed for Zell, you can drop to HOPE as long as you still have a 3.0.
+"""No. You can receive HOPE or Zell Miller, but not both at the same time. To earn Zell Miller, you need a 3.7 HOPE GPA in high school (plus the SAT or ACT score). To keep it in college, you need a 3.3 college GPA at each check. If your college GPA drops below 3.3 but stays at 3.0 or higher, you move to HOPE instead.
 
 Sources: [Georgia Tech HOPE and Zell FAQ](https://finaid.gatech.edu/undergraduate-types-aid/hope-zell-faqs), [GSFC HOPE program summary](https://gsfc.georgia.gov/document/document/fy22hope-program-summarydigitalpdf/download)"""),
 ("Do I need to be a full-time student to get HOPE?",

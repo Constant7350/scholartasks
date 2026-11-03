@@ -159,7 +159,7 @@ Sources: [UGA Admissions: Early Action FAQ](https://admissions.uga.edu/blog/2024
   ($faq$What is the HOPE Grant?$faq$, $faq$The HOPE Grant is for students in a certificate or diploma program at a Georgia technical college or eligible public college. It has no high school GPA requirement. It pays part of tuition, up to 15 credit hours a term. To keep it, you need a 2.0 HOPE GPA at 30 and 60 paid hours. The Zell Miller Grant is a higher award for students who keep a 3.5.
 
 Source: [GSFC HOPE program summary](https://gsfc.georgia.gov/document/document/fy22hope-program-summarydigitalpdf/download)$faq$),
-  ($faq$Can I get both HOPE and Zell Miller?$faq$, $faq$No. You can receive HOPE or Zell Miller, but not both at the same time. If your college GPA falls below the 3.3 needed for Zell, you can drop to HOPE as long as you still have a 3.0.
+  ($faq$Can I get both HOPE and Zell Miller?$faq$, $faq$No. You can receive HOPE or Zell Miller, but not both at the same time. To earn Zell Miller, you need a 3.7 HOPE GPA in high school (plus the SAT or ACT score). To keep it in college, you need a 3.3 college GPA at each check. If your college GPA drops below 3.3 but stays at 3.0 or higher, you move to HOPE instead.
 
 Sources: [Georgia Tech HOPE and Zell FAQ](https://finaid.gatech.edu/undergraduate-types-aid/hope-zell-faqs), [GSFC HOPE program summary](https://gsfc.georgia.gov/document/document/fy22hope-program-summarydigitalpdf/download)$faq$),
   ($faq$Do I need to be a full-time student to get HOPE?$faq$, $faq$No. At Georgia public colleges there's no minimum number of hours. HOPE pays for up to 15 hours a semester, and less if you take fewer hours. Every attempted hour counts toward the 127-hour limit.
