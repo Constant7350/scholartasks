@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { displayGpa, evaluateStatePrograms, type CourseGrade, type StatePack } from "@scholartasks/core";
+import { after } from "next/server";
 import gaPack from "../../../../../packs/states/GA.json";
 
 // AI counselor chat. The browser sends the signed-in person's Supabase token;
@@ -121,6 +122,41 @@ function systemPrompt(talkingTo: "parent" | "student", context: string, today: s
   ];
 }
 
+const BANK_SCHEMA = {
+  type: "object",
+  properties: {
+    general: { type: "boolean" },
+    question: { type: "string" },
+    answer: { type: "string" },
+  },
+  required: ["general", "question", "answer"],
+  additionalProperties: false,
+};
+
+/**
+ * Asks a small, cheap model whether a question is general (the same answer
+ * would fit any Georgia family). If so, saves a version with every personal
+ * detail removed, as "pending" until ScholarTasks staff approve it.
+ */
+async function suggestForBank(client: Anthropic, sb: SupabaseClient, studentId: string, question: string, answer: string) {
+  try {
+    const res = await client.messages.create({
+      model: "claude-haiku-5-5",
+      max_tokens: 4000,
+      output_config: { effort: "low", format: { type: "json_schema", schema: BANK_SCHEMA } },
+      system: `You maintain a library of reusable answers for a college and financial-aid app for Georgia families. You are given one family's question and the counselor's answer. Set general to true only if the question itself is general, meaning the same answer would help any Georgia family (for example "What is Early Action?" or "How do the FAFSA and the GSFAPP differ?"). Set it to false if the question is about this student's own grades, scores, colleges, deadlines, money or situation, or depends on earlier conversation. When general is true, rewrite the question as a short generic question, and rewrite the answer for any family: remove every name, grade, score, college list, date tied to this family, and anything else personal, keeping the general facts, the advice to confirm on official sites, and the same friendly tone. When general is false, return empty strings for question and answer.`,
+      messages: [{ role: "user", content: `<question>\n${question}\n</question>\n<answer>\n${answer}\n</answer>` }],
+    });
+    if (res.stop_reason !== "end_turn") return;
+    const text = res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+    const out = JSON.parse(text) as { general: boolean; question: string; answer: string };
+    if (!out.general || out.question.trim().length < 5 || out.answer.trim().length < 20) return;
+    await sb.rpc("answer_bank_submit", { p_student: studentId, p_question: out.question.trim().slice(0, 500), p_answer: out.answer.trim().slice(0, 6000) });
+  } catch (e) {
+    console.error("answer bank suggestion failed", e);
+  }
+}
+
 export async function POST(req: Request) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -142,6 +178,16 @@ export async function POST(req: Request) {
   const sb = createClient(url, key, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false, autoRefreshToken: false } });
   const { data: user, error: userErr } = await sb.auth.getUser(token);
   if (userErr || !user.user) return json(401, "Please sign in again.");
+
+  // A first question that matches a reviewed answer is answered from the bank,
+  // free and instantly, without using the daily allowance.
+  const firstQuestion = messages.length === 1 ? messages[0]!.content.trim() : null;
+  if (firstQuestion) {
+    const hit = await sb.rpc("answer_bank_lookup", { p_student: studentId, p_question: firstQuestion });
+    if (hit.error && /not allowed/.test(hit.error.message)) return json(403, "AI chat is turned off for this student. A parent can turn it on in Family and permissions.");
+    const saved = (hit.data as { answer: string }[] | null)?.[0];
+    if (saved) return new Response(saved.answer, { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store", "X-Answer-Source": "bank" } });
+  }
 
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
   if (turn.error) {
@@ -201,6 +247,14 @@ export async function POST(req: Request) {
           }
         }
         const final = await stream.finalMessage();
+        if (firstQuestion && final.stop_reason === "end_turn") {
+          const answer = final.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+          try {
+            after(() => suggestForBank(client, sb, studentId, firstQuestion, answer));
+          } catch {
+            await suggestForBank(client, sb, studentId, firstQuestion, answer);
+          }
+        }
         if (final.stop_reason === "refusal") {
           controller.enqueue(encoder.encode("\n\nSorry, I can't help with that one. Try asking another way, or ask about colleges, scholarships or deadlines."));
         } else if (final.stop_reason === "max_tokens") {

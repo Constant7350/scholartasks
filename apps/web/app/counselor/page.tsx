@@ -5,7 +5,7 @@ import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 
 interface Student { id: string; first_name: string; grade_level: number; permissions: Record<string, boolean> }
-interface Msg { role: "user" | "assistant"; content: string }
+interface Msg { role: "user" | "assistant"; content: string; fromBank?: boolean }
 
 const STARTERS = [
   "What should we be doing this month?",
@@ -87,12 +87,13 @@ export default function CounselorPage() {
       const res = await fetch("/api/counselor", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${s.session?.access_token ?? ""}` },
-        body: JSON.stringify({ studentId: current, messages: history.slice(-20) }),
+        body: JSON.stringify({ studentId: current, messages: history.slice(-20).map(({ role, content }) => ({ role, content })) }),
       });
       if (!res.ok || !res.body) {
         const e = (await res.json().catch(() => null)) as { error?: string } | null;
         throw new Error(e?.error ?? "The counselor couldn't answer. Please try again.");
       }
+      const fromBank = res.headers.get("X-Answer-Source") === "bank";
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let answer = "";
@@ -100,7 +101,7 @@ export default function CounselorPage() {
         const { done, value } = await reader.read();
         if (done) break;
         answer += decoder.decode(value, { stream: true });
-        setMsgs([...history, { role: "assistant", content: answer }]);
+        setMsgs([...history, { role: "assistant", content: answer, fromBank }]);
       }
       if (!answer.trim()) throw new Error("The counselor didn't answer. Please try again.");
     } catch (e) {
@@ -158,6 +159,7 @@ export default function CounselorPage() {
               {msgs.map((m, i) => (
                 <div key={i} className={`bubble bubble-${m.role}`}>
                   {m.role === "assistant" ? (m.content ? <Formatted text={m.content} /> : <span className="typing">Thinking…</span>) : m.content}
+                  {m.fromBank && <span className="bank-note">✓ From the ScholarTasks answer library, reviewed by our team</span>}
                 </div>
               ))}
               <div ref={endRef} />
