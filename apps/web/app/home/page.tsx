@@ -44,7 +44,8 @@ export default function Home() {
   if (!sb) return <Page title="Home"><NotConfigured /></Page>;
   if (signedIn === null) return <Page><p className="hint">Loading…</p></Page>;
   if (signedIn === false) {
-    if (typeof window !== "undefined") window.location.replace("/signin");
+    // Keep any error from the sign-in provider so the sign-in page can show it.
+    if (typeof window !== "undefined") window.location.replace("/signin" + window.location.search + window.location.hash);
     return <Page><p className="hint">Taking you to sign in…</p></Page>;
   }
 

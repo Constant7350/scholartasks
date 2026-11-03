@@ -40,6 +40,10 @@ export default function SignIn() {
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("next")?.startsWith("/join")) setRole("student");
+    // If Google or an email link sent the person back with an error, show it instead of failing silently.
+    const back = new URLSearchParams(window.location.search + "&" + window.location.hash.replace(/^#/, ""));
+    const why = back.get("error_description") || back.get("error");
+    if (why) setError(friendly({ message: why.replace(/\+/g, " ") }));
     // Only show "Continue with Google" once Google is switched on in Supabase.
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
