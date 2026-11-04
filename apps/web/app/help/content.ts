@@ -330,6 +330,8 @@ export const TOPICS: Topic[] = [
     body: [
       "Things that use 1: a counselor message, reading a report card or transcript, a grade rescue plan, next year's class advice, and the tutor checking or explaining a question.",
       "Free things that never use any: the scorecard, goals, the study library, multiple-choice practice, and answers from the reviewed answer library.",
+      "Ran out? A parent can buy 100 extra AI messages for $2.99 on Plan and billing. Extra messages are shared by the family, never expire, and are only used after the day's free 10 are gone.",
+      "With the Study Coach add-on, tutor help goes up to 30 a day per person.",
     ],
   },
 
@@ -519,6 +521,25 @@ export const TOPICS: Topic[] = [
       "Forgot your password? Tap Forgot password on the sign-in page and follow the email.",
       "Sign out from the Menu.",
       "Students should always use their own email, not a parent's.",
+    ],
+  },
+  {
+    id: "billing",
+    area: "Account and privacy",
+    title: "Your plan, Study Coach and extra AI messages",
+    href: "/billing",
+    keywords: ["plan", "price", "pay", "payment", "billing", "subscription", "cancel", "card", "receipt", "refund", "study coach", "message pack", "extra messages", "monthly", "yearly", "cost"],
+    summary: "A parent manages one plan for the whole family on the Plan and billing page, from the Menu.",
+    steps: [
+      "Open Menu, then Plan and billing.",
+      "Pick the Family plan: $12.99 a month or $99 a year.",
+      "Optional: add Study Coach ($4.99 a month or $39 a year) for more tutor help, or buy 100 extra AI messages for $2.99.",
+      "Pay on Stripe's secure page. You come back to ScholarTasks when it's done.",
+    ],
+    body: [
+      "To change your card, switch between monthly and yearly, see receipts or cancel, tap Manage billing. If you cancel, your plan keeps working until the end of the time you paid for.",
+      "Only a parent can buy or change the plan. Students see what the family has.",
+      "ScholarTasks never sees or stores your card number; Stripe handles payments.",
     ],
   },
   {

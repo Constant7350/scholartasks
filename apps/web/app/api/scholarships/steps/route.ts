@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
+import { limitReached } from "../../../../lib/billing";
 
 // "Get ready to apply": a short checklist for one scholarship, read from the
 // sponsor's official page. It's made once per award and shared by every
@@ -53,7 +54,7 @@ export async function POST(req: Request) {
 
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
   if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
-  if (turn.data === false) return json(429, `You've reached today's limit of ${DAILY_LIMIT} AI uses. It resets at midnight.`);
+  if (turn.data === false) return json(429, limitReached(DAILY_LIMIT));
 
   try {
     const client = new Anthropic({ apiKey });

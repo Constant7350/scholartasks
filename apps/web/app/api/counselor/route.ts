@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { limitReached } from "../../../lib/billing";
 import { displayGpa, evaluateStatePrograms, type CourseGrade, type StatePack } from "@scholartasks/core";
 import { after } from "next/server";
 import gaPack from "../../../../../packs/states/GA.json";
@@ -239,7 +240,7 @@ export async function POST(req: Request) {
     if (/not allowed/.test(turn.error.message)) return json(403, "AI chat is turned off for this student. A parent can turn it on in Family and permissions.");
     return json(500, "Something went wrong. Please try again.");
   }
-  if (turn.data === false) return json(429, `You've reached today's limit of ${DAILY_LIMIT} counselor messages. It resets at midnight.`);
+  if (turn.data === false) return json(429, limitReached(DAILY_LIMIT, "counselor messages"));
 
   const [st, mem] = await Promise.all([
     studentId

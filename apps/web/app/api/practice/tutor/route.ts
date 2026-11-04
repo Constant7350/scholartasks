@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
+import { STUDY_COACH_DAILY_LIMIT, limitReached } from "../../../../lib/billing";
 
 // The practice tutor: checks a written answer to a bank question, or helps a
 // student who is stuck on one. It only ever talks about questions from the
@@ -67,9 +68,13 @@ export async function POST(req: Request) {
   const question = q as { exam: string | null; passage: string | null; subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null };
   if (mode === "check" && question.kind !== "written") return json(400, "Only written questions can be checked.");
 
-  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
+  // Families with the Study Coach add-on get more tutor help each day.
+  const plan = await sb.rpc("my_plan", { p_student: studentId });
+  const coach = !plan.error && !!(plan.data as { study_coach: boolean }[] | null)?.[0]?.study_coach;
+  const limit = coach ? STUDY_COACH_DAILY_LIMIT : DAILY_LIMIT;
+  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
-  if (turn.data === false) return json(429, `You've reached today's limit of ${DAILY_LIMIT} AI uses. It resets at midnight.`);
+  if (turn.data === false) return json(429, limitReached(limit));
 
   const student = st as { first_name: string; grade_level: number };
   const context = [
