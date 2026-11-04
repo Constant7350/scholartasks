@@ -10,11 +10,38 @@ export const INTERESTS = [
   "Sports", "Community service", "Leadership", "Government", "Trades", "Agriculture",
   "Animals and veterinary", "Horses and equestrian", "Marine and ocean science",
 ] as const;
+/** Race and ethnicity labels follow the 2024 federal (OMB) standard. */
 export const GROUPS = [
-  "Black or African American", "Hispanic or Latino", "American Indian or Alaska Native",
-  "Asian American or Pacific Islander", "Woman", "First-generation college student",
-  "Military family", "Student with a disability", "Foster care experience",
+  "Black or African American", "Hispanic or Latino", "Asian or Asian American",
+  "Native Hawaiian or Pacific Islander", "American Indian or Alaska Native", "Middle Eastern or North African",
+  "First-generation college student", "Military family", "Child of a first responder",
+  "Rural or small-town student", "Student who is a parent", "DACA or undocumented student",
+  "Student with a disability", "Foster care experience",
 ] as const;
+/** Scholarship tags for awards limited by sex. Students answer this as its own question (profile.sex). */
+export const SEX_TAGS = { Woman: "female", Man: "male" } as const;
+export type Sex = "female" | "male" | "prefer_not";
+/** Every tag a scholarship's groups list may use. */
+export const GROUP_TAGS: readonly string[] = [...GROUPS, ...Object.keys(SEX_TAGS)];
+
+/** Old labels still found in saved profiles or older data, and what they mean now. */
+const LEGACY_GROUPS: Record<string, string[]> = {
+  "Asian American or Pacific Islander": ["Asian or Asian American", "Native Hawaiian or Pacific Islander"],
+};
+const expandGroups = (list: readonly string[] = []) => [...new Set(list.flatMap((g) => LEGACY_GROUPS[g] ?? [g]))];
+
+/**
+ * Brings a saved profile up to date: "Woman" used to be a group chip and is now
+ * the sex question, and the old combined Asian/Pacific Islander label is split.
+ */
+export function normalizeProfile(p: MatchProfile = {}): MatchProfile {
+  const raw = p.groups ?? [];
+  const sex = p.sex ?? (raw.includes("Woman") ? "female" : raw.includes("Man") ? "male" : undefined);
+  const groups = expandGroups(raw).filter((g) => !(g in SEX_TAGS));
+  return { ...p, groups, ...(sex ? { sex } : {}) };
+}
+
+const groupLabel = (g: string) => (g === "Woman" ? "women" : g === "Man" ? "men" : g);
 
 export interface Scholarship {
   id: string;
@@ -51,6 +78,8 @@ export interface MatchProfile {
   groups?: string[];
   /** True once the family has answered the groups question (even with none). */
   groups_answered?: boolean;
+  /** Answered on its own (Female, Male, Prefer not to say); only used for awards limited by sex. */
+  sex?: Sex;
   citizen?: "yes" | "no" | "unsure";
   plan?: "four_year" | "technical" | "unsure";
 }
@@ -155,11 +184,16 @@ export function matchScholarship(s: Scholarship, st: MatchStudent, today = new D
   }
 
   if (s.groups?.length) {
-    const mine = st.profile.groups ?? [];
-    const hit = s.groups.filter((g) => mine.includes(g));
-    if (hit.length) met.push(`Open to ${hit.join(", ")} students`);
-    else if (!st.profile.groups_answered) unknown.push(`Open to ${s.groups.join(", ")} students`);
-    else miss(`Open to ${s.groups.join(", ")} students`);
+    const prof = normalizeProfile(st.profile);
+    const tags = expandGroups(s.groups);
+    const mine = new Set(prof.groups);
+    const hit = tags.filter((g) => g in SEX_TAGS ? SEX_TAGS[g as keyof typeof SEX_TAGS] === prof.sex : mine.has(g));
+    const sexOpen = tags.some((g) => g in SEX_TAGS) && prof.sex !== "female" && prof.sex !== "male";
+    const groupOpen = tags.some((g) => !(g in SEX_TAGS)) && !prof.groups_answered;
+    const text = (list: string[]) => `Open to ${list.map(groupLabel).join(" or ")}`;
+    if (hit.length) met.push(text(hit));
+    else if (sexOpen || groupOpen) unknown.push(text(tags));
+    else miss(text(tags));
   }
 
   if (s.college_type && s.college_type !== "any") {

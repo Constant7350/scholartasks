@@ -112,7 +112,8 @@
   "citizen_required": true,
   "interests": null,
   "groups": [
-   "Military family"
+   "Military family",
+   "Child of a first responder"
   ],
   "college_type": "any",
   "college": null,
@@ -298,7 +299,8 @@
   "citizen_required": false,
   "interests": null,
   "groups": [
-   "Military family"
+   "Military family",
+   "Child of a first responder"
   ],
   "college_type": "any",
   "college": null,
@@ -672,7 +674,9 @@
   "need_based": true,
   "citizen_required": false,
   "interests": null,
-  "groups": null,
+  "groups": [
+   "DACA or undocumented student"
+  ],
   "college_type": "any",
   "college": null,
   "other_requirements": "For first-generation immigrant students (undocumented, DACA, TPS, or pending application) who came to the U.S. before Nov. 1, 2021 and before age 16, and who are not eligible for federal aid. Must attend a Partner College in your state full time and qualify for in-state tuition at a public Partner College, or attend a private or online Partner College. Georgia families should check the Partner College list, because options in Georgia may be limited. TheDream.US's separate Opportunity Scholarship is not open to Georgia residents.",

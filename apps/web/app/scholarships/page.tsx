@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  buildScorecard, GROUPS, INTERESTS, matchScholarship,
+  buildScorecard, GROUPS, INTERESTS, matchScholarship, normalizeProfile,
   type CourseGrade, type IncomeBand, type MatchProfile, type MatchResult, type Scholarship, type StatePack,
 } from "@scholartasks/core";
 import gaPack from "../../../../packs/states/GA.json";
@@ -237,7 +237,7 @@ function ScholarshipCard({ s, r, choice, onAdd, onHide }: {
 
 function ProfileCard({ student, isParent, seesIncome, onSaved }: { student: Student; isParent: boolean; seesIncome: boolean; onSaved: () => void }) {
   const sb = supabase();
-  const p0 = student.match_profile ?? {};
+  const p0 = normalizeProfile(student.match_profile ?? {});
   const [p, setP] = useState<MatchProfile>(p0);
   const [income, setIncome] = useState<IncomeBand | "">(student.income_band ?? "");
   const [saved, setSaved] = useState(false);
@@ -260,7 +260,7 @@ function ProfileCard({ student, isParent, seesIncome, onSaved }: { student: Stud
     setSaved(true);
     onSaved();
   };
-  const one = (k: "plan" | "citizen", v: string) => { setP({ ...p, [k]: v }); setSaved(false); };
+  const one = (k: "plan" | "citizen" | "sex", v: string) => { setP({ ...p, [k]: v }); setSaved(false); };
 
   return (
     <details className="panel sch-profile" open={!answered}>
@@ -279,6 +279,12 @@ function ProfileCard({ student, isParent, seesIncome, onSaved }: { student: Stud
         <p className="checkin-label">Is {student.first_name} a U.S. citizen or permanent resident? Many scholarships require it.</p>
         <div className="chips">
           {([["yes", "Yes"], ["no", "No"], ["unsure", "Not sure"]] as const).map(([v, l]) => <button key={v} type="button" className={`chip ${p.citizen === v ? "chip-on" : ""}`} aria-pressed={p.citizen === v} onClick={() => one("citizen", v)}>{l}</button>)}
+        </div>
+      </div>
+      <div className="checkin-q">
+        <p className="checkin-label">Optional: is {student.first_name} female or male? A few scholarships are only for women or only for men.</p>
+        <div className="chips">
+          {([["female", "Female"], ["male", "Male"], ["prefer_not", "Prefer not to say"]] as const).map(([v, l]) => <button key={v} type="button" className={`chip ${p.sex === v ? "chip-on" : ""}`} aria-pressed={p.sex === v} onClick={() => one("sex", v)}>{l}</button>)}
         </div>
       </div>
       <div className="checkin-q">

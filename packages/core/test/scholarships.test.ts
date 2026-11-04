@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { matchScholarship, type MatchStudent, type Scholarship } from "../src/scholarships";
+import { GROUP_TAGS, matchScholarship, normalizeProfile, type MatchStudent, type Scholarship } from "../src/scholarships";
 
 const senior: MatchStudent = {
   gradeLevel: 12, state: "GA", hopeGpa: 3.4, unweightedGpa: 3.6, weightedGpa: 3.9, sat: 1250, act: null,
@@ -55,6 +55,29 @@ describe("matchScholarship", () => {
     expect(matchScholarship(s, { ...senior, profile: { ...senior.profile, groups_answered: false } }, today).status).toBe("maybe");
     expect(matchScholarship(s, senior, today).status).toBe("no");
     expect(matchScholarship(s, { ...senior, profile: { ...senior.profile, groups: ["Hispanic or Latino"] } }, today).status).toBe("match");
+  });
+  it("awards for women or men use the separate sex answer", () => {
+    const women = { ...base, groups: ["Woman"] }, men = { ...base, groups: ["Man"] };
+    const as = (sex?: "female" | "male" | "prefer_not") => ({ ...senior, profile: { ...senior.profile, sex } });
+    expect(matchScholarship(women, as("female"), today).status).toBe("match");
+    expect(matchScholarship(women, as("female"), today).met).toContain("Open to women");
+    expect(matchScholarship(women, as("male"), today).status).toBe("no");
+    expect(matchScholarship(men, as("male"), today).status).toBe("match");
+    // Not answered or prefer not to say: still shown as something to check, never hidden.
+    expect(matchScholarship(women, as(undefined), today).status).toBe("maybe");
+    expect(matchScholarship(women, as("prefer_not"), today).status).toBe("maybe");
+    // Old profiles that picked the "Woman" chip still match.
+    expect(matchScholarship(women, { ...senior, profile: { groups: ["Woman"], groups_answered: true } }, today).status).toBe("match");
+  });
+  it("old group labels still match after the 2024 label update", () => {
+    const old = { ...base, groups: ["Asian American or Pacific Islander"] };
+    const prof = (groups: string[]) => ({ ...senior, profile: { ...senior.profile, groups } });
+    expect(matchScholarship(old, prof(["Native Hawaiian or Pacific Islander"]), today).status).toBe("match");
+    expect(matchScholarship({ ...base, groups: ["Asian or Asian American"] }, prof(["Asian American or Pacific Islander"]), today).status).toBe("match");
+    expect(normalizeProfile({ groups: ["Woman", "Asian American or Pacific Islander"] })).toEqual({
+      groups: ["Asian or Asian American", "Native Hawaiian or Pacific Islander"], sex: "female",
+    });
+    expect(GROUP_TAGS).toContain("Woman");
   });
   it("rules out a passed deadline, or moves it to next year", () => {
     const r = matchScholarship({ ...base, deadline: "2026-09-30" }, senior, today);

@@ -817,7 +817,9 @@
   "interests": [
    "Agriculture"
   ],
-  "groups": null,
+  "groups": [
+   "Rural or small-town student"
+  ],
   "college_type": "four_year",
   "college": "University of Georgia",
   "other_requirements": "Must be from a rural Georgia county (population 50,000 or less, listed on the page), be admitted to UGA and choose a CAES major. Scholars must keep a 3.0 GPA in college.",

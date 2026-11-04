@@ -9,9 +9,13 @@ import json, re, sys
 INTERESTS = {"STEM", "Health", "Business", "Education", "Arts", "Music", "Writing", "Sports",
              "Community service", "Leadership", "Government", "Trades", "Agriculture",
              "Animals and veterinary", "Horses and equestrian", "Marine and ocean science"}
-GROUPS = {"Black or African American", "Hispanic or Latino", "American Indian or Alaska Native",
-          "Asian American or Pacific Islander", "Woman", "First-generation college student",
-          "Military family", "Student with a disability", "Foster care experience"}
+GROUPS = {"Black or African American", "Hispanic or Latino", "Asian or Asian American",
+          "Native Hawaiian or Pacific Islander", "American Indian or Alaska Native", "Middle Eastern or North African",
+          "First-generation college student", "Military family", "Child of a first responder",
+          "Rural or small-town student", "Student who is a parent", "DACA or undocumented student",
+          "Student with a disability", "Foster care experience",
+          # Awards limited by sex (students answer this as its own question).
+          "Woman", "Man"}
 KEEP = ["kind", "name", "sponsor", "url", "summary", "how_to_apply", "amount_text", "amount_max", "deadline",
         "deadline_text", "scope", "grades", "min_gpa", "gpa_kind", "min_sat", "min_act", "max_income", "need_based",
         "citizen_required", "interests", "groups", "college_type", "college", "other_requirements", "automatic"]
