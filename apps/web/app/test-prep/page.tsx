@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { PAYWALL_ON } from "../../lib/prices";
 import type { StatePack } from "@scholartasks/core";
 import gaPack from "../../../../packs/states/GA.json";
 import { friendly, supabase } from "../../lib/supabase";
@@ -16,8 +17,8 @@ interface Scores { id: string; sat: number | null; act: number | null }
 interface Tutor { feedback: string; next_step: string }
 
 // Full timed practice tests belong to the "Study Coach" add-on. Billing isn't
-// switched on yet, so everyone gets them while the app is in beta.
-const STUDY_COACH_OPEN = true;
+// switched on yet (PAYWALL_ON in lib/prices.ts), so everyone gets them in beta.
+const STUDY_COACH_OPEN = !PAYWALL_ON;
 const DRILL = 10;
 
 const zell = (gaPack as unknown as StatePack).programs.find((p) => p.id === "ga-zell")?.rules as { tests_any?: { sat?: number; act?: number } } | undefined;

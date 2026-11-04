@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
+import { limitReached } from "../../../../lib/billing";
 
 // Reads a report card or transcript (photo or PDF) and returns the courses it
 // finds. Nothing is saved here: the family checks the list and saves it
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
   // Reading a document counts as one counselor message toward today's limit.
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
   if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
-  if (turn.data === false) return json(429, `You've reached today's limit of ${DAILY_LIMIT} AI uses. It resets at midnight.`);
+  if (turn.data === false) return json(429, limitReached(DAILY_LIMIT));
 
   const doc = isPdf
     ? { type: "document" as const, source: { type: "base64" as const, media_type: "application/pdf" as const, data } }

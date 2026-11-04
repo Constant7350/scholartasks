@@ -37,6 +37,16 @@ Sign-in uses Supabase (email links, no passwords).
 
 Without the keys, the sign-in, family and join pages show a "not connected yet" notice.
 
+## Turning on payments (Stripe)
+
+Plans live at `/billing`: the Family plan (monthly or yearly), the Study Coach add-on and extra AI message packs. Every price is in `apps/web/lib/prices.ts` (placeholders until running costs are known).
+
+1. In Stripe (test mode first), copy the secret key into Vercel as `STRIPE_SECRET_KEY`.
+2. Add a webhook endpoint `https://<site>/api/billing/webhook` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `customer.subscription.*`, and put its signing secret in Vercel as `STRIPE_WEBHOOK_SECRET`.
+3. Save the Customer portal settings in Stripe once, so Manage billing works.
+
+Paid message packs are used only after a person's free daily AI uses run out. Nothing is locked behind a plan yet; that switch comes before launch.
+
 ## Switching on a new state
 
 Nothing state-specific lives in app code. To add a state:

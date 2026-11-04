@@ -43,6 +43,7 @@ export const NAV: NavItem[] = [
   { href: "/family", label: "Family, students and permissions", icon: "👪", roles: ["parent"], group: "family" },
   { href: "/family", label: "Set up my family (parents)", icon: "👪", roles: ["none"], group: "family" },
   { href: "/join", label: "I'm a student: join with a code", icon: "🔑", roles: ["none"], group: "family" },
+  { href: "/billing", label: "Plan and billing", short: "Billing", icon: "💳", roles: ["parent", "student"], group: "family" },
 
   { href: "/help", label: "Help and how-to", icon: "❓", roles: ALL, group: "help" },
 
