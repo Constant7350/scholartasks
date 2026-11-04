@@ -32,22 +32,38 @@ export const BLUEPRINT: Record<Exam, Section[]> = {
 const shuffle = <T,>(a: T[]) => a.map((x) => [Math.random(), x] as const).sort((p, q) => p[0] - q[0]).map((p) => p[1]);
 
 /**
- * Picks about n questions at random. Questions that share a passage stay
+ * Picks about n questions. Questions the student hasn't answered come first
+ * (in random order), then the ones answered longest ago, so repeats are rare
+ * until the whole bank has been seen. Questions that share a passage stay
  * together and in order, so a reading set is never split up.
+ * `lastSeen` maps a question id to when it was last answered (ms).
  */
-export function pickQuestions<T extends { passage: string | null }>(pool: T[], n: number): T[] {
+export function pickQuestions<T extends { id: string; passage: string | null }>(pool: T[], n: number, lastSeen: Map<string, number> = new Map()): T[] {
   const groups = new Map<string, T[]>();
   pool.forEach((q, k) => {
     const key = q.passage && pool.filter((x) => x.passage === q.passage).length > 1 ? `p:${q.passage}` : `q:${k}`;
     (groups.get(key) ?? groups.set(key, []).get(key)!).push(q);
   });
+  const seen = (g: T[]) => Math.max(0, ...g.map((q) => lastSeen.get(q.id) ?? 0));
+  const ordered = shuffle([...groups.values()]).map((g) => [seen(g), g] as const).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
   const out: T[] = [];
-  for (const g of shuffle([...groups.values()])) {
+  for (const g of ordered) {
     if (out.length >= n) break;
     if (out.length > 0 && out.length + g.length > n + 2) continue;
     out.push(...g);
   }
-  return out;
+  return shuffleSingles(out);
+}
+
+/** Mixes the order of stand-alone questions while keeping passage sets together. */
+function shuffleSingles<T extends { passage: string | null }>(qs: T[]): T[] {
+  const blocks: T[][] = [];
+  for (const q of qs) {
+    const last = blocks[blocks.length - 1];
+    if (last && q.passage && last[0]!.passage === q.passage) last.push(q);
+    else blocks.push([q]);
+  }
+  return shuffle(blocks).flat();
 }
 
 /**
