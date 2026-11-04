@@ -181,7 +181,9 @@ export function matchScholarship(s: Scholarship, st: MatchStudent, today = new D
   if (s.other_requirements) check.push(s.other_requirements);
 
   if (s.deadline && !later && new Date(s.deadline + "T23:59:59") < today) {
-    unknown.push("This year's deadline has passed: check when it opens again");
+    // Passed: if the student can still apply next year it's "coming up", otherwise it's gone.
+    if (s.grades.includes(st.gradeLevel + 1)) { later = true; unknown.push("This year's deadline has passed: you can apply next year"); }
+    else miss("The deadline has passed");
   }
 
   const status: MatchStatus = hard ? "no" : later ? "later" : missing.length ? "no" : unknown.length ? "maybe" : "match";
