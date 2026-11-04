@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../../lib/billing";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
+import { aiDailyLimit } from "../../../../lib/ai-limit";
 
 // Reads a report card or transcript (photo or PDF) and returns the courses it
 // finds. Nothing is saved here: the family checks the list and saves it
@@ -10,7 +11,6 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const MODEL = "claude-sonnet-5-5";
-const DAILY_LIMIT = 10;
 const MAX_BYTES = 3_000_000; // base64 must stay under Vercel's 4.5 MB request limit
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
 
@@ -82,10 +82,11 @@ export async function POST(req: Request) {
   if (!student) return json(403, "You don't have access to this student.");
 
   // Reading a document counts as one counselor message toward today's limit.
-  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
+  const limit = await aiDailyLimit(sb, studentId);
+  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
   if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
-  if (turn.data === false) return json(429, limitReached(DAILY_LIMIT));
+  if (turn.data === false) return json(429, limitReached(limit));
 
   const doc = isPdf
     ? { type: "document" as const, source: { type: "base64" as const, media_type: "application/pdf" as const, data } }

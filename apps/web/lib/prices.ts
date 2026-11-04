@@ -23,8 +23,21 @@ export const CATALOG: Record<BillingItem, CatalogEntry> = {
   pack_100: { name: "ScholarTasks 100 extra AI messages", cents: 299, interval: null, kind: "pack", credits: 100, priceEnv: "STRIPE_PRICE_PACK_100" },
 };
 
+/** AI uses a day per person on the Family plan (and for everyone while PAYWALL_ON is false). */
+export const FAMILY_DAILY_LIMIT = 10;
+/** AI uses a day per person on the free plan, once PAYWALL_ON is true. */
+export const FREE_DAILY_LIMIT = 3;
 /** Daily fair-use cap on tutor help for families with Study Coach (others get the normal 10). */
 export const STUDY_COACH_DAILY_LIMIT = 30;
+
+/** What the free plan includes. Everything that isn't AI stays free, so no family is locked out of deadlines or aid. */
+export const FREE_PLAN_INCLUDES = [
+  "Georgia deadlines, college list and to-do list, with calendar and phone reminders",
+  "College search and match quiz, and what each college will really cost",
+  "Grades, GPA and HOPE / Zell tracking",
+  "Scholarship list, FAFSA and aid checklist",
+  "Activities and resume, essay writing space, study lessons and practice questions",
+] as const;
 
 /** "$12.99", "$99" */
 export function money(cents: number): string {

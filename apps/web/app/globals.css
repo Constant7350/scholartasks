@@ -602,3 +602,6 @@ body.help-on { padding-bottom: 96px; }
 .badge-row li > span:first-child { font-size: 26px; }
 .badge-on { background: #fff8e6 !important; border-color: #f0c75e !important; }
 .badge-off { opacity: 0.6; }
+
+.plan-list { margin: 4px 0 0; padding-left: 18px; font-size: 14px; color: var(--muted, #555); }
+.plan-list li { margin: 2px 0; }

@@ -4,6 +4,7 @@ import { limitReached } from "../../../../lib/billing";
 import { buildScorecard, displayGpa, type CourseGrade, type StatePack } from "@scholartasks/core";
 import gaPack from "../../../../../../packs/states/GA.json";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
+import { aiDailyLimit } from "../../../../lib/ai-limit";
 
 // Advice on next year's classes: the student lists the courses they're
 // considering, and the AI weighs their goal, grades and HOPE's rigor rule.
@@ -13,7 +14,6 @@ export const maxDuration = 60;
 
 const GA = gaPack as unknown as StatePack;
 const MODEL = "claude-sonnet-5-5";
-const DAILY_LIMIT = 10;
 const LEVELS = ["standard", "honors", "AP", "IB", "DE"] as const;
 
 const json = (status: number, error: string) => Response.json({ error }, { status });
@@ -89,10 +89,11 @@ export async function POST(req: Request) {
   if (!st) return json(403, "You don't have access to this student.");
   const student = st as { first_name: string; grade_level: number; sat: number | null; act: number | null; goal_gpa?: number | null; min_grade?: string | null };
 
-  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
+  const limit = await aiDailyLimit(sb, studentId);
+  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
   if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
-  if (turn.data === false) return json(429, limitReached(DAILY_LIMIT));
+  if (turn.data === false) return json(429, limitReached(limit));
 
   const { data: gr } = await sb.from("course_grades").select("course, grade, level, core, grade_level, term").eq("student_id", studentId).order("grade_level");
   const rows = (gr as { course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }[]) ?? [];

@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../../lib/billing";
 import { CHECKIN, cleanAnswers, type RescuePlan } from "../../../grades/rescue-questions";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
+import { aiDailyLimit } from "../../../../lib/ai-limit";
 
 // Grade rescue: the student answers a short check-in about one class, and the
 // AI drafts a step-by-step plan to bring the grade back up. The plan is saved
@@ -11,7 +12,6 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const MODEL = "claude-sonnet-5-5";
-const DAILY_LIMIT = 10;
 const GRADES = ["A", "B", "C", "D", "F"];
 const json = (status: number, error: string) => Response.json({ error }, { status });
 
@@ -80,10 +80,11 @@ export async function POST(req: Request) {
   if (!st) return json(403, "You don't have access to this student.");
   const student = st as { first_name: string; grade_level: number; goal_gpa?: number | null; min_grade?: string | null };
 
-  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
+  const limit = await aiDailyLimit(sb, studentId);
+  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
   if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
-  if (turn.data === false) return json(429, limitReached(DAILY_LIMIT));
+  if (turn.data === false) return json(429, limitReached(limit));
 
   const label = (id: string, v: string) => CHECKIN.find((q) => q.id === id)?.options.find((o) => o.v === v)?.label ?? v;
   const context = [

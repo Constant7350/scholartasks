@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../../lib/billing";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
+import { aiDailyLimit } from "../../../../lib/ai-limit";
 
 // The college essay coach: feedback on a Common App personal statement or a
 // college's supplemental essay, or brainstorming questions before a draft
@@ -10,7 +11,6 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const MODEL = "claude-sonnet-5-5";
-const DAILY_LIMIT = 10;
 const json = (status: number, error: string) => Response.json({ error }, { status });
 
 const FEEDBACK_SCHEMA = {
@@ -86,10 +86,11 @@ export async function POST(req: Request) {
   ]);
   if (!st.data) return json(403, "You don't have access to this student.");
 
-  const turn = await sb.rpc("ai_take_turn", { p_student: essay.student_id, p_limit: DAILY_LIMIT });
+  const limit = await aiDailyLimit(sb, essay.student_id);
+  const turn = await sb.rpc("ai_take_turn", { p_student: essay.student_id, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
   if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
-  if (turn.data === false) return json(429, limitReached(DAILY_LIMIT));
+  if (turn.data === false) return json(429, limitReached(limit));
 
   const activities = ((acts.data as { kind: string; position: string; organization: string | null; description: string | null }[] | null) ?? [])
     .map((a) => `- ${a.kind === "honor" ? "Award: " : ""}${a.position}${a.organization ? `, ${a.organization}` : ""}${a.description ? `: ${a.description}` : ""}`).join("\n");

@@ -678,7 +678,7 @@ export const TOPICS: Topic[] = [
     area: "Account and privacy",
     title: "Your plan, Study Coach and extra AI messages",
     href: "/billing",
-    keywords: ["plan", "price", "pay", "payment", "billing", "subscription", "cancel", "card", "receipt", "refund", "study coach", "message pack", "extra messages", "monthly", "yearly", "cost"],
+    keywords: ["free", "free plan", "plan", "price", "pay", "payment", "billing", "subscription", "cancel", "card", "receipt", "refund", "study coach", "message pack", "extra messages", "monthly", "yearly", "cost"],
     summary: "A parent manages one plan for the whole family on the Plan and billing page, from the Menu.",
     steps: [
       "Open Menu, then Plan and billing.",
@@ -687,6 +687,8 @@ export const TOPICS: Topic[] = [
       "Pay on Stripe's secure page. You come back to ScholarTasks when it's done.",
     ],
     body: [
+      "The free plan is free for good: deadlines, college list and costs, grades and HOPE, scholarships, FAFSA checklist, activities and resume, essays and practice, plus 3 AI uses a day per person. The Family plan adds more AI help (10 a day per person).",
+      "During the beta everyone gets the Family plan's AI uses for free, and nobody is charged.",
       "To change your card, switch between monthly and yearly, see receipts or cancel, tap Manage billing. If you cancel, your plan keeps working until the end of the time you paid for.",
       "Only a parent can buy or change the plan. Students see what the family has.",
       "ScholarTasks never sees or stores your card number; Stripe handles payments.",
