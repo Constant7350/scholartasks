@@ -19,6 +19,7 @@ export function Footer() {
       <span>© {new Date().getFullYear()} ScholarTasks</span>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
+      <a href="/delete-account">Delete account</a>
       <a href={`mailto:${SUPPORT_EMAIL}`}>Contact</a>
     </footer>
   );

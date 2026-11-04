@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { CATALOG as C, STUDY_COACH_DAILY_LIMIT, money } from "../../lib/prices";
+import { inPhoneApp } from "../../lib/passkeys-client";
 import { NotConfigured, Page } from "../ui";
 
 interface Plan { family_id: string | null; family_plan: boolean; study_coach: boolean; ai_credits: number }
@@ -33,6 +34,8 @@ export default function BillingPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [inApp, setInApp] = useState(false);
+  useEffect(() => setInApp(inPhoneApp()), []);
 
   const load = useCallback(async (): Promise<Plan | null> => {
     if (!sb) return null;
@@ -94,6 +97,8 @@ export default function BillingPage() {
   }
 
   const title = "Plan and billing";
+  // App store rules: no buying or plan changes inside the iPhone/Android app.
+  if (inApp) return <Page title={title}><p className="note">Plans aren't managed in the phone app. Everything your family's plan includes works here as usual.</p></Page>;
   if (!sb) return <Page title={title}><NotConfigured /></Page>;
   if (signedIn === false) return <Page title={title}><p className="hint"><a href="/signin">Sign in</a> to see your family's plan.</p></Page>;
 

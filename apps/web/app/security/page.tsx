@@ -18,6 +18,9 @@ export default function Security() {
   const [unlock, setUnlock] = useState("Face ID");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [delErr, setDelErr] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -68,6 +71,27 @@ export default function Security() {
     await load();
   };
 
+  const deleteAccount = async () => {
+    setDeleting(true);
+    setDelErr(null);
+    try {
+      const { data } = await sb.auth.getSession();
+      const res = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${data.session?.access_token ?? ""}` },
+        body: JSON.stringify({ confirm: true }),
+      });
+      const j = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) throw new Error(j.error ?? "Something went wrong. Please try again.");
+      try { localStorage.removeItem("st-passkey"); } catch {}
+      await sb.auth.signOut().catch(() => {});
+      window.location.replace("/signin?deleted=1");
+    } catch (e) {
+      setDelErr(friendly(e));
+      setDeleting(false);
+    }
+  };
+
   return (
     <Page title="Face ID and sign-in">
       <div className="panel">
@@ -107,6 +131,29 @@ export default function Security() {
           </ul>
         )}
         <p className="hint" style={{ marginTop: 12, marginBottom: 0 }}>Lost a phone? Remove it here. Your password, email link and Google sign-in keep working as before.</p>
+      </div>
+
+      <div className="panel" id="delete-account">
+        <h2>Delete my account</h2>
+        <p className="hint">
+          <strong>Parents:</strong> if you are the only parent on the account, this deletes your whole family's ScholarTasks information: every student's plan,
+          grades, colleges, scholarships and to-dos, and the students' sign-ins. If another parent is on the account, only you are removed.
+        </p>
+        <p className="hint">
+          <strong>Students:</strong> this deletes your sign-in. Your parent keeps your family's plan.
+        </p>
+        <p className="hint">This can't be undone. A paid plan needs to be cancelled first. We keep only the locked security log of who changed what and when.</p>
+        {!confirming ? (
+          <button className="btn btn-ghost btn-inline" onClick={() => setConfirming(true)}>Delete my account</button>
+        ) : (
+          <div className="share-row">
+            <button className="btn btn-inline" style={{ background: "#b42318" }} onClick={deleteAccount} disabled={deleting}>
+              {deleting ? "Deleting…" : "Yes, delete it for good"}
+            </button>
+            <button className="btn btn-ghost btn-inline" onClick={() => setConfirming(false)} disabled={deleting}>Keep my account</button>
+          </div>
+        )}
+        {delErr && <p className="note note-err" role="alert">{delErr}</p>}
       </div>
     </Page>
   );

@@ -23,6 +23,8 @@ export interface NavItem {
   strip?: boolean;
   /** Position in the phone tab bar (1-4). "More" is always last. */
   tab?: number;
+  /** Website only: hidden inside the iPhone/Android app (app store payment rules). */
+  webOnly?: boolean;
 }
 
 const ALL: NavRole[] = ["parent", "student", "none"];
@@ -43,8 +45,8 @@ export const NAV: NavItem[] = [
   { href: "/family", label: "Family, students and permissions", icon: "👪", roles: ["parent"], group: "family" },
   { href: "/family", label: "Set up my family (parents)", icon: "👪", roles: ["none"], group: "family" },
   { href: "/join", label: "I'm a student: join with a code", icon: "🔑", roles: ["none"], group: "family" },
-  { href: "/security", label: "Face ID and sign-in", short: "Sign-in", icon: "🔐", roles: ALL, group: "family" },
-  { href: "/billing", label: "Plan and billing", short: "Billing", icon: "💳", roles: ["parent", "student"], group: "family" },
+  { href: "/security", label: "Face ID, sign-in and account", short: "Account", icon: "🔐", roles: ALL, group: "family" },
+  { href: "/billing", label: "Plan and billing", short: "Billing", icon: "💳", roles: ["parent", "student"], group: "family", webOnly: true },
 
   { href: "/help", label: "Help and how-to", icon: "❓", roles: ALL, group: "help" },
 
