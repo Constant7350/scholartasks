@@ -44,7 +44,7 @@ export const TOPICS: Topic[] = [
     summary: "ScholarTasks helps families plan for college: colleges, deadlines, grades, HOPE, scholarships and study help in one place.",
     body: [
       "A parent owns the family account and adds each student. Students can connect their own phone or computer with a code, and the parent chooses what they are allowed to do.",
-      "Everything is advice only. The final decisions are always your family's, and official details should be checked on the college's or sponsor's own site.",
+      "Everything is advice only. The final decisions are always your family's, and official details should be checked on the college's or award's own official site.",
     ],
     steps: [
       "Sign in as a parent.",
@@ -496,7 +496,7 @@ export const TOPICS: Topic[] = [
       "Maybe means something needs checking. The card says what, and the closest ones are listed first.",
       "Coming up opens in a later grade, with what to work on now.",
       "Not a fit now means something doesn't fit today. If an answer changes, they may move up.",
-      "Our list is checked for changes twice a week during scholarship season, but always confirm details on the sponsor's official site.",
+      "Our list is checked for changes twice a week during scholarship season, but always confirm details on the award's official site.",
     ],
   },
   {
@@ -508,7 +508,7 @@ export const TOPICS: Topic[] = [
     summary: "Tap Add to my deadlines on a scholarship to put it on your plan with email reminders.",
     body: [
       "Tap Not for us to hide one. Hidden awards are listed at the bottom with Show again.",
-      "Official site opens the sponsor's page, where you apply.",
+      "Official site opens the page of the organization that gives the award, where you apply.",
     ],
   },
 

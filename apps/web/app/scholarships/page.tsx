@@ -143,7 +143,7 @@ export default function ScholarshipsPage() {
   return (
     <Page title={title}>
       <p className="hint" style={{ marginTop: -8 }}>
-        Georgia and national scholarships and grants, checked against {student ? `${student.first_name}'s` : "your student's"} grades, test scores and answers below. A &ldquo;Maybe&rdquo; tells you what to check. Always confirm the details on the sponsor&apos;s site before applying.
+        Georgia and national scholarships and grants, checked against {student ? `${student.first_name}'s` : "your student's"} grades, test scores and answers below. A &ldquo;Maybe&rdquo; tells you what to check. Always confirm the details on the official site before applying.
       </p>
       {role === "parent" && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
@@ -178,7 +178,7 @@ export default function ScholarshipsPage() {
             </details>
           )}
           <p className="hint" style={{ marginTop: 20, fontSize: 13 }}>
-            ScholarTasks gives advice only. Rules and deadlines change every year, so check the sponsor&apos;s site. Scholarships marked &ldquo;Not yet verified&rdquo; are still being checked by our team.
+            ScholarTasks gives advice only. Rules and deadlines change every year, so check the official site. Scholarships marked &ldquo;Not yet verified&rdquo; are still being checked by our team.
           </p>
         </>
       )}
@@ -196,7 +196,7 @@ function ScholarshipCard({ s, r, choice, onAdd, onHide }: {
       <div className="score-head">
         <div>
           <h2 style={{ margin: 0 }}>{s.name}</h2>
-          <span className="hint" style={{ fontSize: 13 }}>{s.kind === "grant" ? "Grant · " : ""}{s.sponsor}{s.college ? "" : s.scope !== "US" ? ` · ${s.scope}` : " · National"}</span>
+          <span className="hint" style={{ fontSize: 13 }}>{s.kind === "grant" ? "Grant · " : ""}From {s.sponsor}{s.college ? "" : s.scope !== "US" ? ` · ${s.scope}` : " · National"}</span>
         </div>
         <div style={{ textAlign: "right" }}>
           <b className="sch-amount">{s.amount_text}</b>
@@ -205,7 +205,7 @@ function ScholarshipCard({ s, r, choice, onAdd, onHide }: {
       </div>
       <p style={{ margin: "10px 0" }}>{s.summary}</p>
       <p className="hint" style={{ margin: "0 0 8px" }}>
-        <b>Deadline:</b> {s.deadline ? dateText(s.deadline) : s.deadline_text ?? "Check the sponsor's site"}
+        <b>Deadline:</b> {s.deadline ? dateText(s.deadline) : s.deadline_text ?? "Check the official site"}
         {s.automatic && <> · <b>No separate application</b></>}
       </p>
       <ul className="sch-reasons">
@@ -377,8 +377,8 @@ function ApplyHelp({ s, choice }: { s: Row; choice: Choice }) {
       <h3 style={{ margin: "14px 0 6px" }}>Get ready to apply</h3>
       {!steps ? (
         <p className="hint">
-          We can read the sponsor&apos;s page and make a step-by-step checklist (uses 1 AI use; free after the first family asks).{" "}
-          <button className="btn btn-inline btn-sm" disabled={busy === "steps"} onClick={() => void makeSteps()}>{busy === "steps" ? "Reading the sponsor's page…" : "Make my checklist"}</button>
+          We can read the official page and make a step-by-step checklist (uses 1 AI use; free after the first family asks).{" "}
+          <button className="btn btn-inline btn-sm" disabled={busy === "steps"} onClick={() => void makeSteps()}>{busy === "steps" ? "Reading the official page…" : "Make my checklist"}</button>
         </p>
       ) : (
         <>
@@ -396,13 +396,13 @@ function ApplyHelp({ s, choice }: { s: Row; choice: Choice }) {
         </>
       )}
       <h3 style={{ margin: "14px 0 6px" }}>Essay coach</h3>
-      <p className="hint" style={{ margin: "0 0 8px" }}>Write your own essay here. The coach gives feedback (1 AI use each time), but it won&apos;t write it for you: sponsors want your own words.</p>
+      <p className="hint" style={{ margin: "0 0 8px" }}>Write your own essay here. The coach gives feedback (1 AI use each time), but it won&apos;t write it for you: the people who award it want your own words.</p>
       {steps && steps.essay_prompts.length > 1 ? (
         <select className="input" value={prompt} onChange={(e) => setPrompt(e.target.value)} aria-label="Essay prompt">
           {steps.essay_prompts.map((p) => <option key={p} value={p}>{p.length > 120 ? p.slice(0, 117) + "…" : p}</option>)}
         </select>
       ) : (
-        <textarea className="input" rows={2} placeholder="Essay prompt (copy it from the sponsor's site)" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+        <textarea className="input" rows={2} placeholder="Essay prompt (copy it from the official site)" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
       )}
       <input className="input" style={{ marginTop: 6, maxWidth: 260 }} placeholder="Length limit, e.g. 500 words" value={limit} onChange={(e) => setLimit(e.target.value)} />
       <textarea className="input" rows={10} style={{ marginTop: 6 }} placeholder="Your draft" value={draft} maxLength={12000} onChange={(e) => setDraft(e.target.value)} />

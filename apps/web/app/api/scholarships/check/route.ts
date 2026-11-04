@@ -1,8 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
-import { checkScholarship, type CheckRecord } from "../../../../lib/scholarship-check";
+import { autoVerified, checkScholarship, triage, type CheckRecord } from "../../../../lib/scholarship-check";
 
 // "Check with AI" on the team's review page: checks one scholarship against
-// its official site now and saves what it found as a proposed update.
+// its official site now. Confirmed with nothing changed: marked verified.
+// Otherwise what it found is saved as a proposed update for a person.
 // ScholarTasks team only (app_admins).
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
@@ -29,12 +30,18 @@ export async function POST(req: Request) {
   try {
     const today = new Date().toISOString().slice(0, 10);
     const r = await checkScholarship(apiKey, rec as CheckRecord, today);
-    const proposed = { ...r.changes, ...(r.still_offered === "no" ? { status: "retired" } : {}) };
+    const t = triage(r);
+    if (t.autoVerify) {
+      // Confirmed on the official site with nothing new: verified, nothing to review.
+      const { error } = await sb.from("scholarships").update((rec as { status: string }).status === "pending" ? autoVerified(today) : { last_checked: today }).eq("id", body.id);
+      if (error) return json(500, "Couldn't save the result.");
+      return Response.json({ verified: true, summary: r.summary });
+    }
     const { data: up, error } = await sb.from("scholarship_updates")
-      .insert({ scholarship_id: body.id, summary: `${r.still_offered === "no" ? "No longer offered. " : r.still_offered === "unclear" ? "Couldn't confirm it's still offered. " : ""}${r.summary}`, proposed, sources: r.sources })
+      .insert({ scholarship_id: body.id, summary: t.summary, proposed: t.proposed, sources: r.sources })
       .select("id, scholarship_id, summary, proposed, sources, status, created_at").single();
     if (error) return json(500, "Couldn't save the result.");
-    if (!Object.keys(proposed).length) await sb.from("scholarships").update({ last_checked: today }).eq("id", body.id);
+    await sb.from("scholarships").update({ last_checked: today }).eq("id", body.id);
     return Response.json({ update: up });
   } catch (e) {
     console.error("scholarship check failed", e);

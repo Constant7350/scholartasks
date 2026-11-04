@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 
@@ -8,6 +8,7 @@ interface Sch {
   id: string; kind: string; name: string; sponsor: string; url: string; summary: string; how_to_apply: string | null;
   amount_text: string; amount_max: number | null; deadline: string | null; deadline_text: string | null; min_gpa: number | null;
   other_requirements: string | null; status: "pending" | "approved" | "retired"; last_checked: string | null; college: string | null;
+  reviewed_by: string | null;
   [k: string]: unknown;
 }
 interface Update { id: string; scholarship_id: string; summary: string; proposed: Record<string, unknown>; sources: string[]; status: string; created_at: string }
@@ -68,7 +69,10 @@ export default function ScholarshipReviewPage() {
     setError(null); setMsg(null);
     const s = byId.get(u.scholarship_id);
     if (accept && s) {
-      const { error: e } = await sb.from("scholarships").update({ ...u.proposed, last_checked: today }).eq("id", s.id);
+      // Accepting a checked change also verifies the award (unless it's being retired).
+      const { data: ses } = await sb.auth.getSession();
+      const extra = s.status === "pending" && u.proposed.status !== "retired" ? { status: "approved", reviewed_by: ses.session?.user.id, reviewed_at: new Date().toISOString() } : {};
+      const { error: e } = await sb.from("scholarships").update({ ...extra, ...u.proposed, last_checked: today }).eq("id", s.id);
       if (e) return setError(friendly(e));
     }
     const { error: e2 } = await sb.from("scholarship_updates").update({ status: accept ? "accepted" : "dismissed" }).eq("id", u.id);
@@ -76,21 +80,78 @@ export default function ScholarshipReviewPage() {
     setMsg(accept ? `Updated ${s?.name ?? "the scholarship"}.` : "Dismissed.");
     void load();
   };
+  /** Asks the AI to check one award now. Returns "verified", "review" (something to look at) or "error". */
+  const runCheck = async (s: Sch, token: string): Promise<{ kind: "verified" | "review" | "error"; text: string }> => {
+    try {
+      const res = await fetch("/api/scholarships/check", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ id: s.id }) });
+      const out = (await res.json().catch(() => null)) as { update?: Update; verified?: boolean; summary?: string; error?: string } | null;
+      if (res.ok && out?.verified) return { kind: "verified", text: `${s.name} checked: nothing changed, so it's verified.` };
+      if (!res.ok || !out?.update) return { kind: "error", text: out?.error ?? "The checker couldn't finish." };
+      return { kind: "review", text: `Found changes for ${s.name}. See "Changes to review".` };
+    } catch {
+      return { kind: "error", text: "The checker couldn't finish." };
+    }
+  };
   const aiCheck = async (s: Sch) => {
     if (!sb) return;
     setBusy(s.id); setError(null); setMsg(null);
-    try {
-      const { data: ses } = await sb.auth.getSession();
-      const res = await fetch("/api/scholarships/check", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${ses.session?.access_token ?? ""}` }, body: JSON.stringify({ id: s.id }) });
-      const out = (await res.json().catch(() => null)) as { update?: Update; error?: string } | null;
-      if (!res.ok || !out?.update) throw new Error(out?.error ?? "The checker couldn't finish.");
-      setMsg(Object.keys(out.update.proposed).length ? `Found changes for ${s.name}. See "Changes to review".` : `${s.name}: ${out.update.summary}`);
-      void load();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "The checker couldn't finish.");
-    } finally {
-      setBusy(null);
+    const { data: ses } = await sb.auth.getSession();
+    const r = await runCheck(s, ses.session?.access_token ?? "");
+    if (r.kind === "error") setError(r.text); else setMsg(r.text);
+    setBusy(null);
+    void load();
+  };
+
+  // "Check all now": the AI checks every award not yet verified, a few at a time, while this page is open.
+  const [bulk, setBulk] = useState<{ done: number; total: number; verified: number; review: number; failed: number } | null>(null);
+  const stopRef = useRef(false);
+  const checkAll = async () => {
+    if (!sb || bulk) return;
+    setError(null); setMsg(null);
+    stopRef.current = false;
+    const waiting = new Set(updates.map((u) => u.scholarship_id));
+    const queue = all.filter((s) => s.status === "pending" && !waiting.has(s.id));
+    const tally = { done: 0, total: queue.length, verified: 0, review: 0, failed: 0 };
+    setBulk({ ...tally });
+    const worker = async () => {
+      while (queue.length && !stopRef.current) {
+        const s = queue.shift()!;
+        const { data: ses } = await sb.auth.getSession();
+        const r = await runCheck(s, ses.session?.access_token ?? "");
+        tally.done++;
+        if (r.kind === "verified") tally.verified++; else if (r.kind === "review") tally.review++; else tally.failed++;
+        setBulk({ ...tally });
+      }
+    };
+    await Promise.all([worker(), worker(), worker(), worker()]);
+    setBulk(null);
+    setMsg(`Checked ${tally.done}: ${tally.verified} verified automatically, ${tally.review} to review${tally.failed ? `, ${tally.failed} couldn't be checked (try again later)` : ""}.`);
+    void load();
+  };
+
+  // "Accept all": two taps, so one stray tap can't change many awards.
+  const [confirmAll, setConfirmAll] = useState(false);
+  const acceptAll = async () => {
+    if (!sb) return;
+    if (!confirmAll) { setConfirmAll(true); return; }
+    setConfirmAll(false); setError(null); setMsg(null);
+    const { data: ses } = await sb.auth.getSession();
+    const me = ses.session?.user.id ?? null;
+    let n = 0;
+    for (const u of updates) {
+      const s = byId.get(u.scholarship_id);
+      if (Object.keys(u.proposed).length && s) {
+        // Accepting a checked change also counts as verifying the award (unless it's being retired).
+        const extra = s.status === "pending" && u.proposed.status !== "retired" ? { status: "approved", reviewed_by: me, reviewed_at: new Date().toISOString() } : {};
+        const { error: e } = await sb.from("scholarships").update({ ...extra, ...u.proposed, last_checked: today }).eq("id", s.id);
+        if (e) { setError(friendly(e)); break; }
+      }
+      const { error: e2 } = await sb.from("scholarship_updates").update({ status: Object.keys(u.proposed).length ? "accepted" : "dismissed" }).eq("id", u.id);
+      if (e2) { setError(friendly(e2)); break; }
+      n++;
     }
+    setMsg(`Accepted ${n} change${n === 1 ? "" : "s"}.`);
+    void load();
   };
 
   const title = "Scholarship list review";
@@ -101,7 +162,7 @@ export default function ScholarshipReviewPage() {
   return (
     <Page title={title}>
       <p className="hint" style={{ marginTop: -8 }}>
-        Every scholarship and grant families see. Every Monday (and Thursdays too from September to March) the AI checker reads 25 official sites, oldest first, and lists any changes under &ldquo;Changes to review&rdquo;. Nothing changes for families until you accept it. You can also check one now, or edit it yourself, and mark it verified.
+        Every scholarship and grant families see. Every Monday (and Thursdays too from September to March) the AI checker reads 25 official sites, oldest first. If an award is still offered and nothing changed, it&apos;s verified automatically. Anything that changed, or that the AI couldn&apos;t confirm, waits under &ldquo;Changes to review&rdquo;, and nothing changes for families until you accept it.
       </p>
       <div className="tabs" role="tablist" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
         {TABS.map(([k, label]) => <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{label} <span className="sch-count">{counts[k]}</span></button>)}
@@ -112,6 +173,13 @@ export default function ScholarshipReviewPage() {
       {tab === "updates" && (
         <>
           {updates.length === 0 && <p className="hint">No changes waiting. The weekly check adds them here.</p>}
+          {updates.length > 1 && (
+            <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginBottom: 12 }}>
+              <button className="btn btn-inline" onClick={() => void acceptAll()}>{confirmAll ? `Tap again to accept all ${updates.length}` : `Accept all ${updates.length}`}</button>
+              {confirmAll && <button className="btn btn-ghost btn-inline" onClick={() => setConfirmAll(false)}>Cancel</button>}
+              <span className="hint" style={{ fontSize: 13 }}>Or look at each one below.</span>
+            </div>
+          )}
           {updates.map((u) => {
             const s = byId.get(u.scholarship_id);
             return (
@@ -137,7 +205,22 @@ export default function ScholarshipReviewPage() {
 
       {tab !== "updates" && (
         <>
-          <div className="field" style={{ maxWidth: 360 }}><label htmlFor="sch-q">Search</label><input id="sch-q" className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, sponsor or college" /></div>
+          <div className="field" style={{ maxWidth: 360 }}><label htmlFor="sch-q">Search</label><input id="sch-q" className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, organization or college" /></div>
+          {tab === "pending" && counts.pending > 0 && (
+            <div className="panel" style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+              {bulk ? (
+                <>
+                  <span><b>Checking {bulk.done} of {bulk.total}…</b> {bulk.verified} verified, {bulk.review} to review. Keep this page open.</span>
+                  <button className="btn btn-ghost btn-inline btn-sm" onClick={() => { stopRef.current = true; }}>Stop</button>
+                </>
+              ) : (
+                <>
+                  <button className="btn btn-inline" onClick={() => void checkAll()}>🤖 Check all {counts.pending} now</button>
+                  <span className="hint" style={{ fontSize: 13 }}>The AI reads each official site. Unchanged ones are verified for you. Takes about 20 minutes with this page open, and costs about ${Math.max(1, Math.round(counts.pending * 0.005))} in AI use.</span>
+                </>
+              )}
+            </div>
+          )}
           {list.length === 0 && <p className="hint">Nothing here.</p>}
           {list.map((s) => <Item key={s.id} s={s} busy={busy === s.id} onSave={save} onCheck={aiCheck} today={today} />)}
           {tab === "pending" && <AddForm onAdded={load} />}
@@ -162,9 +245,9 @@ function Item({ s, busy, onSave, onCheck, today }: { s: Sch; busy: boolean; toda
   return (
     <details className="panel review">
       <summary>
-        <b>{s.name}</b> <span className="hint" style={{ fontSize: 13 }}>· {s.kind === "grant" ? "Grant" : "Scholarship"} · {s.amount_text} · {s.deadline ?? s.deadline_text ?? "no deadline"} · checked {s.last_checked ?? "never"}</span>
+        <b>{s.name}</b> <span className="hint" style={{ fontSize: 13 }}>· {s.kind === "grant" ? "Grant" : "Scholarship"} · {s.amount_text} · {s.deadline ?? s.deadline_text ?? "no deadline"} · checked {s.last_checked ?? "never"}{s.status === "approved" && !s.reviewed_by ? " · verified by AI" : ""}</span>
       </summary>
-      <p className="hint" style={{ margin: "8px 0" }}>{s.sponsor}{s.college ? ` · ${s.college}` : ""} · <a href={s.url} target="_blank" rel="noopener noreferrer">Official site ↗</a></p>
+      <p className="hint" style={{ margin: "8px 0" }}>Given by {s.sponsor}{s.college ? ` · ${s.college}` : ""} · <a href={s.url} target="_blank" rel="noopener noreferrer">Official site ↗</a></p>
       {EDIT_FIELDS.map(([k, label]) => (
         <div key={k} className="field" style={{ margin: "0 0 8px" }}>
           <label htmlFor={`${k}-${s.id}`}>{label}</label>
@@ -202,7 +285,7 @@ function AddForm({ onAdded }: { onAdded: () => void }) {
       <p className="hint">Add the basics, then use &ldquo;Check with AI&rdquo; to fill in the deadline and rules from the official site.</p>
       {(["name", "sponsor", "url", "amount_text", "summary"] as const).map((k) => (
         <div key={k} className="field" style={{ margin: "0 0 8px" }}>
-          <label htmlFor={`new-${k}`}>{{ name: "Name", sponsor: "Sponsor", url: "Official link (https://…)", amount_text: "Amount", summary: "Summary" }[k]}</label>
+          <label htmlFor={`new-${k}`}>{{ name: "Name", sponsor: "Given by (organization)", url: "Official link (https://…)", amount_text: "Amount", summary: "Summary" }[k]}</label>
           <input id={`new-${k}`} className="input" value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })} />
         </div>
       ))}

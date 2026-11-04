@@ -61,6 +61,21 @@ export async function checkScholarship(apiKey: string, rec: CheckRecord, today: 
   return parseResult(text);
 }
 
+/**
+ * What to do with a check result. An award the official site confirms is still
+ * offered, with nothing changed, is verified automatically (no one needs to look).
+ * Anything that changed, or that the checker couldn't confirm, goes to a person.
+ */
+export function triage(r: CheckResult): { proposed: Record<string, unknown>; autoVerify: boolean; summary: string } {
+  const proposed = { ...r.changes, ...(r.still_offered === "no" ? { status: "retired" } : {}) };
+  const autoVerify = r.still_offered === "yes" && Object.keys(proposed).length === 0 && r.sources.length > 0;
+  const summary = `${r.still_offered === "no" ? "No longer offered. " : r.still_offered === "unclear" ? "Couldn't confirm it's still offered. " : ""}${r.summary}`;
+  return { proposed, autoVerify, summary };
+}
+
+/** Fields to save on an award the checker just verified on its own (reviewed_by stays empty: that marks it as the AI's). */
+export const autoVerified = (today: string) => ({ status: "approved", last_checked: today, reviewed_by: null, reviewed_at: new Date().toISOString() });
+
 export function parseResult(text: string): CheckResult {
   const m = text.match(/<result>([\s\S]*?)<\/result>/);
   if (!m?.[1]) throw new Error("The checker didn't return a result.");

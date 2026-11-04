@@ -35,7 +35,7 @@ const urgency = (iso: string | null): Urgency => {
   return n < 0 ? "late" : n <= 7 ? "week" : n <= 30 ? "month" : "later";
 };
 const GROUPS: { key: Urgency; title: string; hint: string }[] = [
-  { key: "late", title: "Late", hint: "The due date has passed. Do these first, or check if the sponsor still accepts them." },
+  { key: "late", title: "Late", hint: "The due date has passed. Do these first, or check if the organization still accepts them." },
   { key: "week", title: "Due this week", hint: "Due in the next 7 days." },
   { key: "month", title: "Due this month", hint: "Due in 8 to 30 days." },
   { key: "later", title: "Later", hint: "More than 30 days away." },

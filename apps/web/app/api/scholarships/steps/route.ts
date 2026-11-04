@@ -85,7 +85,7 @@ export async function POST(req: Request) {
     return Response.json(out, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     console.error("scholarship steps failed", e);
-    return json(502, "Sorry, we couldn't read the sponsor's page just now. Please try again in a minute.");
+    return json(502, "Sorry, we couldn't read the official page just now. Please try again in a minute.");
   }
 }
 
