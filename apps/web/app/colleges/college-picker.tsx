@@ -46,8 +46,8 @@ export function CollegePicker({ sb, id, value, onChange }: {
       {open && hits.length > 0 && (
         <ul id={`${id}-list`} className="picker-list" role="listbox">
           {hits.map((c, i) => (
-            <li key={c.id} role="option" aria-selected={i === active}>
-              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => pick(c)}>
+            <li key={c.id}>
+              <button type="button" className="picker-item" role="option" aria-selected={i === active} onMouseDown={(e) => e.preventDefault()} onClick={() => pick(c)}>
                 <b>{c.name}</b> <span className="hint">{c.city ? `${c.city}, ` : ""}{c.state} · {OWNERSHIP[c.ownership]}</span>
               </button>
             </li>

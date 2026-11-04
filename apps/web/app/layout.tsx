@@ -3,6 +3,7 @@ import type { Viewport } from "next";
 import "./globals.css";
 import { InAppLinks } from "./in-app-links";
 import { AiConsent } from "./ai-consent";
+import { PhoneReminders } from "./phone-reminders";
 
 export const metadata = {
   title: "ScholarTasks",
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <InAppLinks />
         {children}
         <AiConsent />
+        <PhoneReminders />
       </body>
     </html>
   );

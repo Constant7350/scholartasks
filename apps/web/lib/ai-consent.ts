@@ -6,4 +6,4 @@ export const AI_CONSENT_NEEDED =
 export const needsAiConsent = (e: { message?: string } | null | undefined) => !!e && /ai consent needed/.test(e.message ?? "");
 
 /** Pages with AI features; the Allow AI help notice appears on these. */
-export const AI_PAGES = ["/counselor", "/grades", "/practice", "/scholarships", "/test-prep", "/study"];
+export const AI_PAGES = ["/counselor", "/grades", "/practice", "/scholarships", "/test-prep", "/study", "/essays"];

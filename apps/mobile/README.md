@@ -39,5 +39,5 @@ Bundle id / package: `com.scholartasks.app`. Version in `app.json`.
 ## Next
 
 - Google sign-in in the app, together with Sign in with Apple (Apple requires both once Google is offered).
-- Push notifications for reminders (`expo-notifications`).
+- Deadline reminders are local notifications (`src/reminders.ts`): the website sends the coming deadlines and the phone schedules them (7, 2, 1 days before and on the day, 9 am). No push keys needed. Remote push would need `enableRemoteNotifications: true` and an APNs key.
 - When scholartasks.com is live, change `SITE_URL` in `src/config.ts`.

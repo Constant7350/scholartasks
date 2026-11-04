@@ -292,7 +292,7 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 
 /* ---------- Course picker and report card import ---------- */
 .picker { position: relative; }
-.picker-list { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 4px); max-height: 320px; overflow-y: auto; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(12, 31, 61, 0.14); padding: 4px 0; min-width: 260px; }
+.picker-list { list-style: none; margin: 0; position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 4px); max-height: 320px; overflow-y: auto; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(12, 31, 61, 0.14); padding: 4px 0; min-width: 260px; }
 .picker-group { margin: 8px 12px 4px; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
 .picker-item { display: block; width: 100%; text-align: left; font: inherit; font-size: 15px; background: none; border: 0; padding: 8px 14px; cursor: pointer; color: var(--ink); }
 .picker-item:hover, .picker-item[aria-selected="true"] { background: #eef2f9; color: var(--navy); }
@@ -575,3 +575,30 @@ body.help-on { padding-bottom: 96px; }
 .report-ai { margin: 8px 0 0; font-size: 13px; }
 .report-ai .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--muted); text-decoration: underline; cursor: pointer; }
 .report-ai textarea { margin: 6px 0 8px; font-size: 14px; }
+
+/* Find colleges */
+.quiz-q { border: 0; padding: 0; margin: 0 0 14px; }
+.quiz-q legend { font-weight: 600; margin-bottom: 6px; }
+.quiz .chips { justify-content: flex-start; }
+.college-price { display: block; margin-top: 2px; }
+.cost-box { margin-top: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #f8fafc; }
+.cost-box table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cost-box td { padding: 3px 0; }
+.cost-box td:last-child { text-align: right; white-space: nowrap; }
+.cost-box tr.cost-total td { border-top: 1px solid var(--line); font-weight: 700; padding-top: 6px; }
+.cost-compare { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cost-compare th, .cost-compare td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.cost-compare td.num, .cost-compare th.num { text-align: right; white-space: nowrap; }
+.btn-link { background: none; border: 0; padding: 0; font: inherit; color: var(--navy); text-decoration: underline; cursor: pointer; }
+.essay-text { font-size: 16px; line-height: 1.55; min-height: 320px; }
+.essay-meta { display: flex; justify-content: space-between; gap: 12px; margin: 4px 0 0; }
+/* Streaks and badges */
+.progress-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.streak { display: flex; align-items: center; gap: 12px; }
+.streak b { display: block; font-size: 18px; }
+.streak-flame { font-size: 34px; line-height: 1; }
+.badge-row { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.badge-row li { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 10px 8px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 14px; }
+.badge-row li > span:first-child { font-size: 26px; }
+.badge-on { background: #fff8e6 !important; border-color: #f0c75e !important; }
+.badge-off { opacity: 0.6; }

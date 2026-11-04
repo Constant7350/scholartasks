@@ -1,5 +1,6 @@
 import type { StatePack } from "./schema";
 import type { ProgramResult } from "./eligibility";
+import type { IncomeBand } from "./scholarships";
 
 /** One college from the federal College Scorecard (see supabase/seed/colleges.json). */
 export interface CollegeFacts {
@@ -23,7 +24,6 @@ export interface CollegeFacts {
   programs: Record<string, number>;
 }
 
-export type IncomeBand = "under_30k" | "30_60k" | "60_110k" | "110_200k" | "over_200k" | "prefer_not";
 
 export const INCOME_LABELS: Record<IncomeBand, string> = {
   under_30k: "under $30,000", "30_60k": "$30,000-$60,000", "60_110k": "$60,000-$110,000",

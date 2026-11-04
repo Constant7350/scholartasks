@@ -6,6 +6,7 @@ import gaPack from "../../../../packs/states/GA.json";
 import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { GpaScorecard } from "../grades/scorecard";
+import { ProgressCard } from "./progress-card";
 import { PasskeyOffer } from "../passkey-offer";
 import { AdultConsent } from "../adult-consent";
 
@@ -108,6 +109,10 @@ export default function Home() {
 
       {students.filter((s) => s.state === GA.state).map((s) => (
         <GpaScorecard key={s.id} rows={grades.filter((g) => g.student_id === s.id)} currentGrade={s.grade_level} pack={GA} name={s.first_name} compact href="/grades" goal={s.goal_gpa == null ? null : Number(s.goal_gpa)} minGrade={s.min_grade} weights={{ rigor: Number(s.weight_rigor ?? 1), honors: Number(s.weight_honors ?? 0.5) }} />
+      ))}
+
+      {sb && students.map((s) => (
+        <ProgressCard key={`p-${s.id}`} sb={sb} studentId={s.id} name={students.length > 1 ? s.first_name : null} />
       ))}
 
       <h2 className="section-title">Try it now</h2>
