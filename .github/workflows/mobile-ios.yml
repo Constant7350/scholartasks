@@ -21,7 +21,7 @@ concurrency: { group: mobile-ios, cancel-in-progress: false }
 
 jobs:
   ios:
-    runs-on: macos-latest
+    runs-on: macos-15
     timeout-minutes: 60
     env:
       ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
