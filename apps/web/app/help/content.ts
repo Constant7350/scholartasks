@@ -515,9 +515,11 @@ export const TOPICS: Topic[] = [
     area: "Account and privacy",
     title: "Signing in and passwords",
     href: "/signin",
-    keywords: ["sign in", "log in", "login", "password", "forgot", "reset", "google", "email link", "sign out"],
-    summary: "Sign in with email and password, an email link, or Google.",
+    keywords: ["sign in", "log in", "login", "password", "forgot", "reset", "google", "email link", "sign out", "face id", "touch id", "fingerprint", "passkey", "biometric", "windows hello"],
+    summary: "Sign in with Face ID or fingerprint, email and password, an email link, or Google.",
     body: [
+      "Face ID or fingerprint: sign in once any other way, then tap Turn on Face ID on your Home page (or open Face ID and sign-in in the Menu). Next time, tap Sign in with Face ID on the sign-in page. No email or password needed.",
+      "Do this once on each phone or computer. Lost a device? Remove it on the Face ID and sign-in page.",
       "Forgot your password? Tap Forgot password on the sign-in page and follow the email.",
       "Sign out from the Menu.",
       "Students should always use their own email, not a parent's.",
