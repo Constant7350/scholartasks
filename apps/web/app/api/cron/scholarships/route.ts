@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { checkScholarship, type CheckRecord } from "../../../../lib/scholarship-check";
+import { autoVerified, checkScholarship, triage, type CheckRecord } from "../../../../lib/scholarship-check";
 
 // Weekly auto-check: Vercel Cron calls this every Monday and Thursday (see
 // vercel.json) with "Authorization: Bearer $CRON_SECRET". It runs every Monday,
@@ -7,7 +7,8 @@ import { checkScholarship, type CheckRecord } from "../../../../lib/scholarship-
 // FAFSA opens and most deadlines fall). It checks the scholarships that were
 // checked longest ago against their official sites. Anything that changed is
 // saved as a proposed update for the team to accept on /admin/scholarships;
-// nothing families see changes until a person approves it.
+// nothing families see changes until a person approves it. An award the
+// official site confirms with nothing changed is marked verified on its own.
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
@@ -44,15 +45,19 @@ export async function GET(req: Request) {
   const checkOne = async (rec: CheckRecord) => {
     try {
       const r = await checkScholarship(apiKey, rec, today);
-      const proposed = { ...r.changes, ...(r.still_offered === "no" ? { status: "retired" } : {}) };
-      if (Object.keys(proposed).length || r.still_offered === "unclear") {
+      const t = triage(r);
+      if (t.autoVerify) {
+        // Confirmed on the official site with nothing new: verified, no one needs to look.
+        await sb.from("scholarships").update(rec.status === "pending" ? autoVerified(today) : { last_checked: today }).eq("id", rec.id);
+        return { name: rec.name, changed: false, verified: true };
+      }
+      if (Object.keys(t.proposed).length || r.still_offered !== "yes") {
         await sb.from("scholarship_updates").insert({
-          scholarship_id: rec.id, proposed, sources: r.sources, created_by: null,
-          summary: `Weekly check: ${r.still_offered === "no" ? "No longer offered. " : r.still_offered === "unclear" ? "Couldn't confirm it's still offered. " : ""}${r.summary}`,
+          scholarship_id: rec.id, proposed: t.proposed, sources: r.sources, created_by: null, summary: `Weekly check: ${t.summary}`,
         });
       }
       await sb.from("scholarships").update({ last_checked: today }).eq("id", rec.id);
-      return { name: rec.name, changed: Object.keys(proposed).length > 0 };
+      return { name: rec.name, changed: Object.keys(t.proposed).length > 0 };
     } catch (e) {
       return { name: rec.name, changed: false, error: e instanceof Error ? e.message : "failed" };
     }
