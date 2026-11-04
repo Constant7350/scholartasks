@@ -36,7 +36,7 @@ export default function PracticePage() {
       if (!s.session) return window.location.replace("/signin?next=/practice");
       const [c, q] = await Promise.all([
         loadStudy(sb, s.session.user.id),
-        sb.from("practice_questions").select("id, subject, topic, kind, question, options, answer_index, model_answer, explanation, status").order("subject"),
+        sb.from("practice_questions").select("id, subject, topic, kind, question, options, answer_index, model_answer, explanation, status").is("exam", null).order("subject"),
       ]);
       setCtx(c);
       setCurrent(c.own ?? c.students[0]?.id ?? null);

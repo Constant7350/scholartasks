@@ -62,9 +62,9 @@ export async function POST(req: Request) {
 
   const { data: st } = await sb.from("students").select("first_name, grade_level").eq("id", studentId).maybeSingle();
   if (!st) return json(403, "You don't have access to this student.");
-  const { data: q } = await sb.from("practice_questions").select("subject, topic, kind, question, options, answer_index, model_answer, explanation").eq("id", questionId).maybeSingle();
+  const { data: q } = await sb.from("practice_questions").select("exam, subject, topic, kind, passage, question, options, answer_index, model_answer, explanation").eq("id", questionId).maybeSingle();
   if (!q) return json(404, "That question wasn't found.");
-  const question = q as { subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null };
+  const question = q as { exam: string | null; passage: string | null; subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null };
   if (mode === "check" && question.kind !== "written") return json(400, "Only written questions can be checked.");
 
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
@@ -74,7 +74,8 @@ export async function POST(req: Request) {
   const student = st as { first_name: string; grade_level: number };
   const context = [
     `Mode: ${mode}. Student: grade ${student.grade_level}.`,
-    `Subject: ${question.subject}. Topic: ${question.topic}.`,
+    `Subject: ${question.subject}. Topic: ${question.topic}.${question.exam ? ` This is an original ${question.exam}-style practice question; you may mention test strategy.` : ""}`,
+    question.passage ? `Passage (text in [[double brackets]] is the underlined part):\n${question.passage}` : "",
     `Question: ${question.question}`,
     question.options ? `Choices: ${question.options.map((o, i) => `${String.fromCharCode(65 + i)}) ${o}`).join("  ")}` : "",
     question.kind === "mc" && question.answer_index != null ? `Correct choice: ${question.options?.[question.answer_index]}. ${question.explanation ?? ""}` : "",

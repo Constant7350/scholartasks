@@ -401,6 +401,33 @@ export const TOPICS: Topic[] = [
     ],
   },
 
+  {
+    id: "test-prep",
+    area: "Study and practice",
+    title: "SAT and ACT prep",
+    href: "/test-prep",
+    keywords: ["sat", "act", "psat", "test prep", "practice test", "score", "college board", "bluebook", "timed", "zell", "composite", "english", "reading", "science", "math"],
+    summary: "Pick SAT or ACT, drill one section at a time for free, or take a short timed practice test that estimates your score.",
+    steps: [
+      "Open SAT and ACT prep from the Menu and choose SAT or ACT at the top.",
+      "Tap a section under Section drills to answer about 10 questions. Each answer is checked right away with an explanation.",
+      "When you're ready, start the timed practice test. It gives the same time per question as the real test.",
+      "At the end, see your estimated score and review every question.",
+      "Check the Score plan: it lists the topics you miss most, your best practice estimate, and the score Zell Miller needs.",
+    ],
+    body: [
+      "Drills are free and use no AI. \"Explain it\" asks the tutor to walk you through a question (1 of today's 10 AI uses).",
+      "Timed practice tests are part of the Study Coach add-on and are free while ScholarTasks is in beta.",
+      "Scores are rough estimates from short tests, not official scores. Before test day, take a full-length official practice test: Bluebook for the SAT, or ACT's free practice test.",
+      "All questions are written for ScholarTasks in the style of the real tests. Questions marked Draft are still being checked by our teacher reviewer.",
+      "Got an official score? Save it on the Grades page so scholarship matches and the counselor use it.",
+    ],
+    faq: [
+      { q: "SAT or ACT?", a: "Colleges accept either. Try a practice test of each and focus on the one where you score better. Georgia's HOPE and Zell Miller rules accept both." },
+      { q: "Does ACT Science count?", a: "On the current ACT, Science is optional and isn't part of the composite score. You can include or skip it in the practice test." },
+    ],
+  },
+
   // ---------- Account and privacy ----------
   {
     id: "signin",
@@ -522,6 +549,14 @@ export const TIPS: Tip[] = [
   { routes: ["/study"], sel: ".lesson-tile b", body: "Open a lesson. Each has a quick check and a small project for this week.", topic: "study" },
   { routes: ["/study/*"], sel: "h2", text: "Quick check", body: "A few questions to see if the idea stuck. Free.", topic: "study" },
   { routes: ["/study/*"], sel: "h2", text: "Try it this week", body: "A small project to try. Tap the finished button below when you're done.", topic: "study" },
+
+  // SAT and ACT prep
+  { routes: ["/home"], sel: ".tile[href='/test-prep'] b", body: "Free SAT and ACT drills, plus timed practice tests with a score estimate.", topic: "test-prep" },
+  { routes: ["/test-prep"], sel: ".tp-exam-tabs", body: "Switch between SAT and ACT practice.", topic: "test-prep" },
+  { routes: ["/test-prep"], sel: "h2", text: "Score plan", body: "Your official score, best practice estimate, the Zell Miller target and the topics to work on first.", topic: "test-prep" },
+  { routes: ["/test-prep"], sel: ".practice-tile b", body: "A free, untimed drill of about 10 questions in this section.", topic: "test-prep" },
+  { routes: ["/test-prep"], sel: "button", text: "Start the practice test", body: "A short timed test with the real test's pacing. You get an estimated score at the end.", topic: "test-prep" },
+  { routes: ["/test-prep"], sel: ".tp-timer", body: "Time left in this section. When it runs out, the next section starts.", topic: "test-prep" },
 
   // Practice
   { routes: ["/practice"], sel: "h2", text: "Topics to review", body: "Topics missed in earlier rounds. Practice these first.", topic: "practice" },

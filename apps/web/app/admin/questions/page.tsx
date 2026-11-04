@@ -4,8 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 
-interface Q { id: string; subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null; status: "pending" | "approved" | "rejected" }
-interface Edit { question: string; options: string[]; answer_index: number; model_answer: string; explanation: string; topic: string }
+interface Q { id: string; passage: string | null; subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null; status: "pending" | "approved" | "rejected" }
+interface Edit { passage: string; question: string; options: string[]; answer_index: number; model_answer: string; explanation: string; topic: string }
 const TABS = [["pending", "Waiting for review"], ["approved", "Approved"], ["rejected", "Rejected"]] as const;
 
 export default function QuestionReviewPage() {
@@ -27,7 +27,7 @@ export default function QuestionReviewPage() {
     setAdmin(isAdmin.data === true);
     if (isAdmin.data !== true) return;
     const { data, error: e } = await sb.from("practice_questions")
-      .select("id, subject, topic, kind, question, options, answer_index, model_answer, explanation, status")
+      .select("id, passage, subject, topic, kind, question, options, answer_index, model_answer, explanation, status")
       .eq("status", tab).order("subject").order("kind").order("topic").limit(500);
     if (e) setError(friendly(e));
     const list = (data as Q[]) ?? [];
@@ -37,7 +37,7 @@ export default function QuestionReviewPage() {
   useEffect(() => { void load(); }, [load]);
 
   const shown = useMemo(() => rows.filter((q) => subject === "all" || q.subject === subject), [rows, subject]);
-  const editOf = (q: Q): Edit => edits[q.id] ?? { question: q.question, options: q.options ?? [], answer_index: q.answer_index ?? 0, model_answer: q.model_answer ?? "", explanation: q.explanation ?? "", topic: q.topic };
+  const editOf = (q: Q): Edit => edits[q.id] ?? { passage: q.passage ?? "", question: q.question, options: q.options ?? [], answer_index: q.answer_index ?? 0, model_answer: q.model_answer ?? "", explanation: q.explanation ?? "", topic: q.topic };
 
   const decide = async (q: Q, status: Q["status"]) => {
     if (!sb) return;
@@ -48,6 +48,7 @@ export default function QuestionReviewPage() {
       status, question: ed.question.trim(), topic: ed.topic.trim(), explanation: ed.explanation.trim() || null,
       reviewed_by: s.session?.user.id, reviewed_at: new Date().toISOString(),
     };
+    if (q.passage != null) patch.passage = ed.passage.trim() || null;
     if (q.kind === "mc") { patch.options = ed.options.map((o) => o.trim()); patch.answer_index = ed.answer_index; }
     else patch.model_answer = ed.model_answer.trim();
     const { error: e } = await sb.from("practice_questions").update(patch).eq("id", q.id);
@@ -87,6 +88,7 @@ export default function QuestionReviewPage() {
           <section key={q.id} className="panel review">
             <span className="hint" style={{ fontSize: 12 }}>{q.subject} · {q.kind === "mc" ? "Multiple choice" : "Written answer (AI checks it)"}</span>
             <div className="field" style={{ margin: 0 }}><label htmlFor={`t-${q.id}`}>Topic</label><input id={`t-${q.id}`} className="input" value={ed.topic} onChange={(e) => set({ topic: e.target.value })} /></div>
+            {q.passage != null && <div className="field" style={{ margin: 0 }}><label htmlFor={`p-${q.id}`}>Passage (shared by every question that uses it; [[double brackets]] = underlined)</label><textarea id={`p-${q.id}`} className="input" rows={6} value={ed.passage} onChange={(e) => set({ passage: e.target.value })} /></div>}
             <div className="field" style={{ margin: 0 }}><label htmlFor={`q-${q.id}`}>Question</label><textarea id={`q-${q.id}`} className="input" value={ed.question} onChange={(e) => set({ question: e.target.value })} /></div>
             {q.kind === "mc" ? (
               <fieldset className="field" style={{ margin: 0, border: 0, padding: 0 }}>
