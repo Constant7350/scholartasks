@@ -58,7 +58,19 @@ export const Program = z.object({
   type: z.enum(["merit", "need", "merit_and_need", "grant", "tuition_discount"]),
   summary: z.string(),
   rules: ProgramRules,
-  award: z.object({ summary: z.string() }),
+  award: z.object({
+    summary: z.string(),
+    /**
+     * Rough yearly amount for cost estimates, for students living in this state at
+     * colleges in this state. "tuition" = covers in-state tuition at public colleges.
+     */
+    estimate: z
+      .object({
+        public: z.union([z.literal("tuition"), z.number().nonnegative()]).optional(),
+        private_per_year: z.number().nonnegative().optional(),
+      })
+      .optional(),
+  }),
   application: z.array(z.string()),
   source_url: z.string().url(),
 });

@@ -44,9 +44,11 @@ async function page(query, n) {
     const res = await fetch(`${BASE}?${qs}`);
     if (res.ok) return res.json();
     const text = await res.text();
-    if (attempt >= 4) throw new Error(`Scorecard ${res.status}: ${text.slice(0, 300)}`);
-    console.log(`retry ${attempt} after ${res.status}`);
-    await sleep(5000 * attempt);
+    if (attempt >= 6) throw new Error(`Scorecard ${res.status}: ${text.slice(0, 300)}`);
+    // DEMO_KEY allows only a few requests a minute: wait a full minute and more.
+    const wait = res.status === 429 ? 65000 * attempt : 5000 * attempt;
+    console.log(`retry ${attempt} after ${res.status}, waiting ${wait / 1000}s`);
+    await sleep(wait);
   }
 }
 
@@ -57,7 +59,7 @@ async function all(query) {
     out.push(...body.results);
     console.log(`${JSON.stringify(query)} page ${n}: ${body.results.length} (total ${body.metadata.total})`);
     if (out.length >= body.metadata.total || body.results.length === 0) break;
-    await sleep(1500);
+    await sleep(KEY === "DEMO_KEY" ? 6500 : 1000);
   }
   return out;
 }

@@ -23,7 +23,7 @@
       "type": "merit",
       "summary": "Tuition help at Georgia public and eligible private colleges for students with a 3.0 HOPE GPA and 4 rigor courses.",
       "rules": { "gpa_formula": "ga_hope_gpa", "min_gpa": 3.0, "rigor_courses": 4, "rigor_levels": ["AP", "IB", "DE"] },
-      "award": { "summary": "Per-credit-hour amount set each year by college (e.g. about $5,017 a semester at UGA in 2026-27); flat $2,985 a semester at private colleges." },
+      "award": { "summary": "Per-credit-hour amount set each year by college (e.g. about $5,017 a semester at UGA in 2026-27); flat $2,985 a semester at private colleges.", "estimate": { "public": "tuition", "private_per_year": 5970 } },
       "application": ["FAFSA", "GSFAPP"],
       "source_url": "https://gsfc.georgia.gov"
     },
@@ -39,7 +39,7 @@
         "rigor_levels": ["AP", "IB", "DE"],
         "tests_any": { "sat": 1200, "act": 25 }
       },
-      "award": { "summary": "100% of standard tuition at public colleges." },
+      "award": { "summary": "100% of standard tuition at public colleges.", "estimate": { "public": "tuition" } },
       "application": ["FAFSA", "GSFAPP"],
       "source_url": "https://gsfc.georgia.gov"
     }
