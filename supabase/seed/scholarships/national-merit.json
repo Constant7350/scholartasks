@@ -817,7 +817,9 @@
   "max_income": null,
   "need_based": false,
   "citizen_required": false,
-  "interests": null,
+  "interests": [
+   "Agriculture and animals"
+  ],
   "groups": null,
   "college_type": "any",
   "college": null,
