@@ -1,14 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { CalendarCard } from "./calendar-card";
+import { milestoneById, milestoneDue, milestoneId, milestonesFor } from "../../lib/milestones";
 
-interface Student { id: string; first_name: string; permissions: Record<string, boolean> }
+interface Student { id: string; first_name: string; grade_level: number; permissions: Record<string, boolean> }
 interface College { id: string; student_id: string; name: string; plan: string; deadline: string | null; status: string }
-interface Task { id: string; student_id: string; title: string; kind: string; due_on: string | null; status: string; url: string | null; amount: number | null; created_by: string | null }
+interface Task { id: string; student_id: string; title: string; kind: string; due_on: string | null; status: string; url: string | null; amount: number | null; created_by: string | null; deadline_id: string | null }
 interface Choice { id: string; student_id: string; scholarship_id: string; choice: string; task_id: string | null; done_steps: number[] | null }
 interface StepRow { scholarship_id: string; steps: { title: string; detail: string }[] }
 
@@ -16,7 +17,7 @@ const PLANS: Record<string, string> = {
   EA: "Early Action", ED: "Early Decision", ED2: "Early Decision II", REA: "Restrictive Early Action",
   RD: "Regular Decision", rolling: "Rolling", priority: "Priority",
 };
-const KINDS: Record<string, string> = { scholarship: "Scholarship", aid: "Financial aid form", test: "Test (SAT/ACT)", other: "Other", college: "College application" };
+const KINDS: Record<string, string> = { scholarship: "Scholarship", aid: "Financial aid form", test: "Test (SAT/ACT)", milestone: "Beyond grades", other: "Other", college: "College application" };
 const OPEN_COLLEGE = ["considering", "applying"];
 const DONE_COLLEGE: Record<string, string> = {
   submitted: "Submitted", accepted: "Accepted 🎉", waitlisted: "Waitlisted", deferred: "Deferred", denied: "Not admitted", enrolled: "Enrolling 🎓",
@@ -69,6 +70,7 @@ export default function TodoPage() {
   const [stepRows, setStepRows] = useState<StepRow[]>([]);
   const [tab, setTab] = useState<"todo" | "done">("todo");
   const [offline, setOffline] = useState(false);
+  const [tasksLoaded, setTasksLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -78,7 +80,7 @@ export default function TodoPage() {
     const uid = s.session.user.id;
     const [mem, st] = await Promise.all([
       sb.from("family_members").select("role, student_id").eq("user_id", uid),
-      sb.from("students").select("id, first_name, permissions").order("first_name"),
+      sb.from("students").select("id, first_name, grade_level, permissions").order("first_name"),
     ]);
     const rows = (mem.data as { role: "parent" | "student"; student_id: string | null }[]) ?? [];
     const asStudent = rows.find((r) => r.role === "student");
@@ -90,13 +92,14 @@ export default function TodoPage() {
 
     const [col, tk, ch] = await Promise.all([
       sb.from("student_colleges").select("id, student_id, name, plan, deadline, status"),
-      sb.from("tasks").select("id, student_id, title, kind, due_on, status, url, amount, created_by"),
+      sb.from("tasks").select("id, student_id, title, kind, due_on, status, url, amount, created_by, deadline_id"),
       sb.from("scholarship_choices").select("id, student_id, scholarship_id, choice, task_id, done_steps").eq("choice", "added"),
     ]);
     if (missingTables(col.error) || missingTables(tk.error)) return setOffline(true);
     setOffline(false);
     setColleges((col.data as College[]) ?? []);
     setTasks((tk.data as Task[]) ?? []);
+    setTasksLoaded(true);
     const chosen = ch.error ? [] : ((ch.data as Choice[]) ?? []);
     setChoices(chosen);
     const ids = [...new Set(chosen.map((c) => c.scholarship_id))];
@@ -107,6 +110,26 @@ export default function TodoPage() {
   }, [sb]);
 
   useEffect(() => { void load(); }, [load]);
+
+  // Adds this school year's "beyond grades" steps (activities, service,
+  // recommenders, essay) to the student's list once. Steps set aside with
+  // "Not for me" stay set aside.
+  const seeded = useRef(new Set<string>());
+  useEffect(() => {
+    const s = students.find((x) => x.id === current);
+    if (!sb || !s || offline || !tasksLoaded || !me?.role) return;
+    const tag = `${s.id}:${s.grade_level}`;
+    if (seeded.current.has(tag)) return;
+    seeded.current.add(tag);
+    const have = new Set(tasks.filter((t) => t.student_id === s.id).map((t) => t.deadline_id));
+    const today = todayIso();
+    const add = milestonesFor(s.grade_level)
+      .map((m) => ({ m, id: milestoneId(Math.max(8, Math.min(12, s.grade_level)), m.key) }))
+      .filter(({ id }) => !have.has(id))
+      .map(({ m, id }) => ({ student_id: s.id, kind: "milestone", deadline_id: id, title: m.title, due_on: milestoneDue(m.due, today), status: "todo" }));
+    if (!add.length) return;
+    void sb.from("tasks").insert(add).then(({ error: e }) => { if (!e) void load(); });
+  }, [sb, students, current, tasks, tasksLoaded, offline, me, load]);
 
   const student = students.find((s) => s.id === current);
   const isParent = me?.role === "parent";
@@ -128,7 +151,7 @@ export default function TodoPage() {
       const list = choice ? stepRows.find((r) => r.scholarship_id === choice.scholarship_id)?.steps : undefined;
       out.push({
         key: "t" + t.id, title: t.title, kind: KINDS[t.kind] ?? t.kind, due: t.due_on, done: t.status === "done",
-        pending: t.status === "needs_parent_approval", url: t.url, amount: t.amount, task: t,
+        pending: t.status === "needs_parent_approval", url: t.url ?? milestoneById(t.deadline_id)?.link ?? null, amount: t.amount, task: t,
         steps: choice && list?.length ? { list, done: choice.done_steps ?? [], choice } : undefined,
       });
     }
@@ -192,7 +215,9 @@ export default function TodoPage() {
               <b>{i.title}</b>
               <span className="hint">
                 {i.kind}{i.amount ? ` · $${i.amount.toLocaleString()}` : ""}
-                {i.url && <> · <a href={i.url} target="_blank" rel="noreferrer noopener">open</a></>}
+                {i.url && (i.url.startsWith("/")
+                  ? <> · <a href={i.url}>open</a></>
+                  : <> · <a href={i.url} target="_blank" rel="noreferrer noopener">open</a></>)}
               </span>
               <span className="todo-due">{i.due ? `Due ${nice(i.due)}` : "No due date"}</span>
             </span>
@@ -201,6 +226,10 @@ export default function TodoPage() {
             {i.pending ? <span className="pill pill-soon">Waiting for parent&apos;s OK</span>
               : i.done ? <span className="pill pill-ok">{i.doneLabel ?? "Done"} ✓</span>
               : <DueBadge iso={i.due} />}
+            {i.task?.kind === "milestone" && !i.done && !i.pending && (
+              <button className="btn btn-ghost btn-inline btn-sm" title="Hide this step from the list"
+                onClick={() => void run(() => sb.from("tasks").update({ status: "dismissed" }).eq("id", i.task!.id))}>Not for me</button>
+            )}
             {isParent && i.pending && <button className="btn btn-inline btn-sm" onClick={() => void run(() => sb.from("tasks").update({ status: "done" }).eq("id", i.task!.id))}>Approve</button>}
           </div>
         </div>
