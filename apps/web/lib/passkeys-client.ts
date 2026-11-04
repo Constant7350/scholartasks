@@ -3,8 +3,11 @@
 import { browserSupportsWebAuthn, startAuthentication, startRegistration } from "@simplewebauthn/browser";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-/** True when this browser can use passkeys at all. */
-export const passkeysSupported = () => typeof window !== "undefined" && browserSupportsWebAuthn();
+/** True inside the ScholarTasks phone app, which has its own Face ID lock. */
+export const inPhoneApp = () => typeof navigator !== "undefined" && /ScholarTasksApp\//.test(navigator.userAgent);
+
+/** True when this browser can use passkeys at all (the phone app uses its own Face ID lock instead). */
+export const passkeysSupported = () => typeof window !== "undefined" && !inPhoneApp() && browserSupportsWebAuthn();
 
 /** True when this phone or computer has Face ID, Touch ID, a fingerprint reader or Windows Hello. */
 export async function hasBuiltInUnlock(): Promise<boolean> {
