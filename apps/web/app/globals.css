@@ -353,3 +353,29 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .rescue-more summary { cursor: pointer; color: var(--navy); font-size: 14px; }
 .rescue-more p, .rescue-more ul { font-size: 14px; }
 .attn-plan { margin-left: auto; flex: none; }
+
+/* Study skills library */
+.lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 12px 0; }
+.lesson-tile { display: flex; flex-direction: column; gap: 6px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; text-decoration: none; color: inherit; }
+.lesson-tile:hover { border-color: var(--navy); }
+.lesson-tile .hint { margin: 0; font-size: 14px; }
+.lesson-done { border-color: #9fd3b0; }
+.lesson-emoji { font-size: 26px; }
+.lesson-meta { margin-top: auto; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.lesson-steps { padding-left: 20px; margin: 0; }
+.lesson-steps li { margin: 0 0 8px; }
+.lesson-project { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
+.lesson-project:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+.lesson-project-other { opacity: 0.75; }
+.chip-right, .chip-right:disabled { background: #e6f4ea; border-color: #2e7d4f; color: #1d5c37; }
+.chip-wrong, .chip-wrong:disabled { background: var(--err-soft); border-color: var(--err); color: var(--err); }
+.chip:disabled { cursor: default; }
+.tool { margin-top: 16px; padding: 16px; border: 1px dashed var(--line); border-radius: var(--radius); background: #fafbfe; }
+.tool-list { margin: 8px 0 0; padding-left: 20px; }
+.tool-list li { margin-bottom: 6px; }
+.tool-item { display: flex; gap: 8px; align-items: center; padding: 4px 0; }
+.tool-item .linklike { margin-left: auto; }
+.tool-timer { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.timer-num { font-size: 44px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.lesson-review-head { all: unset; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
+.checkin-q .chips { justify-content: flex-start; }
