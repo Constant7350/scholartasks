@@ -6,3 +6,4 @@ export * from "./reminders";
 export * from "./permissions";
 export * from "./scorecard";
 export { selectableStates, regionsForState, type LoadedPacks } from "./selection";
+export * from "./scholarships";

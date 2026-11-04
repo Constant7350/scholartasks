@@ -381,3 +381,21 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .checkin-q .chips { justify-content: flex-start; }
 .practice-tile { font: inherit; text-align: left; cursor: pointer; }
 .tutor-box { margin-top: 12px; }
+
+/* Scholarship matches */
+.sch-tabs { grid-template-columns: repeat(5, 1fr); margin-top: 18px; }
+.sch-tabs button { font-size: 14px; }
+.sch-count { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: #e3e7ee; font-size: 12px; }
+.sch-amount { color: var(--navy); font-size: 15px; }
+.sch-card h2 { font-size: 19px; }
+.sch-reasons { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; font-size: 14px; }
+.sch-met { color: var(--ok); }
+.sch-unknown { color: #8a6514; }
+.sch-missing { color: var(--err); }
+.sch-profile summary { cursor: pointer; }
+.sch-profile .chips { justify-content: flex-start; }
+@media (max-width: 640px) { .sch-tabs { grid-template-columns: repeat(3, 1fr); } }
+.sch-diff { border-collapse: collapse; font-size: 14px; }
+.sch-diff th { text-align: left; padding: 4px 10px 4px 0; text-transform: capitalize; color: var(--muted); font-weight: 600; }
+.sch-diff td { padding: 4px 8px 4px 0; vertical-align: top; }
+details.review > summary { cursor: pointer; }
