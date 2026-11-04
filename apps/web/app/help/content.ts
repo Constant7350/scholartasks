@@ -72,11 +72,13 @@ export const TOPICS: Topic[] = [
     area: "Getting started",
     title: "The Home page and Menu",
     href: "/home",
-    keywords: ["dashboard", "menu", "navigation", "tiles", "main page", "where is"],
+    keywords: ["dashboard", "menu", "navigation", "tiles", "main page", "where is", "back", "switch student", "tab bar"],
     summary: "Home shows your students, each student's GPA scorecard, the main tools and key Georgia dates.",
     body: [
-      "Tap a tile to open that tool. The Menu button at the top right lists every page, including Family and permissions, Help, and Sign out.",
-      "If you have more than one student, most pages show name buttons at the top so you can switch between them.",
+      "Tap a tile to open that tool. The Menu button at the top right lists every page. Students see only their own pages; parents also see Family and permissions. Help and Sign out are at the bottom of the menu.",
+      "On a computer, the main pages sit in a row under the top bar, and the page you are on is underlined. On a phone, they sit along the bottom of the screen, and More opens the full menu.",
+      "Parents: the Viewing box shows which student you are looking at. Pick another name and every page switches to that student, and stays on them as you move around.",
+      "Home is always one tap away, in the page row on a computer or the bottom bar on a phone.",
     ],
   },
 
@@ -553,7 +555,10 @@ export interface Tip {
 
 export const TIPS: Tip[] = [
   // Every page
-  { routes: ["*"], sel: "details.menu summary", body: "Every page is in this menu, including Family and permissions, Help and Sign out.", topic: "home" },
+  { routes: ["*"], sel: "details.menu summary", body: "Every page is in this menu. Students see their own pages; parents also see Family and permissions. Help and Sign out are at the bottom.", topic: "home" },
+  { routes: ["*"], sel: ".strip-links", body: "The main pages. The underlined one is where you are now. Tap Home to go back to the start.", topic: "home" },
+  { routes: ["*"], sel: ".tabbar", body: "Main pages along the bottom. More opens the full menu.", topic: "home" },
+  { routes: ["*"], sel: ".pagestrip .student-switch", body: "Which student you are looking at. Pick another name and every page switches to that student.", topic: "home" },
   { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
 
   // Home

@@ -8,6 +8,7 @@ import { loadStudy, type StudyContext } from "../context";
 import { bandFor, lessonById, LESSONS } from "../lessons";
 import { QuickCheck } from "../quick-check";
 import { FocusTimer, SpacingPlanner, WeekPlanner } from "../tools";
+import { rememberedStudent } from "../../../lib/current-student";
 
 export default function LessonPage() {
   const sb = supabase();
@@ -23,7 +24,7 @@ export default function LessonPage() {
       const { data: s } = await sb.auth.getSession();
       if (!s.session) return window.location.replace(`/signin?next=/study/${id}`);
       const c = await loadStudy(sb, s.session.user.id);
-      const wanted = new URLSearchParams(window.location.search).get("student");
+      const wanted = rememberedStudent();
       setCtx(c);
       setStudentId(c.own ?? c.students.find((x) => x.id === wanted)?.id ?? c.students[0]?.id ?? null);
     })();

@@ -5,6 +5,7 @@ import { buildScorecard, displayGpa, type CourseGrade, type StatePack } from "@s
 import gaPack from "../../../../../packs/states/GA.json";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
+import { rememberedStudent } from "../../../lib/current-student";
 
 const GA = gaPack as unknown as StatePack;
 const LEVELS: Record<string, string> = { standard: "Standard", honors: "Honors", AP: "AP", IB: "IB", DE: "Dual enrollment" };
@@ -33,7 +34,7 @@ export default function RecordPage() {
     if (!sb) return;
     const { data: s } = await sb.auth.getSession();
     if (!s.session) return window.location.replace("/signin?next=/grades");
-    const wanted = new URLSearchParams(window.location.search).get("student");
+    const wanted = rememberedStudent();
     const [mem, st] = await Promise.all([
       sb.from("family_members").select("role, student_id").eq("user_id", s.session.user.id),
       sb.from("students").select("*").order("first_name"),

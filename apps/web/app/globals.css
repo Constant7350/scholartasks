@@ -106,9 +106,9 @@ a { color: var(--navy); }
 /* ---------- Shared app pages ---------- */
 .topbar { background: #fff; border-bottom: 1px solid var(--line); }
 .topbar-inner { max-width: 960px; margin: 0 auto; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.topbar nav { display: flex; gap: 18px; font-size: 15px; }
-.topbar nav a { text-decoration: none; color: var(--muted); font-weight: 500; }
-.topbar nav a:hover { color: var(--navy); }
+.topbar-inner > nav { display: flex; gap: 18px; font-size: 15px; }
+.topbar-inner > nav a { text-decoration: none; color: var(--muted); font-weight: 500; }
+.topbar-inner > nav a:hover { color: var(--navy); }
 .page { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
 .page h1 { letter-spacing: -0.01em; }
 
@@ -138,12 +138,12 @@ details.perm label { display: flex; gap: 10px; align-items: center; margin: 8px 
 .code-input { font-size: 24px; letter-spacing: 0.2em; text-transform: uppercase; text-align: center; font-family: ui-monospace, "SF Mono", Consolas, monospace; }
 .note-ok { background: var(--ok-soft); color: var(--ok); }
 .note-info { background: #eef2f9; color: var(--navy); }
-.topbar nav a { white-space: nowrap; }
+.topbar-inner > nav a { white-space: nowrap; }
 @media (max-width: 480px) {
   .topbar-inner { padding: 12px 16px; }
   .topbar .brand { font-size: 17px; gap: 8px; }
   .topbar .brand-mark { width: 30px; height: 30px; }
-  .topbar nav { gap: 12px; font-size: 14px; }
+  .topbar-inner > nav { gap: 12px; font-size: 14px; }
 }
 
 .share { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--gold); }
@@ -153,7 +153,7 @@ details.perm label { display: flex; gap: 10px; align-items: center; margin: 8px 
 @media (max-width: 480px) { .share-row > * { flex: 1 1 45%; text-align: center; justify-content: center; } }
 
 /* ---------- Menu ---------- */
-.topbar nav { align-items: center; }
+.topbar-inner > nav { align-items: center; }
 details.menu { position: relative; }
 details.menu summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; color: var(--navy); font-weight: 600; padding: 6px 10px; border: 1.5px solid var(--line); border-radius: 999px; }
 details.menu summary::-webkit-details-marker { display: none; }
@@ -162,6 +162,37 @@ details.menu[open] summary { background: #eef2f9; border-color: var(--navy); }
 .menu-list a, .menu-list button { text-align: left; font: inherit; font-size: 15px; color: var(--ink) !important; text-decoration: none; padding: 10px 12px; border-radius: 8px; background: none; border: 0; cursor: pointer; white-space: nowrap; }
 .menu-list a:hover, .menu-list button:hover { background: #eef1f7; }
 .menu-list hr { border: 0; border-top: 1px solid var(--line); margin: 4px 0; }
+.menu-list { max-height: calc(100vh - 90px); overflow-y: auto; min-width: 290px; }
+.menu-group { display: grid; }
+.menu-heading { margin: 8px 12px 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.menu-list a.nav-on { background: #eef2f9; color: var(--navy) !important; font-weight: 700; box-shadow: inset 3px 0 0 var(--gold); }
+.menu-switch { padding: 8px 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+
+/* ---------- Page strip (under the top bar) + phone tab bar ---------- */
+.pagestrip { border-top: 1px solid var(--line); background: #fbfcfe; }
+.pagestrip-inner { max-width: 960px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 14px; min-height: 46px; }
+.strip-links { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; flex: 1; }
+.strip-links a { text-decoration: none; color: var(--muted); font-weight: 600; font-size: 14px; padding: 13px 10px 11px; border-bottom: 3px solid transparent; white-space: nowrap; }
+.strip-links a:hover { color: var(--navy); }
+.strip-links a.nav-on { color: var(--navy); border-bottom-color: var(--gold); }
+.student-switch { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; white-space: nowrap; color: var(--navy); }
+.student-switch-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.student-switch select { font: inherit; font-weight: 700; color: var(--navy); border: 1.5px solid var(--line); border-radius: 999px; padding: 5px 10px; background: #fff; cursor: pointer; }
+.pagestrip .student-switch { padding-right: 12px; border-right: 1px solid var(--line); }
+.tabbar { display: none; }
+@media (max-width: 720px) {
+  .strip-links { display: none; }
+  .pagestrip .student-switch { border-right: 0; padding-right: 0; }
+  .pagestrip:not(:has(.student-switch)) { display: none; }
+  .tabbar { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -4px 16px rgba(12, 31, 61, 0.08); padding-bottom: env(safe-area-inset-bottom); }
+  .tabbar a, .tabbar button { font: inherit; display: grid; justify-items: center; gap: 2px; padding: 8px 2px 7px; font-size: 11px; font-weight: 600; color: var(--muted); text-decoration: none; background: none; border: 0; border-top: 3px solid transparent; cursor: pointer; }
+  .tabbar-icon { font-size: 20px; line-height: 1; }
+  .tabbar .nav-on { color: var(--navy); border-top-color: var(--gold); }
+  body:has(.tabbar) { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+  .menu-list { position: fixed; left: 8px; right: 8px; top: auto; bottom: calc(70px + env(safe-area-inset-bottom)); max-height: calc(100vh - 140px); min-width: 0; }
+  .menu-list a, .menu-list button { white-space: normal; }
+}
+@media print { .pagestrip, .tabbar { display: none !important; } }
 
 /* ---------- Home ---------- */
 .hero h1 { margin: 0 0 6px; font-size: clamp(26px, 5vw, 34px); }
@@ -502,3 +533,7 @@ body.help-on { padding-bottom: 96px; }
 .tp-ok { color: #2e7d4f; }
 .tp-miss { color: var(--err); }
 .tp-flag { white-space: nowrap; font-size: 13px; padding: 6px 12px; }
+@media (max-width: 720px) {
+  body:has(.tabbar) .help-bar { bottom: calc(72px + env(safe-area-inset-bottom)); }
+  body.help-on:has(.tabbar) { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
+}

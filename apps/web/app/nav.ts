@@ -1,0 +1,64 @@
+/**
+ * Every page in the app menu, in one place.
+ * To add a page (SAT/ACT prep, FAFSA help, billing...), add one line here and it shows up in
+ * the menu, the page strip under the top bar and (if it has a `tab` number) the phone tab bar.
+ *
+ * roles: who sees it. "parent" = parent account, "student" = a student signed in on their own,
+ *        "none" = signed in but not in a family yet.
+ * group: which part of the menu it sits in.
+ * strip: also show it in the page strip / phone tab bar (short label is used there).
+ */
+
+export type NavRole = "parent" | "student" | "none";
+export type NavGroup = "student" | "family" | "help" | "team";
+
+export interface NavItem {
+  href: string;
+  label: string;
+  short?: string;
+  icon: string;
+  roles: NavRole[];
+  group: NavGroup;
+  /** Show in the page strip under the top bar (desktop). */
+  strip?: boolean;
+  /** Position in the phone tab bar (1-4). "More" is always last. */
+  tab?: number;
+}
+
+const ALL: NavRole[] = ["parent", "student", "none"];
+
+export const NAV: NavItem[] = [
+  { href: "/home", label: "Home", icon: "🏠", roles: ALL, group: "student", strip: true, tab: 1 },
+  { href: "/todo", label: "To-do list", short: "To do", icon: "✅", roles: ALL, group: "student", strip: true },
+  { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "student", strip: true, tab: 2 },
+  { href: "/grades", label: "Grades and HOPE", short: "Grades", icon: "🎓", roles: ALL, group: "student", strip: true, tab: 3 },
+  { href: "/grades/record", label: "Academic record (print)", short: "Record", icon: "📄", roles: ALL, group: "student" },
+  { href: "/scholarships", label: "Scholarships and grants", short: "Scholarships", icon: "💰", roles: ALL, group: "student", strip: true, tab: 4 },
+  { href: "/aid", label: "FAFSA and aid forms", short: "Aid forms", icon: "🧾", roles: ALL, group: "student" },
+  { href: "/counselor", label: "AI counselor", short: "Counselor", icon: "🤖", roles: ALL, group: "student", strip: true },
+  { href: "/study", label: "Study skills library", short: "Study", icon: "📚", roles: ALL, group: "student", strip: true },
+  { href: "/practice", label: "Practice questions", short: "Practice", icon: "✏️", roles: ALL, group: "student", strip: true },
+  { href: "/test-prep", label: "SAT and ACT prep", short: "SAT/ACT", icon: "📝", roles: ALL, group: "student", strip: true },
+
+  { href: "/family", label: "Family, students and permissions", icon: "👪", roles: ["parent"], group: "family" },
+  { href: "/family", label: "Set up my family (parents)", icon: "👪", roles: ["none"], group: "family" },
+  { href: "/join", label: "I'm a student: join with a code", icon: "🔑", roles: ["none"], group: "family" },
+
+  { href: "/help", label: "Help and how-to", icon: "❓", roles: ALL, group: "help" },
+
+  { href: "/admin/answers", label: "Review counselor answers", icon: "✅", roles: ALL, group: "team" },
+  { href: "/admin/questions", label: "Review practice questions", icon: "✅", roles: ALL, group: "team" },
+  { href: "/admin/lessons", label: "Review study lessons", icon: "✅", roles: ALL, group: "team" },
+  { href: "/admin/scholarships", label: "Review scholarships", icon: "✅", roles: ALL, group: "team" },
+];
+
+/** True when this nav item is the page you are on (or a page inside it). */
+export function isActive(href: string, path: string, exact = false): boolean {
+  if (path === href) return true;
+  return !exact && href !== "/home" && path.startsWith(href + "/");
+}
+
+/** The one menu item that best matches the page (so /grades/record lights up Record, not Grades). */
+export function bestMatch(items: NavItem[], path: string): NavItem | undefined {
+  return items.filter((i) => isActive(i.href, path)).sort((a, b) => b.href.length - a.href.length)[0];
+}

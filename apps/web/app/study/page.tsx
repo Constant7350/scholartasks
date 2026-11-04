@@ -5,11 +5,12 @@ import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { loadStudy, type StudyContext } from "./context";
 import { LESSONS } from "./lessons";
+import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 export default function StudyLibraryPage() {
   const sb = supabase();
   const [ctx, setCtx] = useState<StudyContext | null>(null);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [current, setCurrent] = useCurrentStudent();
 
   useEffect(() => {
     if (!sb) return;
@@ -18,7 +19,7 @@ export default function StudyLibraryPage() {
       if (!s.session) return window.location.replace("/signin?next=/study");
       const c = await loadStudy(sb, s.session.user.id);
       setCtx(c);
-      setCurrent(c.own ?? c.students[0]?.id ?? null);
+      setCurrent(c.own ?? pickStudent(c.students, c.students[0]?.id));
     })();
   }, [sb]);
 

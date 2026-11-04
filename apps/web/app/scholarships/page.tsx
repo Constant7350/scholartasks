@@ -8,6 +8,7 @@ import {
 import gaPack from "../../../../packs/states/GA.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 const GA = gaPack as unknown as StatePack;
 
@@ -38,12 +39,13 @@ export default function ScholarshipsPage() {
   const sb = supabase();
   const [role, setRole] = useState<"parent" | "student" | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [current, setCurrent] = useCurrentStudent();
   const [grades, setGrades] = useState<GradeRow[]>([]);
   const [list, setList] = useState<Row[] | null>(null);
   const [choices, setChoices] = useState<Choice[]>([]);
   const [colleges, setColleges] = useState<{ student_id: string; name: string }[]>([]);
   const [tab, setTab] = useState<Tab | null>(null);
+  useEffect(() => setTab(null), [current]);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -63,7 +65,7 @@ export default function ScholarshipsPage() {
     setRole(r);
     const sts = (st.data as Student[]) ?? [];
     setStudents(sts);
-    setCurrent((c) => c ?? m.find((x) => x.role === "student")?.student_id ?? sts[0]?.id ?? null);
+    setCurrent((c) => c ?? m.find((x) => x.role === "student")?.student_id ?? pickStudent(sts, sts[0]?.id));
     setGrades((gr.data as GradeRow[]) ?? []);
     setList((sc.data as Row[]) ?? []);
     setChoices((ch.data as Choice[]) ?? []);

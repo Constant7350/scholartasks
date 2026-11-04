@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { loadStudy, type StudyContext } from "../study/context";
+import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 interface Question { id: string; subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null; status: string }
 interface Attempt { question_id: string; correct: boolean }
@@ -15,7 +16,7 @@ const shuffle = <T,>(a: T[]) => a.map((x) => [Math.random(), x] as const).sort((
 export default function PracticePage() {
   const sb = supabase();
   const [ctx, setCtx] = useState<StudyContext | null>(null);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [current, setCurrent] = useCurrentStudent();
   const [bank, setBank] = useState<Question[] | null>(null);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [round, setRound] = useState<Question[] | null>(null);
@@ -39,7 +40,7 @@ export default function PracticePage() {
         sb.from("practice_questions").select("id, subject, topic, kind, question, options, answer_index, model_answer, explanation, status").is("exam", null).order("subject"),
       ]);
       setCtx(c);
-      setCurrent(c.own ?? c.students[0]?.id ?? null);
+      setCurrent(c.own ?? pickStudent(c.students, c.students[0]?.id));
       setBank(q.error ? [] : ((q.data as Question[]) ?? []));
     })();
   }, [sb]);
