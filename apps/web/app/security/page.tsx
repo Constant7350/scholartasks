@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
-import { addPasskey, hasBuiltInUnlock, passkeysSupported, unlockName } from "../../lib/passkeys-client";
+import { addPasskey, hasBuiltInUnlock, inPhoneApp, passkeysSupported, unlockName } from "../../lib/passkeys-client";
 import { NotConfigured, Page } from "../ui";
 
 interface Device { id: string; device_name: string; created_at: string; last_used_at: string | null }
@@ -76,7 +76,9 @@ export default function Security() {
           Turn this on once on each phone or computer you use. After that, tap <strong>Sign in with {unlock}</strong> on the sign-in page: no email links and no password.
           Your face or fingerprint stays on your device; ScholarTasks never sees it.
         </p>
-        {!supported ? (
+        {inPhoneApp() ? (
+          <p className="note">You're in the ScholarTasks phone app, which opens with Face ID or your fingerprint on its own. The setting here is for web browsers.</p>
+        ) : !supported ? (
           <p className="note">This browser can't do Face ID or fingerprint sign-in. Try Safari on iPhone, Chrome on Android, or an up-to-date browser on your computer.</p>
         ) : (
           <>

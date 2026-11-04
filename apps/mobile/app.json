@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "ScholarTasks",
+    "slug": "scholartasks",
+    "scheme": "scholartasks",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#14305a"
+    },
+    "ios": {
+      "bundleIdentifier": "com.scholartasks.app",
+      "supportsTablet": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.scholartasks.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#14305a"
+      }
+    },
+    "plugins": [
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "ScholarTasks uses Face ID so you can open your family's plan without typing a password."
+        }
+      ],
+      "expo-secure-store"
+    ]
+  }
+}
