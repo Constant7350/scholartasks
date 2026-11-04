@@ -56,10 +56,13 @@ describe("matchScholarship", () => {
     expect(matchScholarship(s, senior, today).status).toBe("no");
     expect(matchScholarship(s, { ...senior, profile: { ...senior.profile, groups: ["Hispanic or Latino"] } }, today).status).toBe("match");
   });
-  it("flags a passed deadline", () => {
+  it("rules out a passed deadline, or moves it to next year", () => {
     const r = matchScholarship({ ...base, deadline: "2026-09-30" }, senior, today);
-    expect(r.status).toBe("maybe");
-    expect(r.unknown[0]).toMatch(/passed/);
+    expect(r.status).toBe("no");
+    expect(r.missing[0]).toMatch(/passed/);
+    const junior = { ...senior, gradeLevel: 11 };
+    expect(matchScholarship({ ...base, grades: [11, 12], deadline: "2026-09-30" }, junior, today).status).toBe("later");
+    expect(matchScholarship({ ...base, deadline: "2026-12-30" }, senior, today).status).toBe("match");
   });
 });
 
