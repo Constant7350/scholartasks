@@ -219,6 +219,8 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 
 /* ---------- Sign-in options ---------- */
 .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--ink); background: #fff; }
+.btn-passkey { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+.btn-passkey.btn-ghost { color: var(--ink); background: #fff; }
 .or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; margin: 18px 0; }
 .or::before, .or::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
 .tabs { display: grid; grid-template-columns: 1fr 1fr; background: #eef1f7; border-radius: 10px; padding: 4px; margin-bottom: 18px; }
@@ -537,3 +539,10 @@ body.help-on { padding-bottom: 96px; }
   body:has(.tabbar) .help-bar { bottom: calc(72px + env(safe-area-inset-bottom)); }
   body.help-on:has(.tabbar) { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
 }
+
+/* ---------- Face ID / fingerprint sign-in ---------- */
+.passkey-offer { border-color: var(--navy); }
+.passkey-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.device-list { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 10px; }
+.device-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.device-list .when { color: var(--muted); font-size: 13px; }

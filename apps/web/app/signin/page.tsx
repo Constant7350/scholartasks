@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { friendly, supabase } from "../../lib/supabase";
+import { passkeysSupported, signInWithPasskey, unlockName } from "../../lib/passkeys-client";
 import { Brand } from "../brand";
 import { NotConfigured, Page } from "../ui";
 
@@ -27,6 +28,15 @@ function GoogleIcon() {
   );
 }
 
+function FaceIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" />
+      <path d="M9 9v1M15 9v1M12 9v4h-1M9 16c1.7 1.3 4.3 1.3 6 0" />
+    </svg>
+  );
+}
+
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,11 +44,19 @@ export default function SignIn() {
   const [mode, setMode] = useState<Mode>("link");
   const [pwAction, setPwAction] = useState<PwAction>("signin");
   const [google, setGoogle] = useState(false);
+  const [passkey, setPasskey] = useState<"none" | "available" | "used">("none");
+  const [unlock, setUnlock] = useState("Face ID");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "confirm" | "reset-sent">("idle");
   const [error, setError] = useState<string | null>(null);
   const sb = supabase();
 
   useEffect(() => {
+    if (passkeysSupported()) {
+      let used = false;
+      try { used = localStorage.getItem("st-passkey") === "1"; } catch {}
+      setPasskey(used ? "used" : "available");
+      setUnlock(unlockName());
+    }
     if (new URLSearchParams(window.location.search).get("next")?.startsWith("/join")) setRole("student");
     // If Google or an email link sent the person back with an error, show it instead of failing silently.
     const back = new URLSearchParams(window.location.search + "&" + window.location.hash.replace(/^#/, ""));
@@ -108,6 +126,17 @@ export default function SignIn() {
     if (error) fail(error);
   };
 
+  const withPasskey = async () => {
+    setError(null);
+    setState("sending");
+    try {
+      if (await signInWithPasskey(sb)) window.location.href = nextPath();
+      else setState("idle");
+    } catch (e) {
+      fail(e);
+    }
+  };
+
   const sentText =
     state === "sent"
       ? <>We sent a sign-in link to <strong>{email.trim()}</strong>. Open it on this device to continue.</>
@@ -169,6 +198,16 @@ export default function SignIn() {
                   <span>Join with a code</span>
                 </button>
               </div>
+
+              {passkey !== "none" && (
+                <>
+                  <button type="button" className={`btn btn-passkey${passkey === "used" ? "" : " btn-ghost"}`} onClick={withPasskey} disabled={state === "sending"}>
+                    <FaceIcon /> Sign in with {unlock}
+                  </button>
+                  {passkey === "available" && <p className="switch" style={{ margin: "6px 0 12px" }}>First time? Sign in below, then turn on {unlock} from your Home page.</p>}
+                  {!google && <div className="or"><span>or use your email</span></div>}
+                </>
+              )}
 
               {google && (
                 <>
