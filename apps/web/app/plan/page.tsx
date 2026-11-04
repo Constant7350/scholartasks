@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { StatePack } from "@scholartasks/core";
+import { deadlineAppliesTo, type StatePack } from "@scholartasks/core";
 import gaPack from "../../../../packs/states/GA.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
@@ -99,7 +99,7 @@ export default function PlanPage() {
     ];
     return items.sort((a, b) => a.due.localeCompare(b.due)).filter((i) => daysUntil(i.due) <= 60).slice(0, 8);
   }, [myColleges, myTasks]);
-  const packDates = student ? GA.deadlines.filter((d) => d.grade_levels.includes(student.grade_level) && daysUntil(d.date) >= 0) : [];
+  const packDates = student ? GA.deadlines.filter((d) => deadlineAppliesTo(d, student.grade_level, todayIso()) && daysUntil(d.date) >= 0) : [];
 
   if (!sb) return <Page title="College plan"><NotConfigured /></Page>;
   if (!me) return <Page title="College plan"><p className="hint">Loading…</p></Page>;
@@ -283,7 +283,7 @@ export default function PlanPage() {
       {packDates.length > 0 && (
         <section className="panel">
           <h2>Georgia dates for grade {student.grade_level}</h2>
-          <p className="hint">Draft dates, being checked with the Georgia Student Finance Commission.</p>
+          <p className="hint">Draft dates, being checked with the Georgia Student Finance Commission. For step-by-step FAFSA help, open the <a href="/aid">financial aid checklist</a>.</p>
           <ul className="items">
             {packDates.map((d) => {
               const added = myTasks.some((t) => t.deadline_id === d.id);

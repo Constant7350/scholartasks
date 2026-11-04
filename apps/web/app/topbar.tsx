@@ -54,6 +54,7 @@ export function TopBar() {
                   <a role="menuitem" href="/grades">🎓 Grades and HOPE</a>
                   <a role="menuitem" href="/counselor">🤖 AI counselor</a>
                   <a role="menuitem" href="/scholarships">💰 Scholarships and grants</a>
+                  <a role="menuitem" href="/aid">🧾 FAFSA and aid forms</a>
                   <a role="menuitem" href="/study">📚 Study skills library</a>
                   <a role="menuitem" href="/practice">✏️ Practice questions</a>
                   <a role="menuitem" href="/test-prep">📝 SAT and ACT prep</a>

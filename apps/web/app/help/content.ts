@@ -27,6 +27,7 @@ export const AREAS = [
   "Grades and HOPE",
   "AI counselor",
   "Scholarships",
+  "Financial aid forms",
   "Study and practice",
   "Account and privacy",
 ] as const;
@@ -372,6 +373,82 @@ export const TOPICS: Topic[] = [
     ],
   },
 
+  // ---------- Financial aid forms ----------
+  {
+    id: "aid-checklist",
+    area: "Financial aid forms",
+    title: "The FAFSA and Georgia aid checklist",
+    href: "/aid",
+    keywords: ["fafsa", "fsa id", "studentaid", "gafutures", "gsfapp", "hope", "zell", "css profile", "financial aid", "pell", "forms", "sai"],
+    summary: "Step by step through the FAFSA, the GAfutures account, HOPE and Zell, from making accounts to accepting aid. You file on the official sites; ScholarTasks keeps you on track.",
+    steps: [
+      "Open Menu, then FAFSA and aid forms.",
+      "Tap a step to read what to do, who does it and about how long it takes.",
+      "Use the button in each step to open the official site, then come back and tap Mark done.",
+      "Optional steps, like the CSS Profile, have a Doesn't apply to us button.",
+      "The Next button at the top always jumps to the next step left.",
+    ],
+    body: [
+      "The checklist follows your student's graduation year. A senior in fall 2026 files the 2027-28 FAFSA, which uses 2025 taxes.",
+      "Parents and the connected student share the same checklist, so either can tick steps off.",
+    ],
+    faq: [
+      { q: "Will ScholarTasks fill in or submit the FAFSA for us?", a: "No. Only the student and their parents may sign in to StudentAid.gov and submit. We explain each screen, list what to have ready and remind you of dates." },
+      { q: "Do we need both the FAFSA and the GSFAPP?", a: "No. Georgia accepts either one for HOPE and Zell Miller. The FAFSA also gives federal aid like Pell Grants, so most families file the FAFSA and skip the GSFAPP." },
+    ],
+  },
+  {
+    id: "aid-household",
+    area: "Financial aid forms",
+    title: "Who fills in the FAFSA, and the household questions",
+    href: "/aid",
+    keywords: ["contributor", "parent", "divorced", "separated", "stepparent", "remarried", "married", "joint return"],
+    summary: "Six quick questions tell you which parents must take part in the FAFSA and build your document list. Only a parent can answer them.",
+    body: [
+      "The answers are situations only, like \"parents are divorced\". There are no money amounts or ID numbers.",
+      "Divorced or separated parents: the parent who gave more financial support in the last 12 months fills in the FAFSA.",
+      "Always double-check with StudentAid.gov's own help on who counts as a parent.",
+    ],
+  },
+  {
+    id: "aid-documents",
+    area: "Financial aid forms",
+    title: "Your document list",
+    href: "/aid",
+    keywords: ["documents", "tax return", "1040", "w-2", "bank", "investments", "what do i need"],
+    summary: "A list of what to have ready, built from your household answers. Tick each one off when it's in hand.",
+    body: [
+      "Keep the papers at home. Don't upload tax returns or bank statements to ScholarTasks.",
+      "Most tax numbers move over from the IRS once each contributor gives consent on the FAFSA.",
+    ],
+  },
+  {
+    id: "aid-dates",
+    area: "Financial aid forms",
+    title: "Aid dates and reminders",
+    href: "/aid",
+    keywords: ["priority date", "deadline", "june 30", "reminder", "when"],
+    summary: "Add the federal deadline and each college's own aid priority date to get email reminders before each one.",
+    steps: [
+      "On the checklist page, find Aid dates and reminders.",
+      "Tap Remind me on the FAFSA dates.",
+      "For each college, look up its financial aid priority date on its website, pick the date and tap Add.",
+    ],
+    body: ["Colleges' own dates are usually months before the federal deadline. Filing early helps, because some money runs out."],
+  },
+  {
+    id: "aid-safety",
+    area: "Financial aid forms",
+    title: "Keeping FSA IDs and SSNs safe",
+    href: "/aid",
+    keywords: ["password", "ssn", "social security", "fsa id", "safe", "security", "scam"],
+    summary: "ScholarTasks never asks for FSA ID logins, GAfutures passwords, Social Security numbers, tax returns or bank details.",
+    body: [
+      "Each person makes and uses their own StudentAid.gov account. A parent must not make or use the student's.",
+      "If anyone asks for these by email, text or phone claiming to be ScholarTasks, it isn't us.",
+      "The FAFSA is free. Never pay a website to file it.",
+    ],
+  },
   // ---------- Study and practice ----------
   {
     id: "study",
@@ -477,7 +554,7 @@ export interface Tip {
 export const TIPS: Tip[] = [
   // Every page
   { routes: ["*"], sel: "details.menu summary", body: "Every page is in this menu, including Family and permissions, Help and Sign out.", topic: "home" },
-  { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/scholarships", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
+  { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
 
   // Home
   { routes: ["/home"], sel: ".hero h1", body: "This is your home base. Try any tool below. You can add your student whenever you're ready.", topic: "welcome" },
@@ -543,6 +620,15 @@ export const TIPS: Tip[] = [
   { routes: ["/scholarships"], sel: ".sch-card h2", body: "Each card shows who offers it, the amount, the deadline and why it fits or what to check.", topic: "scholarship-matches" },
   { routes: ["/scholarships"], sel: ".sch-card button", text: "Add to my deadlines", body: "Puts this award on your plan with email reminders.", topic: "scholarship-save" },
   { routes: ["/scholarships"], sel: ".sch-card button", text: "Not for us", body: "Hides this award. Find it again under Hidden at the bottom.", topic: "scholarship-save" },
+
+  // Financial aid
+  { routes: ["/aid"], sel: ".aid-summary h2", body: "How many FAFSA steps are done. The button jumps to the next one.", topic: "aid-checklist" },
+  { routes: ["/aid"], sel: ".aid-safe", body: "You file on the official sites. We never ask for FSA IDs, passwords or SSNs.", topic: "aid-safety" },
+  { routes: ["/aid"], sel: "h2", text: "Who fills in", body: "Who must take part in the FAFSA, from the household questions.", topic: "aid-household" },
+  { routes: ["/aid"], sel: "h2", text: "Documents to have ready", body: "What to have ready before you start. Tick each one off.", topic: "aid-documents" },
+  { routes: ["/aid"], sel: "h2", text: "Aid dates", body: "Get reminders for the FAFSA deadline and each college's aid priority date.", topic: "aid-dates" },
+  { routes: ["/aid"], sel: ".aid-step summary", body: "Tap a step to see what to do, then Mark done.", topic: "aid-checklist" },
+  { routes: ["/home"], sel: ".tile[href='/aid'] b", body: "Step-by-step FAFSA and Georgia aid checklist with reminders.", topic: "aid-checklist" },
 
   // Study
   { routes: ["/study"], sel: "main h1", body: "Free lessons on how to study. No AI used.", topic: "study" },

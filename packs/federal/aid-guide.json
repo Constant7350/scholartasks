@@ -1,0 +1,337 @@
+{
+  "kind": "aid_guide",
+  "version": "2027.1-draft",
+  "status": "draft",
+  "cycles": [
+    {
+      "id": "2027-28",
+      "for_class_of": 2027,
+      "opens": "2026-09-23",
+      "opens_expected": false,
+      "federal_deadline": "2028-06-30",
+      "corrections_deadline": "2028-09-12",
+      "tax_year": 2025
+    },
+    {
+      "id": "2028-29",
+      "for_class_of": 2028,
+      "opens": "2027-10-01",
+      "opens_expected": true,
+      "federal_deadline": "2029-06-30",
+      "tax_year": 2026
+    },
+    {
+      "id": "2029-30",
+      "for_class_of": 2029,
+      "opens": "2028-10-01",
+      "opens_expected": true,
+      "federal_deadline": "2030-06-30",
+      "tax_year": 2027
+    }
+  ],
+  "steps": [
+    {
+      "id": "student-account",
+      "stage": "accounts",
+      "order": 10,
+      "title": "Student makes a StudentAid.gov account",
+      "who": "student",
+      "minutes": 10,
+      "summary": "This account (often called the FSA ID) is how the student signs the FAFSA. Only the student may make and use it.",
+      "how": [
+        "Open StudentAid.gov and choose Create Account.",
+        "Use the student's own personal email and cell phone, not a school email that stops working after graduation.",
+        "Enter the name, date of birth and Social Security number exactly as they appear on the Social Security card.",
+        "Save the username, password and backup code in a password manager or somewhere safe at home.",
+        "The Social Security check can take 1 to 3 days. You can start the FAFSA while you wait."
+      ],
+      "watch_out": [
+        "Never type the FSA ID, password or Social Security number into ScholarTasks. We will never ask for them.",
+        "A parent must not make or use the student's account, even to help. Each person signs with their own."
+      ],
+      "link": { "label": "Create an account on StudentAid.gov", "url": "https://studentaid.gov/fsa-id/create-account/launch" }
+    },
+    {
+      "id": "parent-account",
+      "stage": "accounts",
+      "order": 20,
+      "title": "Each contributing parent makes their own account",
+      "who": "parent",
+      "minutes": 10,
+      "optional": false,
+      "summary": "Every parent who has to take part (see Who fills in the FAFSA below) needs their own StudentAid.gov account to give consent and sign.",
+      "how": [
+        "Check the household questions below first so you know which parent or parents are contributors.",
+        "Each contributor opens StudentAid.gov and chooses Create Account, using their own email and phone.",
+        "A parent without a Social Security number can still make an account. Choose the option for people without one.",
+        "Save the login somewhere safe. You'll use the same account every year your student files."
+      ],
+      "watch_out": [
+        "One email and one phone number can belong to only one StudentAid.gov account. Parents can't share the student's."
+      ],
+      "link": { "label": "Create an account on StudentAid.gov", "url": "https://studentaid.gov/fsa-id/create-account/launch" }
+    },
+    {
+      "id": "household",
+      "stage": "gather",
+      "order": 10,
+      "title": "Answer a few questions about your household",
+      "who": "parent",
+      "minutes": 2,
+      "summary": "Six quick questions tell you which parents must take part and which papers to gather. No numbers, no ID numbers.",
+      "how": [
+        "Answer the household questions on this page. A parent can change them any time.",
+        "ScholarTasks then shows who the FAFSA contributors are and builds your document list."
+      ],
+      "in_app": "household",
+      "link": { "label": "Official help: who's my FAFSA parent?", "url": "https://studentaid.gov/apply-for-aid/fafsa/filling-out/parent-info" }
+    },
+    {
+      "id": "documents",
+      "stage": "gather",
+      "order": 20,
+      "title": "Gather your documents",
+      "who": "family",
+      "minutes": 20,
+      "summary": "Have these ready before you sit down so the FAFSA takes about 20 minutes. Tick each one off as you find it.",
+      "how": [
+        "Use the list on this page. It is built from your household answers.",
+        "Most tax numbers move over from the IRS by themselves once each contributor gives consent, so you mostly need the return to check against.",
+        "Asset amounts (cash, savings, investments) are as of the day you file, not from the tax year."
+      ],
+      "in_app": "documents"
+    },
+    {
+      "id": "school-list",
+      "stage": "gather",
+      "order": 30,
+      "title": "List the colleges to send the FAFSA to",
+      "who": "student",
+      "minutes": 5,
+      "summary": "You can send the FAFSA to up to 20 colleges at once, free. Add every college the student is applying to, even if unsure.",
+      "how": [
+        "Look at the Colleges list on your ScholarTasks plan.",
+        "On the FAFSA, search each college by name or by its federal school code.",
+        "Add a college you're not sure about. It costs nothing and you can remove it later.",
+        "Add each college's own financial aid priority date below so you get reminders."
+      ],
+      "in_app": "college_dates",
+      "link": { "label": "Look up federal school codes", "url": "https://studentaid.gov/fafsa-app/FSCsearch" }
+    },
+    {
+      "id": "fafsa-start",
+      "stage": "file",
+      "order": 10,
+      "title": "Student starts the {cycle} FAFSA and invites contributors",
+      "who": "student",
+      "minutes": 15,
+      "summary": "The student signs in, fills in their own part and invites each contributor by email or with a text code.",
+      "how": [
+        "Student signs in at StudentAid.gov and starts the {cycle} FAFSA (the year you start college).",
+        "Answer the student questions and add the colleges.",
+        "When asked about parents, invite each contributor. They get an email or a code by text.",
+        "Give consent for the IRS to share the student's tax information. If the student didn't file taxes, they still give consent.",
+        "Sign and submit the student section."
+      ],
+      "watch_out": [
+        "Pick the {cycle} form, not the one for the current school year.",
+        "Without consent from every contributor, the FAFSA can't be processed and no aid can be offered."
+      ],
+      "link": { "label": "Start the FAFSA", "url": "https://studentaid.gov/h/apply-for-aid/fafsa" }
+    },
+    {
+      "id": "fafsa-parent",
+      "stage": "file",
+      "order": 20,
+      "title": "Each contributor fills in their part and signs",
+      "who": "parent",
+      "minutes": 15,
+      "summary": "Each contributor opens the invitation, signs in with their own account, gives IRS consent, adds what the IRS doesn't know, and signs.",
+      "how": [
+        "Open the invitation email or enter the text code at StudentAid.gov.",
+        "Give consent to share your federal tax information. This is required, even if you didn't file.",
+        "Check the tax numbers that come over, then enter cash, savings and investment amounts as of today.",
+        "Enter the family size and how many are in college.",
+        "Sign. The FAFSA is complete only when every contributor has signed."
+      ],
+      "watch_out": [
+        "Don't count the home you live in, retirement accounts or life insurance as investments.",
+        "If you filed a tax return with a different spouse or an amended return, the IRS may not send numbers. You'll type them in from your return."
+      ],
+      "link": { "label": "Sign in to StudentAid.gov", "url": "https://studentaid.gov/h/apply-for-aid/fafsa" }
+    },
+    {
+      "id": "fafsa-submitted",
+      "stage": "file",
+      "order": 30,
+      "title": "Check the FAFSA shows as submitted",
+      "who": "student",
+      "minutes": 2,
+      "summary": "Make sure everyone signed and the status says Submitted. Save the confirmation email.",
+      "how": [
+        "Student signs in and checks the FAFSA status on the dashboard.",
+        "If it says Pending or Action Required, someone still has to sign or give consent.",
+        "Save the confirmation email from Federal Student Aid."
+      ],
+      "link": { "label": "Check my FAFSA status", "url": "https://studentaid.gov/aid-summary/fafsa" }
+    },
+    {
+      "id": "css-profile",
+      "stage": "file",
+      "order": 40,
+      "title": "CSS Profile, only if a college asks for it",
+      "who": "family",
+      "minutes": 45,
+      "optional": true,
+      "summary": "Some private colleges use the CSS Profile for their own grant money. Georgia public colleges generally don't. Check each college's financial aid page.",
+      "how": [
+        "Check each college's financial aid page for \"CSS Profile\" and its due date.",
+        "Make a College Board account for the student and fill it in with a parent.",
+        "There is a fee for each college, and many families get it waived automatically.",
+        "Some colleges also ask the other parent (in divorced families) to fill in a part."
+      ],
+      "watch_out": ["Mark this step Doesn't apply if none of your colleges ask for it."],
+      "link": { "label": "CSS Profile from College Board", "url": "https://cssprofile.collegeboard.org" }
+    },
+    {
+      "id": "fss-review",
+      "stage": "after",
+      "order": 10,
+      "title": "Read your FAFSA Submission Summary",
+      "who": "family",
+      "minutes": 10,
+      "summary": "A few days after you submit, the summary shows your Student Aid Index (SAI) and an estimate of Pell Grant eligibility. Check it for mistakes.",
+      "how": [
+        "Student signs in to StudentAid.gov and opens the FAFSA Submission Summary.",
+        "Check names, dates of birth, the college list and the money numbers.",
+        "If something is wrong, make a correction. Corrections are open until {corrections}.",
+        "The SAI is not what you'll pay. Each college uses it to work out your aid."
+      ],
+      "link": { "label": "View my FAFSA Submission Summary", "url": "https://studentaid.gov/aid-summary/fafsa" }
+    },
+    {
+      "id": "college-portals",
+      "stage": "after",
+      "order": 20,
+      "title": "Check each college's aid portal for a to-do list",
+      "who": "student",
+      "minutes": 10,
+      "summary": "After you apply, each college gives you a student portal. Their financial aid page may ask for more forms or documents.",
+      "how": [
+        "Open each college's applicant portal from your admissions email.",
+        "Look for a financial aid section, to-do list or \"missing documents\".",
+        "Do any to-do items quickly. Aid offers wait until they're done.",
+        "Check again every couple of weeks until you have an offer."
+      ]
+    },
+    {
+      "id": "verification",
+      "stage": "after",
+      "order": 30,
+      "title": "Send verification documents if asked",
+      "who": "family",
+      "minutes": 20,
+      "optional": true,
+      "summary": "Some FAFSAs are picked for verification, a check of the numbers. It's routine. The college tells you what to send.",
+      "how": [
+        "Watch email and each college portal for a verification request.",
+        "Send exactly what the college lists, through their secure portal, by their date.",
+        "Ask the college's aid office if anything is unclear. Never email tax papers to anyone else."
+      ],
+      "watch_out": ["Mark this step Doesn't apply if no college has asked."]
+    },
+    {
+      "id": "compare-offers",
+      "stage": "decide",
+      "order": 10,
+      "title": "Compare aid offers side by side",
+      "who": "family",
+      "minutes": 30,
+      "summary": "Compare what each college would really cost after grants and scholarships. Loans are money you pay back, so don't count them as aid.",
+      "how": [
+        "For each offer, find the full cost of attendance (tuition, housing, food, books, travel).",
+        "Subtract grants and scholarships only (free money, including HOPE or Zell).",
+        "What's left is your real cost, to cover with savings, work, or loans.",
+        "Check whether each scholarship renews every year and what GPA it needs."
+      ],
+      "link": { "label": "Compare aid offers (College Scorecard)", "url": "https://collegescorecard.ed.gov" }
+    },
+    {
+      "id": "appeal",
+      "stage": "decide",
+      "order": 20,
+      "title": "Ask for a review if your situation changed",
+      "who": "parent",
+      "minutes": 20,
+      "optional": true,
+      "summary": "If your income dropped, a job was lost, or there are big medical bills, the FAFSA's tax-year numbers may be out of date. Colleges can adjust.",
+      "how": [
+        "Contact each college's financial aid office and ask for a \"special circumstances\" or \"professional judgment\" review.",
+        "Explain the change in a short letter and attach proof (for example a layoff letter).",
+        "Ask politely; a college may also match a better offer from a similar college."
+      ],
+      "watch_out": ["Mark this step Doesn't apply if nothing changed."]
+    },
+    {
+      "id": "accept-aid",
+      "stage": "decide",
+      "order": 30,
+      "title": "Accept the aid at your chosen college",
+      "who": "student",
+      "minutes": 15,
+      "summary": "Accept grants and scholarships in the college's portal. If you borrow, there are two short online steps first.",
+      "how": [
+        "Accept the grants and scholarships in the chosen college's portal by their deadline.",
+        "Tell the college about any outside scholarships you've won.",
+        "If borrowing federal loans, do Entrance Counseling and sign the Master Promissory Note at StudentAid.gov.",
+        "Borrow only what you need. You can turn down or lower a loan."
+      ],
+      "link": { "label": "Loan counseling and promissory note", "url": "https://studentaid.gov/mpn/" }
+    },
+    {
+      "id": "refile",
+      "stage": "decide",
+      "order": 40,
+      "title": "Remember to file again every year",
+      "who": "family",
+      "minutes": 1,
+      "summary": "The FAFSA must be filed every year of college. It usually opens October 1 for the next year, and later years can copy some answers.",
+      "how": [
+        "Add a reminder for October of your student's first college year.",
+        "Use the same StudentAid.gov accounts. Don't make new ones."
+      ]
+    }
+  ],
+  "documents": [
+    { "id": "ssn-handy", "text": "Student's Social Security number (keep it handy, don't type it here)", "who": "student", "hint": "Type it only on StudentAid.gov." },
+    { "id": "student-login", "text": "Student's StudentAid.gov username and password", "who": "student" },
+    { "id": "parent-login", "text": "Each contributor's own StudentAid.gov username and password", "who": "parent" },
+    { "id": "parent-1040", "text": "Parents' {tax_year} federal tax return (Form 1040 and schedules)", "who": "parent", "when": ["parent_filed_taxes=yes"], "hint": "Most numbers come over from the IRS. Keep the return open to check them." },
+    { "id": "parent-w2-nofile", "text": "Parents' {tax_year} W-2s or other records of money earned", "who": "parent", "when": ["parent_filed_taxes=no"], "hint": "For parents who didn't file a {tax_year} return." },
+    { "id": "parent-not-yet", "text": "File the {tax_year} tax return first, or have the income numbers ready", "who": "parent", "when": ["parent_filed_taxes=not_yet"], "hint": "The FAFSA asks about {tax_year}. Most {tax_year} returns are already filed; if yours isn't, the IRS transfer won't work yet." },
+    { "id": "student-income", "text": "Student's {tax_year} W-2s, or their tax return if they filed one", "who": "student", "when": ["student_worked"] },
+    { "id": "cash", "text": "Current balances of checking and savings accounts and cash on hand", "who": "family", "hint": "As of the day you file." },
+    { "id": "investments", "text": "Current value of investments (brokerage accounts, 529 plans, CDs, real estate other than your home)", "who": "family", "when": ["investments"], "hint": "Don't include the home you live in or retirement accounts like 401(k)s and IRAs." },
+    { "id": "business", "text": "Net worth of the family business or farm (what it's worth minus what's owed)", "who": "parent", "when": ["business_or_farm"], "hint": "Family farms and small businesses now count on the FAFSA." },
+    { "id": "self-employed", "text": "Self-employment records (Schedule C, 1099s)", "who": "parent", "when": ["self_employed"] },
+    { "id": "child-support", "text": "Total child support received in {tax_year}", "who": "parent", "when": ["child_support"] },
+    { "id": "no-ssn", "text": "Address and identity details for the parent without a Social Security number", "who": "parent", "when": ["parent_no_ssn"], "hint": "They can still make an account and sign; the IRS transfer may not work, so have income records ready." },
+    { "id": "college-list", "text": "The list of colleges (up to 20) to send it to", "who": "student" }
+  ],
+  "never_store": [
+    "FSA ID usernames or passwords",
+    "Social Security numbers",
+    "Tax returns, W-2s or bank statements",
+    "Bank or investment account numbers"
+  ],
+  "sources": [
+    "https://studentaid.gov/h/apply-for-aid/fafsa",
+    "https://studentaid.gov/apply-for-aid/fafsa/filling-out/parent-info",
+    "https://www.gafutures.org/college-planning/college-money-matters/applying-for-aid/review-deadlines/"
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT. Dates for 2027-28 from StudentAid.gov announcements reported Sept 2026 (opened Sept 23, 2026; deadline June 30, 2028; corrections by Sept 12, 2028). Later cycles are the usual dates, not yet announced. Contributor rules follow StudentAid.gov's dependent-student rules; check before beta."
+  }
+}

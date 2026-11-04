@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AidStep } from "./aid";
 
 /**
  * State packs hold everything state-specific: programs, GPA formulas,
@@ -74,6 +75,8 @@ export const Deadline = z.object({
   documents: z.array(z.string()).default([]),
   /** School grade levels this applies to. */
   grade_levels: z.array(z.number().int()).min(1),
+  /** When set, the date is for this graduating class only (a date belongs to one FAFSA year). */
+  class_of: z.number().int().optional(),
 });
 export type Deadline = z.infer<typeof Deadline>;
 
@@ -95,6 +98,8 @@ export const StatePack = z.object({
   programs: z.array(Program),
   forms: z.array(z.string()),
   deadlines: z.array(Deadline),
+  /** State aid-form steps added to the federal FAFSA guide (packs/federal/aid-guide.json). */
+  aid_steps: z.array(AidStep).default([]),
   verification: Verification,
 });
 export type StatePack = z.infer<typeof StatePack>;

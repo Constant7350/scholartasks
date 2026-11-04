@@ -7,3 +7,4 @@ export * from "./permissions";
 export * from "./scorecard";
 export { selectableStates, regionsForState, type LoadedPacks } from "./selection";
 export * from "./scholarships";
+export * from "./aid";

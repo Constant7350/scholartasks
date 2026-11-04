@@ -1,0 +1,32 @@
+/* Financial aid checklist (/aid). */
+.aid-summary { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.aid-summary > div { flex: 1 1 320px; }
+.aid-bar { height: 10px; background: #eef1f7; border-radius: 999px; overflow: hidden; margin-top: 8px; }
+.aid-bar span { display: block; height: 100%; background: var(--ok); border-radius: 999px; transition: width 0.3s; }
+.aid-safe { margin: 0 0 16px; }
+.aid-people { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 4px; font-weight: 600; }
+.aid-house { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+.aid-house > summary { cursor: pointer; font-weight: 600; color: var(--navy); }
+.aid-fields { border: 0; padding: 0; margin: 14px 0 0; max-width: 560px; }
+.aid-fields:disabled { opacity: 0.75; }
+.aid-flag { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; font-size: 15px; cursor: pointer; }
+.aid-flag input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--navy); flex: none; }
+.aid-steps { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+.aid-step details { border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.aid-step details[open] { border-color: var(--navy); }
+.aid-step summary { list-style: none; cursor: pointer; display: flex; gap: 12px; align-items: center; padding: 12px 14px; }
+.aid-step summary::-webkit-details-marker { display: none; }
+.aid-check { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-weight: 700; font-size: 14px; color: #fff; }
+.aid-step.is-done .aid-check { background: var(--ok); border-color: var(--ok); }
+.aid-step.is-skipped .aid-check { background: #c7cdd8; border-color: #c7cdd8; }
+.aid-step.is-done .aid-title b, .aid-step.is-skipped .aid-title b { color: var(--muted); }
+.aid-title { display: grid; gap: 2px; }
+.aid-title .hint { font-size: 13px; color: var(--muted); }
+.aid-body { padding: 0 14px 14px 50px; font-size: 15px; }
+.aid-body > p { margin: 0 0 8px; }
+.aid-body ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.aid-watch { background: var(--gold-soft); color: #6d5011; margin-top: 10px; }
+.aid-ask { font-size: 14px; color: var(--navy); }
+@media (max-width: 560px) {
+  .aid-body { padding-left: 14px; }
+}
