@@ -101,7 +101,7 @@ export default function ScholarshipReviewPage() {
   return (
     <Page title={title}>
       <p className="hint" style={{ marginTop: -8 }}>
-        Every scholarship and grant families see. Each day the AI checker reads about 10 official sites (oldest first) and lists any changes under &ldquo;Changes to review&rdquo;. Nothing changes for families until you accept it. You can also check one now, or edit it yourself, and mark it verified.
+        Every scholarship and grant families see. Every Monday (and Thursdays too from September to March) the AI checker reads 25 official sites, oldest first, and lists any changes under &ldquo;Changes to review&rdquo;. Nothing changes for families until you accept it. You can also check one now, or edit it yourself, and mark it verified.
       </p>
       <div className="tabs" role="tablist" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
         {TABS.map(([k, label]) => <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{label} <span className="sch-count">{counts[k]}</span></button>)}
@@ -111,7 +111,7 @@ export default function ScholarshipReviewPage() {
 
       {tab === "updates" && (
         <>
-          {updates.length === 0 && <p className="hint">No changes waiting. The daily check adds them here.</p>}
+          {updates.length === 0 && <p className="hint">No changes waiting. The weekly check adds them here.</p>}
           {updates.map((u) => {
             const s = byId.get(u.scholarship_id);
             return (

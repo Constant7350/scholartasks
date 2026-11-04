@@ -7,7 +7,7 @@
     },
     {
       "path": "/api/cron/scholarships",
-      "schedule": "0 9 * * *"
+      "schedule": "0 9 * * 1,4"
     }
   ]
 }

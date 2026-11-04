@@ -116,7 +116,7 @@ export default function Home() {
         <a className="tile" href="/scholarships">
           <span className="tile-icon">💰</span>
           <b>Scholarships and grants</b>
-          <span>Georgia and national awards your student qualifies for, with what to check and what to work on. Checked for changes every day.</span>
+          <span>Georgia and national awards your student qualifies for, with what to check and what to work on. Checked for changes every week.</span>
           <span className="tile-go">See matches →</span>
         </a>
         <a className="tile" href="/study">
