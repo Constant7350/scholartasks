@@ -7,7 +7,8 @@ export type IncomeBand = "under_30k" | "30_60k" | "60_110k" | "110_200k" | "over
 
 export const INTERESTS = [
   "STEM", "Health", "Business", "Education", "Arts", "Music", "Writing",
-  "Sports", "Community service", "Leadership", "Government", "Trades", "Agriculture and animals",
+  "Sports", "Community service", "Leadership", "Government", "Trades", "Agriculture",
+  "Animals and veterinary", "Horses and equestrian", "Marine and ocean science",
 ] as const;
 export const GROUPS = [
   "Black or African American", "Hispanic or Latino", "American Indian or Alaska Native",
