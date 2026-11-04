@@ -17,6 +17,9 @@
       "supportsTablet": true,
       "config": {
         "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["mailto", "sms", "tel"]
       }
     },
     "android": {
