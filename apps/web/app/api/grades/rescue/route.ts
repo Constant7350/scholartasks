@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../../lib/billing";
 import { CHECKIN, cleanAnswers, type RescuePlan } from "../../../grades/rescue-questions";
+import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 
 // Grade rescue: the student answers a short check-in about one class, and the
 // AI drafts a step-by-step plan to bring the grade back up. The plan is saved
@@ -80,6 +81,7 @@ export async function POST(req: Request) {
   const student = st as { first_name: string; grade_level: number; goal_gpa?: number | null; min_grade?: string | null };
 
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
+  if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
   if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
   if (turn.data === false) return json(429, limitReached(DAILY_LIMIT));
 

@@ -9,6 +9,7 @@ import { NotConfigured, Page } from "../ui";
 import { loadStudy, type StudyContext } from "../study/context";
 import { BLUEPRINT, estimate, pickQuestions, type Exam, type Section } from "./scoring";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
+import { ReportAi } from "../report-ai";
 
 interface Question { id: string; exam: Exam; subject: string; topic: string; passage: string | null; question: string; options: string[]; answer_index: number; explanation: string | null; status: string }
 interface Attempt { question_id: string; correct: boolean; created_at: string }
@@ -202,7 +203,7 @@ export default function TestPrepPage() {
             <p className="tp-stem"><b><Marked text={q.question} /></b></p>
             <Options q={q} chosen={run.picked} reveal={run.picked !== null} onPick={(j) => void pickDrill(run, j)} />
             {run.picked !== null && <p className={`note ${run.picked === q.answer_index ? "note-ok" : "note-info"}`} style={{ marginTop: 10 }}>{run.picked === q.answer_index ? "✓ Right. " : `Not quite. The answer is ${String.fromCharCode(65 + q.answer_index)}. `}{q.explanation}</p>}
-            {tutor && <div className="note note-info tutor-box">{tutor.feedback}<p style={{ margin: "8px 0 0" }}><b>Try next:</b> {tutor.next_step}</p></div>}
+            {tutor && <div className="note note-info tutor-box">{tutor.feedback}<p style={{ margin: "8px 0 0" }}><b>Try next:</b> {tutor.next_step}</p><ReportAi feature="test-prep tutor" text={`${tutor.feedback}\n\nTry next: ${tutor.next_step}`} /></div>}
             {student && run.picked !== null && !busy && !tutor && (
               <details className="rescue-more" style={{ marginTop: 10 }}>
                 <summary>Still confused? Ask the tutor about this question</summary>

@@ -19,6 +19,10 @@ export default function Security() {
   const [unlock, setUnlock] = useState("Face ID");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [delErr, setDelErr] = useState<string | null>(null);
+  const [aiOn, setAiOn] = useState<boolean | null>(null);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -35,11 +39,13 @@ export default function Security() {
       setSupported(passkeysSupported());
       setBuiltIn(await hasBuiltInUnlock());
       setUnlock(unlockName());
+      const { data: st, error: stErr } = await sb.from("user_settings").select("ai_consent_at").eq("user_id", data.session.user.id).maybeSingle();
+      if (!stErr) setAiOn(!!(st as { ai_consent_at: string | null } | null)?.ai_consent_at);
       await load();
     })();
   }, [sb, load]);
 
-  if (!sb) return <Page title="Face ID and sign-in"><NotConfigured /></Page>;
+  if (!sb) return <Page title="Face ID, sign-in and account"><NotConfigured /></Page>;
   if (signedIn === null) return <Page><p className="hint">Loading…</p></Page>;
   if (!signedIn) {
     if (typeof window !== "undefined") window.location.replace("/signin?next=/security");
@@ -69,8 +75,34 @@ export default function Security() {
     await load();
   };
 
+  const setAi = async (on: boolean) => {
+    const { error } = await sb.rpc("set_ai_consent", { p_on: on });
+    if (!error) setAiOn(on);
+  };
+
+  const deleteAccount = async () => {
+    setDeleting(true);
+    setDelErr(null);
+    try {
+      const { data } = await sb.auth.getSession();
+      const res = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${data.session?.access_token ?? ""}` },
+        body: JSON.stringify({ confirm: true }),
+      });
+      const j = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) throw new Error(j.error ?? "Something went wrong. Please try again.");
+      try { localStorage.removeItem("st-passkey"); } catch {}
+      await sb.auth.signOut().catch(() => {});
+      window.location.replace("/signin?deleted=1");
+    } catch (e) {
+      setDelErr(friendly(e));
+      setDeleting(false);
+    }
+  };
+
   return (
-    <Page title="Face ID and sign-in">
+    <Page title="Face ID, sign-in and account">
       <div className="panel">
         <h2>Sign in with {unlock}</h2>
         <p className="hint">
@@ -111,6 +143,40 @@ export default function Security() {
       </div>
 
       <AdultConsent sb={sb} mode="manage" />
+
+      {aiOn !== null && (
+        <div className="panel" id="ai-help">
+          <h2>AI help {aiOn ? <span className="pill pill-ok">On</span> : <span className="pill">Off</span>}</h2>
+          <p className="hint">
+            AI features (the counselor, tutor, essay coach, grade rescue and course advice) are powered by Claude, made by Anthropic. When you use one,
+            ScholarTasks sends your question and the planning details needed to answer it to Anthropic. Anthropic may not use it to train AI models.
+          </p>
+          <button className="btn btn-ghost btn-inline" onClick={() => setAi(!aiOn)}>{aiOn ? "Turn off AI help" : "Allow AI help"}</button>
+        </div>
+      )}
+
+      <div className="panel" id="delete-account">
+        <h2>Delete my account</h2>
+        <p className="hint">
+          <strong>Parents:</strong> if you are the only parent on the account, this deletes your whole family's ScholarTasks information: every student's plan,
+          grades, colleges, scholarships and to-dos, and the students' sign-ins. If another parent is on the account, only you are removed.
+        </p>
+        <p className="hint">
+          <strong>Students:</strong> this deletes your sign-in. Your parent keeps your family's plan.
+        </p>
+        <p className="hint">This can't be undone. A paid plan needs to be cancelled first. We keep only the locked security log of who changed what and when.</p>
+        {!confirming ? (
+          <button className="btn btn-ghost btn-inline" onClick={() => setConfirming(true)}>Delete my account</button>
+        ) : (
+          <div className="share-row">
+            <button className="btn btn-inline" style={{ background: "#b42318" }} onClick={deleteAccount} disabled={deleting}>
+              {deleting ? "Deleting…" : "Yes, delete it for good"}
+            </button>
+            <button className="btn btn-ghost btn-inline" onClick={() => setConfirming(false)} disabled={deleting}>Keep my account</button>
+          </div>
+        )}
+        {delErr && <p className="note note-err" role="alert">{delErr}</p>}
+      </div>
     </Page>
   );
 }

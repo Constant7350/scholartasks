@@ -546,3 +546,13 @@ body.help-on { padding-bottom: 96px; }
 .device-list { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 10px; }
 .device-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
 .device-list .when { color: var(--muted); font-size: 13px; }
+
+/* Allow AI help notice (one time, on pages with AI features) */
+.ai-consent { position: fixed; inset: auto 0 0 0; z-index: 60; padding: 12px; display: flex; justify-content: center; pointer-events: none; }
+.ai-consent-card { pointer-events: auto; max-width: 560px; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 12px 40px rgba(12, 31, 61, 0.22); padding: 18px 18px 14px; }
+.ai-consent-card h2 { margin: 0 0 8px; font-size: 18px; }
+.ai-consent-card p { margin: 0 0 10px; font-size: 14px; line-height: 1.45; }
+@media (max-width: 720px) { .ai-consent { padding-bottom: calc(76px + env(safe-area-inset-bottom)); } }
+.report-ai { margin: 8px 0 0; font-size: 13px; }
+.report-ai .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--muted); text-decoration: underline; cursor: pointer; }
+.report-ai textarea { margin: 6px 0 8px; font-size: 14px; }

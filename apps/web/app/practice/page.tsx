@@ -5,6 +5,7 @@ import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { loadStudy, type StudyContext } from "../study/context";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
+import { ReportAi } from "../report-ai";
 
 interface Question { id: string; subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null; status: string }
 interface Attempt { question_id: string; correct: boolean }
@@ -188,6 +189,7 @@ export default function PracticePage() {
               {tutor.verdict !== "none" && <b>{tutor.verdict === "correct" ? "✓ Correct. " : tutor.verdict === "partly" ? "Partly there. " : "Not yet. "}</b>}
               {tutor.feedback}
               <p style={{ margin: "8px 0 0" }}><b>Try next:</b> {tutor.next_step}</p>
+              <ReportAi feature="tutor" text={`${tutor.feedback}\n\nTry next: ${tutor.next_step}`} />
             </div>
           )}
 

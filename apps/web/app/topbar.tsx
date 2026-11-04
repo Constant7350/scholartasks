@@ -6,6 +6,7 @@ import { supabase } from "../lib/supabase";
 import { pickStudent, rememberStudent, useCurrentStudent } from "../lib/current-student";
 import { Brand } from "./brand";
 import { HelpButton, HelpLayer } from "./help/balloons";
+import { inPhoneApp } from "../lib/passkeys-client";
 import { NAV, bestMatch, isActive, type NavGroup, type NavItem, type NavRole } from "./nav";
 
 interface Who { role: NavRole; students: { id: string; first_name: string }[]; own: string | null; admin: boolean }
@@ -64,13 +65,17 @@ export function TopBar() {
   // Close the menu after moving to another page.
   useEffect(() => { if (menu.current) menu.current.open = false; }, [path]);
 
+  // Inside the phone app, website-only pages (plans and payments) are left out of the menu.
+  const [inApp, setInApp] = useState(false);
+  useEffect(() => setInApp(inPhoneApp()), []);
+
   const signOut = async () => {
     await sb?.auth.signOut();
     window.location.href = "/signin";
   };
 
   const role: NavRole = who?.role ?? "none";
-  const items = NAV.filter((i) => i.roles.includes(role) && (i.group !== "team" || who?.admin));
+  const items = NAV.filter((i) => i.roles.includes(role) && (i.group !== "team" || who?.admin) && !(i.webOnly && inApp));
   const here = bestMatch(items, path);
   const isParent = role === "parent";
   const kids = who?.students ?? [];

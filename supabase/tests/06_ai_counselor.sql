@@ -1,5 +1,7 @@
 \set ON_ERROR_STOP on
 \o /dev/null
+-- These people have said yes to AI help (0023).
+insert into user_settings (user_id, ai_consent_at) values ('00000000-0000-0000-0000-0000000000b1', now()),('00000000-0000-0000-0000-0000000000b5', now()),('00000000-0000-0000-0000-0000000000b9', now()) on conflict (user_id) do update set ai_consent_at = excluded.ai_consent_at;
 set role authenticated;
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000b1', false);
 create temp table g (k text primary key, v text);

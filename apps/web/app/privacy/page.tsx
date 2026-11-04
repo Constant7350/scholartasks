@@ -42,7 +42,7 @@ export default function Privacy() {
       <h2>Who can see it</h2>
       <ul>
         <li><strong>Inside your family:</strong> the parent who owns the account sees everything in it. A student sees and does only what their parent allows.</li>
-        <li><strong>Service providers</strong> who host and run ScholarTasks for us under contract: Supabase (database and sign-in), Vercel (website hosting), Resend (email delivery) and Google (only if you choose Google sign-in).</li>
+        <li><strong>Service providers</strong> who host and run ScholarTasks for us under contract: Supabase (database and sign-in), Vercel (website hosting), Resend (email delivery), Anthropic (the Claude AI behind AI help, only when you use an AI feature and have allowed AI help) and Google (only if you choose Google sign-in).</li>
         <li><strong>When required by law,</strong> or to protect someone&apos;s safety.</li>
       </ul>
       <p>We never share student information with colleges, scholarship providers or anyone else unless you choose to send it.</p>

@@ -9,6 +9,7 @@ import gaPack from "../../../../packs/states/GA.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
+import { ReportAi } from "../report-ai";
 
 const GA = gaPack as unknown as StatePack;
 
@@ -414,6 +415,7 @@ function ApplyHelp({ s, choice }: { s: Row; choice: Choice }) {
           <ul>{fb.improve.map((x) => <li key={x}>{x}</li>)}</ul>
           {fb.word_count_note && <p className="hint">{fb.word_count_note}</p>}
           <p style={{ margin: 0 }}><b>Next step:</b> {fb.next_step}</p>
+          <ReportAi feature="essay coach" text={[...fb.strengths, ...fb.improve, fb.next_step].join("\n")} />
         </div>
       )}
     </div>

@@ -518,8 +518,8 @@ export const TOPICS: Topic[] = [
     keywords: ["sign in", "log in", "login", "password", "forgot", "reset", "google", "email link", "sign out", "face id", "touch id", "fingerprint", "passkey", "biometric", "windows hello"],
     summary: "Sign in with Face ID or fingerprint, email and password, an email link, or Google.",
     body: [
-      "Face ID or fingerprint: sign in once any other way, then tap Turn on Face ID on your Home page (or open Face ID and sign-in in the Menu). Next time, tap Sign in with Face ID on the sign-in page. No email or password needed.",
-      "Do this once on each phone or computer. Lost a device? Remove it on the Face ID and sign-in page.",
+      "Face ID or fingerprint: sign in once any other way, then tap Turn on Face ID on your Home page (or open Face ID, sign-in and account in the Menu). Next time, tap Sign in with Face ID on the sign-in page. No email or password needed.",
+      "Do this once on each phone or computer. Lost a device? Remove it on the Face ID, sign-in and account page.",
       "Forgot your password? Tap Forgot password on the sign-in page and follow the email.",
       "Sign out from the Menu.",
       "Students should always use their own email, not a parent's.",
@@ -528,10 +528,10 @@ export const TOPICS: Topic[] = [
   {
     id: "security",
     area: "Account and privacy",
-    title: "Face ID and sign-in page",
+    title: "Face ID, sign-in and account page",
     href: "/security",
     keywords: ["face id", "fingerprint", "passkey", "device", "lost phone", "18", "adult", "parent access", "sharing"],
-    summary: "Turn on Face ID or fingerprint sign-in, remove lost devices, and (for students 18 and older) choose whether parents keep access.",
+    summary: "Turn on Face ID or fingerprint sign-in, remove lost devices, turn AI help on or off, delete your account, and (for students 18 and older) choose whether parents keep access.",
     body: [
       "Tap Turn on Face ID on this device once on each phone or computer.",
       "Lost a phone? Tap Remove next to it. Your other ways to sign in keep working.",
@@ -555,6 +555,37 @@ export const TOPICS: Topic[] = [
       "To change your card, switch between monthly and yearly, see receipts or cancel, tap Manage billing. If you cancel, your plan keeps working until the end of the time you paid for.",
       "Only a parent can buy or change the plan. Students see what the family has.",
       "ScholarTasks never sees or stores your card number; Stripe handles payments.",
+    ],
+  },
+  {
+    id: "ai-help",
+    area: "Account and privacy",
+    title: "Allowing AI help, and reporting an AI answer",
+    href: "/security#ai-help",
+    keywords: ["ai", "allow ai", "anthropic", "claude", "consent", "permission", "report", "wrong answer", "bad answer", "flag"],
+    summary: "The first time you open an AI feature, tap Allow AI help. Turn it off any time in Menu, Face ID, sign-in and account.",
+    body: [
+      "AI help is powered by Claude, made by Anthropic. When you use an AI feature, ScholarTasks sends your question and the planning details needed to answer it. Never passwords, Social Security numbers or FSA IDs.",
+      "Each person allows AI help for themselves. Parents also choose whether each student may use AI chat in Family and permissions.",
+      "If an AI answer is wrong, unsafe or does homework for you, tap Report this answer under it. Our team reads every report.",
+    ],
+  },
+  {
+    id: "delete-account",
+    area: "Account and privacy",
+    title: "Deleting your account",
+    href: "/security#delete-account",
+    keywords: ["delete", "delete account", "remove account", "close account", "erase", "my data", "leave"],
+    summary: "Open Menu, then Face ID, sign-in and account, and tap Delete my account at the bottom.",
+    steps: [
+      "Open Menu, then Face ID, sign-in and account.",
+      "Scroll to Delete my account and tap it.",
+      "Tap Yes, delete it for good.",
+    ],
+    body: [
+      "Parents: if you're the only parent, this deletes your whole family's information, including the students' plans and sign-ins. If another parent is on the account, only you are removed.",
+      "Students: this deletes your sign-in. Your parent keeps your family's plan.",
+      "Cancel a paid plan first. Can't sign in? Email support@scholartasks.com from your account's email and we'll delete it for you.",
     ],
   },
   {

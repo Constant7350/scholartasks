@@ -54,7 +54,7 @@ export function AdultConsent({ sb, mode }: { sb: SupabaseClient; mode: "ask" | "
         <h2>{mode === "ask" ? `You're 18, ${me.first_name}. Keep sharing with your parents?` : "Parent access"}</h2>
         <p className="hint" style={{ margin: 0 }}>
           Now that you're 18, you decide whether your parents can still see your plan, grades and tasks in ScholarTasks.
-          Most families keep sharing during senior year. You can change this any time on the Face ID and sign-in page.
+          Most families keep sharing during senior year. You can change this any time on the Face ID, sign-in and account page.
         </p>
         {mode === "manage" && current !== null && (
           <p className="note" style={{ marginBottom: 0 }}>Right now your parents {current ? "can" : "can't"} see your plan.</p>

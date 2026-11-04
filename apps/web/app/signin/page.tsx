@@ -48,6 +48,7 @@ export default function SignIn() {
   const [unlock, setUnlock] = useState("Face ID");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "confirm" | "reset-sent">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [deleted, setDeleted] = useState(false);
   const sb = supabase();
 
   useEffect(() => {
@@ -62,6 +63,7 @@ export default function SignIn() {
     const back = new URLSearchParams(window.location.search + "&" + window.location.hash.replace(/^#/, ""));
     const why = back.get("error_description") || back.get("error");
     if (why) setError(friendly({ message: why.replace(/\+/g, " ") }));
+    if (back.get("deleted") === "1") setDeleted(true);
     // Only show "Continue with Google" once Google is switched on in Supabase.
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -168,6 +170,7 @@ export default function SignIn() {
       <section className="auth-panel">
         <div className="auth-card">
           <div className="mobile-brand"><Brand /></div>
+          {deleted && <p className="note note-ok" role="status">Your account is deleted. Thank you for using ScholarTasks.</p>}
 
           {state === "sent" || state === "confirm" || state === "reset-sent" ? (
             <div className="sent" aria-live="polite">
