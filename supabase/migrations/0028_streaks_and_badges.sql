@@ -4,6 +4,18 @@
 -- a FAFSA step, an essay finished. The app turns these days into a weekly
 -- streak (weeks in a row with progress) and badges. Nothing to set up.
 
+-- Needs the tables from earlier updates (activities is update 24, essays is update 26).
+do $$
+declare t text;
+begin
+  foreach t in array array['course_grades', 'student_activities', 'practice_attempts', 'test_prep_results', 'lesson_progress',
+                           'aid_progress', 'scholarship_choices', 'student_colleges', 'student_essays', 'tasks'] loop
+    if to_regclass('public.' || t) is null then
+      raise exception 'Table % is missing. Run the earlier database updates first (activities is update 24, essays is update 26), then run this one again.', t;
+    end if;
+  end loop;
+end $$;
+
 create table if not exists student_progress_days (
   student_id  uuid not null references students(id) on delete cascade,
   day         date not null,
