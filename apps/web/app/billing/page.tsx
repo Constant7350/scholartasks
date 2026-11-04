@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
-import { CATALOG as C, STUDY_COACH_DAILY_LIMIT, money } from "../../lib/prices";
+import { CATALOG as C, FAMILY_DAILY_LIMIT, FREE_DAILY_LIMIT, FREE_PLAN_INCLUDES, PAYWALL_ON, STUDY_COACH_DAILY_LIMIT, money } from "../../lib/prices";
 import { inPhoneApp } from "../../lib/passkeys-client";
 import { NotConfigured, Page } from "../ui";
 
@@ -121,11 +121,25 @@ export default function BillingPage() {
         <p className="note">Your parent manages the family's plan. Ask them if you need more AI messages or Study Coach.</p>
       )}
 
+      {!PAYWALL_ON && (
+        <p className="note">ScholarTasks is free while we're in beta, with {FAMILY_DAILY_LIMIT} AI uses a day per person. Prices below are not final, and nobody is charged until the beta ends.</p>
+      )}
+
       <div className="tiles" style={{ marginTop: 16 }}>
+        <div className={`tile${!hasFamily ? " tile-ok" : ""}`}>
+          <span className="tile-icon">🎒</span>
+          <b>Free plan {!hasFamily && <span className="pill pill-ok">{PAYWALL_ON ? "Your plan" : "Free in beta"}</span>}</b>
+          <span>Free for every family, always. No card needed.</span>
+          <ul className="plan-list">
+            {FREE_PLAN_INCLUDES.map((x) => <li key={x}>{x}</li>)}
+            <li>{FREE_DAILY_LIMIT} AI uses a day per person (counselor, essay feedback, grade help)</li>
+          </ul>
+        </div>
+
         <div className={`tile${hasFamily ? " tile-ok" : ""}`}>
           <span className="tile-icon">👪</span>
           <b>Family plan {hasFamily && <span className="pill pill-ok">Active</span>}</b>
-          <span>Everything in ScholarTasks for every student in your family: college list and reminders, grades and HOPE tracking, scholarships, study library, practice questions, and 10 AI uses a day per person.</span>
+          <span>Everything in the free plan, plus the AI counselor and coaches for every student in your family: {FAMILY_DAILY_LIMIT} AI uses a day per person instead of {FREE_DAILY_LIMIT}.</span>
           <span><b>{money(C.family_month.cents)} a month</b> or <b>{money(C.family_year.cents)} a year</b>{C.family_month.cents * 12 > C.family_year.cents ? ` (save ${money(C.family_month.cents * 12 - C.family_year.cents)})` : ""}.</span>
           {hasFamily ? (
             <span>{familySub?.billing_interval === "year" ? "Yearly." : familySub?.billing_interval === "month" ? "Monthly." : ""}{renewal(familySub)}</span>

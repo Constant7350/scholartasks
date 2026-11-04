@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
+import { CalendarCard } from "./calendar-card";
 
 interface Student { id: string; first_name: string; permissions: Record<string, boolean> }
 interface College { id: string; student_id: string; name: string; plan: string; deadline: string | null; status: string }
@@ -277,7 +278,9 @@ export default function TodoPage() {
         </section>
       )}
 
-      <p className="hint" style={{ marginTop: 16 }}>Add or change deadlines on the <a href="/plan">College plan</a>. Reminder emails go out before each due date.</p>
+      <CalendarCard sb={sb} />
+
+      <p className="hint" style={{ marginTop: 16 }}>Add or change deadlines on the <a href="/plan">College plan</a>. Reminder emails go out before each due date, and the ScholarTasks phone app reminds you on the phone.</p>
     </Page>
   );
 }

@@ -7,6 +7,7 @@ import type { Session } from "@supabase/supabase-js";
 import { RELOCK_AFTER_MS, SITE_HOSTS, SITE_URL, WEB_SESSION_KEY } from "./config";
 import { askedFaceId, faceIdOn, forget, friendly, markAskedFaceId, resume, saveToken, setFaceId, signIn } from "./session";
 import { unlock, unlockKind } from "./unlock";
+import { clearReminders, scheduleReminders, type Reminder } from "./reminders";
 
 // The library's class typing (Component<Props & undefined>) collapses to never under strict TypeScript.
 const WebView = RNWebView as unknown as ComponentType<WebViewProps>;
@@ -75,6 +76,7 @@ export default function App() {
 
   const signedOut = async () => {
     await forget();
+    await clearReminders();
     setSession(null);
     setScreen("signin");
   };
@@ -217,8 +219,9 @@ function Site({ session, onSignedOut }: { session: Session; onSignedOut: () => v
 
   const onMessage = async (e: WebViewMessageEvent) => {
     try {
-      const m = JSON.parse(e.nativeEvent.data) as { refresh_token: string | null };
+      const m = JSON.parse(e.nativeEvent.data) as { refresh_token?: string | null; reminders?: Reminder[] };
       if (m.refresh_token) await saveToken(m.refresh_token);
+      if (Array.isArray(m.reminders)) await scheduleReminders(m.reminders);
     } catch {}
   };
 

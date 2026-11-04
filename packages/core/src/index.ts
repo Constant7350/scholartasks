@@ -8,3 +8,5 @@ export * from "./scorecard";
 export { selectableStates, regionsForState, type LoadedPacks } from "./selection";
 export * from "./scholarships";
 export * from "./aid";
+export * from "./colleges";
+export * from "./badges";

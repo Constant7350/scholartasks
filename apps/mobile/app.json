@@ -33,7 +33,8 @@
           "faceIDPermission": "ScholarTasks uses Face ID so you can open your family's plan without typing a password."
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      ["expo-notifications", { "color": "#14305a", "enableRemoteNotifications": false }]
     ]
   }
 }

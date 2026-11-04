@@ -5,6 +5,7 @@ import { displayGpa, evaluateStatePrograms, type CourseGrade, type StatePack } f
 import { after } from "next/server";
 import gaPack from "../../../../../packs/states/GA.json";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../lib/ai-consent";
+import { aiDailyLimit } from "../../../lib/ai-limit";
 
 // AI counselor chat. The browser sends the signed-in person's Supabase token;
 // every read below runs under that token, so row-level security decides what
@@ -15,7 +16,6 @@ export const maxDuration = 60;
 const GA = gaPack as unknown as StatePack;
 // Sonnet keeps each answer around a cent; the daily cap bounds the worst case per person.
 const MODEL = "claude-sonnet-5-5";
-const DAILY_LIMIT = 10;
 const MAX_TURNS = 20;
 const MAX_CHARS = 4000;
 
@@ -244,14 +244,15 @@ export async function POST(req: Request) {
     if (saved) return new Response(saved.answer, { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store", "X-Answer-Source": "bank" } });
   }
 
-  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
+  const limit = await aiDailyLimit(sb, studentId);
+  const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (turn.error) {
     if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
     if (turn.error.code === "PGRST202" || turn.error.code === "42883") return json(503, "The AI counselor needs the latest database update first.");
     if (/not allowed/.test(turn.error.message)) return json(403, "AI chat is turned off for this student. A parent can turn it on in Family and permissions.");
     return json(500, "Something went wrong. Please try again.");
   }
-  if (turn.data === false) return json(429, limitReached(DAILY_LIMIT, "counselor messages"));
+  if (turn.data === false) return json(429, limitReached(limit, "counselor messages"));
 
   const [st, mem] = await Promise.all([
     studentId

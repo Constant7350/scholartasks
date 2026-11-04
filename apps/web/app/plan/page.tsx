@@ -1,16 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { deadlineAppliesTo, type StatePack } from "@scholartasks/core";
+import { deadlineAppliesTo, type CostInput, type StatePack } from "@scholartasks/core";
 import gaPack from "../../../../packs/states/GA.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
+import { costInput, type CollegeRow, type CostStudent } from "../../lib/colleges";
+import { CollegePicker } from "../colleges/college-picker";
+import { CostPanel } from "./cost-panel";
 
 const GA = gaPack as unknown as StatePack;
 
-interface Student { id: string; first_name: string; grade_level: number; permissions: Record<string, boolean> }
-interface College { id: string; student_id: string; name: string; plan: string; deadline: string | null; status: string; approved: boolean; notes: string | null }
+interface Student extends CostStudent { first_name: string; permissions: Record<string, boolean> }
+interface College {
+  id: string; student_id: string; name: string; plan: string; deadline: string | null; status: string; approved: boolean; notes: string | null;
+  college_id: number | null; aid_offer: number | null;
+}
 interface Task {
   id: string; student_id: string; title: string; kind: string; due_on: string | null; status: string;
   url: string | null; amount: number | null; deadline_id: string | null; created_by: string | null;
@@ -51,7 +57,9 @@ export default function PlanPage() {
   const [reminders, setReminders] = useState(true);
   const [offline, setOffline] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [college, setCollege] = useState({ name: "", plan: "EA", deadline: "" });
+  const [college, setCollege] = useState<{ name: string; plan: string; deadline: string; collegeId: number | null }>({ name: "", plan: "EA", deadline: "", collegeId: null });
+  const [collegeData, setCollegeData] = useState<Map<number, CollegeRow>>(new Map());
+  const [ctx, setCtx] = useState<CostInput | null>(null);
   const [task, setTask] = useState({ title: "", kind: "scholarship", due_on: "", amount: "", url: "" });
 
   const load = useCallback(async () => {
@@ -61,7 +69,7 @@ export default function PlanPage() {
     const uid = s.session.user.id;
     const [mem, st] = await Promise.all([
       sb.from("family_members").select("role, student_id").eq("user_id", uid),
-      sb.from("students").select("id, first_name, grade_level, permissions").order("first_name"),
+      sb.from("students").select("*").order("first_name"),
     ]);
     const rows = (mem.data as { role: "parent" | "student"; student_id: string | null }[]) ?? [];
     const asStudent = rows.find((r) => r.role === "student");
@@ -72,13 +80,19 @@ export default function PlanPage() {
     setCurrent((c) => c ?? (role === "student" ? asStudent?.student_id ?? null : pickStudent(list, list[0]?.id)));
 
     const [col, tk, us] = await Promise.all([
-      sb.from("student_colleges").select("id, student_id, name, plan, deadline, status, approved, notes").order("deadline", { nullsFirst: false }),
+      sb.from("student_colleges").select("*").order("deadline", { nullsFirst: false }),
       sb.from("tasks").select("id, student_id, title, kind, due_on, status, url, amount, deadline_id, created_by").order("due_on", { nullsFirst: false }),
       sb.from("user_settings").select("email_reminders").maybeSingle(),
     ]);
     if (missingTables(col.error) || missingTables(us.error)) return setOffline(true);
     setOffline(false);
-    setColleges((col.data as College[]) ?? []);
+    const cols = (col.data as College[]) ?? [];
+    setColleges(cols);
+    const ids = [...new Set(cols.map((c) => c.college_id).filter((x): x is number => x != null))];
+    if (ids.length) {
+      const { data: cd } = await sb.from("colleges").select("*").in("id", ids);
+      setCollegeData(new Map(((cd as CollegeRow[]) ?? []).map((r) => [r.id, r])));
+    }
     setTasks((tk.data as Task[]) ?? []);
     setReminders((us.data as { email_reminders: boolean } | null)?.email_reminders ?? true);
   }, [sb]);
@@ -89,6 +103,10 @@ export default function PlanPage() {
   const isParent = me?.role === "parent";
   const mayChangePlan = isParent || !!student?.permissions?.change_plan_without_approval;
   const mayMarkDone = isParent || !!student?.permissions?.mark_done_without_approval;
+  const mayUseIncome = isParent || !!student?.permissions?.see_income_and_costs;
+  useEffect(() => {
+    if (sb && student) void costInput(sb, student, mayUseIncome).then(setCtx);
+  }, [sb, student, mayUseIncome]);
 
   const myColleges = colleges.filter((c) => c.student_id === current);
   const myTasks = tasks.filter((t) => t.student_id === current && t.status !== "dismissed");
@@ -164,8 +182,14 @@ export default function PlanPage() {
         </label>
       </section>
 
+      {ctx && (
+        <CostPanel sb={sb} studentId={student.id} colleges={myColleges} data={collegeData} ctx={ctx}
+          canEdit={mayChangePlan || isParent} onChanged={load} />
+      )}
+
       <section className="panel">
         <h2>Colleges</h2>
+        <p className="hint" style={{ marginTop: 0 }}>Not sure where to apply? <a href="/colleges">Find colleges that fit</a> with five quick questions.</p>
         {!mayChangePlan && <p className="note note-info" style={{ marginTop: 0 }}>Colleges you add will wait for your parent's OK.</p>}
         <form
           className="row"
@@ -173,11 +197,13 @@ export default function PlanPage() {
             e.preventDefault();
             const ok = await run(() => sb.from("student_colleges").insert({
               student_id: student.id, name: college.name.trim(), plan: college.plan, deadline: college.deadline || null, approved: mayChangePlan,
+              college_id: college.collegeId,
             }));
-            if (ok) setCollege({ name: "", plan: college.plan, deadline: "" });
+            if (ok) setCollege({ name: "", plan: college.plan, deadline: "", collegeId: null });
           }}
         >
-          <div className="field"><label htmlFor="c-name">College</label><input id="c-name" className="input" placeholder="e.g. University of Georgia" value={college.name} onChange={(e) => setCollege({ ...college, name: e.target.value })} /></div>
+          <div className="field"><label htmlFor="c-name">College</label>
+            <CollegePicker sb={sb} id="c-name" value={college.name} onChange={(name, c) => setCollege({ ...college, name, collegeId: c?.id ?? null })} /></div>
           <div className="field" style={{ flex: "0 1 190px" }}>
             <label htmlFor="c-plan">Applying</label>
             <select id="c-plan" className="input" value={college.plan} onChange={(e) => setCollege({ ...college, plan: e.target.value })}>
