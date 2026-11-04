@@ -7,7 +7,7 @@ and prints anything it had to fix or skip so a person can look.
 import json, re, sys
 
 INTERESTS = {"STEM", "Health", "Business", "Education", "Arts", "Music", "Writing", "Sports",
-             "Community service", "Leadership", "Government", "Trades"}
+             "Community service", "Leadership", "Government", "Trades", "Agriculture and animals"}
 GROUPS = {"Black or African American", "Hispanic or Latino", "American Indian or Alaska Native",
           "Asian American or Pacific Islander", "Woman", "First-generation college student",
           "Military family", "Student with a disability", "Foster care experience"}

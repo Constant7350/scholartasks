@@ -418,7 +418,8 @@
   "need_based": false,
   "citizen_required": false,
   "interests": [
-   "STEM"
+   "STEM",
+   "Agriculture and animals"
   ],
   "groups": null,
   "college_type": "four_year",
@@ -478,7 +479,7 @@
   "need_based": false,
   "citizen_required": false,
   "interests": [
-   "STEM"
+   "Agriculture and animals"
   ],
   "groups": null,
   "college_type": "any",
