@@ -679,7 +679,8 @@ html[data-theme="sunrise"] .tabbar { background: #fffaf2; }
 
 /* Calm Garden: sage and sky with teal. */
 html[data-theme="garden"] { --bg: #edf4ee; --line: #d3e3d7; --ink: #1c2a25; --muted: #4f625a; --warm-tint: #dcebe1; --teal: #1f6f6b; --teal-soft: #dcefeb; }
-html[data-theme="garden"] body { background: linear-gradient(180deg, #e6f1ea 0%, #eef5f3 40%, #eef3f8 100%) fixed; }
+/* Solid color on purpose: a fixed gradient on <body> blanks the page in the iPhone app (WebKit). */
+html[data-theme="garden"] body { background: var(--bg); }
 html[data-theme="garden"] .topbar { background: #fbfdfb; }
 html[data-theme="garden"] .pagestrip { background: #e3efe7; border-top: 1px solid var(--line); }
 html[data-theme="garden"] .pagestrip .strip-links a.nav-on { color: var(--teal); }
