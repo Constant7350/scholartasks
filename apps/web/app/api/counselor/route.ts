@@ -46,7 +46,7 @@ async function rows<T>(q: PromiseLike<{ data: unknown; error: { code?: string } 
 }
 
 async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean, today: string): Promise<string> {
-  const [grades, colleges, tasks] = await Promise.all([
+  const [grades, colleges, tasks, activities] = await Promise.all([
     rows<{ term: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number }>(
       sb.from("course_grades").select("term, course, grade, level, core, grade_level").eq("student_id", s.id).order("grade_level"),
     ),
@@ -55,6 +55,9 @@ async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean,
     ),
     rows<{ title: string; kind: string | null; due_on: string | null; status: string; amount: number | null }>(
       sb.from("tasks").select("title, kind, due_on, status, amount").eq("student_id", s.id).order("due_on"),
+    ),
+    rows<{ kind: string; category: string; position: string; organization: string | null; description: string | null; grades: number[]; hours_per_week: number | null; recognition: string | null }>(
+      sb.from("student_activities").select("kind, category, position, organization, description, grades, hours_per_week, recognition").eq("student_id", s.id).order("sort_order"),
     ),
   ]);
 
@@ -93,6 +96,12 @@ async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean,
     tasks.length
       ? "Scholarships and other deadlines:\n" + tasks.map((t) => `- ${t.title} (${t.kind ?? "other"}): due ${t.due_on ?? "no date"}, ${t.status}${t.amount ? `, $${t.amount}` : ""}`).join("\n")
       : "Scholarships and other deadlines: none saved.",
+  );
+  lines.push(
+    activities.length
+      ? "Activities, jobs and awards (from the Activities page):\n" + activities.map((a) =>
+          `- ${a.kind === "honor" ? "Award" : a.category}: ${a.position}${a.organization ? `, ${a.organization}` : ""}${a.grades?.length ? ` (grades ${a.grades.join(", ")})` : ""}${a.hours_per_week ? `, ${a.hours_per_week} hrs/week` : ""}${a.recognition ? `, ${a.recognition} level` : ""}${a.description ? `: ${a.description}` : ""}`).join("\n")
+      : "Activities, jobs and awards: none entered yet (the Activities and resume page).",
   );
   return lines.join("\n");
 }

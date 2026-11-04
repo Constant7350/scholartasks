@@ -362,6 +362,23 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .record-year { break-inside: avoid; margin-top: 16px; }
 .record-year h3 { margin: 0 0 4px; font-size: 16px; }
 .record-foot { margin-top: 20px; padding-top: 10px; border-top: 1px solid #999; font-size: 12px; color: #444; }
+
+/* Activities and resume */
+.activity-list { counter-reset: none; }
+.activity-item.is-extra { opacity: 0.7; }
+.activity-form { background: var(--bg, #f7f8fb); }
+.resume-sheet { font-size: 14px; line-height: 1.4; }
+.resume-head { text-align: center; border-bottom: 2px solid #111; padding-bottom: 8px; margin-bottom: 10px; }
+.resume-head h2 { margin: 0; font-size: 26px; }
+.resume-head p { margin: 2px 0 0; color: #444; }
+.resume-section { margin-top: 12px; break-inside: avoid; }
+.resume-section h3 { margin: 0 0 4px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid #999; padding-bottom: 2px; }
+.resume-section p { margin: 2px 0; }
+.resume-list { list-style: none; margin: 0; padding: 0; }
+.resume-entry { margin: 6px 0; break-inside: avoid; }
+.resume-line { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.resume-line span { color: #444; white-space: nowrap; }
+.resume-meta { font-size: 12px; color: #555; }
 @media (max-width: 560px) { .record-sheet { padding: 16px; } .record-head { flex-direction: column; gap: 4px; } .record-table { font-size: 13px; } .record-table th, .record-table td { padding: 5px 4px; } }
 @media print {
   .topbar, .site-footer, .no-print { display: none !important; }

@@ -26,6 +26,7 @@ export const AREAS = [
   "College plan",
   "Grades and HOPE",
   "AI counselor",
+  "Activities and resume",
   "Scholarships",
   "Financial aid forms",
   "Study and practice",
@@ -186,6 +187,44 @@ export const TOPICS: Topic[] = [
     keywords: ["georgia", "gsfc", "gafutures", "dates", "calendar", "add to plan"],
     summary: "Key Georgia aid and college dates for your student's grade. Tap Add to plan to track one with reminders.",
     body: ["These are draft dates still being checked with the Georgia Student Finance Commission. Confirm on GAfutures before relying on them."],
+  },
+
+  // ---------- Activities and resume ----------
+  {
+    id: "activities",
+    area: "Activities and resume",
+    title: "Add activities, jobs and awards",
+    href: "/activities",
+    keywords: ["activities", "extracurricular", "clubs", "sports", "job", "work", "volunteer", "service hours", "awards", "honors", "common app", "brag sheet"],
+    summary: "Enter each club, sport, job, volunteer role, family duty and award once, in the same format the Common App uses, and copy it in when you apply.",
+    steps: [
+      "Open Menu, then Activities and resume.",
+      "On the Activities tab, tap Add an activity. Pick the type, then type your role, the club or employer, and what you did (150 characters, like the Common App).",
+      "Tick the grades you did it in and add hours per week and weeks per year.",
+      "On the Honors and awards tab, add each award and how far it reaches (school, state, national).",
+      "Use the arrows to put the most important one first. Colleges read them in that order.",
+    ],
+    body: [
+      "Students can add and change their own list without a parent's OK. Parents can see it and help.",
+      "The Common App has room for 10 activities and 5 honors. You can add more here; extras still go on your resume.",
+      "Tips appear under the description as you type, like adding a number or starting with an action word. The words are always yours.",
+      "The AI counselor and essay help can see this list, so their advice fits what you actually do.",
+    ],
+  },
+  {
+    id: "resume",
+    area: "Activities and resume",
+    title: "Make a one-page resume",
+    href: "/activities/resume",
+    keywords: ["resume", "cv", "print", "pdf", "brag sheet", "scholarship resume", "job"],
+    summary: "Turn your activities, awards, GPA and test scores into a clean one-page resume you can print or save as a PDF.",
+    steps: [
+      "Open Activities and resume, then tap Make my resume.",
+      "Type your full name and an email or city for the top. These stay on this device only.",
+      "Untick Show GPA if you'd rather leave it off.",
+      "Tap Print or save as PDF.",
+    ],
+    body: ["The resume updates itself whenever you add an activity or a grade."],
   },
 
   // ---------- Grades and HOPE ----------
