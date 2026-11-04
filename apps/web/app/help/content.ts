@@ -636,7 +636,8 @@ export const TOPICS: Topic[] = [
       "Drills are free and use no AI. \"Explain it\" asks the tutor to walk you through a question (1 of today's 10 AI uses).",
       "Timed practice tests are part of the Study Coach add-on and are free while ScholarTasks is in beta.",
       "Scores are rough estimates from short tests, not official scores. Before test day, take a full-length official practice test: Bluebook for the SAT, or ACT's free practice test.",
-      "All questions are written for ScholarTasks in the style of the real tests. Questions marked Draft are still being checked by our teacher reviewer.",
+      "How the questions are made: every question is original, written by the ScholarTasks team (with help from AI) to match the skills, question types and difficulty in College Board's and ACT's published test outlines. We don't copy, reword or adapt questions from official tests, prep books or websites. A teacher on our team checks each one; until then it shows a Draft label.",
+      "SAT is a trademark of the College Board and ACT is a trademark of ACT Education Corp. Neither makes, sponsors or endorses ScholarTasks.",
       "Got an official score? Save it on the Grades page so scholarship matches and the counselor use it.",
     ],
     faq: [

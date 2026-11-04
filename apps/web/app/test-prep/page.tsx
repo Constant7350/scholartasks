@@ -404,9 +404,18 @@ export default function TestPrepPage() {
           <li><a href="https://www.gafutures.org" target="_blank" rel="noreferrer">GAfutures</a>: Georgia&apos;s HOPE and Zell Miller test score rules.</li>
         </ul>
       </section>
-      <p className="hint" style={{ fontSize: 12 }}>
-        SAT is a trademark of the College Board and ACT is a trademark of ACT, Inc. Neither is involved with ScholarTasks. Questions marked Draft are still being checked by our teacher reviewer. Score estimates are approximate.
-      </p>
+      <section className="panel tp-about">
+        <h2>How these questions are made</h2>
+        <p className="hint">
+          Every question in ScholarTasks test prep is original. Our team writes each one, with help from AI, to match the skills, question types and difficulty that
+          College Board and ACT describe in their published test outlines. We don&apos;t copy, reword or adapt questions from official tests,
+          prep books or websites. A teacher on our team checks every question before it loses its &ldquo;Draft&rdquo; label.
+        </p>
+        <p className="hint" style={{ margin: 0 }}>
+          Score estimates come from short practice sets and are approximate, not official scores. SAT® is a trademark of the College Board and
+          ACT® is a trademark of ACT Education Corp. Neither organization makes, sponsors or endorses ScholarTasks.
+        </p>
+      </section>
     </Page>
   );
 }

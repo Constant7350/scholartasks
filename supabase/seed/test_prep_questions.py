@@ -277,6 +277,25 @@ ACT_SCIENCE = [
  ("Understanding viewpoints", S_LEAVES, "Scientist 2 suggests that red pigments may help the tree by:", ["shielding the leaf from strong light while nutrients are moved out of it", "attracting insects to pollinate the tree", "making the leaf fall sooner", "helping the leaf absorb water"], "\"These pigments may shield the leaf from strong light while the tree pulls nutrients out of the leaf.\""),
 ]
 
+# Batch 2 (grows each section to about 100 questions).
+from test_prep_more_sat_rw import SAT_RW_MORE
+from test_prep_more_sat_math import SAT_MATH_MORE
+from test_prep_more_act_english import ACT_ENGLISH_MORE
+from test_prep_more_act_math import ACT_MATH_MORE
+from test_prep_more_act_reading_a import ACT_READING_MORE_A
+from test_prep_more_act_reading_b import ACT_READING_MORE_B
+from test_prep_more_act_science import ACT_SCIENCE_MORE
+
+def passage_sets(sets):
+    return [(topic, passage, question, options, expl) for passage, qs in sets for topic, question, options, expl in qs]
+
+SAT_RW += SAT_RW_MORE
+SAT_MATH += SAT_MATH_MORE
+ACT_ENGLISH += ACT_ENGLISH_MORE
+ACT_MATH += ACT_MATH_MORE
+ACT_READING += passage_sets(ACT_READING_MORE_A + ACT_READING_MORE_B)
+ACT_SCIENCE += passage_sets(ACT_SCIENCE_MORE)
+
 SETS = [
  ("SAT", "SAT Reading and Writing", SAT_RW),
  ("SAT", "SAT Math", SAT_MATH),
@@ -317,6 +336,13 @@ for exam, subject, items in SETS:
         assert key not in seen, question
         seen.add(key)
         assert len(question) <= 1000 and (passage is None or len(passage) <= 3000) and len(expl) <= 1000, question
+        if fixed and options[0] == NC:
+            # Mix the order of the other choices (DELETE stays last, like the real test).
+            correct = options[ans]
+            rest = [o for o in options[1:] if not o.startswith("DELETE")]
+            random.Random(question + (passage or "")).shuffle(rest)
+            options = [NC] + rest + [o for o in options[1:] if o.startswith("DELETE")]
+            ans = options.index(correct)
         if not fixed:
             correct = options[ans]
             nums = [num(o) for o in options]
@@ -336,4 +362,4 @@ out = ["-- ScholarTasks SAT and ACT practice questions, written for ScholarTasks
 ") as v(exam, subject, topic, kind, passage, question, options, answer_index, explanation)",
 "where not exists (select 1 from practice_questions p where p.subject = v.subject and p.question = v.question and coalesce(p.passage, '') = coalesce(v.passage, ''));"]
 open(__file__.replace('.py', '.sql'), 'w').write("\n".join(out) + "\n")
-print(len(rows))
+print(len(rows), {sub: len(items) for _, sub, items in SETS})

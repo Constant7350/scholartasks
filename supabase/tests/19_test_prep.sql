@@ -4,9 +4,9 @@
 \i seed/test_prep_questions.sql
 \i seed/test_prep_questions.sql
 do $$ begin
-  assert (select count(*) from practice_questions where exam is not null) = 124, 'test prep questions load once';
-  assert (select count(*) from practice_questions where exam = 'SAT') = 56, 'SAT questions';
-  assert (select count(distinct passage) from practice_questions where subject = 'ACT Reading') = 3, 'reading questions share passages';
+  assert (select count(*) from practice_questions where exam is not null) = 601, 'test prep questions load once';
+  assert (select count(*) from practice_questions where exam = 'SAT') = 201, 'SAT questions';
+  assert (select count(distinct passage) from practice_questions where subject = 'ACT Reading') = 25, 'reading questions share passages';
   assert (select count(*) from practice_questions where exam is not null and status <> 'pending') = 0, 'new questions wait for review';
   begin
     insert into practice_questions (exam, subject, topic, kind, question, options, answer_index) values ('GRE', 'GRE Math', 'Test', 'mc', 'What is 2 + 2?', '["4","5"]', 0);
