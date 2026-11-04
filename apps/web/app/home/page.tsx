@@ -7,6 +7,7 @@ import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { GpaScorecard } from "../grades/scorecard";
 import { PasskeyOffer } from "../passkey-offer";
+import { AdultConsent } from "../adult-consent";
 
 const GA = gaPack as unknown as StatePack;
 
@@ -75,6 +76,7 @@ export default function Home() {
         <p className="hint">Look around and try the tools first. Add your student whenever you're ready.</p>
       </section>
 
+      <AdultConsent sb={sb} mode="ask" />
       <PasskeyOffer sb={sb} />
 
       <div className="panel family-card">

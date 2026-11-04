@@ -55,7 +55,7 @@ export async function GET(req: Request) {
   const resendKey = process.env.RESEND_API_KEY;
   if (!url || !key || !resendKey) return Response.json({ ok: false, error: "reminder email is not configured yet" }, { status: 503 });
 
-  const appUrl = process.env.APP_URL ?? "https://scholartasks.vercel.app";
+  const appUrl = process.env.APP_URL ?? "https://scholartasks.com";
   const sb = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
   const { data, error } = await sb.rpc("reminders_due", { p_today: todayEastern() });
   if (error) return Response.json({ ok: false, error: error.message }, { status: 500 });

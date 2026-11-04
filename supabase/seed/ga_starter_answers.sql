@@ -1,6 +1,6 @@
 -- ScholarTasks database update 8: starter answer library (Georgia FAQs, rewritten in our own words).
 -- Run once in Supabase > SQL Editor (paste everything, click Run). Safe to run twice: questions already in the library are skipped.
--- Every answer lands as WAITING. Review and approve each one at https://scholartasks.vercel.app/admin/answers before families see it.
+-- Every answer lands as WAITING. Review and approve each one at https://scholartasks.com/admin/answers before families see it.
 
 insert into answer_bank (state, question, answer, status)
 select 'GA', v.question, v.answer, 'pending' from (values
