@@ -389,6 +389,8 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .sch-amount { color: var(--navy); font-size: 15px; }
 .sch-card h2 { font-size: 19px; }
 .sch-reasons { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; font-size: 14px; }
+.sch-apply { border-top: 1px solid var(--line, #e5e7eb); margin-top: 12px; padding-top: 4px; }
+.sch-steps { padding-left: 0; list-style: none; display: grid; gap: 8px; margin: 6px 0; }
 .sch-met { color: var(--ok); }
 .sch-unknown { color: #8a6514; }
 .sch-missing { color: var(--err); }
