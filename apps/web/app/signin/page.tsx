@@ -149,7 +149,7 @@ export default function SignIn() {
   return (
     <div className="auth">
       <section className="auth-story">
-        <Brand />
+        <Brand large />
         <div style={{ position: "relative", zIndex: 1 }}>
           <h1>
             College, scholarships and aid, <em>handled.</em>
@@ -169,7 +169,7 @@ export default function SignIn() {
 
       <section className="auth-panel">
         <div className="auth-card">
-          <div className="mobile-brand"><Brand /></div>
+          <div className="mobile-brand"><Brand large /></div>
           {deleted && <p className="note note-ok" role="status">Your account is deleted. Thank you for using ScholarTasks.</p>}
 
           {state === "sent" || state === "confirm" || state === "reset-sent" ? (
