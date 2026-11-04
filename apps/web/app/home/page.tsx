@@ -115,6 +115,12 @@ export default function Home() {
           <span>Ask anything about colleges, aid and deadlines. Answers are built around your student's grades and plan.</span>
           <span className="tile-go">Ask a question →</span>
         </a>
+        <a className="tile" href="/study">
+          <span className="tile-icon">📚</span>
+          <b>Study skills library</b>
+          <span>Short lessons on how to study, with quick checks and a project to try each week. Free, no AI needed.</span>
+          <span className="tile-go">Start a lesson →</span>
+        </a>
         <div className="tile">
           <span className="tile-icon">📅</span>
           <b>Key Georgia dates</b>

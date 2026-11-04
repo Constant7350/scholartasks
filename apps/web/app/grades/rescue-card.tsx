@@ -177,6 +177,7 @@ export function RescueCard({ sb, studentId, name, isParent, aiAllowed, courses, 
         );
       })}
       {doneCount > 0 && <button className="linklike" style={{ marginTop: 8 }} onClick={() => setShowDone(!showDone)}>{showDone ? "Hide finished plans" : `Show ${doneCount} finished ${doneCount === 1 ? "plan" : "plans"}`}</button>}
+      <p className="hint" style={{ marginTop: 12 }}>📚 The <a href="/study">study skills library</a> has free lessons on testing yourself, spacing out review and getting test-ready.</p>
       <p className="hint" style={{ fontSize: 12, marginTop: 12 }}>AI advice can be wrong. The teacher and your family know best.</p>
     </section>
   );
