@@ -4,6 +4,7 @@ import { limitReached } from "../../../lib/billing";
 import { displayGpa, evaluateStatePrograms, type CourseGrade, type StatePack } from "@scholartasks/core";
 import { after } from "next/server";
 import gaPack from "../../../../../packs/states/GA.json";
+import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../lib/ai-consent";
 
 // AI counselor chat. The browser sends the signed-in person's Supabase token;
 // every read below runs under that token, so row-level security decides what
@@ -236,6 +237,7 @@ export async function POST(req: Request) {
 
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: DAILY_LIMIT });
   if (turn.error) {
+    if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
     if (turn.error.code === "PGRST202" || turn.error.code === "42883") return json(503, "The AI counselor needs the latest database update first.");
     if (/not allowed/.test(turn.error.message)) return json(403, "AI chat is turned off for this student. A parent can turn it on in Family and permissions.");
     return json(500, "Something went wrong. Please try again.");

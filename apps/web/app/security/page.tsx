@@ -21,6 +21,7 @@ export default function Security() {
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [delErr, setDelErr] = useState<string | null>(null);
+  const [aiOn, setAiOn] = useState<boolean | null>(null);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -37,11 +38,13 @@ export default function Security() {
       setSupported(passkeysSupported());
       setBuiltIn(await hasBuiltInUnlock());
       setUnlock(unlockName());
+      const { data: st, error: stErr } = await sb.from("user_settings").select("ai_consent_at").eq("user_id", data.session.user.id).maybeSingle();
+      if (!stErr) setAiOn(!!(st as { ai_consent_at: string | null } | null)?.ai_consent_at);
       await load();
     })();
   }, [sb, load]);
 
-  if (!sb) return <Page title="Face ID and sign-in"><NotConfigured /></Page>;
+  if (!sb) return <Page title="Face ID, sign-in and account"><NotConfigured /></Page>;
   if (signedIn === null) return <Page><p className="hint">Loading…</p></Page>;
   if (!signedIn) {
     if (typeof window !== "undefined") window.location.replace("/signin?next=/security");
@@ -71,6 +74,11 @@ export default function Security() {
     await load();
   };
 
+  const setAi = async (on: boolean) => {
+    const { error } = await sb.rpc("set_ai_consent", { p_on: on });
+    if (!error) setAiOn(on);
+  };
+
   const deleteAccount = async () => {
     setDeleting(true);
     setDelErr(null);
@@ -93,7 +101,7 @@ export default function Security() {
   };
 
   return (
-    <Page title="Face ID and sign-in">
+    <Page title="Face ID, sign-in and account">
       <div className="panel">
         <h2>Sign in with {unlock}</h2>
         <p className="hint">
@@ -132,6 +140,17 @@ export default function Security() {
         )}
         <p className="hint" style={{ marginTop: 12, marginBottom: 0 }}>Lost a phone? Remove it here. Your password, email link and Google sign-in keep working as before.</p>
       </div>
+
+      {aiOn !== null && (
+        <div className="panel" id="ai-help">
+          <h2>AI help {aiOn ? <span className="pill pill-ok">On</span> : <span className="pill">Off</span>}</h2>
+          <p className="hint">
+            AI features (the counselor, tutor, essay coach, grade rescue and course advice) are powered by Claude, made by Anthropic. When you use one,
+            ScholarTasks sends your question and the planning details needed to answer it to Anthropic. Anthropic may not use it to train AI models.
+          </p>
+          <button className="btn btn-ghost btn-inline" onClick={() => setAi(!aiOn)}>{aiOn ? "Turn off AI help" : "Allow AI help"}</button>
+        </div>
+      )}
 
       <div className="panel" id="delete-account">
         <h2>Delete my account</h2>

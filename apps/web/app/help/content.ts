@@ -545,6 +545,19 @@ export const TOPICS: Topic[] = [
     ],
   },
   {
+    id: "ai-help",
+    area: "Account and privacy",
+    title: "Allowing AI help, and reporting an AI answer",
+    href: "/security#ai-help",
+    keywords: ["ai", "allow ai", "anthropic", "claude", "consent", "permission", "report", "wrong answer", "bad answer", "flag"],
+    summary: "The first time you open an AI feature, tap Allow AI help. Turn it off any time in Menu, Face ID, sign-in and account.",
+    body: [
+      "AI help is powered by Claude, made by Anthropic. When you use an AI feature, ScholarTasks sends your question and the planning details needed to answer it. Never passwords, Social Security numbers or FSA IDs.",
+      "Each person allows AI help for themselves. Parents also choose whether each student may use AI chat in Family and permissions.",
+      "If an AI answer is wrong, unsafe or does homework for you, tap Report this answer under it. Our team reads every report.",
+    ],
+  },
+  {
     id: "delete-account",
     area: "Account and privacy",
     title: "Deleting your account",

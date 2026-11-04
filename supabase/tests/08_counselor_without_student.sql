@@ -1,5 +1,7 @@
 \set ON_ERROR_STOP on
 \o /dev/null
+-- These people have said yes to AI help (0023).
+insert into user_settings (user_id, ai_consent_at) values ('00000000-0000-0000-0000-0000000000d1', now()),('00000000-0000-0000-0000-0000000000d2', now()),('00000000-0000-0000-0000-0000000000d5', now()) on conflict (user_id) do update set ai_consent_at = excluded.ai_consent_at;
 set role authenticated;
 -- A brand-new parent with no family yet can try the counselor.
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000d1', false);

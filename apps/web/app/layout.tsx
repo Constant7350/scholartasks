@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Viewport } from "next";
 import "./globals.css";
 import { InAppLinks } from "./in-app-links";
+import { AiConsent } from "./ai-consent";
 
 export const metadata = {
   title: "ScholarTasks",
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <InAppLinks />
         {children}
+        <AiConsent />
       </body>
     </html>
   );

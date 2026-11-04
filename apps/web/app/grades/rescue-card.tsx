@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { friendly } from "../../lib/supabase";
 import { CHECKIN, EMPTY_ANSWERS, type Answers, type SavedPlan } from "./rescue-questions";
+import { ReportAi } from "../report-ai";
 
 export interface RescueTarget { course: string; grade: string }
 
@@ -146,6 +147,7 @@ export function RescueCard({ sb, studentId, name, isParent, aiAllowed, courses, 
             </div>
             {p.unsaved && <p className="note note-info">This plan isn&apos;t saved yet because a database update is pending.</p>}
             <p style={{ margin: "8px 0" }}>{plan.summary}</p>
+            <ReportAi feature="grade rescue" text={[plan.summary, ...plan.steps.map((s) => (typeof s === "string" ? s : JSON.stringify(s)))].join("\n")} />
             {plan.likely_causes.length > 0 && <p className="hint" style={{ margin: "0 0 8px" }}><b>What seems to be going on:</b> {plan.likely_causes.join(" · ")}</p>}
             <ol className="rescue-steps">
               {plan.steps.map((s, i) => (

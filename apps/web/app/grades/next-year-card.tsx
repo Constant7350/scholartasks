@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { CoursePicker } from "./course-picker";
 import { levelFromName } from "./courses";
+import { ReportAi } from "../report-ai";
 
 type Level = "standard" | "honors" | "AP" | "IB" | "DE";
 interface Planned { course: string; level: Level }
@@ -109,6 +110,7 @@ export function NextYearCard({ sb, studentId, name, gradeLevel, aiAllowed }: {
       {advice && (
         <div className="advice">
           <p style={{ margin: "16px 0 10px" }}>{advice.summary}</p>
+          <ReportAi feature="course advice" text={[advice.summary, ...advice.courses.map((c) => JSON.stringify(c))].join("\n")} />
           <ul className="items">
             {advice.courses.map((c) => (
               <li key={c.course} className="advice-row">

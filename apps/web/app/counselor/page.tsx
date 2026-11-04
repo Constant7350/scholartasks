@@ -4,6 +4,7 @@ import { Fragment, useCallback, useEffect, useRef, useState, type ReactNode } fr
 import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
+import { ReportAi } from "../report-ai";
 
 interface Student { id: string; first_name: string; grade_level: number; permissions: Record<string, boolean> }
 interface Msg { role: "user" | "assistant"; content: string; fromBank?: boolean }
@@ -164,6 +165,7 @@ export default function CounselorPage() {
                 <div key={i} className={`bubble bubble-${m.role}`}>
                   {m.role === "assistant" ? (m.content ? <Formatted text={m.content} /> : <span className="typing">Thinking…</span>) : m.content}
                   {m.fromBank && <span className="bank-note">✓ From the ScholarTasks answer library, reviewed by our team</span>}
+                  {m.role === "assistant" && m.content && !busy && <ReportAi feature="counselor" text={m.content} />}
                 </div>
               ))}
               <div ref={endRef} />

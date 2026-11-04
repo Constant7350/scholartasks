@@ -1,5 +1,7 @@
 \set ON_ERROR_STOP on
 \o /dev/null
+-- These people have said yes to AI help (0023).
+insert into user_settings (user_id, ai_consent_at) values ('00000000-0000-0000-0000-0000000000c0', now()),('00000000-0000-0000-0000-0000000000c1', now()),('00000000-0000-0000-0000-0000000000c9', now()) on conflict (user_id) do update set ai_consent_at = excluded.ai_consent_at;
 -- Staff member c0 reviews the bank.
 insert into app_admins values ('00000000-0000-0000-0000-0000000000c0');
 set role authenticated;

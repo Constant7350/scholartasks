@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
 import { STUDY_COACH_DAILY_LIMIT, limitReached } from "../../../../lib/billing";
+import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 
 // The practice tutor: checks a written answer to a bank question, or helps a
 // student who is stuck on one. It only ever talks about questions from the
@@ -73,6 +74,7 @@ export async function POST(req: Request) {
   const coach = !plan.error && !!(plan.data as { study_coach: boolean }[] | null)?.[0]?.study_coach;
   const limit = coach ? STUDY_COACH_DAILY_LIMIT : DAILY_LIMIT;
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
+  if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
   if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
   if (turn.data === false) return json(429, limitReached(limit));
 
