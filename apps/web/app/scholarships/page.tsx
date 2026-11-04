@@ -101,6 +101,8 @@ export default function ScholarshipsPage() {
       if (c?.choice === "added") g.saved.push(x);
       else if (c?.choice !== "hidden") g[x.r.status].push(x);
     }
+    // Closest first: the fewest things left to check, then the most rules already met.
+    g.maybe.sort((a, b) => a.r.unknown.length - b.r.unknown.length || b.r.met.length - a.r.met.length);
     return g;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results, choices, current]);
