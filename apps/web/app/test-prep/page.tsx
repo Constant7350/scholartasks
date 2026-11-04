@@ -92,6 +92,12 @@ export default function TestPrepPage() {
     return () => clearInterval(t);
   }, [run?.kind]);
 
+  // When each question was last answered, so new drills and tests show unseen questions first.
+  const lastSeen = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const a of attempts) { const t = Date.parse(a.created_at); if (!(m.get(a.question_id)! >= t)) m.set(a.question_id, t); }
+    return m;
+  }, [attempts]);
   const byId = useMemo(() => new Map((bank ?? []).map((q) => [q.id, q])), [bank]);
   const plan = useMemo(() => {
     const sec: Record<string, { right: number; total: number }> = {};
@@ -151,11 +157,11 @@ export default function TestPrepPage() {
   const pool = (s: Section) => bank.filter((q) => q.subject === s.subject);
 
   const startDrill = (s: Section) => {
-    const qs = pickQuestions(pool(s), s.passages ? 8 : DRILL);
+    const qs = pickQuestions(pool(s), s.passages ? 8 : DRILL, lastSeen);
     setRun({ kind: "drill", section: s, qs, i: 0, picked: null, right: 0 }); setTutor(null); setAsk(""); setError(null);
   };
   const startTest = () => {
-    const parts = sections.filter((s) => science || !s.optional).map((s) => ({ section: s, qs: pickQuestions(pool(s), s.count) })).filter((p) => p.qs.length);
+    const parts = sections.filter((s) => science || !s.optional).map((s) => ({ section: s, qs: pickQuestions(pool(s), s.count, lastSeen) })).filter((p) => p.qs.length);
     if (!parts.length) return;
     setRun({ kind: "test", exam, parts, part: 0, i: 0, answers: {}, flags: {}, endsAt: Date.now() + parts[0]!.section.minutes * 60_000, startedAt: Date.now() });
     setNow(Date.now()); setError(null); window.scrollTo(0, 0);

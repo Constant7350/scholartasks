@@ -536,6 +536,7 @@ export const TOPICS: Topic[] = [
       "Check the Score plan: it lists the topics you miss most, your best practice estimate, and the score Zell Miller needs.",
     ],
     body: [
+      "Each drill and practice test picks questions at random, starting with ones you haven't answered yet, so repeats are rare until you've seen the whole bank.",
       "Drills are free and use no AI. \"Explain it\" asks the tutor to walk you through a question (1 of today's 10 AI uses).",
       "Timed practice tests are part of the Study Coach add-on and are free while ScholarTasks is in beta.",
       "Scores are rough estimates from short tests, not official scores. Before test day, take a full-length official practice test: Bluebook for the SAT, or ACT's free practice test.",
