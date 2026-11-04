@@ -177,6 +177,7 @@ export const TOPICS: Topic[] = [
       "For a saved scholarship with a checklist, tap the steps line to tick off each step right from the to-do list.",
       "Ticking a college as done marks the application Submitted. Change it to Accepted and so on from the College plan.",
       "If a student needs a parent's OK to mark things done, the item shows \"Waiting for parent's OK\" in Done until the parent taps Approve.",
+      "\"Beyond grades\" steps for the student's grade (join activities, log service, take a leadership role, line up recommenders, draft the essay) are added once each school year. Tap Not for me to hide one that doesn't fit.",
     ],
   },
   {
@@ -305,6 +306,32 @@ export const TOPICS: Topic[] = [
       "The Common App has room for 10 activities and 5 honors. You can add more here; extras still go on your resume.",
       "Tips appear under the description as you type, like adding a number or starting with an action word. The words are always yours.",
       "The AI counselor and essay help can see this list, so their advice fits what you actually do.",
+    ],
+  },
+  {
+    id: "beyond-grades",
+    area: "Activities and resume",
+    title: "Beyond grades: check-up, service hours, recommenders and brag sheet",
+    href: "/activities#checkup",
+    keywords: ["beyond grades", "leadership", "community service", "volunteer hours", "service log", "recommendation", "letter of recommendation", "recommender", "teacher letter", "brag sheet", "character", "what colleges look for", "holistic", "check-up"],
+    summary: "Colleges look at more than grades: activities, leadership, service, jobs, recommendation letters and character. The Activities page helps you build and track all of them.",
+    steps: [
+      "Open Menu, then Activities and resume.",
+      "Read the Beyond grades check-up at the top. Each line shows what looks good and the next step for your grade.",
+      "In Service hours log, add the date, hours and place for each volunteer shift. Totals for this school year and all years show at the top.",
+      "In Recommendation letters, add each teacher, counselor, coach or boss you might ask, and change the status as you go: Asked, Said yes, Letter sent, Thanked.",
+      "Fill in the Brag sheet in your own words. It saves when you leave a box. Tap Copy for my recommenders and paste it into an email to each one.",
+    ],
+    body: [
+      "Grades and hard classes always come first. After that, colleges like UGA and Georgia Tech read activities, leadership, service, jobs and recommendation letters, and judge character through all of them.",
+      "Staying with a few things for years beats a long list. Jobs and family duties count.",
+      "The check-up has no scores. It just points to the next step, and it changes with the student's grade.",
+      "Essay ideas in the brag sheet stay out of the copy you send to recommenders.",
+      "The AI counselor sees these too, so it can suggest the right next step. It won't write your answers for you.",
+    ],
+    faq: [
+      { q: "Who should write my letters?", a: "Two teachers from core or challenging classes who know you well, usually from 11th grade. UGA prefers a teacher who saw you in a hard class. Ask in person in spring of junior year, and give them a month before your deadline." },
+      { q: "Do campus visits count at UGA?", a: "No. UGA says it does not consider demonstrated interest. Some private colleges do, so check each college." },
     ],
   },
   {
@@ -766,6 +793,10 @@ export const TIPS: Tip[] = [
   { routes: ["*"], sel: ".tabbar", body: "Main pages along the bottom. More opens the full menu.", topic: "home" },
   { routes: ["*"], sel: ".pagestrip .student-switch", body: "Which student you are looking at. Pick another name and every page switches to that student.", topic: "home" },
   { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
+
+  // Activities
+  { routes: ["/activities"], sel: "#checkup h2", body: "What colleges read besides grades, and the next step for each. It changes with your grade.", topic: "beyond-grades" },
+  { routes: ["/activities"], sel: "#brag h2", body: "Answer in your own words, then copy it into an email to each teacher who writes you a letter.", topic: "beyond-grades" },
 
   // Home
   { routes: ["/home"], sel: ".hero h1", body: "This is your home base. Try any tool below. You can add your student whenever you're ready.", topic: "welcome" },

@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
-import { CATEGORIES, LIMITS, RECOGNITION, descriptionTips, gradeText, hoursPerYear, type Activity } from "./shared";
+import { CATEGORIES, LIMITS, RECOGNITION, checkup, descriptionTips, gradeText, hoursPerYear, type Activity, type BragSheet, type Recommender, type ServiceEntry } from "./shared";
+import { Brag, Checkup, Recommenders, ServiceLog } from "./beyond";
 
 interface Student { id: string; first_name: string; grade_level: number }
 
@@ -46,6 +47,11 @@ export default function ActivitiesPage() {
   const [tab, setTab] = useState<Activity["kind"]>("activity");
   const [draft, setDraft] = useState<Draft | null>(null);
   const [offline, setOffline] = useState(false);
+  const [service, setService] = useState<ServiceEntry[]>([]);
+  const [recs, setRecs] = useState<Recommender[]>([]);
+  const [brags, setBrags] = useState<BragSheet[]>([]);
+  // The service log, recommenders and brag sheet switch on with database update 32.
+  const [beyondOn, setBeyondOn] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -66,9 +72,24 @@ export default function ActivitiesPage() {
     if (missingTable(e)) { setOffline(true); setReady(true); return; }
     setOffline(false);
     setRows((data as Activity[]) ?? []);
+    const [sv, rc, bg] = await Promise.all([
+      sb.from("service_hours").select("id, student_id, served_on, hours, organization, note").order("served_on", { ascending: false }).order("created_at", { ascending: false }),
+      sb.from("recommenders").select("id, student_id, name, role, subject, status, asked_on, notes").order("created_at"),
+      sb.from("brag_sheets").select("student_id, answers, updated_at"),
+    ]);
+    setBeyondOn(!sv.error && !rc.error && !bg.error);
+    setService((sv.data as ServiceEntry[]) ?? []);
+    setRecs((rc.data as Recommender[]) ?? []);
+    setBrags((bg.data as BragSheet[]) ?? []);
     setReady(true);
   }, [sb, setCurrent]);
   useEffect(() => { void load(); }, [load]);
+
+  // Links like /activities#recs land on the right section once it has loaded.
+  useEffect(() => {
+    if (!ready || !window.location.hash) return;
+    document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [ready]);
 
   if (!sb) return <Page title="Activities and resume"><NotConfigured /></Page>;
   if (!ready) return <Page title="Activities and resume"><p className="hint">Loading…</p></Page>;
@@ -79,6 +100,9 @@ export default function ActivitiesPage() {
     return <Page title="Activities and resume"><p className="hint">Add a student on the <a href="/family">Family</a> page first.</p></Page>;
 
   const mine = rows.filter((r) => r.student_id === student.id);
+  const myService = service.filter((r) => r.student_id === student.id);
+  const myRecs = recs.filter((r) => r.student_id === student.id);
+  const myBrag = brags.find((b) => b.student_id === student.id) ?? null;
   const list = mine.filter((r) => r.kind === tab);
   const activities = mine.filter((r) => r.kind === "activity");
   const honors = mine.filter((r) => r.kind === "honor");
@@ -157,6 +181,10 @@ export default function ActivitiesPage() {
       </div>
       <p><a className="btn btn-inline link-btn" href={`/activities/resume?student=${student.id}`}>📄 Make my resume</a></p>
 
+      {beyondOn && (
+        <Checkup grade={student.grade_level} items={checkup(student.grade_level, mine, myService, myRecs, myBrag)} />
+      )}
+
       {error && <p className="note note-err" role="alert">{error}</p>}
 
       <div className="tabs" role="tablist">
@@ -164,7 +192,7 @@ export default function ActivitiesPage() {
         <button role="tab" aria-selected={tab === "honor"} onClick={() => { setTab("honor"); setDraft(null); }}>Honors and awards ({honors.length})</button>
       </div>
 
-      <section className="panel">
+      <section className="panel" id="activities">
         <h2>{isHonor ? "Honors and awards" : "Activities"}</h2>
         <p className="hint" style={{ marginTop: 0 }}>
           {isHonor
@@ -260,6 +288,14 @@ export default function ActivitiesPage() {
           </form>
         )}
       </section>
+
+      {beyondOn && (
+        <>
+          <ServiceLog sb={sb} studentId={student.id} rows={myService} run={run} />
+          <Recommenders sb={sb} studentId={student.id} rows={myRecs} run={run} grade={student.grade_level} />
+          <Brag sb={sb} studentId={student.id} sheet={myBrag} run={run} firstName={student.first_name} />
+        </>
+      )}
     </Page>
   );
 }

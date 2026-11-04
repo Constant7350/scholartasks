@@ -109,7 +109,7 @@ export default function PlanPage() {
   }, [sb, student, mayUseIncome]);
 
   const myColleges = colleges.filter((c) => c.student_id === current);
-  const myTasks = tasks.filter((t) => t.student_id === current && t.status !== "dismissed");
+  const myTasks = tasks.filter((t) => t.student_id === current && t.status !== "dismissed" && t.kind !== "milestone"); // "Beyond grades" steps live on the To-do list
   const upcoming = useMemo(() => {
     const items = [
       ...myColleges.filter((c) => c.deadline && ["considering", "applying"].includes(c.status))

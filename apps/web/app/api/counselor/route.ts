@@ -46,7 +46,7 @@ async function rows<T>(q: PromiseLike<{ data: unknown; error: { code?: string } 
 }
 
 async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean, today: string): Promise<string> {
-  const [grades, colleges, tasks, activities] = await Promise.all([
+  const [grades, colleges, tasks, activities, service, recs, brag] = await Promise.all([
     rows<{ term: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number }>(
       sb.from("course_grades").select("term, course, grade, level, core, grade_level").eq("student_id", s.id).order("grade_level"),
     ),
@@ -59,6 +59,13 @@ async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean,
     rows<{ kind: string; category: string; position: string; organization: string | null; description: string | null; grades: number[]; hours_per_week: number | null; recognition: string | null }>(
       sb.from("student_activities").select("kind, category, position, organization, description, grades, hours_per_week, recognition").eq("student_id", s.id).order("sort_order"),
     ),
+    rows<{ served_on: string; hours: number; organization: string }>(
+      sb.from("service_hours").select("served_on, hours, organization").eq("student_id", s.id),
+    ),
+    rows<{ name: string; role: string; subject: string | null; status: string }>(
+      sb.from("recommenders").select("name, role, subject, status").eq("student_id", s.id).order("created_at"),
+    ),
+    rows<{ answers: Record<string, string> }>(sb.from("brag_sheets").select("answers").eq("student_id", s.id)),
   ]);
 
   const lines: string[] = [
@@ -103,6 +110,19 @@ async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean,
           `- ${a.kind === "honor" ? "Award" : a.category}: ${a.position}${a.organization ? `, ${a.organization}` : ""}${a.grades?.length ? ` (grades ${a.grades.join(", ")})` : ""}${a.hours_per_week ? `, ${a.hours_per_week} hrs/week` : ""}${a.recognition ? `, ${a.recognition} level` : ""}${a.description ? `: ${a.description}` : ""}`).join("\n")
       : "Activities, jobs and awards: none entered yet (the Activities and resume page).",
   );
+  if (service.length) {
+    const byOrg = new Map<string, number>();
+    for (const h of service) byOrg.set(h.organization, (byOrg.get(h.organization) ?? 0) + Number(h.hours));
+    const total = [...byOrg.values()].reduce((a, b) => a + b, 0);
+    lines.push(`Service hours log: ${total} hours in all (${[...byOrg].map(([o, n]) => `${o} ${n}`).join(", ")}).`);
+  } else lines.push("Service hours log: nothing logged yet.");
+  lines.push(
+    recs.length
+      ? "Recommendation letters: " + recs.map((r) => `${r.name} (${r.role}${r.subject ? `, ${r.subject}` : ""}): ${r.status}`).join("; ") + "."
+      : "Recommendation letters: no recommenders added yet.",
+  );
+  const answered = brag[0] ? Object.values(brag[0].answers).filter((v) => v?.trim()).length : 0;
+  lines.push(`Brag sheet: ${answered ? `${answered} questions answered` : "not started"}.`);
   return lines.join("\n");
 }
 
@@ -129,6 +149,8 @@ How to help:
 - Families file the FAFSA and GSFAPP themselves with their own accounts. Never ask for or accept Social Security numbers, FSA IDs, passwords or bank details; if someone shares one, tell them not to and don't repeat it.
 - You are not a lawyer, tax preparer or the college's official aid office. For appeals, tax questions or special circumstances, explain the options and point them to the college's financial aid office or the school counselor.
 - If a student seems stressed or overwhelmed, be kind and encouraging, and suggest talking with a parent or school counselor. If anyone mentions thoughts of self-harm or being unsafe, tell them they can call or text 988 (Suicide and Crisis Lifeline) right now, and encourage them to reach a trusted adult.
+- Beyond grades: grades and course rigor come first everywhere. After that, colleges read character (about two in three colleges weigh it, mostly through essays, recommendation letters and the activities list), activities, leadership, service, jobs and family duties. Depth beats a long list: UGA says "depth over breadth"; Georgia Tech says most admits have 3 to 5 activities done in a meaningful way and counts work and family responsibilities. UGA (Common Data Set 2024-25) rates rigor and GPA very important, test scores important, and essay, recommendations, activities, character, volunteer work and work experience as considered; it does not consider interviews or demonstrated interest (campus visits). UGA takes one optional teacher letter (ideally from a challenging class) and an optional resume; Georgia Tech accepts no resumes. Many Georgia public colleges, like Kennesaw State, admit mostly on GPA, where these things matter more for scholarships and honors programs.
+- Use the student's activities, service hours, recommenders and brag sheet above to suggest the next step for their grade: 9th, join 2-4 activities and start a service log; 10th, go deeper and take on a responsibility; 11th, seek a leadership role, pick two core-class teachers and ask for letters in spring, finish the brag sheet; 12th, confirm recommenders, polish the 10 Common App activity descriptions, and thank recommenders. Point them to the Activities and resume page and their To-do list. Help them describe what they did, but the activity descriptions, brag sheet and essays stay in their own words.
 - Stay on school, college, careers, test prep, scholarships and paying for college. Politely steer other topics back.`;
 })();
 
