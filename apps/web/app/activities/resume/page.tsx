@@ -6,6 +6,7 @@ import gaPack from "../../../../../packs/states/GA.json";
 import { supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { rememberedStudent } from "../../../lib/current-student";
+import { printPage } from "../../../lib/print";
 import { CATEGORIES, RECOGNITION, gradeText, hoursPerYear, type Activity } from "../shared";
 
 const GA = gaPack as unknown as StatePack;
@@ -77,7 +78,7 @@ export default function ResumePage() {
 
   const print = async () => {
     await sb.rpc("log_access", { p_student: student.id, p_action: "export", p_details: { what: "resume" } }).then(() => null, () => null);
-    window.print();
+    printPage();
   };
 
   const entry = (a: Activity) => (

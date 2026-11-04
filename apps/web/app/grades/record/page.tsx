@@ -6,6 +6,7 @@ import gaPack from "../../../../../packs/states/GA.json";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { rememberedStudent } from "../../../lib/current-student";
+import { printPage } from "../../../lib/print";
 
 const GA = gaPack as unknown as StatePack;
 const LEVELS: Record<string, string> = { standard: "Standard", honors: "Honors", AP: "AP", IB: "IB", DE: "Dual enrollment" };
@@ -79,7 +80,7 @@ export default function RecordPage() {
   const print = async () => {
     // Printing or saving a PDF is an export of the student's record: log it.
     await sb.rpc("log_access", { p_student: student.id, p_action: "export", p_details: { what: "self_reported_record" } }).then(() => null, () => null);
-    window.print();
+    printPage();
   };
 
   return (

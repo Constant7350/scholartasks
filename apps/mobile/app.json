@@ -19,7 +19,7 @@
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["mailto", "sms", "tel"]
+        "LSApplicationQueriesSchemes": ["mailto", "sms", "tel", "webcal"]
       }
     },
     "android": {
