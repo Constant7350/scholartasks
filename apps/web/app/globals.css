@@ -470,3 +470,35 @@ body.help-on { padding-bottom: 96px; }
 .tile-alert { display: flex; flex-wrap: wrap; gap: 6px; }
 .tile-late { border-color: var(--err); }
 .tile-week { border-color: var(--gold); }
+
+/* ---------- SAT and ACT prep ---------- */
+.tp-passage { background: #f8f9fc; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; margin: 12px 0; max-height: 420px; overflow-y: auto; font-size: 15px; line-height: 1.6; }
+.tp-passage p { margin: 8px 0; white-space: pre-line; }
+.tp-underline { text-decoration-thickness: 2px; text-underline-offset: 3px; background: #fff6d6; }
+.tp-stem { font-size: 17px; margin: 12px 0; }
+.tp-options { display: grid; gap: 8px; }
+.tp-option { font: inherit; font-size: 15px; text-align: left; display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid var(--line); background: #fff; color: var(--ink); border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+.tp-option:hover:not(:disabled) { border-color: var(--navy); background: #eef2f9; }
+.tp-option:disabled { cursor: default; }
+.tp-letter { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--navy); }
+.tp-chosen { border-color: var(--navy); background: #eef2f9; }
+.tp-chosen .tp-letter { background: var(--navy); border-color: var(--navy); color: #fff; }
+.tp-right, .tp-right:disabled { background: #e6f4ea; border-color: #2e7d4f; color: #1d5c37; }
+.tp-wrong, .tp-wrong:disabled { background: var(--err-soft); border-color: var(--err); color: var(--err); }
+.tp-testbar { position: sticky; top: 0; z-index: 4; display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 15px; }
+.tp-timer { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--navy); }
+.tp-timer-low { color: var(--err); }
+.tp-grid { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }
+.tp-cell { font: inherit; font-size: 13px; min-width: 38px; height: 34px; border-radius: 8px; border: 1.5px solid var(--line); background: #fff; color: var(--muted); cursor: pointer; }
+.tp-cell-done { background: #eef2f9; color: var(--navy); border-color: #c9d3e4; }
+.tp-cell-now { border-color: var(--navy); font-weight: 700; color: var(--navy); }
+.tp-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.tp-stats > div { background: #f8f9fc; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: grid; gap: 2px; }
+.tp-stats .hint { margin: 0; font-size: 13px; }
+.tp-stats b { font-size: 22px; color: var(--navy); }
+.tp-big { font-size: 40px; font-weight: 800; color: var(--navy); margin: 0 0 8px; }
+.tp-review { padding: 12px 16px; margin: 8px 0; }
+.tp-review summary { cursor: pointer; font-weight: 600; }
+.tp-ok { color: #2e7d4f; }
+.tp-miss { color: var(--err); }
+.tp-flag { white-space: nowrap; font-size: 13px; padding: 6px 12px; }

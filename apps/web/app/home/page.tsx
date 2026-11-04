@@ -16,9 +16,7 @@ interface Due { due: string | null; open: boolean }
 
 const daysUntil = (iso: string) => Math.round((Date.parse(iso + "T12:00:00") - Date.parse(new Date().toLocaleDateString("en-CA") + "T12:00:00")) / 86_400_000);
 
-const SOON = [
-  { icon: "📝", title: "SAT and ACT practice", text: "Short daily practice and full practice tests with a score plan." },
-];
+const SOON: { icon: string; title: string; text: string }[] = [];
 
 export default function Home() {
   const sb = supabase();
@@ -156,6 +154,12 @@ export default function Home() {
           <span>Test yourself in Algebra, Biology, U.S. History and more. Multiple choice is free; the AI tutor checks written answers and gives hints, never homework answers.</span>
           <span className="tile-go">Practice now →</span>
         </a>
+        <a className="tile" href="/test-prep">
+          <span className="tile-icon">📝</span>
+          <b>SAT and ACT prep</b>
+          <span>Free section drills, timed practice tests with a score estimate, and a score plan that shows what to work on.</span>
+          <span className="tile-go">Start prepping →</span>
+        </a>
         <div className="tile">
           <span className="tile-icon">📅</span>
           <b>Key Georgia dates</b>
@@ -171,7 +175,7 @@ export default function Home() {
         </div>
       </div>
 
-      <h2 className="section-title">Coming soon</h2>
+      {SOON.length > 0 && <h2 className="section-title">Coming soon</h2>}
       <div className="tiles">
         {SOON.map((s) => (
           <div key={s.title} className="tile tile-soon">
