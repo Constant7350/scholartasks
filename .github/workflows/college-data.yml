@@ -1,14 +1,12 @@
 name: College data
 
 # Refreshes supabase/seed/colleges.json from the U.S. Department of Education's
-# College Scorecard. Runs when the fetch script changes on a branch, by hand
-# (Actions > College data > Run workflow, on a branch, each fall when new data is out).
+# College Scorecard. Run by hand (Actions > College data > Run workflow, on a
+# branch, each fall when new data is out). Needs the SCORECARD_API_KEY secret
+# (free from https://api.data.gov/signup/).
 # The result is committed back to the branch it ran on, for review in a pull request.
 on:
   workflow_dispatch:
-  push:
-    branches-ignore: [main]
-    paths: [scripts/colleges/fetch.mjs]
 
 permissions:
   contents: write
