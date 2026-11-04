@@ -12,6 +12,9 @@ const GA = gaPack as unknown as StatePack;
 interface Student { id: string; first_name: string; grade_level: number; state: string; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string }
 interface Grade { student_id: string; course: string; grade: "A" | "B" | "C" | "D" | "F"; level: "standard" | "honors" | "AP" | "IB" | "DE"; core: boolean; grade_level: number; term: string }
 interface Invite { student_id: string; accepted_at: string | null }
+interface Due { due: string | null; open: boolean }
+
+const daysUntil = (iso: string) => Math.round((Date.parse(iso + "T12:00:00") - Date.parse(new Date().toLocaleDateString("en-CA") + "T12:00:00")) / 86_400_000);
 
 const SOON = [
   { icon: "📝", title: "SAT and ACT practice", text: "Short daily practice and full practice tests with a score plan." },
@@ -24,6 +27,7 @@ export default function Home() {
   const [students, setStudents] = useState<Student[]>([]);
   const [invites, setInvites] = useState<Invite[]>([]);
   const [grades, setGrades] = useState<Grade[]>([]);
+  const [dues, setDues] = useState<Due[]>([]);
 
   useEffect(() => {
     if (!sb) return;
@@ -32,10 +36,16 @@ export default function Home() {
       setSignedIn(!!data.session);
       if (!data.session) return;
       setEmail(data.session.user.email ?? "");
-      const [st, inv, gr] = await Promise.all([
+      const [st, inv, gr, tk, col] = await Promise.all([
         sb.from("students").select("*").order("first_name"),
         sb.from("family_invites").select("student_id, accepted_at"),
         sb.from("course_grades").select("student_id, course, grade, level, core, grade_level, term"),
+        sb.from("tasks").select("due_on, status"),
+        sb.from("student_colleges").select("deadline, status"),
+      ]);
+      setDues([
+        ...((tk.data as { due_on: string | null; status: string }[]) ?? []).map((t) => ({ due: t.due_on, open: t.status === "todo" })),
+        ...((col.data as { deadline: string | null; status: string }[]) ?? []).map((c) => ({ due: c.deadline, open: ["considering", "applying"].includes(c.status) })),
       ]);
       setGrades((gr.data as Grade[]) ?? []);
       setStudents((st.data as Student[]) ?? []);
@@ -52,6 +62,9 @@ export default function Home() {
   }
 
   const connected = (id: string) => invites.some((i) => i.student_id === id && i.accepted_at);
+  const open = dues.filter((d) => d.open);
+  const late = open.filter((d) => d.due && daysUntil(d.due) < 0).length;
+  const week = open.filter((d) => d.due && daysUntil(d.due) >= 0 && daysUntil(d.due) <= 7).length;
   const dates = [...GA.deadlines].sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
 
   return (
@@ -95,6 +108,18 @@ export default function Home() {
 
       <h2 className="section-title">Try it now</h2>
       <div className="tiles">
+        <a className={`tile${late ? " tile-late" : week ? " tile-week" : ""}`} href="/todo">
+          <span className="tile-icon">✅</span>
+          <b>To-do list</b>
+          <span>What still needs doing and what's done, sorted by due date with warning colors.</span>
+          <span className="tile-alert">
+            {late > 0 && <span className="pill pill-late">{late} late</span>}
+            {week > 0 && <span className="pill pill-soon">{week} due this week</span>}
+            {open.length > 0 && late + week === 0 && <span className="pill">{open.length} to do</span>}
+            {open.length === 0 && <span className="pill pill-ok">All caught up</span>}
+          </span>
+          <span className="tile-go">Open to-do list →</span>
+        </a>
         <a className="tile" href="/plan">
           <span className="tile-icon">🗂️</span>
           <b>College list and deadlines</b>
