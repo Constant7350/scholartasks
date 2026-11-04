@@ -73,13 +73,14 @@ export const TOPICS: Topic[] = [
     area: "Getting started",
     title: "The Home page and Menu",
     href: "/home",
-    keywords: ["dashboard", "menu", "navigation", "tiles", "main page", "where is", "back", "switch student", "tab bar"],
+    keywords: ["dashboard", "menu", "navigation", "tiles", "main page", "where is", "back", "switch student", "tab bar", "colors", "theme", "color theme", "dark", "look"],
     summary: "Home shows your students, each student's GPA scorecard, the main tools and key Georgia dates.",
     body: [
       "Tap a tile to open that tool. The Menu button at the top right lists every page. Students see only their own pages; parents also see Family and permissions. Help and Sign out are at the bottom of the menu.",
       "On a computer, the main pages sit in a row under the top bar, and the page you are on is underlined. On a phone, they sit along the bottom of the screen, and More opens the full menu.",
       "Parents: the Viewing box shows which student you are looking at. Pick another name and every page switches to that student, and stays on them as you move around.",
       "Home is always one tap away, in the page row on a computer or the bottom bar on a phone.",
+      "Pick the app's colors near the bottom of the Menu, under App colors: Campus (navy and bright colors), Sunrise (cream and peach) or Garden (sage and teal). The choice is saved on that phone or computer, so each person in the family can pick their own.",
     ],
   },
 
