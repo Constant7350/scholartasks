@@ -105,15 +105,29 @@ function parseCsv(text) {
   return rows;
 }
 
+const UA = { headers: { "User-Agent": "ScholarTasks college data refresh (GitHub Actions)" } };
+
 async function findBulkUrl() {
   if (process.env.SCORECARD_FILE_URL) return process.env.SCORECARD_FILE_URL;
+  const pick = (text) => text.match(/https?:\/\/[^"'\s)\\]*Most-Recent-Cohorts-Institution[^"'\s)\\]*\.(zip|csv)/i)?.[0];
+  // data.gov's catalog lists the current download links.
+  for (const id of ["college-scorecard", "most-recent-cohorts-institution"]) {
+    const res = await fetch(`https://catalog.data.gov/api/3/action/package_show?id=${id}`, UA).catch((e) => ({ ok: false, status: String(e) }));
+    console.log(`catalog ${id}: ${res.status}`);
+    if (!res.ok) continue;
+    const text = await res.text();
+    const hit = pick(text);
+    if (hit) return hit;
+    console.log("resource links:", [...text.matchAll(/"url":\s*"([^"]+)"/g)].map((m) => m[1]).slice(0, 15));
+  }
   for (const page of ["https://collegescorecard.ed.gov/data/", "https://collegescorecard.ed.gov/data/documentation/"]) {
-    const res = await fetch(page).catch(() => null);
-    if (!res?.ok) continue;
+    const res = await fetch(page, UA).catch((e) => ({ ok: false, status: String(e) }));
+    console.log(`${page}: ${res.status}`);
+    if (!res.ok) continue;
     const html = await res.text();
-    const m = html.match(/https?:\/\/[^"'\s)]*Most-Recent-Cohorts-Institution[^"'\s)]*\.zip/i);
-    if (m) return m[0];
-    console.log(`no institution file link on ${page}; links seen:`, [...html.matchAll(/https?:\/\/[^"'\s)]+\.zip/gi)].map((x) => x[0]).slice(0, 10));
+    const hit = pick(html);
+    if (hit) return hit;
+    console.log("zip links seen:", [...html.matchAll(/https?:\/\/[^"'\s)]+\.zip/gi)].map((x) => x[0]).slice(0, 10));
   }
   throw new Error("Couldn't find the Scorecard data file. Set SCORECARD_API_KEY or SCORECARD_FILE_URL.");
 }
@@ -125,12 +139,12 @@ async function fromBulkFile() {
   const { join } = await import("node:path");
   const url = await findBulkUrl();
   console.log("downloading", url);
-  const res = await fetch(url);
+  const res = await fetch(url, UA);
   if (!res.ok) throw new Error(`download ${res.status}`);
   const dir = mkdtempSync(join(tmpdir(), "scorecard-"));
   const buf = Buffer.from(await res.arrayBuffer());
   let csvText;
-  if (/\.zip$/i.test(url)) {
+  if (buf[0] === 0x50 && buf[1] === 0x4b) {
     writeFileSync(join(dir, "data.zip"), buf);
     execFileSync("unzip", ["-q", "-o", join(dir, "data.zip"), "-d", dir]);
     const csv = readdirSync(dir, { recursive: true }).map(String).find((f) => /Most-Recent-Cohorts-Institution.*\.csv$/i.test(f) || /\.csv$/i.test(f));
