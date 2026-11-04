@@ -31,7 +31,7 @@ export default function StudyLibraryPage() {
   return (
     <Page title={title}>
       <p className="hint" style={{ marginTop: -8 }}>
-        Short lessons on how to study, using methods with strong research behind them. Each one has a quick check and a small project to try this week. Lessons are free and don&apos;t use any AI.
+        Short lessons on how to study, using methods with strong research behind them. Each one has a quick check and a small project to try this week. Lessons are free and don&apos;t use any AI. Ready to test yourself? Try the <a href="/practice">practice questions</a>.
       </p>
       {ctx.role === "parent" && ctx.students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
