@@ -50,6 +50,7 @@ export function TopBar() {
                   <a role="menuitem" href="/family">🔒 Family and permissions</a>
                   <a role="menuitem" href="/grades">🎓 Grades and HOPE</a>
                   <a role="menuitem" href="/counselor">🤖 AI counselor</a>
+                  <a role="menuitem" href="/scholarships">💰 Scholarships and grants</a>
                   <a role="menuitem" href="/study">📚 Study skills library</a>
                   <a role="menuitem" href="/practice">✏️ Practice questions</a>
                   <a role="menuitem" href="/join">🔑 I'm a student: join with a code</a>

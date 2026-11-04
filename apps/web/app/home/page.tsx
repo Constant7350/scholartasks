@@ -14,9 +14,7 @@ interface Grade { student_id: string; course: string; grade: "A" | "B" | "C" | "
 interface Invite { student_id: string; accepted_at: string | null }
 
 const SOON = [
-  { icon: "💰", title: "Scholarship matches", text: "Scholarships your student qualifies for, kept up to date for you." },
   { icon: "📝", title: "SAT and ACT practice", text: "Short daily practice and full practice tests with a score plan." },
-  { icon: "📚", title: "Study skills and nudges", text: "For grades 8 to 12: short lessons and nudges before grades slip." },
 ];
 
 export default function Home() {
@@ -114,6 +112,12 @@ export default function Home() {
           <b>AI counselor</b>
           <span>Ask anything about colleges, aid and deadlines. Answers are built around your student's grades and plan.</span>
           <span className="tile-go">Ask a question →</span>
+        </a>
+        <a className="tile" href="/scholarships">
+          <span className="tile-icon">💰</span>
+          <b>Scholarships and grants</b>
+          <span>Georgia and national awards your student qualifies for, with what to check and what to work on. Checked for changes every day.</span>
+          <span className="tile-go">See matches →</span>
         </a>
         <a className="tile" href="/study">
           <span className="tile-icon">📚</span>
