@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { addPasskey, hasBuiltInUnlock, inPhoneApp, passkeysSupported, unlockName } from "../../lib/passkeys-client";
 import { NotConfigured, Page } from "../ui";
+import { AdultConsent } from "../adult-consent";
 
 interface Device { id: string; device_name: string; created_at: string; last_used_at: string | null }
 
@@ -108,6 +109,8 @@ export default function Security() {
         )}
         <p className="hint" style={{ marginTop: 12, marginBottom: 0 }}>Lost a phone? Remove it here. Your password, email link and Google sign-in keep working as before.</p>
       </div>
+
+      <AdultConsent sb={sb} mode="manage" />
     </Page>
   );
 }
