@@ -526,6 +526,19 @@ export const TOPICS: Topic[] = [
     ],
   },
   {
+    id: "security",
+    area: "Account and privacy",
+    title: "Face ID and sign-in page",
+    href: "/security",
+    keywords: ["face id", "fingerprint", "passkey", "device", "lost phone", "18", "adult", "parent access", "sharing"],
+    summary: "Turn on Face ID or fingerprint sign-in, remove lost devices, and (for students 18 and older) choose whether parents keep access.",
+    body: [
+      "Tap Turn on Face ID on this device once on each phone or computer.",
+      "Lost a phone? Tap Remove next to it. Your other ways to sign in keep working.",
+      "Students who are 18 or older see Parent access. Choose Yes, keep sharing or No, stop sharing. You can change it any time.",
+    ],
+  },
+  {
     id: "billing",
     area: "Account and privacy",
     title: "Your plan, Study Coach and extra AI messages",
