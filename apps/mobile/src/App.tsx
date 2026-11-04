@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ComponentType } from "react";
-import { ActivityIndicator, AppState, KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, AppState, KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { WebView as RNWebView, type WebViewMessageEvent, type WebViewProps } from "react-native-webview";
@@ -187,6 +187,15 @@ function Locked({ kind, error, onUnlock, onOther }: { kind: string; error: strin
   );
 }
 
+/** Opens a mailto:, sms: or tel: link in the phone's app for it, or says what to do when there isn't one. */
+function openOutside(url: string) {
+  Linking.openURL(url).catch(() => {
+    const to = decodeURIComponent(url.replace(/^[a-z]+:(\/\/)?/i, "").split("?")[0] ?? "");
+    const what = /^mailto:/i.test(url) ? "email" : /^sms:/i.test(url) ? "texting" : "phone";
+    Alert.alert(`No ${what} app found`, to ? `You can reach us at ${to}.` : "Please set one up on this phone and try again.");
+  });
+}
+
 /** Puts the phone's session into the website before it loads, and reports back whenever the website refreshes it. */
 function bridge(session: Session) {
   const value = JSON.stringify({
@@ -248,9 +257,18 @@ function Site({ session, onSignedOut }: { session: Session; onSignedOut: () => v
         allowsBackForwardNavigationGestures
         pullToRefreshEnabled
         applicationNameForUserAgent="ScholarTasksApp/0.1"
+        // Every link goes through onShouldStartLoadWithRequest below. The default list only lets
+        // http(s) through and quietly drops mailto:/sms:/tel: links on iPhone.
+        originWhitelist={["*"]}
         onShouldStartLoadWithRequest={(req) => {
           let host = "";
           try { host = new URL(req.url).hostname; } catch {}
+          // Email, text and phone links (mailto:, sms:, tel:) open the phone's own Mail,
+          // Messages or Phone app. A web view can't open them itself, so tapping did nothing.
+          if (/^(mailto|sms|tel):/i.test(req.url)) {
+            openOutside(req.url);
+            return false;
+          }
           // Other websites (GAfutures, FAFSA, scholarship sponsors) open in the phone's browser.
           if (req.url.startsWith("http") && !SITE_HOSTS.includes(host)) {
             Linking.openURL(req.url);
