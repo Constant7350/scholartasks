@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { friendly } from "../../lib/supabase";
+import { inPhoneApp } from "../../lib/passkeys-client";
 
 interface FileRow { id: string; storage_path: string; file_name: string; mime_type: string; size_bytes: number; label: string | null; created_at: string }
 
@@ -53,7 +54,8 @@ export function TranscriptsCard({ sb, studentId, name, canEdit, onRead }: {
 
   const open = async (f: FileRow) => {
     setError(null);
-    const tab = window.open("", "_blank");
+    // The phone app opens the file in the phone's browser on its own, so no new tab there.
+    const tab = inPhoneApp() ? null : window.open("", "_blank");
     const { data, error: e } = await sb.storage.from("transcripts").createSignedUrl(f.storage_path, 120);
     if (e || !data) { tab?.close(); return setError("Sorry, that file couldn't be opened."); }
     if (tab) tab.location.href = data.signedUrl; else window.location.href = data.signedUrl;

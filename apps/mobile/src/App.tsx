@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ComponentType } from "re
 import { ActivityIndicator, Alert, AppState, KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import * as Print from "expo-print";
 import { WebView as RNWebView, type WebViewMessageEvent, type WebViewProps } from "react-native-webview";
 import type { Session } from "@supabase/supabase-js";
 import { RELOCK_AFTER_MS, SITE_HOSTS, SITE_URL, WEB_SESSION_KEY } from "./config";
@@ -191,7 +192,7 @@ function Locked({ kind, error, onUnlock, onOther }: { kind: string; error: strin
 function openOutside(url: string) {
   Linking.openURL(url).catch(() => {
     const to = decodeURIComponent(url.replace(/^[a-z]+:(\/\/)?/i, "").split("?")[0] ?? "");
-    const what = /^mailto:/i.test(url) ? "email" : /^sms:/i.test(url) ? "texting" : "phone";
+    const what = /^mailto:/i.test(url) ? "email" : /^sms:/i.test(url) ? "texting" : /^webcal:/i.test(url) ? "calendar" : "phone";
     Alert.alert(`No ${what} app found`, to ? `You can reach us at ${to}.` : "Please set one up on this phone and try again.");
   });
 }
@@ -228,9 +229,11 @@ function Site({ session, onSignedOut }: { session: Session; onSignedOut: () => v
 
   const onMessage = async (e: WebViewMessageEvent) => {
     try {
-      const m = JSON.parse(e.nativeEvent.data) as { refresh_token?: string | null; reminders?: Reminder[] };
+      const m = JSON.parse(e.nativeEvent.data) as { refresh_token?: string | null; reminders?: Reminder[]; print?: string };
       if (m.refresh_token) await saveToken(m.refresh_token);
       if (Array.isArray(m.reminders)) await scheduleReminders(m.reminders);
+      // "Print or save as PDF" on the website: the web view can't print, so the phone does.
+      if (typeof m.print === "string") await Print.printAsync({ html: m.print }).catch(() => {});
     } catch {}
   };
 
@@ -263,9 +266,9 @@ function Site({ session, onSignedOut }: { session: Session; onSignedOut: () => v
         onShouldStartLoadWithRequest={(req) => {
           let host = "";
           try { host = new URL(req.url).hostname; } catch {}
-          // Email, text and phone links (mailto:, sms:, tel:) open the phone's own Mail,
-          // Messages or Phone app. A web view can't open them itself, so tapping did nothing.
-          if (/^(mailto|sms|tel):/i.test(req.url)) {
+          // Email, text, phone and calendar links (mailto:, sms:, tel:, webcal:) open the phone's own
+          // Mail, Messages, Phone or Calendar app. A web view can't open them itself, so tapping did nothing.
+          if (/^(mailto|sms|tel|webcal):/i.test(req.url)) {
             openOutside(req.url);
             return false;
           }
