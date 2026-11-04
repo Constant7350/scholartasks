@@ -121,6 +121,12 @@ export default function Home() {
           <span>Short lessons on how to study, with quick checks and a project to try each week. Free, no AI needed.</span>
           <span className="tile-go">Start a lesson →</span>
         </a>
+        <a className="tile" href="/practice">
+          <span className="tile-icon">✏️</span>
+          <b>Practice questions</b>
+          <span>Test yourself in Algebra, Biology, U.S. History and more. Multiple choice is free; the AI tutor checks written answers and gives hints, never homework answers.</span>
+          <span className="tile-go">Practice now →</span>
+        </a>
         <div className="tile">
           <span className="tile-icon">📅</span>
           <b>Key Georgia dates</b>

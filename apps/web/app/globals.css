@@ -379,3 +379,5 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .timer-num { font-size: 44px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
 .lesson-review-head { all: unset; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
 .checkin-q .chips { justify-content: flex-start; }
+.practice-tile { font: inherit; text-align: left; cursor: pointer; }
+.tutor-box { margin-top: 12px; }
