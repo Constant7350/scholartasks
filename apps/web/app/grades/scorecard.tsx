@@ -14,7 +14,7 @@ const STATUS = {
  * The always-visible GPA scorecard: HOPE GPA against the goal, the trend,
  * an overall GPA, rigor progress and what needs attention this year.
  */
-export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, goal, minGrade, weights, onSaveWeights }: {
+export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, goal, minGrade, weights, onSaveWeights, onRescue }: {
   rows: Row[]; currentGrade: number; pack: StatePack; name?: string; compact?: boolean; href?: string;
   /** The family's own goal and standard; defaults to the HOPE 3.0 and B. */
   goal?: number | null; minGrade?: string;
@@ -22,6 +22,8 @@ export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, go
   weights?: { rigor: number; honors: number };
   /** Shown when the viewer may change the school's weighting. */
   onSaveWeights?: (w: { rigor: number; honors: number }) => Promise<boolean>;
+  /** Starts a grade rescue check-in for a class that needs attention. */
+  onRescue?: (course: string, grade: string) => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(weights ?? { rigor: 1, honors: 0.5 });
@@ -75,6 +77,7 @@ export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, go
               <li key={a.course + a.gradeLevel} className={`attn-${a.severity}`}>
                 <span className="grade-chip">{a.grade}</span>
                 <span><b>{a.course}</b> <span className="hint">{a.message}</span></span>
+                {onRescue && <button className="btn btn-ghost btn-inline btn-sm attn-plan" onClick={() => onRescue(a.course, a.grade)}>Make a plan</button>}
               </li>
             ))}
           </ul>

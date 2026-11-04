@@ -12,6 +12,7 @@ import { GpaScorecard } from "./scorecard";
 import { GoalsCard } from "./goals-card";
 import { NextYearCard } from "./next-year-card";
 import { TranscriptsCard } from "./transcripts-card";
+import { RescueCard, type RescueTarget } from "./rescue-card";
 
 const GA = gaPack as unknown as StatePack;
 const LETTERS = ["A", "B", "C", "D", "F"] as const;
@@ -30,6 +31,8 @@ export default function GradesPage() {
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
+  const [rescue, setRescue] = useState<RescueTarget | null>(null);
+  const clearRescue = useCallback(() => setRescue(null), []);
   const [scores, setScores] = useState({ sat: "", act: "" });
   const [form, setForm] = useState({ course: "", grade: "A" as CourseGrade["grade"], level: "standard" as CourseGrade["level"], core: true, grade_level: "", term: "Fall" });
 
@@ -90,6 +93,11 @@ export default function GradesPage() {
     await load();
     return !e;
   };
+  const aiAllowed = role === "parent" || !!student.permissions?.ai_chat;
+  const latestYear = Math.max(-1, ...mine.filter((r) => r.grade_level <= student.grade_level).map((r) => r.grade_level));
+  const rescueCourses = mine.filter((r) => r.grade_level === latestYear)
+    .sort((a, b) => LETTERS.indexOf(b.grade) - LETTERS.indexOf(a.grade) || a.course.localeCompare(b.course))
+    .map((r) => ({ course: r.course, grade: r.grade }));
   const byYear = [9, 10, 11, 12, 8, 7, 6].map((y) => ({ y, list: mine.filter((r) => r.grade_level === y) })).filter((g) => g.list.length);
 
   return (
@@ -111,6 +119,7 @@ export default function GradesPage() {
           minGrade={student.min_grade}
           weights={{ rigor: Number(student.weight_rigor ?? 1), honors: Number(student.weight_honors ?? 0.5) }}
           onSaveWeights={canEdit ? (w) => run(() => sb.rpc("set_school_weights", { p_student: student.id, p_rigor: w.rigor, p_honors: w.honors })) : undefined}
+          onRescue={aiAllowed ? (course, grade) => setRescue({ course, grade }) : undefined}
         />
       )}
       {student.state === GA.state && (
@@ -155,8 +164,11 @@ export default function GradesPage() {
         </form>
       </section>
 
+      <RescueCard sb={sb} studentId={student.id} name={student.first_name} isParent={role === "parent"} aiAllowed={aiAllowed}
+        courses={rescueCourses} target={rescue} onTargetUsed={clearRescue} />
+
       {student.state === GA.state && (
-        <NextYearCard sb={sb} studentId={student.id} name={student.first_name} gradeLevel={student.grade_level} aiAllowed={role === "parent" || !!student.permissions?.ai_chat} />
+        <NextYearCard sb={sb} studentId={student.id} name={student.first_name} gradeLevel={student.grade_level} aiAllowed={aiAllowed} />
       )}
 
       {canEdit && <ImportCard sb={sb} studentId={student.id} file={importFile} onSaved={() => void load()} />}
