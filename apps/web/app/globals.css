@@ -436,3 +436,37 @@ details.review > summary { cursor: pointer; }
 .help-open .help-chev { background: var(--navy); border-color: var(--navy); color: #fff; }
 @media print { .help-layer, .help-toggle { display: none !important; } }
 body.help-on { padding-bottom: 96px; }
+
+/* ---------- To-do list ---------- */
+.todo-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.todo-count { display: inline-flex; gap: 6px; align-items: baseline; padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; background: #eef1f7; color: var(--muted); }
+.todo-count b { font-size: 18px; }
+.todo-count.todo-late { background: var(--err-soft); color: var(--err); }
+.todo-count.todo-week { background: var(--gold-soft); color: #8a6514; }
+.todo-count.todo-done { background: var(--ok-soft); color: var(--ok); }
+.todo-count.is-zero { background: #eef1f7; color: var(--muted); }
+.todo-tabs { max-width: 420px; }
+.todo-group { border-left: 5px solid var(--line); }
+.todo-group h2 { display: flex; align-items: center; gap: 8px; }
+.todo-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--muted); flex: none; }
+.todo-group-late { border-left-color: var(--err); }
+.todo-group-late .todo-dot { background: var(--err); }
+.todo-group-week { border-left-color: var(--gold); }
+.todo-group-week .todo-dot { background: var(--gold); }
+.todo-group-month .todo-dot { background: var(--navy); }
+.todo-group-done { border-left-color: var(--ok); }
+.todo-group-done .todo-dot { background: var(--ok); }
+.items li.todo-item { display: block; }
+.todo-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.todo-due { font-size: 14px; font-weight: 600; color: var(--ink); }
+.todo-late .todo-due { color: var(--err); }
+.todo-week .todo-due { color: #8a6514; }
+.todo-done .todo-due { color: var(--muted); font-weight: 400; }
+.todo-steps { margin: 8px 0 0 32px; font-size: 14px; }
+.todo-steps summary { cursor: pointer; color: var(--navy); font-weight: 600; }
+.todo-steps ul { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 6px; }
+.todo-steps .item-check input { width: 18px; height: 18px; margin-top: 1px; }
+.todo-steps .step-done { text-decoration: line-through; color: var(--muted); }
+.tile-alert { display: flex; flex-wrap: wrap; gap: 6px; }
+.tile-late { border-color: var(--err); }
+.tile-week { border-color: var(--gold); }

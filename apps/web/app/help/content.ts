@@ -157,6 +157,25 @@ export const TOPICS: Topic[] = [
     ],
   },
   {
+    id: "todo",
+    area: "College plan",
+    title: "To-do list: what's left and what's done",
+    href: "/todo",
+    keywords: ["to do", "todo", "to-do", "done", "finished", "checklist", "late", "overdue", "due this week", "warning", "red", "yellow", "colors", "what do I need to do"],
+    summary: "One list of everything your student still has to do, sorted by due date, with a Done tab for what's finished.",
+    steps: [
+      "Open Menu, then To-do list, or tap the To-do list tile on Home.",
+      "To do shows open items in groups: Late (red), Due this week (yellow), Due this month, Later, and No due date.",
+      "Tick the box when something is finished. It moves to the Done tab. Untick it there to move it back.",
+    ],
+    body: [
+      "The list fills itself from the College plan (colleges you're applying to and every deadline you add) and from scholarships you saved.",
+      "For a saved scholarship with a checklist, tap the steps line to tick off each step right from the to-do list.",
+      "Ticking a college as done marks the application Submitted. Change it to Accepted and so on from the College plan.",
+      "If a student needs a parent's OK to mark things done, the item shows \"Waiting for parent's OK\" in Done until the parent taps Approve.",
+    ],
+  },
+  {
     id: "ga-dates",
     area: "College plan",
     title: "Georgia dates for your student's grade",
@@ -431,7 +450,7 @@ export interface Tip {
 export const TIPS: Tip[] = [
   // Every page
   { routes: ["*"], sel: "details.menu summary", body: "Every page is in this menu, including Family and permissions, Help and Sign out.", topic: "home" },
-  { routes: ["/home", "/plan", "/grades", "/counselor", "/scholarships", "/study", "/practice"], sel: ".tabs:not(.sch-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
+  { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/scholarships", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
 
   // Home
   { routes: ["/home"], sel: ".hero h1", body: "This is your home base. Try any tool below. You can add your student whenever you're ready.", topic: "welcome" },
@@ -454,6 +473,13 @@ export const TIPS: Tip[] = [
 
   // Join
   { routes: ["/join"], sel: "h2", text: "Enter your family code", body: "Type the 8-character code your parent sent you, then tap Join my family.", topic: "invite-student" },
+
+  { routes: ["/home"], sel: ".tile[href='/todo'] b", body: "Everything still to do, with red for late and yellow for due this week.", topic: "todo" },
+
+  // To-do list
+  { routes: ["/todo"], sel: ".todo-summary", body: "How many things are late, due in the next 7 days, and already done.", topic: "todo" },
+  { routes: ["/todo"], sel: ".todo-tabs", body: "To do shows what's left, sorted by due date. Done shows what's finished.", topic: "todo" },
+  { routes: ["/todo"], sel: ".todo-steps summary", body: "Tap to tick off this scholarship's application steps.", topic: "scholarship-save" },
 
   // College plan
   { routes: ["/plan"], sel: "h2", text: "Coming up", body: "Everything due in the next 60 days. The switch below turns reminder emails on or off.", topic: "plan-deadlines" },
