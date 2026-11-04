@@ -14,6 +14,11 @@ describe("matchScholarship", () => {
     expect(r.status).toBe("match");
     expect(r.met.length).toBe(4);
   });
+  it("only rules out other interests once some are picked", () => {
+    expect(matchScholarship({ ...base, interests: ["Music"] }, senior, today).status).toBe("no");
+    const none = { ...senior, profile: { ...senior.profile, interests: [] } };
+    expect(matchScholarship({ ...base, interests: ["Music"] }, none, today).status).toBe("maybe");
+  });
   it("uses the right GPA", () => {
     expect(matchScholarship({ ...base, min_gpa: 3.5, gpa_kind: "hope" }, senior, today).status).toBe("no");
     expect(matchScholarship({ ...base, min_gpa: 3.5, gpa_kind: "unweighted" }, senior, today).status).toBe("match");
@@ -63,7 +68,9 @@ describe("college-only awards", () => {
     const s = { ...base, college: "University of Georgia" };
     expect(matchScholarship(s, senior, today).status).toBe("maybe");
     expect(matchScholarship(s, { ...senior, colleges: ["university of georgia"] }, today).status).toBe("match");
-    expect(matchScholarship({ ...base, other_requirements: "Nominated by your school" }, senior, today).unknown).toContain("Nominated by your school");
+    const o = matchScholarship({ ...base, other_requirements: "Nominated by your school" }, senior, today);
+    expect(o.check).toContain("Nominated by your school");
+    expect(o.status).toBe("match");
   });
 });
 

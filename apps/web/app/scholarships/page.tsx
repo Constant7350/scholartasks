@@ -25,7 +25,7 @@ interface Choice { id: string; student_id: string; scholarship_id: string; choic
 interface GradeRow { student_id: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }
 
 const TABS = [
-  ["match", "You qualify"], ["maybe", "Maybe"], ["later", "Coming up"], ["no", "Not a fit now"], ["saved", "Saved"],
+  ["match", "Good matches"], ["maybe", "Maybe"], ["later", "Coming up"], ["no", "Not a fit now"], ["saved", "Saved"],
 ] as const;
 type Tab = (typeof TABS)[number][0];
 const INCOME: [IncomeBand, string][] = [
@@ -208,6 +208,7 @@ function ScholarshipCard({ s, r, choice, onAdd, onHide }: {
       <ul className="sch-reasons">
         {r.met.map((m) => <li key={m} className="sch-met">✓ {m}</li>)}
         {r.unknown.map((m) => <li key={m} className="sch-unknown">? {m}</li>)}
+        {r.check.map((m) => <li key={m} className="sch-unknown">Also check: {m}</li>)}
         {r.missing.map((m) => <li key={m} className="sch-missing">{r.status === "later" ? "→ Work on: " : "✗ "}{m}</li>)}
       </ul>
       {s.how_to_apply && <p className="hint" style={{ margin: "8px 0" }}><b>How to apply:</b> {s.how_to_apply}</p>}

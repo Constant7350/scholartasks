@@ -79,6 +79,8 @@ export interface MatchResult {
   unknown: string[];
   /** Requirements not met right now (what to work on). */
   missing: string[];
+  /** Sponsor rules we can't check (shown as "Also check"); they don't block a match. */
+  check: string[];
 }
 
 const BANDS: Record<Exclude<IncomeBand, "prefer_not">, [number, number]> = {
@@ -90,7 +92,7 @@ const money = (n: number) => `$${n.toLocaleString("en-US")}`;
 const fmt = (n: number) => n.toFixed(2).replace(/0$/, "");
 
 export function matchScholarship(s: Scholarship, st: MatchStudent, today = new Date()): MatchResult {
-  const met: string[] = [], unknown: string[] = [], missing: string[] = [];
+  const met: string[] = [], unknown: string[] = [], missing: string[] = [], check: string[] = [];
   let later = false;
   // A "hard" miss can't be fixed by working on grades or scores (residency, group, grade already past).
   let hard = false;
@@ -146,8 +148,10 @@ export function matchScholarship(s: Scholarship, st: MatchStudent, today = new D
     const mine = st.profile.interests ?? [];
     const hit = s.interests.filter((i) => mine.includes(i));
     if (hit.length) met.push(`Interest: ${hit.join(", ")}`);
-    // Interests never rule a student out: they may simply not have picked that chip.
-    else unknown.push(`For students into ${s.interests.join(", ")}`);
+    // Until the family picks interests, an interest-limited award is only a maybe.
+    // Once they have, an award for other interests moves to "not a fit now" (soft, easy to change).
+    else if (!mine.length) unknown.push(`For students into ${s.interests.join(", ")}`);
+    else miss(`For students into ${s.interests.join(", ")}`, false);
   }
 
   if (s.groups?.length) {
@@ -174,14 +178,14 @@ export function matchScholarship(s: Scholarship, st: MatchStudent, today = new D
     else unknown.push(`Only for students at ${s.college}`);
   }
 
-  if (s.other_requirements) unknown.push(s.other_requirements);
+  if (s.other_requirements) check.push(s.other_requirements);
 
   if (s.deadline && !later && new Date(s.deadline + "T23:59:59") < today) {
     unknown.push("This year's deadline has passed: check when it opens again");
   }
 
   const status: MatchStatus = hard ? "no" : later ? "later" : missing.length ? "no" : unknown.length ? "maybe" : "match";
-  return { status, met, unknown, missing };
+  return { status, met, unknown, missing, check };
 }
 
 function ordinal(n: number) { return `${n}${n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th"}`; }
