@@ -1,0 +1,82 @@
+name: Phone app - Android build
+
+# Builds the Android app and (once Google Play access is set up) sends it to internal testing.
+# Start it from the Actions tab: "Phone app - Android build" -> Run workflow.
+#
+# Upload key: on the very first run, leave the ANDROID_* secrets empty. The run makes a new
+# upload key and puts it in a download called "android-upload-key" (kept 1 day). Copy the two
+# values from it into repository secrets ANDROID_KEYSTORE_BASE64 and ANDROID_KEYSTORE_PASSWORD,
+# then delete the download. Every later run signs with that key.
+# Optional: PLAY_SERVICE_ACCOUNT_JSON lets the run upload to Google Play by itself
+# (Google needs the very first upload done by hand in Play Console).
+
+on:
+  workflow_dispatch:
+
+concurrency: { group: mobile-android, cancel-in-progress: false }
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      HAS_PLAY: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - run: pnpm install --frozen-lockfile
+      - name: Upload key
+        id: key
+        run: |
+          if [ -n "$KEYSTORE_B64" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+            echo "new=false" >> "$GITHUB_OUTPUT"
+          else
+            PW=$(openssl rand -hex 24)
+            echo "::add-mask::$PW"
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/upload.jks" -alias upload -keyalg RSA -keysize 4096 -validity 10000 \
+              -storepass "$PW" -keypass "$PW" -dname "CN=ScholarTasks, O=ScholarTasks, C=US"
+            mkdir -p "$RUNNER_TEMP/newkey"
+            base64 -w0 "$RUNNER_TEMP/upload.jks" > "$RUNNER_TEMP/newkey/ANDROID_KEYSTORE_BASE64.txt"
+            printf '%s' "$PW" > "$RUNNER_TEMP/newkey/ANDROID_KEYSTORE_PASSWORD.txt"
+            echo "KEYSTORE_PASSWORD=$PW" >> "$GITHUB_ENV"
+            echo "new=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: steps.key.outputs.new == 'true'
+        with: { name: android-upload-key, path: "${{ runner.temp }}/newkey/", retention-days: 1 }
+      - name: Version code
+        working-directory: apps/mobile
+        run: |
+          node -e 'const f="app.json",j=require("./"+f);j.expo.android.versionCode=Number(process.env.GITHUB_RUN_NUMBER);require("fs").writeFileSync(f,JSON.stringify(j,null,2))'
+      - name: Generate the Android project
+        working-directory: apps/mobile
+        run: npx expo prebuild --platform android --clean
+      - name: Build
+        working-directory: apps/mobile/android
+        run: |
+          ./gradlew bundleRelease --no-daemon \
+            -Pandroid.injected.signing.store.file="$RUNNER_TEMP/upload.jks" \
+            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias=upload \
+            -Pandroid.injected.signing.key.password="$KEYSTORE_PASSWORD"
+      - uses: actions/upload-artifact@v4
+        with: { name: ScholarTasks-android, path: apps/mobile/android/app/build/outputs/bundle/release/*.aab, retention-days: 14 }
+      - name: Send to Google Play (internal testing)
+        if: env.HAS_PLAY == 'true'
+        uses: r0adkll/upload-google-play@v1.1.3
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.scholartasks.app
+          releaseFiles: apps/mobile/android/app/build/outputs/bundle/release/*.aab
+          track: internal
+          status: draft
+      - name: Remove key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/upload.jks"
