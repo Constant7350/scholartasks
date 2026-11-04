@@ -15,7 +15,7 @@ const WebView = RNWebView as unknown as ComponentType<WebViewProps>;
 
 type Screen = "loading" | "signin" | "offer" | "locked" | "app";
 
-const C = { navy: "#14305a", gold: "#f2b33d", bg: "#f6f7fb", ink: "#1b2333", muted: "#5b6577", line: "#dde2ea", err: "#b42318" };
+const C = { navy: "#14305a", gold: "#f2b33d", bg: "#faf6f0", ink: "#1b2333", muted: "#5b6577", line: "#dde2ea", err: "#b42318" };
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("loading");

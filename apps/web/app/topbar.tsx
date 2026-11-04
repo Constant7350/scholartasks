@@ -7,6 +7,7 @@ import { pickStudent, rememberStudent, useCurrentStudent } from "../lib/current-
 import { Brand } from "./brand";
 import { HelpButton, HelpLayer } from "./help/balloons";
 import { inPhoneApp } from "../lib/passkeys-client";
+import { ThemePicker } from "./theme-picker";
 import { NAV, bestMatch, isActive, type NavGroup, type NavItem, type NavRole } from "./nav";
 
 interface Who { role: NavRole; students: { id: string; first_name: string }[]; own: string | null; admin: boolean }
@@ -140,6 +141,8 @@ export function TopBar() {
                     </div>
                   );
                 })}
+                <hr />
+                <ThemePicker />
                 <hr />
                 <button role="menuitem" className="menu-item" onClick={signOut}><span aria-hidden="true">🚪</span> Sign out</button>
               </div>
