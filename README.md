@@ -39,7 +39,7 @@ Without the keys, the sign-in, family and join pages show a "not connected yet" 
 
 ## Turning on payments (Stripe)
 
-Plans live at `/billing`: Family plan ($12.99/month or $99/year), the Study Coach add-on ($4.99/month or $39/year) and 100 extra AI messages ($2.99). Prices are in `apps/web/lib/billing.ts`.
+Plans live at `/billing`: the Family plan (monthly or yearly), the Study Coach add-on and extra AI message packs. Every price is in `apps/web/lib/prices.ts` (placeholders until running costs are known).
 
 1. In Stripe (test mode first), copy the secret key into Vercel as `STRIPE_SECRET_KEY`.
 2. Add a webhook endpoint `https://<site>/api/billing/webhook` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `customer.subscription.*`, and put its signing secret in Vercel as `STRIPE_WEBHOOK_SECRET`.

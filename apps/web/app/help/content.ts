@@ -330,8 +330,8 @@ export const TOPICS: Topic[] = [
     body: [
       "Things that use 1: a counselor message, reading a report card or transcript, a grade rescue plan, next year's class advice, and the tutor checking or explaining a question.",
       "Free things that never use any: the scorecard, goals, the study library, multiple-choice practice, and answers from the reviewed answer library.",
-      "Ran out? A parent can buy 100 extra AI messages for $2.99 on Plan and billing. Extra messages are shared by the family, never expire, and are only used after the day's free 10 are gone.",
-      "With the Study Coach add-on, tutor help goes up to 30 a day per person.",
+      "Ran out? A parent can buy a pack of extra AI messages on Plan and billing. Extra messages are shared by the family, never expire, and are only used after the day's free 10 are gone.",
+      "With the Study Coach add-on, a person gets more tutor help each day.",
     ],
   },
 
@@ -532,8 +532,8 @@ export const TOPICS: Topic[] = [
     summary: "A parent manages one plan for the whole family on the Plan and billing page, from the Menu.",
     steps: [
       "Open Menu, then Plan and billing.",
-      "Pick the Family plan: $12.99 a month or $99 a year.",
-      "Optional: add Study Coach ($4.99 a month or $39 a year) for more tutor help, or buy 100 extra AI messages for $2.99.",
+      "Pick the Family plan, monthly or yearly. Current prices are shown on the page.",
+      "Optional: add Study Coach for more tutor help, or buy a pack of extra AI messages.",
       "Pay on Stripe's secure page. You come back to ScholarTasks when it's done.",
     ],
     body: [

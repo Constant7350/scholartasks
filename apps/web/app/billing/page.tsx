@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
+import { CATALOG as C, STUDY_COACH_DAILY_LIMIT, money } from "../../lib/prices";
 import { NotConfigured, Page } from "../ui";
 
 interface Plan { family_id: string | null; family_plan: boolean; study_coach: boolean; ai_credits: number }
@@ -13,7 +14,7 @@ const DONE_TEXT: Record<string, string> = {
   family_year: "Thanks! Your Family plan is starting.",
   coach_month: "Thanks! Study Coach is being added.",
   coach_year: "Thanks! Study Coach is being added.",
-  pack_100: "Thanks! 100 extra AI messages are being added.",
+  pack_100: "Thanks! Your extra AI messages are being added.",
 };
 
 function renewal(s: Sub | undefined) {
@@ -120,13 +121,13 @@ export default function BillingPage() {
           <span className="tile-icon">👪</span>
           <b>Family plan {hasFamily && <span className="pill pill-ok">Active</span>}</b>
           <span>Everything in ScholarTasks for every student in your family: college list and reminders, grades and HOPE tracking, scholarships, study library, practice questions, and 10 AI uses a day per person.</span>
-          <span><b>$12.99 a month</b> or <b>$99 a year</b> (save $56).</span>
+          <span><b>{money(C.family_month.cents)} a month</b> or <b>{money(C.family_year.cents)} a year</b>{C.family_month.cents * 12 > C.family_year.cents ? ` (save ${money(C.family_month.cents * 12 - C.family_year.cents)})` : ""}.</span>
           {hasFamily ? (
             <span>{familySub?.billing_interval === "year" ? "Yearly." : familySub?.billing_interval === "month" ? "Monthly." : ""}{renewal(familySub)}</span>
           ) : isParent && plan?.family_id ? (
             <div className="share-row">
-              <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "family_year")}>{busy === "family_year" ? "Opening…" : "$99 a year"}</button>
-              <button className="btn btn-ghost btn-inline" disabled={!!busy} onClick={() => go("checkout", "family_month")}>{busy === "family_month" ? "Opening…" : "$12.99 a month"}</button>
+              <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "family_year")}>{busy === "family_year" ? "Opening…" : `${money(C.family_year.cents)} a year`}</button>
+              <button className="btn btn-ghost btn-inline" disabled={!!busy} onClick={() => go("checkout", "family_month")}>{busy === "family_month" ? "Opening…" : `${money(C.family_month.cents)} a month`}</button>
             </div>
           ) : null}
         </div>
@@ -134,15 +135,15 @@ export default function BillingPage() {
         <div className={`tile${hasCoach ? " tile-ok" : ""}`}>
           <span className="tile-icon">🧑‍🏫</span>
           <b>Study Coach add-on {hasCoach && <span className="pill pill-ok">Active</span>}</b>
-          <span>More tutor help on practice questions (up to 30 AI uses a day per person) and full-length practice tests as they arrive. The tutor coaches; it never does homework.</span>
-          <span><b>$4.99 a month</b> or <b>$39 a year</b>, on top of the Family plan.</span>
+          <span>More tutor help on practice questions (up to {STUDY_COACH_DAILY_LIMIT} AI uses a day per person) and full-length practice tests as they arrive. The tutor coaches; it never does homework.</span>
+          <span><b>{money(C.coach_month.cents)} a month</b> or <b>{money(C.coach_year.cents)} a year</b>, on top of the Family plan.</span>
           {hasCoach ? (
             <span>{renewal(coachSub)}</span>
           ) : isParent && plan?.family_id ? (
             hasFamily ? (
               <div className="share-row">
-                <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "coach_year")}>{busy === "coach_year" ? "Opening…" : "$39 a year"}</button>
-                <button className="btn btn-ghost btn-inline" disabled={!!busy} onClick={() => go("checkout", "coach_month")}>{busy === "coach_month" ? "Opening…" : "$4.99 a month"}</button>
+                <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "coach_year")}>{busy === "coach_year" ? "Opening…" : `${money(C.coach_year.cents)} a year`}</button>
+                <button className="btn btn-ghost btn-inline" disabled={!!busy} onClick={() => go("checkout", "coach_month")}>{busy === "coach_month" ? "Opening…" : `${money(C.coach_month.cents)} a month`}</button>
               </div>
             ) : (
               <span className="hint">Start the Family plan first.</span>
@@ -154,11 +155,11 @@ export default function BillingPage() {
           <span className="tile-icon">💬</span>
           <b>Extra AI messages</b>
           <span>For busy weeks: when someone in your family uses up the day's free AI uses, the next ones come from your pack. Packs never expire.</span>
-          <span><b>100 messages for $2.99</b></span>
+          <span><b>{C.pack_100.credits} messages for {money(C.pack_100.cents)}</b></span>
           <span>Your family has <b>{plan?.ai_credits ?? 0}</b> extra {plan?.ai_credits === 1 ? "message" : "messages"} left.</span>
           {isParent && plan?.family_id && (
             <div className="share-row">
-              <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "pack_100")}>{busy === "pack_100" ? "Opening…" : "Buy 100 for $2.99"}</button>
+              <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "pack_100")}>{busy === "pack_100" ? "Opening…" : `Buy ${C.pack_100.credits} for ${money(C.pack_100.cents)}`}</button>
             </div>
           )}
         </div>
