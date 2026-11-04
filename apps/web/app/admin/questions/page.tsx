@@ -28,7 +28,7 @@ export default function QuestionReviewPage() {
     if (isAdmin.data !== true) return;
     const { data, error: e } = await sb.from("practice_questions")
       .select("id, passage, subject, topic, kind, question, options, answer_index, model_answer, explanation, status")
-      .eq("status", tab).order("subject").order("kind").order("topic").limit(500);
+      .eq("status", tab).order("subject").order("kind").order("passage", { nullsFirst: true }).order("topic").limit(1000);
     if (e) setError(friendly(e));
     const list = (data as Q[]) ?? [];
     setRows(list);
@@ -36,7 +36,10 @@ export default function QuestionReviewPage() {
   }, [sb, tab]);
   useEffect(() => { void load(); }, [load]);
 
-  const shown = useMemo(() => rows.filter((q) => subject === "all" || q.subject === subject), [rows, subject]);
+  const [pageSize, setPageSize] = useState(25);
+  useEffect(() => setPageSize(25), [tab, subject]);
+  const matching = useMemo(() => rows.filter((q) => subject === "all" || q.subject === subject), [rows, subject]);
+  const shown = matching.slice(0, pageSize);
   const editOf = (q: Q): Edit => edits[q.id] ?? { passage: q.passage ?? "", question: q.question, options: q.options ?? [], answer_index: q.answer_index ?? 0, model_answer: q.model_answer ?? "", explanation: q.explanation ?? "", topic: q.topic };
 
   const decide = async (q: Q, status: Q["status"]) => {
@@ -81,6 +84,7 @@ export default function QuestionReviewPage() {
       {error && <p className="note note-err" role="alert">{error}</p>}
       {saved && <p className="note note-ok" role="status">{saved}</p>}
       {shown.length === 0 && <p className="hint">Nothing here.</p>}
+      {matching.length > 0 && <p className="hint" style={{ fontSize: 13 }}>Showing {shown.length} of {matching.length}. Questions that share a reading passage appear one after another.</p>}
       {shown.map((q) => {
         const ed = editOf(q);
         const set = (p: Partial<Edit>) => setEdits({ ...edits, [q.id]: { ...ed, ...p } });
@@ -112,6 +116,7 @@ export default function QuestionReviewPage() {
           </section>
         );
       })}
+      {matching.length > shown.length && <button className="btn btn-ghost btn-inline" onClick={() => setPageSize(pageSize + 25)}>Show 25 more</button>}
     </Page>
   );
 }

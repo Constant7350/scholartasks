@@ -21,6 +21,12 @@ export default function Terms() {
         deadlines with the official source, such as GAfutures, StudentAid.gov or the college. ScholarTasks is not a school counselor, lawyer or
         financial adviser, and it cannot guarantee admission, scholarships or aid.
       </p>
+      <p>
+        SAT and ACT practice questions in ScholarTasks are original, written by our team with help from AI to match the skills and formats described in the
+        publicly available College Board and ACT test outlines. They are not official test questions, and practice scores are estimates, not
+        predictions of an official score. SAT is a trademark of the College Board and ACT is a trademark of ACT Education Corp. Neither
+        organization makes, sponsors or endorses ScholarTasks.
+      </p>
       <p>You are responsible for the applications and forms you submit. We never submit government forms or sign in to government accounts for you.</p>
 
       <h2>Acceptable use</h2>
