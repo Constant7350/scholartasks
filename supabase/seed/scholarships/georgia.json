@@ -206,7 +206,9 @@
   "need_based": false,
   "citizen_required": true,
   "interests": null,
-  "groups": null,
+  "groups": [
+   "Child of a first responder"
+  ],
   "college_type": "any",
   "college": null,
   "other_requirements": "Parent or spouse must have been a Georgia public safety officer permanently disabled or killed in the line of duty, or a public school employee killed or permanently disabled by an act of violence on the job. Must attend an eligible Georgia college.",

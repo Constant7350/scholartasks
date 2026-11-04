@@ -941,7 +941,9 @@
   "need_based": false,
   "citizen_required": false,
   "interests": null,
-  "groups": null,
+  "groups": [
+   "Man"
+  ],
   "college_type": "four_year",
   "college": "Morehouse College",
   "other_requirements": "Morehouse is a men's college.",

@@ -50,7 +50,7 @@ add(name="The Gates Scholarship", sponsor="Gates Foundation", url="https://www.t
     how_to_apply="Online application in summer of senior year. Must be Pell Grant eligible.",
     amount_text="Full cost of attendance not covered by other aid", grades=[12], min_gpa=3.3, gpa_kind="weighted",
     need_based=True, citizen_required=True,
-    groups=["Black or African American", "Hispanic or Latino", "American Indian or Alaska Native", "Asian American or Pacific Islander"],
+    groups=["Black or African American", "Hispanic or Latino", "American Indian or Alaska Native", "Asian or Asian American", "Native Hawaiian or Pacific Islander"],
     deadline_text="Usually mid-September of senior year")
 add(name="Jack Kent Cooke Foundation College Scholarship", sponsor="Jack Kent Cooke Foundation", url="https://www.jkcf.org/our-scholarships/college-scholarship-program/",
     summary="One of the largest scholarships for high-achieving seniors with financial need, plus advising throughout college.",
