@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 interface Student { id: string; first_name: string; permissions: Record<string, boolean> }
 interface College { id: string; student_id: string; name: string; plan: string; deadline: string | null; status: string }
@@ -60,7 +61,7 @@ export default function TodoPage() {
   const sb = supabase();
   const [me, setMe] = useState<{ id: string; role: "parent" | "student" | null; studentId?: string } | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [current, setCurrent] = useCurrentStudent();
   const [colleges, setColleges] = useState<College[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [choices, setChoices] = useState<Choice[]>([]);
@@ -84,7 +85,7 @@ export default function TodoPage() {
     setMe({ id: uid, role, studentId: asStudent?.student_id ?? undefined });
     const list = (st.data as Student[]) ?? [];
     setStudents(list);
-    setCurrent((c) => c ?? (role === "student" ? asStudent?.student_id ?? null : list[0]?.id ?? null));
+    setCurrent((c) => c ?? (role === "student" ? asStudent?.student_id ?? null : pickStudent(list, list[0]?.id)));
 
     const [col, tk, ch] = await Promise.all([
       sb.from("student_colleges").select("id, student_id, name, plan, deadline, status"),

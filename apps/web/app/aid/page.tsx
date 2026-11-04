@@ -20,6 +20,7 @@ import guideJson from "../../../../packs/federal/aid-guide.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import "./aid.css";
+import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 const GA = gaPack as unknown as StatePack;
 const GUIDE = AidGuide.parse(guideJson);
@@ -59,7 +60,7 @@ export default function AidPage() {
   const sb = supabase();
   const [me, setMe] = useState<{ id: string; role: "parent" | "student" | null } | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [current, setCurrent] = useCurrentStudent();
   const [colleges, setColleges] = useState<College[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [progress, setProgress] = useState<Progress[]>([]);
@@ -84,7 +85,7 @@ export default function AidPage() {
     setMe({ id: uid, role });
     const list = (st.data as Student[]) ?? [];
     setStudents(list);
-    setCurrent((c) => c ?? (role === "student" ? asStudent?.student_id ?? null : list.find((x) => x.grade_level >= 11)?.id ?? list[0]?.id ?? null));
+    setCurrent((c) => c ?? (role === "student" ? asStudent?.student_id ?? null : pickStudent(list, list.find((x) => x.grade_level >= 11)?.id ?? list[0]?.id)));
     const [pr, hh, col, tk] = await Promise.all([
       sb.from("aid_progress").select("student_id, cycle, step_id, status"),
       sb.from("aid_households").select("student_id, answers, docs_found"),

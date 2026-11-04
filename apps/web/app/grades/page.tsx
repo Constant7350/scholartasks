@@ -13,6 +13,7 @@ import { GoalsCard } from "./goals-card";
 import { NextYearCard } from "./next-year-card";
 import { TranscriptsCard } from "./transcripts-card";
 import { RescueCard, type RescueTarget } from "./rescue-card";
+import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 const GA = gaPack as unknown as StatePack;
 const LETTERS = ["A", "B", "C", "D", "F"] as const;
@@ -26,7 +27,7 @@ export default function GradesPage() {
   const sb = supabase();
   const [role, setRole] = useState<"parent" | "student" | null | undefined>(undefined);
   const [students, setStudents] = useState<Student[]>([]);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [current, setCurrent] = useCurrentStudent();
   const [rows, setRows] = useState<Row[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -51,7 +52,7 @@ export default function GradesPage() {
     const list = (st.data as Student[]) ?? [];
     setStudents(list);
     setRows((gr.data as Row[]) ?? []);
-    setCurrent((c) => c ?? (asStudent?.student_id ?? list[0]?.id ?? null));
+    setCurrent((c) => c ?? (asStudent?.student_id ?? pickStudent(list, list[0]?.id)));
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
 

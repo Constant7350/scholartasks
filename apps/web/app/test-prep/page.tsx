@@ -7,6 +7,7 @@ import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { loadStudy, type StudyContext } from "../study/context";
 import { BLUEPRINT, estimate, pickQuestions, type Exam, type Section } from "./scoring";
+import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 interface Question { id: string; exam: Exam; subject: string; topic: string; passage: string | null; question: string; options: string[]; answer_index: number; explanation: string | null; status: string }
 interface Attempt { question_id: string; correct: boolean; created_at: string }
@@ -39,7 +40,7 @@ function Passage({ text }: { text: string }) {
 export default function TestPrepPage() {
   const sb = supabase();
   const [ctx, setCtx] = useState<StudyContext | null>(null);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [current, setCurrent] = useCurrentStudent();
   const [exam, setExam] = useState<Exam>("SAT");
   const [bank, setBank] = useState<Question[] | null>(null);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
@@ -64,7 +65,7 @@ export default function TestPrepPage() {
         sb.from("students").select("id, sat, act"),
       ]);
       setCtx(c);
-      setCurrent(c.own ?? c.students[0]?.id ?? null);
+      setCurrent(c.own ?? pickStudent(c.students, c.students[0]?.id));
       setBank(q.error ? [] : ((q.data as Question[]) ?? []));
       setScores((sc.data as Scores[]) ?? []);
     })();

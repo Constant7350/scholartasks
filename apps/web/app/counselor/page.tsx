@@ -3,6 +3,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 interface Student { id: string; first_name: string; grade_level: number; permissions: Record<string, boolean> }
 interface Msg { role: "user" | "assistant"; content: string; fromBank?: boolean }
@@ -48,7 +49,7 @@ export default function CounselorPage() {
   const sb = supabase();
   const [role, setRole] = useState<"parent" | "student" | null | undefined>(undefined);
   const [students, setStudents] = useState<Student[]>([]);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [current, setCurrent] = useCurrentStudent();
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
@@ -68,7 +69,7 @@ export default function CounselorPage() {
     setRole(m.some((r) => r.role === "parent") ? "parent" : asStudent ? "student" : null);
     const list = (st.data as Student[]) ?? [];
     setStudents(list);
-    setCurrent((c) => c ?? asStudent?.student_id ?? list[0]?.id ?? null);
+    setCurrent((c) => c ?? asStudent?.student_id ?? pickStudent(list, list[0]?.id));
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
   // A question handed over from another page (e.g. "Ask the AI counselor about this goal").

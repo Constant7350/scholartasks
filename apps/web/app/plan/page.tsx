@@ -5,6 +5,7 @@ import { deadlineAppliesTo, type StatePack } from "@scholartasks/core";
 import gaPack from "../../../../packs/states/GA.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 const GA = gaPack as unknown as StatePack;
 
@@ -44,7 +45,7 @@ export default function PlanPage() {
   const sb = supabase();
   const [me, setMe] = useState<{ id: string; role: "parent" | "student" | null; studentId?: string } | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [current, setCurrent] = useCurrentStudent();
   const [colleges, setColleges] = useState<College[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [reminders, setReminders] = useState(true);
@@ -68,7 +69,7 @@ export default function PlanPage() {
     setMe({ id: uid, role, studentId: asStudent?.student_id ?? undefined });
     const list = (st.data as Student[]) ?? [];
     setStudents(list);
-    setCurrent((c) => c ?? (role === "student" ? asStudent?.student_id ?? null : list[0]?.id ?? null));
+    setCurrent((c) => c ?? (role === "student" ? asStudent?.student_id ?? null : pickStudent(list, list[0]?.id)));
 
     const [col, tk, us] = await Promise.all([
       sb.from("student_colleges").select("id, student_id, name, plan, deadline, status, approved, notes").order("deadline", { nullsFirst: false }),
