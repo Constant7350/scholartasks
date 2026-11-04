@@ -399,3 +399,38 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .sch-diff th { text-align: left; padding: 4px 10px 4px 0; text-transform: capitalize; color: var(--muted); font-weight: 600; }
 .sch-diff td { padding: 4px 8px 4px 0; vertical-align: top; }
 details.review > summary { cursor: pointer; }
+
+/* ---------- Help: ? toggle, balloons and manual ---------- */
+.help-toggle { width: 30px; height: 30px; flex: none; border-radius: 50%; border: 1.5px solid var(--line); background: #fff; color: var(--navy); font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.help-toggle:hover { border-color: var(--navy); background: #eef2f9; }
+.help-toggle-on, .help-toggle-on:hover { background: var(--gold); border-color: var(--gold); color: var(--navy-deep); }
+.help-layer { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 40; }
+.help-mark { position: absolute; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff; background: var(--gold); color: var(--navy-deep); font: inherit; font-size: 13px; font-weight: 800; line-height: 1; cursor: pointer; padding: 0; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(12, 31, 61, 0.28); animation: help-pop 0.18s ease-out; }
+.help-mark:hover, .help-mark-on { background: var(--navy); color: #fff; }
+.help-mark::before { content: ""; position: absolute; inset: -9px; } /* bigger tap target */
+@keyframes help-pop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.help-balloon { position: absolute; background: var(--navy-deep); color: #fff; border-radius: 12px; padding: 12px 14px; box-shadow: 0 14px 34px rgba(12, 31, 61, 0.3); font-size: 14px; line-height: 1.45; }
+.help-balloon p { margin: 0 0 8px; }
+.help-balloon-actions { display: flex; gap: 16px; justify-content: flex-end; align-items: center; }
+.help-balloon a, .help-balloon .linklike { color: var(--gold); font-size: 13px; font-weight: 600; }
+.help-bar { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); width: min(640px, calc(100vw - 24px)); background: #fff; border: 1.5px solid var(--gold); border-radius: 12px; box-shadow: 0 10px 30px rgba(12, 31, 61, 0.18); padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; justify-content: space-between; font-size: 14px; }
+.help-bar-actions { display: flex; gap: 16px; align-items: center; }
+.help-bar-actions a { font-size: 13px; font-weight: 600; }
+.help-dot { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--gold); color: var(--navy-deep); font-size: 11px; }
+.help-search-wrap { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 6px 0; }
+.help-search { font-size: 17px; }
+.help-topic { padding: 0; margin: 10px 0; overflow: hidden; scroll-margin-top: 70px; }
+.help-topic-head { width: 100%; display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; text-align: left; font: inherit; color: inherit; background: none; border: 0; padding: 14px 18px; cursor: pointer; }
+.help-topic-head > span:first-child { display: grid; gap: 2px; }
+.help-topic-head .hint { margin: 0; font-size: 14px; }
+.help-topic-head:hover { background: #f8f9fc; }
+.help-area { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.help-chev { flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; color: var(--navy); font-weight: 700; }
+.help-topic-body { padding: 0 18px 16px; border-top: 1px solid var(--line); }
+.help-topic-body ol { padding-left: 20px; margin: 12px 0; display: grid; gap: 6px; }
+.help-topic-body p { margin: 10px 0; }
+.help-topic-body dt { font-weight: 600; margin-top: 10px; }
+.help-topic-body dd { margin: 2px 0 0; color: var(--muted); }
+.help-open .help-chev { background: var(--navy); border-color: var(--navy); color: #fff; }
+@media print { .help-layer, .help-toggle { display: none !important; } }
+body.help-on { padding-bottom: 96px; }

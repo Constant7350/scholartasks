@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Brand } from "./brand";
+import { HelpButton, HelpLayer } from "./help/balloons";
 
 /** Top navigation. Signed-in people get Home plus a menu; family setup lives in the menu, not in the way. */
 export function TopBar() {
@@ -35,6 +36,7 @@ export function TopBar() {
       <div className="topbar-inner">
         <Brand href={signedIn ? "/home" : "/"} />
         <nav>
+          <HelpButton />
           {signedIn === false && <a href="/signin">Sign in</a>}
           {signedIn && (
             <>
@@ -55,6 +57,7 @@ export function TopBar() {
                   <a role="menuitem" href="/practice">✏️ Practice questions</a>
                   <a role="menuitem" href="/join">🔑 I'm a student: join with a code</a>
                   <hr />
+                  <a role="menuitem" href="/help">❓ Help and how-to</a>
                   <button role="menuitem" onClick={signOut}>Sign out</button>
                 </div>
               </details>
@@ -62,6 +65,7 @@ export function TopBar() {
           )}
         </nav>
       </div>
+      <HelpLayer />
     </header>
   );
 }
