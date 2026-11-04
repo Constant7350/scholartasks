@@ -136,6 +136,12 @@ export default function Home() {
           <span>Save grades and test scores and see if your student is on track for HOPE and Zell Miller.</span>
           <span className="tile-go">Open grades →</span>
         </a>
+        <a className="tile" href="/activities">
+          <span className="tile-icon">🏅</span>
+          <b>Activities and resume</b>
+          <span>Clubs, sports, jobs and awards in Common App format, ready to copy in. Prints as a one-page resume.</span>
+          <span className="tile-go">Add activities →</span>
+        </a>
         <a className="tile" href="/counselor">
           <span className="tile-icon">🤖</span>
           <b>AI counselor</b>

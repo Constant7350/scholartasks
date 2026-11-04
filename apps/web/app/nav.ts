@@ -35,6 +35,7 @@ export const NAV: NavItem[] = [
   { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "student", strip: true, tab: 2 },
   { href: "/grades", label: "Grades and HOPE", short: "Grades", icon: "🎓", roles: ALL, group: "student", strip: true, tab: 3 },
   { href: "/grades/record", label: "Academic record (print)", short: "Record", icon: "📄", roles: ALL, group: "student" },
+  { href: "/activities", label: "Activities and resume", short: "Activities", icon: "🏅", roles: ALL, group: "student" },
   { href: "/scholarships", label: "Scholarships and grants", short: "Scholarships", icon: "💰", roles: ALL, group: "student", strip: true, tab: 4 },
   { href: "/aid", label: "FAFSA and aid forms", short: "Aid forms", icon: "🧾", roles: ALL, group: "student" },
   { href: "/counselor", label: "AI counselor", short: "Counselor", icon: "🤖", roles: ALL, group: "student", strip: true },
