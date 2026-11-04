@@ -2,9 +2,10 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 /**
  * Server helpers for Face ID / fingerprint sign-in (passkeys).
- * Passkeys belong to one web address. They work on the address they were made
- * on (scholartasks.vercel.app now, scholartasks.com later), so set
- * PASSKEY_RP_ID=scholartasks.com once the domain is connected.
+ * Passkeys belong to one web address: the one the page is on. Once APP_URL
+ * forwards the old address to scholartasks.com, new passkeys are made there and
+ * the Home page offers Face ID again (its "already on" note is per address).
+ * PASSKEY_RP_ID is an optional override and normally stays unset.
  */
 
 export const RP_NAME = "ScholarTasks";
