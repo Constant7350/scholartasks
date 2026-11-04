@@ -47,6 +47,28 @@
   "forms": ["FAFSA", "GSFAPP"],
   "deadlines": [
     {
+      "id": "ga-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; also counts for HOPE)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": ["Student and parent StudentAid.gov accounts (FSA IDs)", "2025 federal tax return info", "Bank and investment balances"],
+      "grade_levels": [12],
+      "class_of": 2027
+    },
+    {
+      "id": "ga-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (colleges' own aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [12],
+      "class_of": 2027
+    },
+    {
       "id": "ga-fafsa-2028-29-opens",
       "title": "File the 2028-29 FAFSA (needed for Pell Grants; also counts for HOPE)",
       "form": "FAFSA",
@@ -54,7 +76,8 @@
       "kind": "opens",
       "where": "https://studentaid.gov",
       "documents": ["Student and parent StudentAid.gov accounts (FSA IDs)", "2026 federal tax return info", "Bank and investment balances"],
-      "grade_levels": [12]
+      "grade_levels": [12],
+      "class_of": 2028
     },
     {
       "id": "ga-gsfapp-2028-29",
@@ -64,7 +87,89 @@
       "kind": "opens",
       "where": "https://www.gafutures.org",
       "documents": ["GAfutures account"],
-      "grade_levels": [12]
+      "grade_levels": [12],
+      "class_of": 2028
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "ga-gafutures-account",
+      "stage": "accounts",
+      "order": 30,
+      "title": "Student makes a GAfutures account",
+      "who": "student",
+      "minutes": 10,
+      "summary": "GAfutures is Georgia's site for HOPE, Zell Miller and other state aid. The student's account shows their HOPE GPA and state awards.",
+      "how": [
+        "Open GAfutures and choose Create an Account.",
+        "Use the student's own email. The site asks for the Social Security number and date of birth so it can match high school records.",
+        "Pick a username (6 to 49 characters) and a strong password, and save them somewhere safe at home."
+      ],
+      "watch_out": [
+        "Never type the GAfutures password or Social Security number into ScholarTasks."
+      ],
+      "link": {
+        "label": "Create a GAfutures account",
+        "url": "https://secure.gafutures.org/account/register"
+      }
+    },
+    {
+      "id": "ga-gsfapp",
+      "stage": "file",
+      "order": 35,
+      "title": "GSFAPP, only if you are not filing the FAFSA",
+      "who": "student",
+      "minutes": 10,
+      "optional": true,
+      "summary": "Georgia accepts either the FAFSA or its own short form, the GSFAPP, for HOPE, Zell Miller and other state programs. Filing the FAFSA is enough; the GSFAPP is for families who choose not to file the FAFSA.",
+      "how": [
+        "If you filed the FAFSA, mark this step Doesn't apply.",
+        "Otherwise sign in to GAfutures and complete the GSFAPP for the year you start college.",
+        "The deadline is the last day of the college term (or the day you withdraw), but apply early so money reaches the college sooner."
+      ],
+      "watch_out": [
+        "The GSFAPP does not give federal aid such as Pell Grants or federal loans. Only the FAFSA does."
+      ],
+      "link": {
+        "label": "Complete the GSFAPP on GAfutures",
+        "url": "https://www.gafutures.org/college-planning/college-money-matters/applying-for-aid/more-about-gsfapp/"
+      }
+    },
+    {
+      "id": "ga-hope-gpa",
+      "stage": "after",
+      "order": 40,
+      "title": "Check the HOPE GPA on GAfutures",
+      "who": "student",
+      "minutes": 5,
+      "summary": "High schools send grades to the Georgia Student Finance Commission, which works out the official HOPE GPA. Compare it with the estimate on your ScholarTasks Grades page.",
+      "how": [
+        "Sign in to GAfutures and open the HOPE GPA section of your account.",
+        "Compare it with the ScholarTasks Grades page. A big difference usually means a class was coded differently. Ask the school counselor.",
+        "Check again after senior grades are final. HOPE and Zell are decided from the final record."
+      ],
+      "link": {
+        "label": "Sign in to GAfutures",
+        "url": "https://secure.gafutures.org"
+      }
+    },
+    {
+      "id": "ga-hope-at-college",
+      "stage": "decide",
+      "order": 15,
+      "title": "Make sure HOPE or Zell shows on your aid offer",
+      "who": "family",
+      "minutes": 5,
+      "summary": "Once the FAFSA or GSFAPP is on file, the Georgia college adds HOPE or Zell Miller to the aid offer. If it's missing, ask.",
+      "how": [
+        "Look for HOPE Scholarship or Zell Miller Scholarship on the chosen Georgia college's aid offer.",
+        "If it's missing, contact the college's financial aid office and check your GAfutures account.",
+        "Remember HOPE is kept by keeping a 3.0 college GPA (Zell: 3.3), checked at set points."
+      ],
+      "link": {
+        "label": "HOPE: how to apply and deadlines",
+        "url": "https://gafutures.org/hope-state-aid-programs/hope-zell-miller-scholarships/hope-scholarship/application-and-deadline"
+      }
     }
   ],
   "verification": {

@@ -1,4 +1,5 @@
 import type { Deadline } from "./schema";
+import { classOf } from "./aid";
 
 export interface Reminder {
   deadlineId: string;
@@ -21,6 +22,11 @@ const DAY = 86_400_000;
 const toDay = (iso: string) => Date.parse(`${iso}T00:00:00Z`);
 const toIso = (ms: number) => new Date(ms).toISOString().slice(0, 10);
 
+/** A pack date applies to a student by graduating class when it names one, otherwise by grade. */
+export function deadlineAppliesTo(d: Deadline, gradeLevel: number, today: string): boolean {
+  return d.class_of !== undefined ? d.class_of === classOf(gradeLevel, today) : d.grade_levels.includes(gradeLevel);
+}
+
 /**
  * Turns deadlines from state packs (and later, colleges and scholarships)
  * into dated reminders. Pure function: the caller decides channels and time zone.
@@ -32,7 +38,7 @@ export function buildReminders(
   const today = toDay(opts.today);
   const out: Reminder[] = [];
   for (const d of deadlines) {
-    if (!d.grade_levels.includes(opts.gradeLevel)) continue;
+    if (!deadlineAppliesTo(d, opts.gradeLevel, opts.today)) continue;
     const due = toDay(d.date);
     if (due < today) continue;
     const offsets = d.kind === "opens" ? OPENS_OFFSETS : (opts.offsets ?? DEFAULT_OFFSETS);

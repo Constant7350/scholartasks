@@ -63,7 +63,8 @@ export default function Home() {
   const open = dues.filter((d) => d.open);
   const late = open.filter((d) => d.due && daysUntil(d.due) < 0).length;
   const week = open.filter((d) => d.due && daysUntil(d.due) >= 0 && daysUntil(d.due) <= 7).length;
-  const dates = [...GA.deadlines].sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
+  const today = new Date().toLocaleDateString("en-CA");
+  const dates = GA.deadlines.filter((d) => d.date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
 
   return (
     <Page>
@@ -141,6 +142,12 @@ export default function Home() {
           <b>Scholarships and grants</b>
           <span>Georgia and national awards your student qualifies for, with what to check and what to work on. Checked for changes every week.</span>
           <span className="tile-go">See matches →</span>
+        </a>
+        <a className="tile" href="/aid">
+          <span className="tile-icon">🧾</span>
+          <b>FAFSA and Georgia aid forms</b>
+          <span>A step-by-step FAFSA, GAfutures and HOPE checklist with your own document list and reminders. You file on the official sites; we never ask for passwords or SSNs.</span>
+          <span className="tile-go">Open the checklist →</span>
         </a>
         <a className="tile" href="/study">
           <span className="tile-icon">📚</span>
