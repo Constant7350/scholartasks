@@ -288,6 +288,20 @@ export const TOPICS: Topic[] = [
     ],
   },
   {
+    id: "career-quiz",
+    area: "College plan",
+    title: "Career quiz: which career fits me?",
+    href: "/majors/quiz",
+    keywords: ["career quiz", "what should i be", "interest quiz", "career test", "job ideas", "undecided", "what major"],
+    summary: "Pick what you enjoy and see careers that need college and skilled trades side by side, with typical pay and how many years of school each takes.",
+    steps: [
+      "Open Menu, then Career quiz. You don't need to sign in.",
+      "Tap everything that sounds like you.",
+      "Tap Colleges for this or How to start to see where each path leads.",
+    ],
+    body: ["It's a starting point, not a test. Pay is the U.S. median and varies by state."],
+  },
+  {
     id: "trades",
     area: "College plan",
     title: "Trades and trade schools",
@@ -331,6 +345,25 @@ export const TOPICS: Topic[] = [
     ],
   },
   {
+    id: "compare-offers",
+    area: "College plan",
+    title: "Compare aid offers side by side",
+    href: "/plan/offers",
+    keywords: ["award letter", "aid offer", "financial aid offer", "compare offers", "net price", "loans", "parent plus", "work-study", "which college is cheapest", "appeal"],
+    summary: "Type each college's award letter in once and see free money, loans, work-study and what you really pay, side by side.",
+    steps: [
+      "Open Menu, then Compare aid offers (or the link under What it will cost us on the College plan).",
+      "Tap Add offer next to a college and type each number from the letter, per year.",
+      "Look at You pay (net price): cost minus free money. That is the number to compare.",
+    ],
+    body: [
+      "Grants and scholarships are free money. Loans and work-study are not: loans are paid back, and work-study is a paycheck during the year.",
+      "Parent PLUS and private loans are debt for the family. Many letters list them as aid anyway, so we show them separately.",
+      "The grants you type also update the price on the College plan.",
+      "If a college you love offers less, you can ask its aid office for a review and send the better offer.",
+    ],
+  },
+  {
     id: "college-essays",
     area: "College plan",
     title: "Write college essays with the coach",
@@ -349,6 +382,25 @@ export const TOPICS: Topic[] = [
       "Each feedback or topic request uses 1 of the day's AI uses.",
       "Parents can read the drafts too, so they can help.",
       "Copy the finished essay into the Common App or the college's portal yourself.",
+    ],
+  },
+  {
+    id: "essay-bundles",
+    area: "College plan",
+    title: "Essay bundles: one draft for similar questions",
+    href: "/essays",
+    keywords: ["bundle", "reuse essay", "same essay", "similar prompts", "scholarship essays", "career goals essay", "community service essay", "copy draft"],
+    summary: "Saved scholarships and college essays that ask the same kind of question (career goals, a challenge, service, leadership, need) are grouped, so one strong draft can start the others.",
+    steps: [
+      "Save scholarships and open Get ready to apply on each, so its essay question loads.",
+      "Open College essays and scroll to Essay bundles.",
+      "Write one essay in a bundle (25 words or more), then tap Use it to start the empty drafts.",
+      "Open each one and change it so it answers its own question and fits its word limit.",
+    ],
+    body: [
+      "Only empty drafts are filled, so nothing you already wrote is replaced.",
+      "A draft is cut to each award's word limit at the end of a sentence, as a starting point.",
+      "Sending the exact same essay everywhere rarely wins. Mention each award's own goals and the people who give it.",
     ],
   },
   {
@@ -449,6 +501,23 @@ export const TOPICS: Topic[] = [
       "Tap Print or save as PDF.",
     ],
     body: ["The resume updates itself whenever you add an activity or a grade."],
+  },
+  {
+    id: "application-profile",
+    area: "Activities and resume",
+    title: "Application profile: copy and paste into forms",
+    href: "/activities/profile",
+    keywords: ["profile", "copy", "paste", "application form", "scholarship form", "fill in", "short answer", "bio", "gpa", "activities list"],
+    summary: "Everything scholarship and college forms ask for in one place (school, GPA, scores, activities, honors, short answers), each with a Copy button.",
+    steps: [
+      "Open Activities and resume, then tap Copy for applications.",
+      "Tap Copy next to anything, then paste it into the form.",
+      "Add the short answers most forms ask for (bio, career goals, a challenge, service, leadership, need). Write them once in College essays.",
+    ],
+    body: [
+      "It all comes from Grades, Activities and Essays, so it updates when they do.",
+      "We never fill in or send a form for you. You paste, check and submit it yourself.",
+    ],
   },
 
   // ---------- Grades and scholarships ----------

@@ -331,7 +331,7 @@ export default function MajorsPage() {
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
         </div>
       )}
-      <p className="hint">Type what you want to study, like marine biology, vet or nurse. You&apos;ll see what that career pays, how many years of school it takes, and the strongest programs in {homeName} first, then across the country, with a yearly price for your family.</p>
+      <p className="hint">Type what you want to study, like marine biology, vet or nurse. You&apos;ll see what that career pays, how many years of school it takes, and the strongest programs in {homeName} first, then across the country, with a yearly price for your family. Not sure yet? Take the <a href="/majors/quiz">career quiz</a>.</p>
 
       <section className="panel">
         <label htmlFor="major-q">What do you want to study?</label>

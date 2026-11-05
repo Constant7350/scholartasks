@@ -179,7 +179,7 @@ export default function ActivitiesPage() {
         <span className="todo-count"><b>{honors.length}</b> honors and awards</span>
         <span className="todo-count"><b>{totalHours.toLocaleString()}</b> hours a year</span>
       </div>
-      <p><a className="btn btn-inline link-btn" href={`/activities/resume?student=${student.id}`}>📄 Make my resume</a></p>
+      <p><a className="btn btn-inline link-btn" href={`/activities/resume?student=${student.id}`}>📄 Make my resume</a> <a className="btn btn-ghost btn-inline link-btn" href="/activities/profile">📋 Copy for applications</a></p>
 
       {beyondOn && (
         <Checkup grade={student.grade_level} items={checkup(student.grade_level, mine, myService, myRecs, myBrag)} />
