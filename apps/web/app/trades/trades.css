@@ -31,3 +31,13 @@ a.trade-callout:hover { border-color: var(--navy); }
 .trade-checklist:first-of-type { border-top: 0; margin-top: 0; }
 .trade-checklist h3 { margin: 0 0 4px; font-size: 17px; }
 .trade-checklist ol { margin: 8px 0 12px; padding-left: 20px; display: grid; gap: 4px; }
+
+.trade-aid-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.trade-aid { display: grid; gap: 4px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.trade-aid:last-child { border-bottom: 0; padding-bottom: 0; }
+.trade-aid .hint { margin: 0; font-size: 14px; }
+.trade-aid-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.trade-aid-head .pill { margin-left: 0; }
+.trade-more { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+.trade-more > summary { cursor: pointer; font-weight: 600; color: var(--navy); }
+.trade-grade-steps { margin: 8px 0 12px; padding-left: 20px; display: grid; gap: 4px; }

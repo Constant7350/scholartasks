@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { TradesPack, addDays, checkTradesPack, checklistSteps, matchTrades, payLine, tradeTaskId } from "../src/trades";
+import { TradesPack, addDays, aidFor, checkTradesPack, checkableFacts, checklistSteps, gradeStepsFor, matchTrades, payLine, tradeGradeTaskId, tradeTaskId } from "../src/trades";
 
 const pack = TradesPack.parse(JSON.parse(readFileSync(resolve(__dirname, "../../../packs/trades/trades.json"), "utf8")));
 
@@ -46,5 +46,28 @@ describe("quiz", () => {
   it("shows Georgia pay, or US pay when Georgia has none", () => {
     const wind = pack.trades.find((t) => t.slug === "wind-turbine-technician")!;
     expect(payLine(wind)).toBe("$64,120 typical in the US");
+  });
+});
+
+describe("aid, grade steps and checks", () => {
+  it("lists home-state and federal aid first, other states after", () => {
+    const ga = aidFor(pack.aid, "GA");
+    expect(ga.here.map((a) => a.id)).toContain("hope-grant");
+    expect(ga.here.map((a) => a.id)).toContain("pell");
+    expect(ga.elsewhere.map((a) => a.id)).toContain("tn-promise");
+    const tn = aidFor(pack.aid, "TN");
+    expect(tn.here.map((a) => a.id)).toContain("tn-promise");
+    expect(tn.elsewhere.map((a) => a.id)).toContain("hope-grant");
+  });
+  it("has trade steps for grades 8 to 12", () => {
+    for (const g of [8, 9, 10, 11, 12]) expect(gradeStepsFor(pack, g).length).toBeGreaterThan(0);
+    expect(gradeStepsFor(pack, 6)).toEqual(gradeStepsFor(pack, 8));
+    expect(tradeGradeTaskId(10, "dual")).toBe("tg:10:dual");
+  });
+  it("lists facts for the monthly check with unique subjects", () => {
+    const facts = checkableFacts(pack);
+    expect(facts.length).toBe(pack.aid.length + pack.trades.filter((t) => t.license.url).length);
+    expect(new Set(facts.map((f) => f.subject)).size).toBe(facts.length);
+    for (const f of facts) expect(f.subject).toMatch(/^[a-z]+:[a-z0-9-]+$/);
   });
 });

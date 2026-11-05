@@ -1,6 +1,6 @@
 {
   "kind": "trades",
-  "version": "2026.11-1",
+  "version": "2026.11-2",
   "pay_source": "U.S. Bureau of Labor Statistics, Occupational Employment and Wage Statistics, May 2025 (Georgia and national), via O*NET OnLine. Starting = 10th percentile, typical = median.",
   "trades": [
     {
@@ -1043,5 +1043,47 @@
         { "key": "housing", "title": "Plan housing and travel", "days": 45 }
       ]
     }
-  ]
+  ],
+  "aid": [
+    {"id": "pell", "name": "Pell Grant", "state": "US", "amount": "Up to $7,395 a year (2026-27)", "summary": "Federal grant money you don't pay back. Works at any eligible technical college, community college or trade school in any state, for programs of about 15 weeks or longer.", "who": "Students with financial need, decided by the FAFSA. U.S. citizens and eligible noncitizens.", "apply": "File the FAFSA each year. The school adds the Pell Grant to your aid offer.", "url": "https://studentaid.gov/understand-aid/types/grants/pell"},
+    {"id": "workforce-pell", "name": "Workforce Pell Grant", "state": "US", "amount": "Part of the Pell Grant, based on program length (up to $7,395 a year in 2026-27)", "summary": "New from July 1, 2026: Pell money for short job-training programs of 8 to 15 weeks (150 to 599 clock hours), such as some CDL, welding and health certificates. Each program must be approved by the state and meet job-placement standards, so ask the school whether its program qualifies.", "who": "Same rules as the Pell Grant. People who already have a bachelor's degree can still get it.", "apply": "File the FAFSA and ask the school's financial aid office if your program is approved for Workforce Pell.", "url": "https://www.everycrsreport.com/reports/IF13253.html"},
+    {"id": "wioa", "name": "Job training money from your local workforce office (WIOA)", "state": "US", "amount": "Varies by area, often several thousand dollars toward training", "summary": "Every state has American Job Centers that can pay for training in high-demand jobs through the federal Workforce Innovation and Opportunity Act. In Georgia these are WorkSource Georgia offices.", "who": "Adults 18 and older who qualify, people who lost a job, and young people 16 to 24 who are out of school. Rules and funding differ by area.", "apply": "Find your nearest American Job Center, make an appointment and ask about training funds (an Individual Training Account).", "url": "https://www.careeronestop.org/LocalHelp/AmericanJobCenters/find-american-job-centers.aspx"},
+    {"id": "apprenticeship-pay", "name": "Registered and union apprenticeships", "state": "US", "amount": "You earn a paycheck while you train, usually with raises as you learn", "summary": "Apprenticeships combine a paid job with classes. Most have little or no tuition, so you finish without debt. They are open in every state.", "who": "Usually 18 or older with a high school diploma or GED. Some trades also need algebra, an aptitude test or a driver's license.", "apply": "Search Apprenticeship.gov and your local union training center, then follow each program's application dates.", "url": "https://www.apprenticeship.gov/apprenticeship-job-finder"},
+    {"id": "hope-grant", "name": "HOPE Grant", "state": "GA", "amount": "$107 per credit hour in 2026-27 (most of tuition)", "summary": "Pays most of tuition for certificate and diploma programs at Georgia's 22 technical colleges. No high school GPA is needed to start.", "who": "Georgia residents. Keep a 2.0 GPA at 30 and 60 hours to keep it.", "apply": "File the FAFSA or Georgia's GSFAPP and enroll in an eligible program. It is added automatically.", "url": "https://www.gafutures.org/hope-state-aid-programs/hope-zell-miller-grants/hope-grant/"},
+    {"id": "hope-career-grant", "name": "HOPE Career Grant", "state": "GA", "amount": "$500 a term at 9+ hours (more for some programs, such as truck driving)", "summary": "Extra money on top of the HOPE Grant for high-demand programs like welding, electrical, HVAC, practical nursing, CDL and more. Together they make tuition free in those programs. You still pay fees, books and tools.", "who": "Georgia residents who have the HOPE Grant and are in a program on the HOPE Career Grant list.", "apply": "No extra form: it's added when you have the HOPE Grant and enroll in an eligible program.", "url": "https://www.gafutures.org/hope-state-aid-programs/hope-zell-miller-grants/hope-career-grant/"},
+    {"id": "zell-miller-grant", "name": "Zell Miller Grant", "state": "GA", "amount": "Full tuition for certificate and diploma programs", "summary": "Replaces the HOPE Grant with full tuition for technical college students who keep a high college GPA.", "who": "Georgia technical college students with a 3.5 college GPA.", "apply": "Earn a 3.5 GPA in your program. Your college checks it at the end of each term.", "url": "https://www.gafutures.org/hope-state-aid-programs/hope-zell-miller-grants/zell-miller-grant/"},
+    {"id": "dual-enrollment", "name": "Dual Enrollment", "state": "GA", "amount": "Tuition, fees and books paid for up to 30 college hours", "summary": "High school students take technical college classes for free and earn high school and college credit at the same time. Many students finish a welding, CNA or other certificate before graduating.", "who": "Georgia students in 10th to 12th grade (10th graders can take career-tech classes).", "apply": "Talk to your school counselor in the spring before the term, then apply to the technical college and fill in the Dual Enrollment form on GAfutures.", "url": "https://www.gafutures.org/hope-state-aid-programs/scholarships-grants/dual-enrollment/"},
+    {"id": "tn-promise", "name": "Tennessee Promise", "state": "TN", "amount": "Tuition and fees not covered by other grants", "summary": "Free tuition at Tennessee's community colleges and its 22+ Colleges of Applied Technology (TCATs), with a mentor.", "who": "Tennessee high school seniors. Must file the FAFSA, go to a required meeting and do 8 to 16 hours of community service a year.", "apply": "Apply online in the fall of senior year (the deadline is early November), then file the FAFSA.", "url": "https://www.collegefortn.org/TNPromise"},
+    {"id": "sc-wins", "name": "SC WINS", "state": "SC", "amount": "Up to $5,000 a year for what other aid leaves", "summary": "Covers remaining tuition, fees and course costs at South Carolina's 16 technical colleges for high-demand programs.", "who": "South Carolina residents in an eligible program who have a job, take a financial literacy course or do 100 volunteer hours. Keep a 2.0 GPA.", "apply": "File the FAFSA and ask the technical college's financial aid office.", "url": "https://www.sctechsystem.edu/sc-wins/"},
+    {"id": "ky-work-ready", "name": "Work Ready Kentucky Scholarship", "state": "KY", "amount": "Tuition for up to 60 credit hours", "summary": "Tuition-free training in high-demand fields such as health care, manufacturing, construction and transportation in Kentucky.", "who": "Kentucky residents with a high school diploma or working on a GED, who don't have an associate degree yet.", "apply": "File the FAFSA and the Work Ready application through KHEAA (opens May 1 each year).", "url": "https://kctcs.edu/affording-college/work-ready-kentucky"},
+    {"id": "next-nc", "name": "Next NC Scholarship", "state": "NC", "amount": "At least $3,000 a year at a community college", "summary": "Grant money for North Carolina community college and public university students from families earning $80,000 or less.", "who": "North Carolina residents with family income of $80,000 or less and a FAFSA Student Aid Index of 7,500 or less.", "apply": "Just file the FAFSA, by June 1 for the most money.", "url": "https://www.cfnc.org/nextnc"},
+    {"id": "fl-gold-seal", "name": "Florida Bright Futures Gold Seal (Vocational and CAPE)", "state": "FL", "amount": "Set amount per credit hour at Florida schools", "summary": "Florida's merit scholarship for career and technical programs. Gold Seal Vocational asks for career-tech grades and test scores; Gold Seal CAPE is for students who earn industry certifications in high school.", "who": "Florida high school graduates who meet the grade, test or certification rules and 100 hours of service or paid work.", "apply": "File the Florida Financial Aid Application by August 31 after high school graduation.", "url": "https://www.pasco.k12.fl.us/cte/page/florida-scholarship-opportunities"}
+  ],
+  "grade_steps": {
+    "8": [
+      {"key": "quiz", "title": "Take the trades interest quiz and read about three trades that fit you", "due": "10-31", "link": "/trades/quiz"},
+      {"key": "pathway", "title": "Pick a career pathway for 9th grade (a set of three career classes; in Georgia these are CTAE pathways)", "due": "02-28", "link": "/trades"}
+    ],
+    "9": [
+      {"key": "first-class", "title": "Take the first class in your career pathway", "due": "09-15", "link": "/trades"},
+      {"key": "club", "title": "Join a career club such as SkillsUSA, FFA, HOSA or FCCLA", "due": "10-15", "link": "/activities"},
+      {"key": "summer", "title": "Find a summer job or helper role near the trade you like", "due": "04-15", "link": "/activities"}
+    ],
+    "10": [
+      {"key": "second-class", "title": "Take the second class in your career pathway", "due": "09-15", "link": "/trades"},
+      {"key": "shadow", "title": "Spend a day job-shadowing someone in a trade you like", "due": "12-15", "link": "/activities"},
+      {"key": "dual", "title": "Ask your counselor about Dual Enrollment: free technical college classes in high school", "due": "02-15", "link": "/aid#trades"}
+    ],
+    "11": [
+      {"key": "credential", "title": "Finish your pathway and take its industry credential test if your school offers one", "due": "04-30", "link": "/trades"},
+      {"key": "youth-apprentice", "title": "Ask your school about a youth apprenticeship or work-based learning (paid work for students 16 and up)", "due": "10-15", "link": "/trades"},
+      {"key": "visit", "title": "Visit a technical college, union training center or trade school, in your state or another", "due": "03-31", "link": "/trades"},
+      {"key": "scholarships", "title": "Save trade scholarships to apply for in senior year", "due": "05-15", "link": "/scholarships"}
+    ],
+    "12": [
+      {"key": "pick", "title": "Pick your trade and add its Steps to apply checklist", "due": "09-30", "link": "/trades"},
+      {"key": "apply-aid", "title": "File the FAFSA for Pell, HOPE and other grants", "due": "10-31", "link": "/aid"},
+      {"key": "apprentice-dates", "title": "Write down apprenticeship application dates for programs you like (many open only a few weeks a year)", "due": "11-30", "link": "/trades"}
+    ]
+  }
 }
