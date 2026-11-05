@@ -215,7 +215,7 @@ export const TOPICS: Topic[] = [
     area: "College plan",
     title: "Search colleges by major",
     href: "/majors",
-    keywords: ["major", "field of study", "career", "marine biology", "vet", "veterinarian", "nurse", "nursing", "trade", "pay", "salary", "earnings", "how many years", "best schools", "ranking", "cost chart"],
+    keywords: ["major", "field of study", "career", "marine biology", "vet", "veterinarian", "nurse", "nursing", "trade", "pay", "salary", "earnings", "how many years", "transfer", "community college", "two-year college", "save money", "best schools", "ranking", "cost chart"],
     summary: "Type what you want to study (marine biology, vet, nurse, welding...) and see what that career pays, how many years of school it takes, and the strongest programs in your state first, then across the U.S., each with a yearly price for your family.",
     steps: [
       "Open Menu, then Search colleges by major.",
@@ -228,6 +228,7 @@ export const TOPICS: Topic[] = [
       "Your home state's colleges come first, but the nationwide list always shows too, so you can choose a school anywhere in the U.S. The list includes four-year colleges and every two-year, technical and trade school in the federal data.",
       "Each program gets a score out of 100 from federal data: how many students finish that major there, the college's graduation rate, what that major's graduates earn, their loans compared with pay, and admitted students' SAT. We don't copy magazine rankings.",
       "Pay for careers comes from the U.S. Bureau of Labor Statistics (May 2025). Pay for graduates of each major comes from the U.S. Department of Education.",
+      "Save money: for four-year majors the page compares four years at a university with two years at a low-cost public two-year college and two at the university, and explains how transfer works (in Georgia: UGA's transfer GPA rules, USG core classes that transfer in full, technical college classes that transfer, and Georgia Tech's engineering pathway).",
       "Check things the data can't show, like accreditation and licensing exam pass rates (for example NCLEX for nurses). The page links to where to check.",
       "This is advice to help you compare. The final choice is your family's.",
     ],

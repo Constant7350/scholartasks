@@ -59,6 +59,7 @@ export default function MajorsPage() {
   const [error, setError] = useState<string | null>(null);
   const [onList, setOnList] = useState<Set<number>>(new Set());
   const [open, setOpen] = useState<string | null>(null);
+  const [twoYear, setTwoYear] = useState<CollegeRow[]>([]);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -125,6 +126,14 @@ export default function MajorsPage() {
     });
     return () => { stale = true; };
   }, [sb, group, home, online]);
+
+  // Public two-year colleges in the home state, for "start there, then transfer".
+  useEffect(() => {
+    if (!sb || !field) return;
+    void sb.from("colleges").select("*").eq("state", home).eq("degree", 2).eq("ownership", 1).not("cost_attendance", "is", null)
+      .order("avg_net_price", { ascending: true, nullsFirst: false }).limit(40)
+      .then(({ data }) => setTwoYear((data as CollegeRow[]) ?? []));
+  }, [sb, field, home]);
 
   const ranked = useMemo(() => {
     if (!rows) return { home: [] as Hit[], nation: [] as Hit[] };
@@ -243,6 +252,46 @@ export default function MajorsPage() {
       )}
     </section>
   );
+
+  // Two years at a community or state college, then two at the university.
+  const transfer = () => {
+    if (isGrad || !group?.levels.includes(3)) return null;
+    const target = ranked.home.find((h) => h.cost.estimate != null && h.college.degree !== 2) ?? ranked.nation.find((h) => h.cost.estimate != null && h.college.state === home);
+    const starts = twoYear.map((c) => ({ c, est: estimateCost(toFacts(c), ctx) })).filter((x) => x.est.estimate != null)
+      .sort((a, b) => a.est.estimate! - b.est.estimate!).slice(0, 3);
+    const ga = home === "GA";
+    const facts = (
+      <ul>
+        <li>Getting in is often easier as a transfer. {ga ? <>At UGA in fall 2026 about 2 in 3 transfer applicants were admitted, compared with about 3 in 10 first-year applicants (<a href="https://admissions.uga.edu/wp-content/uploads/2026/07/FastFacts_2026_WEB.pdf" target="_blank" rel="noreferrer noopener">UGA Fast Facts</a>). UGA considers transfers with 30 to 59 college credit hours and a 3.30 GPA, or 60+ hours and a 3.00 (<a href="https://admissions.uga.edu/apply/transfer-applicants/transfer-criteria/" target="_blank" rel="noreferrer noopener">UGA transfer criteria</a>). SAT/ACT and high school grades don&apos;t count; every college grade does.</> : "Check each university's transfer page for the GPA and credit hours it wants."}</li>
+        {ga && <li>Core classes taken at any University System of Georgia college transfer in full to another one (<a href="https://www.kennesaw.edu/registrar/transfer/usg-core-curriculum-transfer-agreement.php" target="_blank" rel="noreferrer noopener">USG core transfer agreement</a>), and 38 general education classes at Georgia&apos;s technical colleges transfer to every public college and university in the state (<a href="https://www.usg.edu/active-articulations/tcsg/" target="_blank" rel="noreferrer noopener">TCSG to USG transfer list</a>).</li>}
+        {ga && field?.id === "engineering" && <li>Engineering: Georgia Tech&apos;s <a href="https://admission.gatech.edu/transfer/repp-pathway" target="_blank" rel="noreferrer noopener">Regents&apos; Engineering Pathway</a> lets you take two years at a partner college, then finish at Tech.</li>}
+        {ga && <li>HOPE and Zell pay at two-year colleges too, and your HOPE college GPA carries over.</li>}
+        <li>Plan ahead: take the classes your major needs before you transfer, keep your grades high, and ask the university&apos;s transfer office early. Nursing, engineering and other programs with strict course orders need extra care.</li>
+        <li>You can transfer to a university in any state, not just {homeName}.</li>
+      </ul>
+    );
+    return (
+      <section className="panel">
+        <h2>Save money: start at a two-year college, then transfer</h2>
+        <p className="hint" style={{ marginTop: 0 }}>Many students take their first two years of core classes at a community, state or technical college, then finish the bachelor&apos;s degree at a university. The diploma is the same.</p>
+        {target && starts[0] && (() => {
+          const four = target.cost.estimate! * 4;
+          const split = starts[0].est.estimate! * 2 + target.cost.estimate! * 2;
+          return (
+            <>
+              <div className="bars">
+                <Bar label={`4 years at ${target.college.name}`} value={four} max={four} />
+                <Bar label={`2 years at ${starts[0].c.name}, then 2 at ${target.college.name}`} value={split} max={four} strong />
+              </div>
+              {four > split && <p><b>You could save about {money(four - split)}.</b> <span className="hint">Estimates for your family, before loans.</span></p>}
+              <p className="hint">Lowest-cost public two-year colleges in {homeName} for your family: {starts.map((x, k) => <span key={x.c.id}>{k ? ", " : ""}{x.c.url ? <a href={x.c.url} target="_blank" rel="noreferrer noopener">{x.c.name}</a> : x.c.name} ({money(x.est.estimate)} a year)</span>)}.</p>
+            </>
+          );
+        })()}
+        {facts}
+      </section>
+    );
+  };
 
   const costChart = (hits: Hit[]) => {
     const shown = hits.filter((h) => h.cost.estimate != null).slice(0, 10);
@@ -378,6 +427,7 @@ export default function MajorsPage() {
             <>
               {list(ranked.home, `Best in ${homeName}: ${group.title}`, `No college in ${homeName} reports this major at this level. See the nationwide list below.`)}
               {list(ranked.nation, `Best nationwide: ${group.title}`, "No colleges found. Try another list or include online programs.")}
+              {transfer()}
               {!isGrad && costChart([...ranked.home.slice(0, 5), ...ranked.nation.filter((h) => !ranked.home.some((x) => x.college.id === h.college.id)).slice(0, 5)])}
             </>
           )}
