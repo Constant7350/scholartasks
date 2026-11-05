@@ -70,7 +70,8 @@ async function all(query) {
 
 const schools = [
   ...(await all({ "school.operating": "1", "school.degrees_awarded.predominant": "3" })),
-  ...(await all({ "school.operating": "1", "school.state": "GA", "school.degrees_awarded.predominant": "2" })),
+  ...(await all({ "school.operating": "1", "school.degrees_awarded.predominant": "2" })),
+  ...(await all({ "school.operating": "1", "school.degrees_awarded.predominant": "1" })),
 ];
 
 // National picture for every degree level (certificate to doctorate), from

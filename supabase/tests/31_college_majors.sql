@@ -4,7 +4,8 @@
 insert into colleges (id, name, city, state, ownership, degree, size, tuition_in, tuition_out, cost_attendance, net_price, programs)
 values (139959, 'University of Georgia', 'Athens', 'GA', 1, 3, 31000, 10000, 30000, 28000, '{8000,9000,12000,18000,22000}', '{}'),
        (999002, 'Coast University', 'Wilmington', 'NC', 1, 3, 17000, 7000, 22000, 25000, '{6000,8000,11000,16000,20000}', '{}'),
-       (999003, 'Online U', 'Phoenix', 'AZ', 3, 3, 90000, 9000, 9000, 15000, '{}', '{}')
+       (999003, 'Online U', 'Phoenix', 'AZ', 3, 3, 90000, 9000, 9000, 15000, '{}', '{}'),
+       (999004, 'Ohio Welding Institute', 'Dayton', 'OH', 2, 1, 300, null, null, 18000, '{}', '{"precision_production":1}')
 on conflict (id) do nothing;
 insert into study_fields values ('2613', 'Ecology, Evolution, Systematics, and Population Biology'), ('0180', 'Veterinary Medicine'), ('5138', 'Registered Nursing') on conflict do nothing;
 insert into field_earnings values ('2613', 3, 2, 300, 35000, 50000, 18000), ('5138', 3, 3, 900, 80000, 90000, 20000) on conflict do nothing;
@@ -27,6 +28,7 @@ do $$ begin
   assert (select college ->> 'name' from programs_for(array['0180'], array[7], 'GA')) = 'University of Georgia', 'vet school with college facts';
   assert (select college ? 'programs' from programs_for(array['0180'], array[7], 'GA')) = false, 'college facts without the big programs field';
   assert (select cip from search_majors('veterinary')) = '0180', 'search major names';
+  assert (select count(*) from match_colleges(array['OH'], array[1,2], null, 50)) = 0, 'match quiz stays four-year';
   assert (select count(*) from search_majors('ve')) = 0, 'too short to search';
   update college_programs set grads = 1 where college_id = 139959;
   assert (select grads from college_programs where college_id = 139959 and cip = '2613') = 40, 'families cannot change majors data';

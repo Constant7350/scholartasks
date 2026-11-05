@@ -293,7 +293,7 @@ export function findFields(query: string): StudyField[] {
 
 /** A plain field made from any federal major name (for searches the list above doesn't cover). */
 export function fieldFromMajor(cip: string, title: string): StudyField {
-  return { id: `cip-${cip}`, label: title, words: [], groups: [{ title, cips: [cip], levels: [2, 3] }], careers: [] };
+  return { id: `cip-${cip}`, label: title, words: [], groups: [{ title, cips: [cip], levels: [1, 2, 3] }], careers: [] };
 }
 
 // ------------------------------------------------------------ ranking

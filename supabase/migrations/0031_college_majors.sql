@@ -91,3 +91,19 @@ language sql stable set search_path = public as $$
 $$;
 revoke all on function search_majors(text, int) from public;
 grant execute on function search_majors(text, int) to anon, authenticated;
+
+-- The colleges table now holds every two-year, technical and trade school in
+-- the U.S. (for searching by major). The five-question match quiz stays about
+-- four-year colleges, plus Georgia's two-year colleges as before.
+create or replace function match_colleges(p_states text[], p_ownership int[], p_programs text[], p_limit int default 300)
+returns setof colleges language sql stable set search_path = public as $$
+  select c.* from colleges c
+   where (p_states is null or c.state = any(p_states))
+     and (coalesce(c.degree, 3) = 3 or (c.degree = 2 and c.state = 'GA'))
+     and c.ownership = any(coalesce(p_ownership, array[1, 2]))
+     and (coalesce(cardinality(p_programs), 0) = 0
+          or exists (select 1 from unnest(p_programs) f where coalesce((c.programs ->> f)::numeric, 0) > 0))
+   order by (select coalesce(sum((c.programs ->> f)::numeric), 0) from unnest(coalesce(p_programs, '{}')) f) desc,
+            c.size desc nulls last
+   limit least(greatest(p_limit, 1), 500);
+$$;
