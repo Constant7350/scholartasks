@@ -719,3 +719,26 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
 .theme-row button[aria-pressed="true"] { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(20, 48, 90, 0.12); }
 .theme-row button:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 .theme-dot { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.12); }
+
+/* ---------- Search by major: simple bar charts ---------- */
+.bars { display: grid; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: minmax(110px, 34%) 1fr auto; align-items: center; gap: 10px; font-size: 14px; }
+.bar-label { color: var(--navy); overflow-wrap: anywhere; }
+.bar-track { position: relative; height: 14px; background: #f1ece4; border-radius: 999px; overflow: hidden; }
+.bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--navy); border-radius: 999px; }
+.bar-ghost { background: #d9d2c6; }
+.bar-strong .bar-fill { background: var(--gold); }
+.bar-strong .bar-label { font-weight: 700; }
+.bar-value { font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+.career { display: grid; gap: 2px; }
+.career-sub { margin: 0 0 6px; font-size: 13px; }
+.cost-chart { margin-top: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fffdf8; display: grid; gap: 6px; }
+.cost-chart h3 { margin: 8px 0 0; font-size: 15px; }
+.cost-lines { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cost-lines td { padding: 3px 0; }
+.cost-lines .num { text-align: right; }
+.major-picks { position: static; margin-top: 6px; }
+@media (max-width: 560px) {
+  .bar-row { grid-template-columns: 1fr auto; }
+  .bar-row .bar-track { grid-column: 1 / -1; grid-row: 2; }
+}

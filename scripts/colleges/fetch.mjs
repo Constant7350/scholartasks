@@ -1,6 +1,7 @@
 // Downloads the U.S. Department of Education's College Scorecard data for
 // every operating college that mainly awards bachelor's degrees, plus
-// Georgia's two-year and technical colleges (HOPE Grant schools).
+// every operating two-year, technical and certificate (trade) school in the
+// U.S., so families can find trade and two-year programs in any state.
 // Writes supabase/seed/colleges.json. Run by .github/workflows/college-data.yml
 // once a year (new Scorecard data comes out each fall).
 //
@@ -28,10 +29,10 @@ const FIELDS = [
   "school.degrees_awarded.predominant", "school.price_calculator_url",
   "latest.student.size", "latest.admissions.admission_rate.overall",
   "latest.admissions.sat_scores.average.overall", "latest.admissions.act_scores.midpoint.cumulative",
-  "latest.cost.tuition.in_state", "latest.cost.tuition.out_of_state", "latest.cost.attendance.academic_year",
+  "latest.cost.tuition.in_state", "latest.cost.tuition.out_of_state", "latest.cost.attendance.academic_year", "latest.cost.attendance.program_year",
   "latest.cost.avg_net_price.public", "latest.cost.avg_net_price.private",
   ...LEVELS.flatMap((l) => [`latest.cost.net_price.public.by_income_level.${l}`, `latest.cost.net_price.private.by_income_level.${l}`]),
-  "latest.completion.completion_rate_4yr_150nt", "latest.earnings.10_yrs_after_entry.median",
+  "latest.completion.completion_rate_4yr_150nt", "latest.completion.completion_rate_less_than_4yr_150nt", "latest.earnings.10_yrs_after_entry.median",
   "latest.aid.median_debt.completers.overall",
   ...PROGRAMS.map((p) => `latest.academics.program_percentage.${p}`),
 ];
@@ -72,9 +73,9 @@ const round = (v, d = 3) => (num(v) === null ? null : Number(Number(v).toFixed(d
 // and turn its columns into the same shape as the API's.
 
 async function fromApi() {
-  const bachelors = await all({ "school.operating": "1", "school.degrees_awarded.predominant": "3" });
-  const gaTwoYear = await all({ "school.operating": "1", "school.state": "GA", "school.degrees_awarded.predominant": "2" });
-  return [...bachelors, ...gaTwoYear];
+  const out = [];
+  for (const deg of ["3", "2", "1"]) out.push(...(await all({ "school.operating": "1", "school.degrees_awarded.predominant": deg })));
+  return out;
 }
 
 // Two-digit CIP families in the bulk file (PCIPxx) for each API program name.
@@ -163,7 +164,7 @@ async function fromBulkFile() {
     if (get(r, "CURROPER") !== "1") continue;
     const deg = Number(get(r, "PREDDEG"));
     const st = get(r, "STABBR");
-    if (!(deg === 3 || (deg === 2 && st === "GA"))) continue;
+    if (!(deg === 1 || deg === 2 || deg === 3)) continue;
     const rec = {
       id: Number(get(r, "UNITID")), "school.name": get(r, "INSTNM"), "school.city": get(r, "CITY"), "school.state": st,
       "school.school_url": get(r, "INSURL"), "school.ownership": Number(get(r, "CONTROL")),
@@ -171,9 +172,9 @@ async function fromBulkFile() {
       "latest.student.size": get(r, "UGDS"), "latest.admissions.admission_rate.overall": get(r, "ADM_RATE"),
       "latest.admissions.sat_scores.average.overall": get(r, "SAT_AVG"), "latest.admissions.act_scores.midpoint.cumulative": get(r, "ACTCMMID"),
       "latest.cost.tuition.in_state": get(r, "TUITIONFEE_IN"), "latest.cost.tuition.out_of_state": get(r, "TUITIONFEE_OUT"),
-      "latest.cost.attendance.academic_year": get(r, "COSTT4_A"),
+      "latest.cost.attendance.academic_year": get(r, "COSTT4_A"), "latest.cost.attendance.program_year": get(r, "COSTT4_P"),
       "latest.cost.avg_net_price.public": get(r, "NPT4_PUB"), "latest.cost.avg_net_price.private": get(r, "NPT4_PRIV"),
-      "latest.completion.completion_rate_4yr_150nt": get(r, "C150_4"), "latest.earnings.10_yrs_after_entry.median": get(r, "MD_EARN_WNE_P10"),
+      "latest.completion.completion_rate_4yr_150nt": get(r, "C150_4"), "latest.completion.completion_rate_less_than_4yr_150nt": get(r, "C150_L4"), "latest.earnings.10_yrs_after_entry.median": get(r, "MD_EARN_WNE_P10"),
       "latest.aid.median_debt.completers.overall": get(r, "GRAD_DEBT_MDN"),
     };
     LEVELS.forEach((l, i) => {
@@ -212,10 +213,10 @@ for (const r of records) {
     act: num(r["latest.admissions.act_scores.midpoint.cumulative"]),
     tin: num(r["latest.cost.tuition.in_state"]),
     tout: num(r["latest.cost.tuition.out_of_state"]),
-    coa: num(r["latest.cost.attendance.academic_year"]),
+    coa: num(r["latest.cost.attendance.academic_year"]) ?? num(r["latest.cost.attendance.program_year"]),
     avgnet: num(r[`latest.cost.avg_net_price.${pub ? "public" : "private"}`]),
     net,
-    grad: round(r["latest.completion.completion_rate_4yr_150nt"]),
+    grad: round(r["latest.completion.completion_rate_4yr_150nt"]) ?? round(r["latest.completion.completion_rate_less_than_4yr_150nt"]),
     earn: num(r["latest.earnings.10_yrs_after_entry.median"]),
     debt: num(r["latest.aid.median_debt.completers.overall"]),
     prog: programs,

@@ -205,9 +205,32 @@ export const TOPICS: Topic[] = [
       "Tap + Add on any college to put it on the college list, where its price and deadlines live.",
     ],
     body: [
-      "Colleges come from the U.S. Department of Education's College Scorecard: every four-year college, plus Georgia's two-year and technical colleges.",
+      "Colleges come from the U.S. Department of Education's College Scorecard: every four-year college, plus Georgia's two-year and technical colleges. To search by major, including two-year and trade schools in every state, use Search colleges by major.",
       "Reach, Match and Likely compare the student's SAT or ACT with students the college admitted, and its admit rate. They are a rough guide, never a promise. Very selective colleges (under 15% admitted) are always a Reach.",
       "For-profit colleges are left out of matches. You can still add any college by name on the College plan.",
+    ],
+  },
+  {
+    id: "search-by-major",
+    area: "College plan",
+    title: "Search colleges by major",
+    href: "/majors",
+    keywords: ["major", "field of study", "career", "marine biology", "vet", "veterinarian", "nurse", "nursing", "trade", "pay", "salary", "earnings", "how many years", "transfer", "community college", "two-year college", "save money", "best schools", "ranking", "cost chart"],
+    summary: "Type what you want to study (marine biology, vet, nurse, welding...) and see what that career pays, how many years of school it takes, and the strongest programs in your state first, then across the U.S., each with a yearly price for your family.",
+    steps: [
+      "Open Menu, then Search colleges by major.",
+      "Type a major or career, or tap one of the buttons.",
+      "Careers and pay: tap Earn the most or Get a job fastest.",
+      "Some careers have more than one list (for example vet schools and pre-vet majors). Tap the list you want.",
+      "Tap Costs on any college to see what families at each income pay, in-state vs out-of-state tuition, and our estimate for your family. Tap + Add to put it on the college list.",
+    ],
+    body: [
+      "Your home state's colleges come first, but the nationwide list always shows too, so you can choose a school anywhere in the U.S. The list includes four-year colleges and every two-year, technical and trade school in the federal data.",
+      "Each program gets a score out of 100 from federal data: how many students finish that major there, the college's graduation rate, what that major's graduates earn, their loans compared with pay, and admitted students' SAT. We don't copy magazine rankings.",
+      "Pay for careers comes from the U.S. Bureau of Labor Statistics (May 2025). Pay for graduates of each major comes from the U.S. Department of Education.",
+      "Save money: for four-year majors the page compares four years at a university with two years at a low-cost public two-year college and two at the university, and explains how transfer works (in Georgia: UGA's transfer GPA rules, USG core classes that transfer in full, technical college classes that transfer, and Georgia Tech's engineering pathway).",
+      "Check things the data can't show, like accreditation and licensing exam pass rates (for example NCLEX for nurses). The page links to where to check.",
+      "This is advice to help you compare. The final choice is your family's.",
     ],
   },
   {

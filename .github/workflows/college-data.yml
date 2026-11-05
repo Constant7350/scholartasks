@@ -7,6 +7,12 @@ name: College data
 # The result is committed back to the branch it ran on, for review in a pull request.
 on:
   workflow_dispatch:
+    inputs:
+      what:
+        description: "colleges = school facts and prices; programs = majors at each school; both"
+        type: choice
+        options: [both, colleges, programs]
+        default: both
 
 permissions:
   contents: write
@@ -19,14 +25,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/colleges/fetch.mjs
+      - if: inputs.what != 'programs'
+        run: node scripts/colleges/fetch.mjs
+        env:
+          SCORECARD_API_KEY: ${{ secrets.SCORECARD_API_KEY }}
+      - if: inputs.what != 'colleges'
+        run: node scripts/colleges/fetch-programs.mjs
         env:
           SCORECARD_API_KEY: ${{ secrets.SCORECARD_API_KEY }}
       - name: Commit the new data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add supabase/seed/colleges.json
+          git add supabase/seed/colleges.json supabase/seed/college_programs.json 2>/dev/null || git add supabase/seed/colleges.json
           if git diff --cached --quiet; then echo "No change"; exit 0; fi
-          git commit -m "Refresh college data from College Scorecard"
+          git commit -m "Refresh college data from College Scorecard (${{ inputs.what }})"
           git push

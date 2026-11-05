@@ -1,0 +1,148 @@
+// Downloads the College Scorecard "field of study" data: for every college in
+// supabase/seed/colleges.json, each major (4-digit CIP code) with how many
+// students finished it, what graduates of that major earn, and their typical
+// federal loan debt. Writes supabase/seed/college_programs.json.
+// Run by .github/workflows/college-data.yml (choose "programs" or "both").
+//
+//   SCORECARD_API_KEY=... node scripts/colleges/fetch-programs.mjs
+//
+// Kept: certificates (level 1), associate's (2), bachelor's (3), and graduate or professional
+// degrees (5-7) for vet, medicine, pharmacy, dentistry, law and therapy; only programs
+// that awarded at least one degree.
+
+import { readFileSync, writeFileSync } from "node:fs";
+
+const KEY = process.env.SCORECARD_API_KEY || "DEMO_KEY";
+const BASE = "https://api.data.gov/ed/collegescorecard/v1/schools";
+const KEEP_LEVELS = new Set([1, 2, 3]);
+// Graduate and professional degrees are kept only for majors where the
+// graduate school is the point (vet, medicine, pharmacy, dentistry, law,
+// physical/occupational/speech therapy, nursing practice).
+const GRAD_LEVELS = new Set([5, 6, 7]);
+const GRAD_CIPS = new Set(["0180", "5112", "5120", "5104", "2201", "5123", "5102", "5138"]);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const num = (v) => (v === null || v === undefined || v === "" || Number.isNaN(Number(v)) ? null : Number(v));
+
+const { rows: colleges } = JSON.parse(readFileSync("supabase/seed/colleges.json", "utf8"));
+const wanted = new Set(colleges.map((c) => c.id));
+
+/** Flattens a nested object to {"a.b.c": value}. */
+function flat(o, pre = "", out = {}) {
+  for (const [k, v] of Object.entries(o ?? {})) {
+    const key = pre ? `${pre}.${k}` : k;
+    if (v && typeof v === "object" && !Array.isArray(v)) flat(v, key, out);
+    else out[key] = v;
+  }
+  return out;
+}
+/** First non-null value whose key matches one of the patterns, in order. */
+function pick(f, patterns) {
+  for (const re of patterns) {
+    for (const [k, v] of Object.entries(f)) if (re.test(k) && num(v) !== null) return num(v);
+  }
+  return null;
+}
+
+async function page(query, n) {
+  const qs = new URLSearchParams({ ...query, api_key: KEY, _fields: "id,school.online_only,latest.programs.cip_4_digit", _per_page: "50", page: String(n) });
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch(`${BASE}?${qs}`);
+    if (res.ok) return res.json();
+    const text = await res.text();
+    if (attempt >= 6) throw new Error(`Scorecard ${res.status}: ${text.slice(0, 300)}`);
+    const wait = res.status === 429 ? 65000 * attempt : 5000 * attempt;
+    console.log(`retry ${attempt} after ${res.status}, waiting ${wait / 1000}s`);
+    await sleep(wait);
+  }
+}
+
+async function all(query) {
+  const out = [];
+  for (let n = 0; ; n++) {
+    const body = await page(query, n);
+    out.push(...body.results);
+    console.log(`${JSON.stringify(query)} page ${n}: ${body.results.length} (total ${body.metadata.total})`);
+    if (out.length >= body.metadata.total || body.results.length === 0) break;
+    await sleep(KEY === "DEMO_KEY" ? 6500 : 700);
+  }
+  return out;
+}
+
+const schools = [
+  ...(await all({ "school.operating": "1", "school.degrees_awarded.predominant": "3" })),
+  ...(await all({ "school.operating": "1", "school.degrees_awarded.predominant": "2" })),
+  ...(await all({ "school.operating": "1", "school.degrees_awarded.predominant": "1" })),
+];
+
+// National picture for every degree level (certificate to doctorate), from
+// every college fetched: how many programs, and the middle (median) of what
+// their graduates earn and owe. Used for "earning potential by degree level".
+const SUMMARY_LEVELS = new Set([1, 2, 3, 5, 6, 7]);
+const summary = {};
+const median = (xs) => {
+  const v = xs.filter((x) => x != null).sort((a, b) => a - b);
+  if (!v.length) return null;
+  const m = Math.floor(v.length / 2);
+  return Math.round(v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2);
+};
+let shown = false;
+const distances = {};
+const titles = {};
+const out = [];
+const seen = new Map();
+for (const s of schools) {
+  if (!wanted.has(s.id)) continue;
+  const progs = s["latest.programs.cip_4_digit"] ?? s.latest?.programs?.cip_4_digit ?? [];
+  if (!shown && progs.length) {
+    console.log("sample program:", JSON.stringify(progs[0]));
+    console.log("sample keys:", Object.keys(flat(progs[0])).join(" "));
+    shown = true;
+  }
+  for (const p of progs) {
+    const f = flat(p);
+    distances[f.distance] = (distances[f.distance] ?? 0) + 1;
+    const level = num(f["credential.level"]);
+    const code = String(f.code ?? "").replace(/\D/g, "").padStart(4, "0").slice(0, 4);
+    if (code.length !== 4) continue;
+    const grads = pick(f, [/counts\.ipeds_awards2$/, /counts\.ipeds_awards1$/]);
+    if (!grads) continue;
+    if (f.title && !titles[code]) titles[code] = String(f.title).replace(/\.$/, "").trim();
+    const e1 = pick(f, [/earnings\.(highest\.)?1_yr\.overall_median_earnings$/, /1_yr.*median_earnings$/]);
+    const e4 = pick(f, [/earnings\.(highest\.)?4_yr\.overall_median_earnings$/, /earnings\.(highest\.)?3_yr\.overall_median_earnings$/, /earnings\.(highest\.)?2_yr\.overall_median_earnings$/]);
+    const dbt = pick(f, [/debt\.staff_grad_plus\.all\.eval_inst\.median$/, /debt\.staff_grad_plus\.all\.all_inst\.median$/, /debt\..*\.median$/]);
+    if (SUMMARY_LEVELS.has(level)) {
+      const k = `${code}:${level}`;
+      const t = (summary[k] ??= { programs: 0, grads: 0, e1: [], e4: [], debt: [] });
+      t.programs++; t.grads += grads; t.e1.push(e1); t.e4.push(e4); t.debt.push(dbt);
+    }
+    if (!KEEP_LEVELS.has(level) && !(GRAD_LEVELS.has(level) && GRAD_CIPS.has(code))) continue;
+    // A major can be listed twice: on campus (distance 1) and online (distance 2).
+    // Keep the on-campus numbers; mark majors only offered online.
+    const online = Number(s["school.online_only"]) === 1 || Number(f.distance) === 2 ? 1 : 0;
+    const key = `${s.id}:${code}:${level}`;
+    const prev = seen.get(key);
+    if (prev && (prev[7] === 0 || online === 1)) continue;
+    const row = [s.id, code, level, grads, e1, e4, dbt, online];
+    if (prev) out[out.indexOf(prev)] = row; else out.push(row);
+    seen.set(key, row);
+  }
+}
+out.sort((a, b) => a[0] - b[0] || a[1].localeCompare(b[1]) || a[2] - b[2]);
+writeFileSync("supabase/seed/college_programs.json", JSON.stringify({
+  fetched: new Date().toISOString().slice(0, 10),
+  source: "U.S. Department of Education College Scorecard, field of study data",
+  columns: ["college_id", "cip4", "level", "grads", "earn_1yr", "earn_4yr", "debt", "online"],
+  titles,
+  summary_columns: ["cip4", "level", "programs", "grads", "earn_1yr", "earn_4yr", "debt"],
+  summary: Object.entries(summary).map(([k, t]) => {
+    const [cip, level] = k.split(":");
+    return [cip, Number(level), t.programs, t.grads, median(t.e1), median(t.e4), median(t.debt)];
+  }).sort((a, b) => a[0].localeCompare(b[0]) || a[1] - b[1]),
+  rows: out,
+}) + "\n");
+console.log(`wrote ${out.length} programs at ${new Set(out.map((r) => r[0])).size} colleges, ${Object.keys(titles).length} fields`);
+console.log("with earnings:", out.filter((r) => r[4] || r[5]).length, "with debt:", out.filter((r) => r[6]).length);
+console.log("levels:", JSON.stringify(Object.fromEntries([2, 3, 5, 6, 7].map((l) => [l, out.filter((r) => r[2] === l).length]))));
+console.log("online only:", out.filter((r) => r[7]).length);
+console.log("vet medicine:", JSON.stringify(Object.entries(summary).filter(([k]) => k.startsWith("0180:"))));
+console.log("distance values:", JSON.stringify(distances));

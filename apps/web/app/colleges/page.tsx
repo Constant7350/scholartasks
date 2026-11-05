@@ -120,7 +120,7 @@ export default function CollegesPage() {
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
         </div>
       )}
-      <p className="hint">Answer five quick questions. We look through every four-year college in the federal College Scorecard and show a yearly price for your family. Tap Add to put a college on your list.</p>
+      <p className="hint">Answer five quick questions. We look through every four-year college in the federal College Scorecard and show a yearly price for your family. Tap Add to put a college on your list. Know what you want to study? <a href="/majors">Search colleges by major</a>.</p>
 
       <section className="panel quiz">
         {pick("1. Where?", [["home", student.state === "GA" ? "Georgia" : "My state"], ["region", "The Southeast"], ["anywhere", "Anywhere in the U.S."]], "where")}

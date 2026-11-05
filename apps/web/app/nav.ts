@@ -34,6 +34,7 @@ export const NAV: NavItem[] = [
   { href: "/todo", label: "To-do list", short: "To do", icon: "✅", roles: ALL, group: "student", strip: true },
   { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "student", strip: true, tab: 2 },
   { href: "/colleges", label: "Find colleges", short: "Find colleges", icon: "🔎", roles: ALL, group: "student" },
+  { href: "/majors", label: "Search colleges by major", short: "By major", icon: "🧭", roles: ALL, group: "student" },
   { href: "/grades", label: "Grades and HOPE", short: "Grades", icon: "🎓", roles: ALL, group: "student", strip: true, tab: 3 },
   { href: "/grades/record", label: "Academic record (print)", short: "Record", icon: "📄", roles: ALL, group: "student" },
   { href: "/essays", label: "College essays", short: "Essays", icon: "✍️", roles: ALL, group: "student" },
@@ -57,6 +58,7 @@ export const NAV: NavItem[] = [
   { href: "/admin/questions", label: "Review practice questions", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/lessons", label: "Review study lessons", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/scholarships", label: "Review scholarships", icon: "✅", roles: ALL, group: "team" },
+  { href: "/admin/college-data", label: "Load college data", icon: "🏫", roles: ALL, group: "team" },
   { href: "/admin/presentation", label: "Presentation for parents and schools", icon: "🎤", roles: ALL, group: "team" },
 ];
 

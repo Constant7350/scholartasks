@@ -9,3 +9,5 @@ coverage/
 *.log
 .DS_Store
 *.tsbuildinfo
+apps/web/public/data/
+supabase/seed/college_programs.sql
