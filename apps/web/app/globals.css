@@ -763,3 +763,18 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
 .school-table th, .school-table td { white-space: nowrap; vertical-align: middle; }
 .school-table td:last-child, .school-table thead th:last-child { text-align: right; }
 .page:has(.school-table) { max-width: 1040px; }
+
+/* Team marketing plan (/admin/marketing) */
+.mk-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.mk-stat { display: grid; align-content: start; gap: 2px; background: var(--warm-tint); border-radius: 12px; padding: 12px; }
+.mk-stat-value { font-size: 26px; font-weight: 800; color: var(--navy); font-variant-numeric: tabular-nums; }
+.mk-stat-label { font-weight: 600; font-size: 14px; }
+.mk-list { margin: 0 0 8px; padding-left: 20px; display: grid; gap: 8px; }
+.mk-step { border-top: 1px solid #ece6db; padding: 12px 0; }
+.mk-step:first-of-type { border-top: 0; }
+.mk-step-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.mk-step-done { opacity: 0.7; }
+.mk-table-wrap { overflow-x: auto; }
+.mk-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.mk-table th, .mk-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #ece6db; font-variant-numeric: tabular-nums; }
+.mk-step-head .pill { white-space: nowrap; flex-shrink: 0; }
