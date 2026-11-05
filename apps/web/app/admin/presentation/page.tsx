@@ -19,6 +19,8 @@ const SLIDES: { id: string; title: string }[] = [
   { id: "counselor", title: "AI counselor" },
   { id: "scholarships", title: "Scholarships" },
   { id: "grades", title: "Grades 8 to 12" },
+  { id: "habits", title: "Strong study habits" },
+  { id: "beyond", title: "Beyond grades" },
   { id: "prep", title: "Study and test prep" },
   { id: "colleges", title: "Colleges" },
   { id: "aid", title: "FAFSA and Georgia aid" },
@@ -111,7 +113,7 @@ export default function PresentationPage() {
   return (
     <Page title={title}>
       <p className="hint" style={{ marginTop: -8 }}>
-        21 slides with narration in the Max voice (about 8 minutes). Press <b>Start the show</b> to play it full screen with the voice, or step through the slides yourself and talk over them.
+        23 slides with narration in the Max voice (about 9 minutes). Press <b>Start the show</b> to play it full screen with the voice, or step through the slides yourself and talk over them.
       </p>
       <div className="share-row" style={{ display: "flex", flexWrap: "wrap", gap: 8, margin: "12px 0" }}>
         <button className="btn btn-inline" onClick={startShow}>▶ Start the show</button>
