@@ -5,26 +5,27 @@ export const metadata = {
   description: "How ScholarTasks compares with other college planning, scholarship and test prep apps on parent controls, AI counseling, HOPE tracking, FAFSA help, grades coaching and privacy.",
 };
 
-const APPS = ["Common App", "Scoir / Naviance", "BigFuture", "CollegeVine", "Scholarship Owl", "Khan Academy + Bluebook"];
+const APPS = ["Common App", "Scoir / Naviance", "BigFuture", "CollegeVine", "Going Merry", "Khan Academy + Bluebook"];
 
 const PART1: [string, string, string[]][] = [
   ["Parent and student linked", "Yes, parent controls", ["No", "Yes", "No", "No", "No", "No"]],
   ["AI counselor", "Yes, knows Georgia", ["No", "No", "No", "Yes", "No", "No"]],
   ["HOPE and Zell tracking", "Yes", ["No", "No", "No", "No", "No", "No"]],
-  ["FAFSA and Georgia aid help", "Yes", ["No", "Some", "Some", "No", "No", "No"]],
+  ["FAFSA and Georgia aid help", "Yes", ["No", "Some", "Some", "No", "Some", "No"]],
   ["Scholarship matching", "Yes, team-checked", ["No", "Some", "Yes", "Some", "Yes", "No"]],
   ["College search and quiz", "Yes", ["Yes", "Yes", "Yes", "Yes", "No", "No"]],
-  ["Cost per college", "Yes, after Georgia aid", ["No", "Yes", "Some", "No", "No", "No"]],
+  ["Majors, careers and trades", "Yes, all three", ["No", "Some", "Some", "Some", "No", "No"]],
+  ["Cost per college", "Yes, after Georgia aid", ["No", "Yes", "Some", "No", "Some", "No"]],
 ];
 
 const PART2: [string, string, string[]][] = [
   ["Grade coaching, grades 8 to 12", "Yes", ["No", "No", "No", "No", "No", "No"]],
-  ["SAT and ACT practice", "Yes, 600+ questions", ["No", "No", "Links", "No", "No", "Yes"]],
+  ["SAT and ACT practice", "Yes, 600+ questions", ["No", "No", "Links", "Some", "No", "Yes"]],
   ["Essay feedback that never writes", "Yes", ["No", "No", "No", "Some", "No", "No"]],
   ["Activities and resume", "Yes", ["Yes", "Yes", "No", "No", "No", "No"]],
-  ["Reminders", "Email, calendar, phone", ["Email, phone", "Yes", "Yes", "No", "Email", "Phone"]],
-  ["School counselor dashboard", "Yes (free)", ["Yes", "Yes", "Yes", "No", "No", "Yes"]],
-  ["Never sells student data", "Yes", ["Yes", "Yes", "Opt-in to colleges", "Colleges buy access", "Unclear", "Yes"]],
+  ["Reminders", "Email, calendar, phone", ["Email, phone", "Yes", "Yes", "No", "Email, phone", "Phone"]],
+  ["School counselor dashboard", "Yes (free)", ["Yes", "Yes", "Yes", "No", "Some", "Yes"]],
+  ["Never sells student data", "Yes", ["Yes", "Yes", "Opt-in to colleges", "Colleges buy access", "Yes", "Yes"]],
 ];
 
 function Table({ caption, rows }: { caption: string; rows: [string, string, string[]][] }) {
