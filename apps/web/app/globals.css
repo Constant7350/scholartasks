@@ -738,7 +738,6 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
 .cost-lines td { padding: 3px 0; }
 .cost-lines .num { text-align: right; }
 .major-picks { position: static; margin-top: 6px; }
-.degree-table td { vertical-align: top; }
 @media (max-width: 560px) {
   .bar-row { grid-template-columns: 1fr auto; }
   .bar-row .bar-track { grid-column: 1 / -1; grid-row: 2; }

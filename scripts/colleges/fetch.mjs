@@ -32,7 +32,7 @@ const FIELDS = [
   "latest.cost.tuition.in_state", "latest.cost.tuition.out_of_state", "latest.cost.attendance.academic_year", "latest.cost.attendance.program_year",
   "latest.cost.avg_net_price.public", "latest.cost.avg_net_price.private",
   ...LEVELS.flatMap((l) => [`latest.cost.net_price.public.by_income_level.${l}`, `latest.cost.net_price.private.by_income_level.${l}`]),
-  "latest.completion.completion_rate_4yr_150nt", "latest.earnings.10_yrs_after_entry.median",
+  "latest.completion.completion_rate_4yr_150nt", "latest.completion.completion_rate_less_than_4yr_150nt", "latest.earnings.10_yrs_after_entry.median",
   "latest.aid.median_debt.completers.overall",
   ...PROGRAMS.map((p) => `latest.academics.program_percentage.${p}`),
 ];
@@ -174,7 +174,7 @@ async function fromBulkFile() {
       "latest.cost.tuition.in_state": get(r, "TUITIONFEE_IN"), "latest.cost.tuition.out_of_state": get(r, "TUITIONFEE_OUT"),
       "latest.cost.attendance.academic_year": get(r, "COSTT4_A"), "latest.cost.attendance.program_year": get(r, "COSTT4_P"),
       "latest.cost.avg_net_price.public": get(r, "NPT4_PUB"), "latest.cost.avg_net_price.private": get(r, "NPT4_PRIV"),
-      "latest.completion.completion_rate_4yr_150nt": get(r, "C150_4"), "latest.earnings.10_yrs_after_entry.median": get(r, "MD_EARN_WNE_P10"),
+      "latest.completion.completion_rate_4yr_150nt": get(r, "C150_4"), "latest.completion.completion_rate_less_than_4yr_150nt": get(r, "C150_L4"), "latest.earnings.10_yrs_after_entry.median": get(r, "MD_EARN_WNE_P10"),
       "latest.aid.median_debt.completers.overall": get(r, "GRAD_DEBT_MDN"),
     };
     LEVELS.forEach((l, i) => {
@@ -216,7 +216,7 @@ for (const r of records) {
     coa: num(r["latest.cost.attendance.academic_year"]) ?? num(r["latest.cost.attendance.program_year"]),
     avgnet: num(r[`latest.cost.avg_net_price.${pub ? "public" : "private"}`]),
     net,
-    grad: round(r["latest.completion.completion_rate_4yr_150nt"]),
+    grad: round(r["latest.completion.completion_rate_4yr_150nt"]) ?? round(r["latest.completion.completion_rate_less_than_4yr_150nt"]),
     earn: num(r["latest.earnings.10_yrs_after_entry.median"]),
     debt: num(r["latest.aid.median_debt.completers.overall"]),
     prog: programs,

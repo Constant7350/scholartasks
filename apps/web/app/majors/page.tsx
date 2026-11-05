@@ -198,7 +198,7 @@ export default function MajorsPage() {
                   <b>{i + 1}. {c.name}</b>
                   <span className="hint">{c.city ? `${c.city}, ` : ""}{c.state} · {OWNERSHIP[c.ownership]}{h.online ? " · Online" : ""}{c.size ? ` · ${c.size.toLocaleString()} students` : ""}</span>
                   <span className="hint">
-                    {h.grads.toLocaleString()} {h.grads === 1 ? "graduate" : "graduates"} a year in this major · Graduates of the college {pct(c.grad_rate)}
+                    {h.grads.toLocaleString()} {h.grads === 1 ? "graduate" : "graduates"} a year in this major{c.grad_rate != null ? ` · ${pct(c.grad_rate)} of students finish` : ""}
                   </span>
                   <span className="hint">
                     This major&apos;s graduates earn {h.earn4 != null ? <b>{money(h.earn4)}</b> : h.earn1 != null ? <b>{money(h.earn1)}</b> : "—"}{h.earn4 != null ? " after 4 years" : h.earn1 != null ? " after 1 year" : ""}
@@ -375,21 +375,17 @@ export default function MajorsPage() {
 
           <section className="panel">
             <h2>How long it takes and what it pays</h2>
-            <div style={{ overflowX: "auto" }}>
-              <table className="cost-compare degree-table">
-                <thead><tr><th>Degree</th><th>Years of school</th><th className="num">This field&apos;s graduates earn*</th><th className="num">All workers with this degree</th></tr></thead>
-                <tbody>
-                  {byLevel.filter(({ d, pay }) => pay != null || d.level <= 3).map(({ d, pay }) => (
-                    <tr key={d.level}>
-                      <td><b>{d.name}</b></td>
-                      <td>{d.years}</td>
-                      <td className="num">{pay != null ? money(pay) : <span className="hint">—</span>}</td>
-                      <td className="num">{money(d.typicalPay)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <ul className="items degree-list">
+              {byLevel.filter(({ d, pay }) => pay != null || d.level <= 3).map(({ d, pay }) => (
+                <li key={d.level}>
+                  <div className="item-main">
+                    <b>{d.name}</b>
+                    <span className="hint">{d.years} of school after high school</span>
+                    <span>This field&apos;s graduates earn* <b>{pay != null ? money(pay) : "—"}</b>{d.typicalPay ? <span className="hint"> · all workers with this degree {money(d.typicalPay)}</span> : null}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
             <details style={{ marginTop: 10 }}>
               <summary>What each degree means</summary>
               <ul>{DEGREES.map((d) => <li key={d.level}><b>{d.name}:</b> {d.plain}</li>)}</ul>
