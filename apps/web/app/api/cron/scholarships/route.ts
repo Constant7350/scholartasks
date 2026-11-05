@@ -48,7 +48,7 @@ export async function GET(req: Request) {
       const t = triage(r);
       if (t.autoVerify) {
         // Confirmed on the official site with nothing new: verified, no one needs to look.
-        await sb.from("scholarships").update(rec.status === "pending" ? autoVerified(today) : { last_checked: today }).eq("id", rec.id);
+        await sb.from("scholarships").update(rec.status === "pending" || rec.status === "found" ? autoVerified(today) : { last_checked: today }).eq("id", rec.id);
         return { name: rec.name, changed: false, verified: true };
       }
       if (Object.keys(t.proposed).length || r.still_offered !== "yes") {

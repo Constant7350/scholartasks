@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     const t = triage(r);
     if (t.autoVerify) {
       // Confirmed on the official site with nothing new: verified, nothing to review.
-      const { error } = await sb.from("scholarships").update((rec as { status: string }).status === "pending" ? autoVerified(today) : { last_checked: today }).eq("id", body.id);
+      const { error } = await sb.from("scholarships").update(["pending", "found"].includes((rec as { status: string }).status) ? autoVerified(today) : { last_checked: today }).eq("id", body.id);
       if (error) return json(500, "Couldn't save the result.");
       return Response.json({ verified: true, summary: r.summary });
     }
