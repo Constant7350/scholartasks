@@ -51,27 +51,33 @@ export interface Career {
   /** Expected job growth 2025-2035, percent. */
   growth: number;
   url: string;
+  /** Years of school after high school, when it differs from the usual for its degree. */
+  years?: string;
 }
+
+const USUAL_YEARS: Record<number, string> = { 0: "0 to 2 years", 1: "under 1 to 2 years", 2: "2 years", 3: "4 years", 5: "about 6 years", 6: "about 7 to 10 years", 7: "7 to 8 years" };
+/** Years of school after high school for a career. */
+export const careerYears = (c: Career) => c.years ?? USUAL_YEARS[c.level] ?? "";
 
 const OOH = "https://www.bls.gov/ooh/";
 /** Careers, from the BLS Occupational Outlook Handbook (pay May 2025, outlook 2025-35). */
 export const CAREERS: Record<string, Career> = {
-  vet: { name: "Veterinarian", pay: 130100, education: "Doctor of Veterinary Medicine (DVM)", level: 7, growth: 9, url: `${OOH}healthcare/veterinarians.htm` },
+  vet: { name: "Veterinarian", pay: 130100, education: "Doctor of Veterinary Medicine (DVM)", level: 7, growth: 9, url: `${OOH}healthcare/veterinarians.htm`, years: "8 years (4 college + 4 vet school)" },
   vettech: { name: "Veterinary technician", pay: 47380, education: "Associate degree", level: 2, growth: 9, url: `${OOH}healthcare/veterinary-technologists-and-technicians.htm` },
   zoologist: { name: "Zoologist or wildlife/marine biologist", pay: 76780, education: "Bachelor's degree", level: 3, growth: 4, url: `${OOH}life-physical-and-social-science/zoologists-and-wildlife-biologists.htm` },
   geoscientist: { name: "Geoscientist or oceanographer", pay: 101920, education: "Bachelor's degree", level: 3, growth: 5, url: `${OOH}life-physical-and-social-science/geoscientists.htm` },
   conservation: { name: "Conservation scientist or forester", pay: 73920, education: "Bachelor's degree", level: 3, growth: 4, url: `${OOH}life-physical-and-social-science/conservation-scientists.htm` },
   agscientist: { name: "Agricultural or food scientist", pay: 81970, education: "Bachelor's degree", level: 3, growth: 6, url: `${OOH}life-physical-and-social-science/agricultural-and-food-scientists.htm` },
   farmer: { name: "Farm, ranch or horse farm manager", pay: 89900, education: "High school, plus experience (a degree helps)", level: 0, growth: -3, url: `${OOH}management/farmers-ranchers-and-other-agricultural-managers.htm` },
-  rn: { name: "Registered nurse (RN)", pay: 97550, education: "Bachelor's (BSN) or associate (ADN), then the NCLEX exam", level: 2, growth: 6, url: `${OOH}healthcare/registered-nurses.htm` },
+  rn: { name: "Registered nurse (RN)", pay: 97550, education: "Bachelor's (BSN) or associate (ADN), then the NCLEX exam", level: 2, growth: 6, url: `${OOH}healthcare/registered-nurses.htm`, years: "2 years (ADN) or 4 years (BSN)" },
   lpn: { name: "Licensed practical nurse (LPN)", pay: 64400, education: "Certificate (about 1 year)", level: 1, growth: 3, url: `${OOH}healthcare/licensed-practical-and-licensed-vocational-nurses.htm` },
-  np: { name: "Nurse practitioner, anesthetist or midwife", pay: 134920, education: "Master's degree (after a BSN)", level: 5, growth: 36, url: `${OOH}healthcare/nurse-anesthetists-nurse-midwives-and-nurse-practitioners.htm` },
-  doctor: { name: "Physician or surgeon", pay: 275930, education: "Medical degree (MD/DO) plus 3-7 years of residency", level: 7, growth: 4, url: `${OOH}healthcare/physicians-and-surgeons.htm` },
-  pa: { name: "Physician assistant", pay: 135880, education: "Master's degree", level: 5, growth: 21, url: `${OOH}healthcare/physician-assistants.htm` },
-  pharmacist: { name: "Pharmacist", pay: 140910, education: "Doctor of Pharmacy (PharmD)", level: 7, growth: 5, url: `${OOH}healthcare/pharmacists.htm` },
-  dentist: { name: "Dentist", pay: 176110, education: "Dental degree (DDS/DMD)", level: 7, growth: 6, url: `${OOH}healthcare/dentists.htm` },
+  np: { name: "Nurse practitioner, anesthetist or midwife", pay: 134920, education: "Master's degree (after a BSN)", level: 5, growth: 36, url: `${OOH}healthcare/nurse-anesthetists-nurse-midwives-and-nurse-practitioners.htm`, years: "6 to 7 years (BSN + 2 to 3)" },
+  doctor: { name: "Physician or surgeon", pay: 275930, education: "Medical degree (MD/DO) plus 3-7 years of residency", level: 7, growth: 4, url: `${OOH}healthcare/physicians-and-surgeons.htm`, years: "11 to 15 years (4 + 4 + residency)" },
+  pa: { name: "Physician assistant", pay: 135880, education: "Master's degree", level: 5, growth: 21, url: `${OOH}healthcare/physician-assistants.htm`, years: "6 to 7 years (4 + 2 to 3)" },
+  pharmacist: { name: "Pharmacist", pay: 140910, education: "Doctor of Pharmacy (PharmD)", level: 7, growth: 5, url: `${OOH}healthcare/pharmacists.htm`, years: "6 to 8 years" },
+  dentist: { name: "Dentist", pay: 176110, education: "Dental degree (DDS/DMD)", level: 7, growth: 6, url: `${OOH}healthcare/dentists.htm`, years: "8 years (4 + 4)" },
   hygienist: { name: "Dental hygienist", pay: 98100, education: "Associate degree", level: 2, growth: 8, url: `${OOH}healthcare/dental-hygienists.htm` },
-  pt: { name: "Physical therapist", pay: 102760, education: "Doctor of Physical Therapy (about 3 years after a bachelor's)", level: 6, growth: 12, url: `${OOH}healthcare/physical-therapists.htm` },
+  pt: { name: "Physical therapist", pay: 102760, education: "Doctor of Physical Therapy (about 3 years after a bachelor's)", level: 6, growth: 12, url: `${OOH}healthcare/physical-therapists.htm`, years: "7 years (4 + 3)" },
   ot: { name: "Occupational therapist", pay: 100330, education: "Master's degree", level: 5, growth: 15, url: `${OOH}healthcare/occupational-therapists.htm` },
   slp: { name: "Speech-language pathologist", pay: 97870, education: "Master's degree", level: 5, growth: 17, url: `${OOH}healthcare/speech-language-pathologists.htm` },
   radtech: { name: "Radiologic (X-ray) technologist", pay: 81390, education: "Associate degree", level: 2, growth: 5, url: `${OOH}healthcare/radiologic-technologists.htm` },
@@ -90,9 +96,9 @@ export const CAREERS: Record<string, Career> = {
   marketing: { name: "Marketing manager", pay: 166790, education: "Bachelor's degree, plus years of experience", level: 3, growth: 6, url: `${OOH}management/advertising-promotions-and-marketing-managers.htm` },
   hsteacher: { name: "High school teacher", pay: 72040, education: "Bachelor's degree and a teaching certificate", level: 3, growth: 0, url: `${OOH}education-training-and-library/high-school-teachers.htm` },
   elemteacher: { name: "Elementary school teacher", pay: 63820, education: "Bachelor's degree and a teaching certificate", level: 3, growth: 0, url: `${OOH}education-training-and-library/kindergarten-and-elementary-school-teachers.htm` },
-  lawyer: { name: "Lawyer", pay: 159670, education: "Law degree (JD), 3 years after a bachelor's", level: 7, growth: 5, url: `${OOH}legal/lawyers.htm` },
+  lawyer: { name: "Lawyer", pay: 159670, education: "Law degree (JD), 3 years after a bachelor's", level: 7, growth: 5, url: `${OOH}legal/lawyers.htm`, years: "7 years (4 + 3)" },
   paralegal: { name: "Paralegal", pay: 62890, education: "Associate degree", level: 2, growth: 0, url: `${OOH}legal/paralegals-and-legal-assistants.htm` },
-  psychologist: { name: "Psychologist", pay: 99110, education: "Master's or doctorate", level: 5, growth: 6, url: `${OOH}life-physical-and-social-science/psychologists.htm` },
+  psychologist: { name: "Psychologist", pay: 99110, education: "Master's or doctorate", level: 5, growth: 6, url: `${OOH}life-physical-and-social-science/psychologists.htm`, years: "6 to 10 years" },
   socialworker: { name: "Social worker", pay: 61780, education: "Bachelor's (master's for counseling)", level: 3, growth: 6, url: `${OOH}community-and-social-service/social-workers.htm` },
   police: { name: "Police officer or detective", pay: 77310, education: "High school to college degree, plus police academy", level: 0, growth: 3, url: `${OOH}protective-service/police-and-detectives.htm` },
   automech: { name: "Automotive technician", pay: 50620, education: "Certificate (about 1 year)", level: 1, growth: 5, url: `${OOH}installation-maintenance-and-repair/automotive-service-technicians-and-mechanics.htm` },

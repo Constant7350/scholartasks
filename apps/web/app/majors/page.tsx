@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   DEGREES, EARNINGS_SOURCE, FIELDS, HIGH_SCHOOL_PAY, INCOME_LABELS, SCORE_EXPLAINED, SCORE_WEIGHTS,
-  combinePrograms, estimateCost, fieldFromMajor, findFields, rankPrograms, sortCareers,
+  careerYears, combinePrograms, estimateCost, fieldFromMajor, findFields, rankPrograms, sortCareers,
   type CostEstimate, type CostInput, type FieldGroup, type StudyField,
 } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
@@ -58,7 +58,7 @@ export default function MajorsPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [onList, setOnList] = useState<Set<number>>(new Set());
-  const [open, setOpen] = useState<number | null>(null);
+  const [open, setOpen] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -166,7 +166,11 @@ export default function MajorsPage() {
     const pay = w ? Math.round(rs.reduce((n, r) => n + ((r.earn_4yr ?? r.earn_1yr) ?? 0) * (r.earn_4yr ?? r.earn_1yr ? r.grads : 0), 0) / w) : null;
     return { d, pay, programs: rs.reduce((n, r) => n + r.programs, 0) };
   });
-  const maxLevelPay = Math.max(...byLevel.map((x) => x.pay ?? 0), ...DEGREES.map((d) => d.typicalPay ?? 0));
+
+  // Vet, medical, law and other graduate schools charge their own tuition; the
+  // federal prices are for undergraduates, so don't show them as this program's cost.
+  const isGrad = !!group && group.levels.every((l) => l >= 5);
+  const signed = (n: number | null) => (n != null && n < 0 ? `−${money(-n)}` : money(n));
 
   const list = (hits: Hit[], title: string, empty: string) => (
     <section className="panel">
@@ -175,7 +179,7 @@ export default function MajorsPage() {
         <ol className="items college-results major-results">
           {hits.map((h, i) => {
             const c = h.college;
-            const isOpen = open === c.id;
+            const isOpen = open === `${title}-${c.id}`;
             const band = ctx.incomeBand ? BAND_OF[ctx.incomeBand] : null;
             const net = c.net_price ?? [];
             const maxNet = Math.max(...net.map((x) => x ?? 0), c.cost_attendance ?? 0);
@@ -191,12 +195,14 @@ export default function MajorsPage() {
                     This major&apos;s graduates earn {h.earn4 != null ? <b>{money(h.earn4)}</b> : h.earn1 != null ? <b>{money(h.earn1)}</b> : "—"}{h.earn4 != null ? " after 4 years" : h.earn1 != null ? " after 1 year" : ""}
                     {h.debt != null ? <> · typical loans {money(h.debt)}</> : null}
                   </span>
-                  <span className="college-price">
+                  {isGrad ? (
+                    <span className="hint">Graduate school tuition isn&apos;t in the federal data. Check the school&apos;s own {group?.title.toLowerCase().includes("vet") ? "DVM" : "program"} tuition page; graduates typically borrow {money(h.debt)}.</span>
+                  ) : <span className="college-price">
                     {h.cost.estimate != null
                       ? <><b>About {money(h.cost.estimate)} a year</b> <span className="hint">({h.cost.basis === "typical" ? "typical for your income" : h.cost.basis === "state_award" ? "after HOPE/Zell" : "full price"}; full price {money(h.cost.sticker)})</span></>
                       : <span className="hint">No price data</span>}
-                  </span>
-                  {isOpen && (
+                  </span>}
+                  {isOpen && !isGrad && (
                     <div className="cost-chart">
                       <h3>What families pay per year, by income</h3>
                       <p className="hint" style={{ marginTop: 0 }}>After typical grants and scholarships, before loans (federal data, {c.ownership === 1 ? "in-state students" : "all students"}).</p>
@@ -212,7 +218,7 @@ export default function MajorsPage() {
                       )}
                       <h3>Our estimate for your family</h3>
                       <table className="cost-lines"><tbody>
-                        {h.cost.lines.map((l) => <tr key={l.label}><td>{l.label}</td><td className="num">{money(l.amount)}</td></tr>)}
+                        {h.cost.lines.map((l) => <tr key={l.label}><td>{l.label}</td><td className="num">{signed(l.amount)}</td></tr>)}
                         <tr className="cost-total"><td>Per year</td><td className="num">{money(h.cost.estimate)}</td></tr>
                         <tr><td>Four years</td><td className="num">{money(h.cost.fourYears)}</td></tr>
                       </tbody></table>
@@ -223,7 +229,7 @@ export default function MajorsPage() {
                 </div>
                 <div className="item-actions">
                   <span className="pill" title="Program score out of 100 (see How we rank)">Score {h.score}</span>
-                  <button className="btn btn-ghost btn-inline btn-sm" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : c.id)}>{isOpen ? "Hide costs" : "Costs"}</button>
+                  {!isGrad && <button className="btn btn-ghost btn-inline btn-sm" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : `${title}-${c.id}`)}>{isOpen ? "Hide costs" : "Costs"}</button>}
                   {student && (onList.has(c.id)
                     ? <span className="pill pill-ok">On your list ✓</span>
                     : <button className="btn btn-inline btn-sm" onClick={() => void add(c)}>+ Add</button>)}
@@ -308,7 +314,7 @@ export default function MajorsPage() {
                   <div key={c.name} className="career">
                     <Bar label={c.name} value={c.pay} max={maxPay} sub="a year" />
                     <p className="hint career-sub">
-                      {c.education}{c.level ? ` · about ${DEGREES.find((d) => d.level === c.level)?.years.toLowerCase()} after high school` : ""} · jobs {c.growth > 0 ? `growing ${c.growth}%` : c.growth < 0 ? `shrinking ${Math.abs(c.growth)}%` : "holding steady"} by 2035 · <a href={c.url} target="_blank" rel="noreferrer noopener">more</a>
+                      {c.education} · {careerYears(c)} of school after high school · jobs {c.growth > 0 ? `growing ${c.growth}%` : c.growth < 0 ? `shrinking ${Math.abs(c.growth)}%` : "holding steady"} by 2035 · <a href={c.url} target="_blank" rel="noreferrer noopener">more</a>
                     </p>
                   </div>
                 ))}
@@ -326,7 +332,7 @@ export default function MajorsPage() {
                 <tbody>
                   {byLevel.filter(({ d, pay }) => pay != null || d.level <= 3).map(({ d, pay }) => (
                     <tr key={d.level}>
-                      <td><b>{d.name}</b><div className="hint">{d.plain}</div></td>
+                      <td><b>{d.name}</b></td>
                       <td>{d.years}</td>
                       <td className="num">{pay != null ? money(pay) : <span className="hint">—</span>}</td>
                       <td className="num">{money(d.typicalPay)}</td>
@@ -335,9 +341,10 @@ export default function MajorsPage() {
                 </tbody>
               </table>
             </div>
-            <div className="bars" aria-hidden="true" style={{ marginTop: 10 }}>
-              {byLevel.filter((x) => x.pay != null).map(({ d, pay }) => <Bar key={d.level} label={d.name} value={pay} max={maxLevelPay} />)}
-            </div>
+            <details style={{ marginTop: 10 }}>
+              <summary>What each degree means</summary>
+              <ul>{DEGREES.map((d) => <li key={d.level}><b>{d.name}:</b> {d.plain}</li>)}</ul>
+            </details>
             <p className="hint">*Middle pay of graduates of these majors across the country, about 4 years after finishing (U.S. Department of Education). All workers: full-time workers 25 and older, by highest degree (<a href={EARNINGS_SOURCE} target="_blank" rel="noreferrer noopener">Bureau of Labor Statistics, 2025</a>).</p>
             {field.note && <p className="note">{field.note}</p>}
           </section>
@@ -371,7 +378,7 @@ export default function MajorsPage() {
             <>
               {list(ranked.home, `Best in ${homeName}: ${group.title}`, `No college in ${homeName} reports this major at this level. See the nationwide list below.`)}
               {list(ranked.nation, `Best nationwide: ${group.title}`, "No colleges found. Try another list or include online programs.")}
-              {costChart([...ranked.home.slice(0, 5), ...ranked.nation.filter((h) => !ranked.home.some((x) => x.college.id === h.college.id)).slice(0, 5)])}
+              {!isGrad && costChart([...ranked.home.slice(0, 5), ...ranked.nation.filter((h) => !ranked.home.some((x) => x.college.id === h.college.id)).slice(0, 5)])}
             </>
           )}
 
