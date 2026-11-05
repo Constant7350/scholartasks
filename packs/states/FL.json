@@ -1,0 +1,340 @@
+{
+  "kind": "state",
+  "state": "FL",
+  "name": "Florida",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [
+    "ACM"
+  ],
+  "agency": {
+    "name": "Florida Department of Education, Office of Student Financial Assistance (OSFA)",
+    "url": "https://www.floridastudentfinancialaidsg.org"
+  },
+  "gpa_formulas": {
+    "fl_bf_gpa": {
+      "label": "Bright Futures GPA",
+      "description": "Bright Futures GPA: the 16 core credits (4 English, 4 math, 3 science, 3 social science, 2 of one world language) on a 4.0 scale; +0.5 for each year-long honors, AP, IB, AICE and dual enrollment course; not rounded up.",
+      "courses": "core_only",
+      "grade_levels": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "scale": {
+        "A": 4,
+        "B": 3,
+        "C": 2,
+        "D": 1,
+        "F": 0
+      },
+      "weights": [
+        {
+          "levels": [
+            "honors",
+            "AP",
+            "IB",
+            "DE"
+          ],
+          "add": 0.5,
+          "applies_to": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
+        }
+      ],
+      "rounding": "none"
+    }
+  },
+  "programs": [
+    {
+      "id": "fl-fas",
+      "name": "Bright Futures: Florida Academic Scholars (FAS)",
+      "type": "merit",
+      "summary": "100% of tuition and set fees at Florida public colleges for a 3.5 Bright Futures GPA, a 1330 SAT or 29 ACT (class of 2028: 1350 SAT), and 100 service hours.",
+      "rules": {
+        "gpa_formula": "fl_bf_gpa",
+        "min_gpa": 3.5,
+        "tests_any": {
+          "sat": 1330,
+          "act": 29
+        },
+        "tests_by_class": {
+          "2028": {
+            "sat": 1350,
+            "act": 29
+          }
+        },
+        "also": [
+          "100 hours of volunteer service, paid work or both, approved by the school district",
+          "Florida Financial Aid Application (FFAA) by August 31 after high school graduation",
+          "Florida resident and U.S. citizen or eligible noncitizen"
+        ]
+      },
+      "award": {
+        "summary": "100% of tuition and applicable fees at Florida public colleges and universities; a set amount per credit hour at eligible private Florida colleges.",
+        "estimate": {
+          "public": "tuition"
+        }
+      },
+      "application": [
+        "FFAA"
+      ],
+      "source_url": "https://www.floridastudentfinancialaidsg.org"
+    },
+    {
+      "id": "fl-fms",
+      "name": "Bright Futures: Florida Medallion Scholars (FMS)",
+      "type": "merit",
+      "summary": "75% of tuition and set fees at Florida public universities (100% for an associate degree at a Florida College System school) for a 3.0 Bright Futures GPA, a 1190 SAT or 24 ACT (class of 2028: 1200 SAT or 25 ACT), and 75 service hours.",
+      "rules": {
+        "gpa_formula": "fl_bf_gpa",
+        "min_gpa": 3.0,
+        "tests_any": {
+          "sat": 1190,
+          "act": 24
+        },
+        "tests_by_class": {
+          "2028": {
+            "sat": 1200,
+            "act": 25
+          }
+        },
+        "also": [
+          "75 hours of volunteer service (or 100 hours of paid work or both), approved by the school district",
+          "Florida Financial Aid Application (FFAA) by August 31 after high school graduation",
+          "Florida resident and U.S. citizen or eligible noncitizen"
+        ]
+      },
+      "award": {
+        "summary": "75% of tuition and applicable fees at Florida public universities; 100% in associate degree programs at Florida College System schools; a set amount per credit hour at eligible private Florida colleges.",
+        "estimate": {
+          "public": 4000,
+          "private_per_year": 3000
+        }
+      },
+      "application": [
+        "FFAA"
+      ],
+      "source_url": "https://www.floridastudentfinancialaidsg.org"
+    },
+    {
+      "id": "fl-gold-seal",
+      "name": "Bright Futures: Gold Seal Vocational Scholars",
+      "type": "merit",
+      "summary": "Pays a set amount per credit hour toward a career or technical certificate, applied technology diploma or associate in science degree at a Florida school.",
+      "rules": {
+        "gpa_formula": "fl_bf_gpa",
+        "min_gpa": 3.0,
+        "also": [
+          "3 full credits in one career and technical (CTE) program with a 3.5 unweighted GPA in those classes",
+          "Minimum section scores on the ACT, SAT or PERT",
+          "30 volunteer hours, 100 paid work hours, or 100 combined",
+          "Florida Financial Aid Application (FFAA)"
+        ]
+      },
+      "award": {
+        "summary": "A set amount per credit hour for career and technical programs (set each year by the Legislature)."
+      },
+      "application": [
+        "FFAA"
+      ],
+      "source_url": "https://www.floridastudentfinancialaidsg.org"
+    },
+    {
+      "id": "fl-fsag",
+      "name": "Florida Student Assistance Grant (FSAG)",
+      "type": "need",
+      "summary": "Need-based grant for Florida residents at Florida public and eligible private colleges, decided from the FAFSA. Money is limited, so file early.",
+      "rules": {},
+      "award": {
+        "summary": "Set each year; the college awards it in the aid package."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.floridastudentfinancialaidsg.org"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "FFAA"
+  ],
+  "deadlines": [
+    {
+      "id": "fl-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; also used for the Florida Student Assistance Grant)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "fl-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "fl-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; also used for the Florida Student Assistance Grant)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "fl-ffaa-2027-opens",
+      "title": "Florida Financial Aid Application (FFAA) opens: apply for Bright Futures in senior year",
+      "form": "FFAA",
+      "date": "2026-10-01",
+      "kind": "opens",
+      "where": "https://www.floridastudentfinancialaidsg.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "fl-ffaa-2027-deadline",
+      "title": "Last day to submit the Florida Financial Aid Application (FFAA) for Bright Futures",
+      "form": "FFAA",
+      "date": "2027-08-31",
+      "kind": "deadline",
+      "where": "https://www.floridastudentfinancialaidsg.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "fl-ffaa-2028-opens",
+      "title": "Florida Financial Aid Application (FFAA) opens: apply for Bright Futures in senior year",
+      "form": "FFAA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://www.floridastudentfinancialaidsg.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "fl-ffaa-2028-deadline",
+      "title": "Last day to submit the Florida Financial Aid Application (FFAA) for Bright Futures",
+      "form": "FFAA",
+      "date": "2028-08-31",
+      "kind": "deadline",
+      "where": "https://www.floridastudentfinancialaidsg.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "fl-service-hours",
+      "stage": "gather",
+      "order": 25,
+      "title": "Get Bright Futures service hours approved",
+      "who": "student",
+      "minutes": 15,
+      "summary": "Bright Futures needs volunteer or paid work hours (100 for Academic Scholars, 75 for Medallion), approved by the school district before graduation.",
+      "how": [
+        "Log hours as you go in ScholarTasks (Activities and resume page) so nothing is forgotten.",
+        "Turn in the school district's service hours form with a signature from each place you served.",
+        "Check that the hours show on your Bright Futures evaluation in senior year."
+      ],
+      "link": {
+        "label": "Bright Futures requirements",
+        "url": "https://www.floridastudentfinancialaidsg.org"
+      }
+    },
+    {
+      "id": "fl-ffaa",
+      "stage": "file",
+      "order": 33,
+      "title": "Florida Financial Aid Application (FFAA) for Bright Futures",
+      "who": "student",
+      "minutes": 15,
+      "summary": "Bright Futures has its own short state application, the FFAA. Without it a student can't get Bright Futures, even with the grades and scores.",
+      "how": [
+        "Open the Florida Student Financial Aid site and create a student account.",
+        "Complete the Florida Financial Aid Application any time after October 1 of senior year. Students don't need to qualify yet to apply.",
+        "File the FAFSA too, for Pell Grants and the Florida Student Assistance Grant."
+      ],
+      "link": {
+        "label": "Open Florida Student Financial Aid",
+        "url": "https://www.floridastudentfinancialaidsg.org"
+      },
+      "watch_out": [
+        "Submit by August 31 after graduation at the latest. Earlier is better."
+      ]
+    },
+    {
+      "id": "fl-bf-at-college",
+      "stage": "decide",
+      "order": 15,
+      "title": "Make sure Bright Futures shows on your aid offer",
+      "who": "family",
+      "minutes": 5,
+      "summary": "After graduation, the state posts the final Bright Futures award. The Florida college then adds it to the aid offer.",
+      "how": [
+        "Check your Bright Futures status on the Florida Student Financial Aid site in the summer after graduation.",
+        "Look for Bright Futures on the Florida college's aid offer. If it's missing, ask the financial aid office.",
+        "Bright Futures only pays at Florida schools. Keep the college GPA it needs to renew (3.0 for Academic Scholars, 2.75 for Medallion)."
+      ],
+      "link": {
+        "label": "Florida Student Financial Aid",
+        "url": "https://www.floridastudentfinancialaidsg.org"
+      }
+    }
+  ],
+  "aid_site": {
+    "name": "Florida Student Financial Aid (Bright Futures)",
+    "url": "https://www.floridastudentfinancialaidsg.org"
+  },
+  "counselor_notes": [
+    "Florida's Bright Futures uses its own Bright Futures GPA from 16 core credits, with +0.5 for honors, AP, IB, AICE and dual enrollment. Test scores taken through August 31 of the graduation year count. Florida raised Bright Futures test scores for the class of 2028 (Academic Scholars SAT 1350; Medallion SAT 1200 or ACT 25). Students must submit the Florida Financial Aid Application (FFAA); the FAFSA alone isn't enough for Bright Futures.",
+    "Dual enrollment is free at Florida public colleges for eligible high school students, and an associate in arts from a Florida College System school guarantees admission to a state university (not always the student's first-choice campus or major).",
+    "Bright Futures only pays at Florida colleges. Renewal: 3.0 college GPA for Academic Scholars, 2.75 for Medallion."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with the Florida Office of Student Financial Assistance before this pack moves to review. Bright Futures section-score rules for Gold Seal and the superscore policy are not modeled yet."
+  }
+}

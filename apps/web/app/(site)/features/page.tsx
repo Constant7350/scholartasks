@@ -84,7 +84,7 @@ export default function Features() {
               <li>Grade Rescue asks a few questions and builds a simple plan</li>
               <li>Course advice weighs subject choice and harder classes</li>
               <li>Goals the family sets together, and a printable academic record</li>
-              <li>Free <a href="/tools/hope">HOPE and Zell checker</a>, no account needed</li>
+              <li>Free <a href="/tools/hope">state scholarship checker</a> (HOPE, Bright Futures, TOPS and more), no account needed</li>
             </ul>
           </div>
           <div className="s-visual green">

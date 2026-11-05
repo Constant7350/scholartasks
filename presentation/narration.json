@@ -6,7 +6,7 @@
     {
       "id": "cover",
       "title": "ScholarTasks",
-      "narration": "Hi everyone. I want to show you ScholarTasks, an app our family built to make the college years less stressful. It helps with college plans, scholarships, Georgia's HOPE and Zell Miller money, grades and test prep. It's all in one place, on the phone and on the web."
+      "narration": "Hi everyone. I want to show you ScholarTasks, an app our family built to make the college years less stressful. It helps with college plans, scholarships, state money like Georgia's HOPE and Florida's Bright Futures, grades and test prep. It's all in one place, on the phone and on the web."
     },
     {
       "id": "challenge",
@@ -75,8 +75,8 @@
     },
     {
       "id": "aid",
-      "title": "FAFSA and Georgia aid",
-      "narration": "Aid forms scare a lot of families. ScholarTasks breaks the FAFSA and Georgia's form into small steps, and explains who does each part. You still file on the official government sites. We never ask for or keep FSA IDs, Social Security numbers or tax returns."
+      "title": "FAFSA and state aid",
+      "narration": "Aid forms scare a lot of families. ScholarTasks breaks the FAFSA and your own state's forms into small steps, and explains who does each part. It covers Georgia and ten more Southeast states, from Florida's Bright Futures to Louisiana's TOPS, and links every other state to its aid office. You still file on the official government sites. We never ask for or keep FSA IDs, Social Security numbers or tax returns."
     },
     {
       "id": "todo",

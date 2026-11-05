@@ -1,0 +1,192 @@
+{
+  "kind": "state",
+  "state": "VA",
+  "name": "Virginia",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [
+    "ACM"
+  ],
+  "agency": {
+    "name": "State Council of Higher Education for Virginia (SCHEV)",
+    "url": "https://www.schev.edu"
+  },
+  "gpa_formulas": {},
+  "programs": [
+    {
+      "id": "va-commonwealth",
+      "name": "Virginia Commonwealth Award",
+      "type": "need",
+      "summary": "Need-based grant at Virginia public colleges, set by each college from the FAFSA (or VASA). Most colleges' priority date is around March 1.",
+      "rules": {},
+      "award": {
+        "summary": "Set by the college."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.schev.edu/financial-aid/financial-aid/federal-state-financial-aid/virginia-commonwealth-award"
+    },
+    {
+      "id": "va-vtag",
+      "name": "Virginia Tuition Assistance Grant (VTAG)",
+      "type": "grant",
+      "summary": "For Virginia residents at eligible private nonprofit Virginia colleges, full time. Not based on income. Apply on the college's VTAG form.",
+      "rules": {},
+      "award": {
+        "summary": "Up to $5,250 a year for in-person undergraduates (draft).",
+        "estimate": {
+          "private_per_year": 5250
+        }
+      },
+      "application": [
+        "VTAG form"
+      ],
+      "source_url": "https://www.schev.edu/financial-aid/financial-aid/federal-state-financial-aid/virginia-tuition-assistance-grant-program"
+    },
+    {
+      "id": "va-g3",
+      "name": "G3 (Get Skilled, Get a Job, Give Back)",
+      "type": "grant",
+      "summary": "Tuition, fees and books at Virginia community colleges in high-demand programs, for families at or under 400% of the federal poverty level, after other grants.",
+      "rules": {},
+      "award": {
+        "summary": "Tuition, mandatory fees and books left after Pell and other grants."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.vccs.edu"
+    },
+    {
+      "id": "va-transfer-grant",
+      "name": "Two-Year College Transfer Grant",
+      "type": "need",
+      "summary": "For students who finish an associate degree at a Virginia community college with a 3.0 GPA and transfer to a four-year Virginia college.",
+      "rules": {},
+      "award": {
+        "summary": "Up to $1,000 to $3,000 a year."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.schev.edu/financial-aid/financial-aid/federal-state-financial-aid/two-year-college-transfer-grant"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "VTAG form",
+    "VASA"
+  ],
+  "deadlines": [
+    {
+      "id": "va-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; also used for Virginia grants)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "va-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "va-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; also used for Virginia grants)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "va-priority-2027",
+      "title": "Most Virginia public colleges' aid priority date (FAFSA filed)",
+      "form": "FAFSA",
+      "date": "2027-03-01",
+      "kind": "priority",
+      "where": "https://www.schev.edu",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "va-vasa",
+      "stage": "file",
+      "order": 34,
+      "title": "VASA, only if you can't file the FAFSA",
+      "who": "student",
+      "minutes": 15,
+      "summary": "Students who can't file the FAFSA but meet Virginia's in-state tuition rules can use the Virginia Alternative State Aid application (VASA) for state aid.",
+      "how": [
+        "If you filed the FAFSA, mark this step Doesn't apply.",
+        "Otherwise, complete VASA by each college's priority date."
+      ],
+      "link": {
+        "label": "About VASA",
+        "url": "https://www.levelupvirginia.org/finance/financial-aid/vasa-application"
+      },
+      "watch_out": [
+        "VASA does not give federal aid such as Pell Grants. Only the FAFSA does."
+      ],
+      "optional": true
+    },
+    {
+      "id": "va-vtag-form",
+      "stage": "decide",
+      "order": 16,
+      "title": "Private Virginia college? Fill in its VTAG form",
+      "who": "student",
+      "minutes": 5,
+      "summary": "The Virginia Tuition Assistance Grant isn't triggered by the FAFSA. Each private college has its own short VTAG form.",
+      "how": [
+        "Ask the private college's financial aid office for the VTAG form once you choose it.",
+        "Turn it in by the college's priority date (late summer for fall)."
+      ],
+      "link": {
+        "label": "About VTAG",
+        "url": "https://www.schev.edu/financial-aid/financial-aid/federal-state-financial-aid/virginia-tuition-assistance-grant-program"
+      },
+      "optional": true
+    }
+  ],
+  "counselor_notes": [
+    "Virginia has no statewide merit scholarship. State aid is need-based and set by each college from the FAFSA (Virginia Commonwealth Award; most priority dates around March 1). VGAP is closed to new students starting fall 2027. Private nonprofit colleges add VTAG (up to $5,250, not need-based, on the college's own form). G3 covers community college tuition in high-demand fields for families at or under 400% of the poverty level, and many four-year colleges offer guaranteed admission agreements for Virginia community college graduates."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with SCHEV before this pack moves to review."
+  }
+}

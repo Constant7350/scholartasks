@@ -13,9 +13,8 @@ import {
   fafsaContributors,
   fillCycle,
   type HouseholdAnswers,
-  type StatePack,
 } from "@scholartasks/core";
-import gaPack from "../../../../packs/states/GA.json";
+import { aidOfficeFor, meritNames, packFor, stateName } from "../../lib/state-packs";
 import guideJson from "../../../../packs/federal/aid-guide.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
@@ -24,10 +23,8 @@ import "../trades/trades.css";
 import { TradeAidList } from "../trades/aid-list";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
-const GA = gaPack as unknown as StatePack;
 const GUIDE = AidGuide.parse(guideJson);
-// The pack JSON is imported raw, so parse it to fill in defaults (e.g. empty watch_out lists).
-const STEPS = aidSteps(GUIDE, AidStep.array().parse(GA.aid_steps ?? []));
+const TYPE: Record<string, string> = { merit: "Grades and scores", need: "Based on need", merit_and_need: "Grades and need", grant: "Grant", tuition_discount: "Lower tuition" };
 
 interface Student { id: string; first_name: string; grade_level: number; state: string }
 interface College { id: string; student_id: string; name: string; status: string }
@@ -104,6 +101,9 @@ export default function AidPage() {
   useEffect(() => { void load(); }, [load]);
 
   const student = students.find((s) => s.id === current);
+  const pack = packFor(student?.state);
+  // The pack JSON is imported raw, so parse it to fill in defaults (e.g. empty watch_out lists).
+  const STEPS = useMemo(() => aidSteps(GUIDE, AidStep.array().parse(pack?.aid_steps ?? [])), [pack]);
   const cycle = student ? aidCycleFor(GUIDE, student.grade_level, todayIso()) : undefined;
   const cycleId = cycle?.id ?? "later";
   const mine = progress.filter((p) => p.student_id === current && p.cycle === cycleId);
@@ -116,7 +116,7 @@ export default function AidPage() {
   const isParent = me?.role === "parent";
   const myColleges = colleges.filter((c) => c.student_id === current && !["denied", "withdrawn"].includes(c.status));
   const myAidTasks = tasks.filter((t) => t.student_id === current);
-  const packDates = student ? GA.deadlines.filter((d) => d.form !== "GSFAPP" && deadlineAppliesTo(d, student.grade_level, todayIso()) && daysUntil(d.date) >= -365) : [];
+  const packDates = student && pack ? pack.deadlines.filter((d) => d.form !== "GSFAPP" && deadlineAppliesTo(d, student.grade_level, todayIso()) && daysUntil(d.date) >= -365) : [];
 
   if (!sb) return <Page title="Financial aid forms"><NotConfigured /></Page>;
   if (!me) return <Page title="Financial aid forms"><p className="hint">Loading…</p></Page>;
@@ -186,7 +186,7 @@ export default function AidPage() {
           {cycle && (
             <p className="hint" style={{ margin: "10px 0 0" }}>
               {daysUntil(cycle.opens) > 0 ? `Opens ${nice(cycle.opens)}${cycle.opens_expected ? " (usual date)" : ""}` : `Open since ${nice(cycle.opens)}`}
-              {" · "}uses {cycle.tax_year} taxes · federal deadline {nice(cycle.federal_deadline)}. File early: Georgia and most colleges hand out money first come, first served.
+              {" · "}uses {cycle.tax_year} taxes · federal deadline {nice(cycle.federal_deadline)}. File early: {pack?.name ?? "most states"} and most colleges hand out money first come, first served.
             </p>
           )}
         </div>
@@ -206,7 +206,7 @@ export default function AidPage() {
           <h2>It's early, and that's good</h2>
           <p className="hint" style={{ margin: 0 }}>
             {student.first_name} files the FAFSA in the fall of senior year{cycle ? ` (the ${cycle.id} form, using ${cycle.tax_year} taxes)` : ""}. For now, get a rough idea of aid with the{" "}
-            <a href="https://studentaid.gov/aid-estimator/" target="_blank" rel="noreferrer noopener">Federal Student Aid Estimator</a>, keep grades up for HOPE, and read the steps below so nothing is a surprise.
+            <a href="https://studentaid.gov/aid-estimator/" target="_blank" rel="noreferrer noopener">Federal Student Aid Estimator</a>, keep grades up for {meritNames(pack)}, and read the steps below so nothing is a surprise.
           </p>
         </section>
       )}
@@ -355,16 +355,44 @@ export default function AidPage() {
           </section>
         );
       })}
+      <section className="panel" id="state-aid">
+        <h2>{stateName(student.state)} state aid</h2>
+        {pack ? (
+          <>
+            <p className="hint">Every {pack.name} program in ScholarTasks. Most come from the FAFSA; any extra state form is in the steps above. These only pay at {pack.name} colleges, so out-of-state schools need other aid.</p>
+            <ul className="items">
+              {pack.programs.map((p) => (
+                <li key={p.id}>
+                  <div className="item-main">
+                    <b>{p.name} <span className="pill">{TYPE[p.type] ?? p.type}</span></b>
+                    <span>{p.summary}</span>
+                    <span className="hint">{p.award.summary} · <a href={p.source_url} target="_blank" rel="noreferrer noopener">Official page</a></span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <p className="hint" style={{ fontSize: 12 }}>Draft details, being checked with the <a href={pack.agency.url} target="_blank" rel="noreferrer noopener">{pack.agency.name}</a>.</p>
+          </>
+        ) : (() => {
+          const office = aidOfficeFor(student.state);
+          return (
+            <p className="hint">
+              ScholarTasks doesn&apos;t have {stateName(student.state)}&apos;s state aid rules yet. The FAFSA steps above still count for state grants. Check the{" "}
+              <a href={office.url} target="_blank" rel="noreferrer noopener">{office.name}</a>{office.programs.length ? ` (programs such as ${office.programs.join(", ")})` : ""} for state deadlines.
+            </p>
+          );
+        })()}
+      </section>
       <section className="panel" id="trades">
         <h2>Paying for trade school or a short program</h2>
         <p className="hint">
-          For a technical college, apprenticeship or trade school. The FAFSA above still matters: it unlocks the Pell Grant and, in Georgia, the HOPE Grant.
+          For a technical college, apprenticeship or trade school. The FAFSA above still matters: it unlocks the Pell Grant and {student.state === "GA" ? "the HOPE Grant" : "state grants"}.
           See every trade on the <a href="/trades">Trades page</a>.
         </p>
         <TradeAidList homeState={student.state} />
       </section>
       <p className="hint" style={{ fontSize: 13 }}>
-        Draft guide, being checked against StudentAid.gov and the Georgia Student Finance Commission. Always follow the official sites if anything differs.
+        Draft guide, being checked against StudentAid.gov and the {pack?.agency.name ?? "state aid offices"}. Always follow the official sites if anything differs.
       </p>
     </Page>
   );

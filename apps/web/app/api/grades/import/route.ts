@@ -42,7 +42,7 @@ const SCHEMA = {
   additionalProperties: false,
 };
 
-const SYSTEM = `You read US high school report cards and transcripts (mostly Georgia) and list each course with a final or current grade.
+const SYSTEM = `You read US high school report cards and transcripts (mostly from the Southeast) and list each course with a final or current grade.
 
 For each course:
 - course: the course name as written, with abbreviations expanded where obvious (e.g. "AP BIO" becomes "AP Biology").

@@ -1,16 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { StatePack } from "@scholartasks/core";
-import gaPack from "../../../../packs/states/GA.json";
+import { meritNames, packFor } from "../../lib/state-packs";
 import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { GpaScorecard } from "../grades/scorecard";
 import { ProgressCard } from "./progress-card";
 import { PasskeyOffer } from "../passkey-offer";
 import { AdultConsent } from "../adult-consent";
-
-const GA = gaPack as unknown as StatePack;
 
 interface Student { id: string; first_name: string; grade_level: number; state: string; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string }
 interface Grade { student_id: string; course: string; grade: "A" | "B" | "C" | "D" | "F"; level: "standard" | "honors" | "AP" | "IB" | "DE"; core: boolean; grade_level: number; term: string }
@@ -67,7 +64,9 @@ export default function Home() {
   const late = open.filter((d) => d.due && daysUntil(d.due) < 0).length;
   const week = open.filter((d) => d.due && daysUntil(d.due) >= 0 && daysUntil(d.due) <= 7).length;
   const today = new Date().toLocaleDateString("en-CA");
-  const dates = GA.deadlines.filter((d) => d.date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
+  // The family's home state: the first student's state, or Georgia (launch state) before any student.
+  const home = packFor(students[0]?.state ?? "GA");
+  const dates = (home?.deadlines ?? []).filter((d) => d.date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
 
   return (
     <Page>
@@ -107,8 +106,8 @@ export default function Home() {
         )}
       </div>
 
-      {students.filter((s) => s.state === GA.state).map((s) => (
-        <GpaScorecard key={s.id} rows={grades.filter((g) => g.student_id === s.id)} currentGrade={s.grade_level} pack={GA} name={s.first_name} compact href="/grades" goal={s.goal_gpa == null ? null : Number(s.goal_gpa)} minGrade={s.min_grade} weights={{ rigor: Number(s.weight_rigor ?? 1), honors: Number(s.weight_honors ?? 0.5) }} />
+      {students.map((s) => (
+        <GpaScorecard key={s.id} rows={grades.filter((g) => g.student_id === s.id)} currentGrade={s.grade_level} pack={packFor(s.state)} name={s.first_name} compact href="/grades" goal={s.goal_gpa == null ? null : Number(s.goal_gpa)} minGrade={s.min_grade} weights={{ rigor: Number(s.weight_rigor ?? 1), honors: Number(s.weight_honors ?? 0.5) }} />
       ))}
 
       {sb && students.map((s) => (
@@ -137,8 +136,8 @@ export default function Home() {
         </a>
         <a className="tile" href="/grades">
           <span className="tile-icon">🎓</span>
-          <b>Grades and HOPE tracker</b>
-          <span>Save grades and test scores and see if your student is on track for HOPE and Zell Miller.</span>
+          <b>Grades and {home?.state === "GA" ? "HOPE" : "scholarship"} tracker</b>
+          <span>Save grades and test scores and see if your student is on track for {meritNames(home)}.</span>
           <span className="tile-go">Open grades →</span>
         </a>
         <a className="tile" href="/activities">
@@ -156,13 +155,13 @@ export default function Home() {
         <a className="tile" href="/scholarships">
           <span className="tile-icon">💰</span>
           <b>Scholarships and grants</b>
-          <span>Georgia and national awards your student qualifies for, with what to check and what to work on. Checked for changes every week.</span>
+          <span>{home?.state === "GA" ? "Georgia and national" : "National"} awards your student qualifies for, with what to check and what to work on. Checked for changes every week.</span>
           <span className="tile-go">See matches →</span>
         </a>
         <a className="tile" href="/aid">
           <span className="tile-icon">🧾</span>
-          <b>FAFSA and Georgia aid forms</b>
-          <span>A step-by-step FAFSA, GAfutures and HOPE checklist with your own document list and reminders. You file on the official sites; we never ask for passwords or SSNs.</span>
+          <b>FAFSA and {home?.name ?? "state"} aid forms</b>
+          <span>A step-by-step FAFSA{home?.aid_site ? `, ${home.aid_site.name.replace(/ \(.*\)$/, "")}` : ""} and state aid checklist with your own document list and reminders. You file on the official sites; we never ask for passwords or SSNs.</span>
           <span className="tile-go">Open the checklist →</span>
         </a>
         <a className="tile" href="/study">
@@ -183,9 +182,9 @@ export default function Home() {
           <span>Free section drills, timed practice tests with a score estimate, and a score plan that shows what to work on.</span>
           <span className="tile-go">Start prepping →</span>
         </a>
-        <div className="tile">
+        {home && <div className="tile">
           <span className="tile-icon">📅</span>
-          <b>Key Georgia dates</b>
+          <b>Key {home.name} dates</b>
           <ul className="dates">
             {dates.map((d) => (
               <li key={d.id}>
@@ -194,8 +193,8 @@ export default function Home() {
               </li>
             ))}
           </ul>
-          <span className="hint" style={{ fontSize: 12 }}>Draft dates, being checked with the Georgia Student Finance Commission.</span>
-        </div>
+          <span className="hint" style={{ fontSize: 12 }}>Draft dates, being checked with the {home.agency.name}.</span>
+        </div>}
       </div>
 
       {SOON.length > 0 && <h2 className="section-title">Coming soon</h2>}

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { buildScorecard, displayGpa, type CourseGrade, type StatePack } from "@scholartasks/core";
+import { buildScorecard, displayGpa, primaryGpa, type CourseGrade, type StatePack } from "@scholartasks/core";
+import { PLAIN_GPA as PLAIN } from "../../lib/state-packs";
 
 interface Row { course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }
 
@@ -11,12 +12,12 @@ const STATUS = {
 } as const;
 
 /**
- * The always-visible GPA scorecard: HOPE GPA against the goal, the trend,
+ * The always-visible GPA scorecard: the state scholarship GPA (HOPE, Bright Futures...) against the goal, the trend,
  * an overall GPA, rigor progress and what needs attention this year.
  */
 export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, goal, minGrade, weights, onSaveWeights, onRescue }: {
-  rows: Row[]; currentGrade: number; pack: StatePack; name?: string; compact?: boolean; href?: string;
-  /** The family's own goal and standard; defaults to the HOPE 3.0 and B. */
+  rows: Row[]; currentGrade: number; pack: StatePack | null; name?: string; compact?: boolean; href?: string;
+  /** The family's own goal and standard; defaults to the state scholarship's GPA (or 3.0) and B. */
   goal?: number | null; minGrade?: string;
   /** The school's extra points for AP/IB/dual enrollment and for honors. */
   weights?: { rigor: number; honors: number };
@@ -27,16 +28,15 @@ export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, go
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(weights ?? { rigor: 1, honors: 0.5 });
-  const hope = pack.programs.find((p) => p.rules.gpa_formula);
-  const formula = hope?.rules.gpa_formula ? pack.gpa_formulas[hope.rules.gpa_formula] : undefined;
-  if (!hope || !formula) return null;
-  const target = goal ?? hope.rules.min_gpa ?? 3;
+  const main = primaryGpa(pack);
+  const formula = main?.formula ?? PLAIN;
+  const target = goal ?? main?.target ?? 3;
   const grades: CourseGrade[] = rows.map((r) => ({ term: r.term, course: r.course, grade: r.grade, level: r.level, core: r.core, gradeLevel: r.grade_level }));
   const w = weights ?? { rigor: 1, honors: 0.5 };
-  const s = buildScorecard(grades, { currentGrade, formula, target, rigorNeeded: hope.rules.rigor_courses, rigorLevels: hope.rules.rigor_levels, schoolWeights: w, minGrade: (minGrade || "B") as CourseGrade["grade"] });
+  const s = buildScorecard(grades, { currentGrade, formula, target, rigorNeeded: main?.program.rules.rigor_courses, rigorLevels: main?.program.rules.rigor_levels, schoolWeights: w, minGrade: (minGrade || "B") as CourseGrade["grade"] });
   const trend = s.stateGpa !== null && s.stateGpaBefore !== null ? s.stateGpa - s.stateGpaBefore : null;
   const shown = compact ? s.attention.slice(0, 3) : s.attention;
-  const gpaName = hope.name.replace(/ Scholarship$/, "");
+  const gpaName = main?.label ?? "Unweighted GPA";
 
   return (
     <section className={`panel scorecard scorecard-${s.status}`} aria-label="GPA scorecard">
@@ -48,7 +48,7 @@ export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, go
         <div className="score-main">
           <span className="score-num">{s.stateGpa === null ? "—" : displayGpa(s.stateGpa)}</span>
           <span className="hint">
-            {gpaName} GPA · goal {target.toFixed(1)}
+            {gpaName} · goal {target.toFixed(1)}
             {trend !== null && Math.abs(trend) >= 0.005 && (
               <b className={trend > 0 ? "trend-up" : "trend-down"}> {trend > 0 ? "▲" : "▼"} {Math.abs(trend).toFixed(2)} this year</b>
             )}
@@ -108,7 +108,7 @@ export function GpaScorecard({ rows, currentGrade, pack, name, compact, href, go
           </div>
         </form>
       )}
-      {!compact && <p className="hint" style={{ fontSize: 12, margin: "10px 0 0" }}>{gpaName} counts core courses from 9th to 12th grade only; 8th grade high school credit courses count in the school GPAs. HOPE uses its own weighting (+0.5 for AP, IB and dual enrollment B to F grades, nothing for honors). Estimate only, GAfutures has the official number.</p>}
+      {!compact && <p className="hint" style={{ fontSize: 12, margin: "10px 0 0" }}>{main ? <>{main.formula.description} Estimate only{pack?.aid_site ? <>, {pack.aid_site.name} has the official number</> : <>; the {pack?.agency.name} decides the official number</>}.</> : <>Your state has no grade-based state scholarship in ScholarTasks yet, so this shows the unweighted GPA. Colleges and scholarships look at it too.</>}</p>}
     </section>
   );
 }

@@ -1,18 +1,17 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../../lib/billing";
-import { buildScorecard, displayGpa, type CourseGrade, type StatePack } from "@scholartasks/core";
-import gaPack from "../../../../../../packs/states/GA.json";
+import { buildScorecard, displayGpa, primaryGpa, type CourseGrade, type StatePack } from "@scholartasks/core";
+import { PLAIN_GPA as PLAIN, packFor } from "../../../../lib/state-packs";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../../lib/ai-limit";
 
 // Advice on next year's classes: the student lists the courses they're
-// considering, and the AI weighs their goal, grades and HOPE's rigor rule.
+// considering, and the AI weighs their goal, grades and their state scholarship's rules.
 // Advice only; nothing is saved and the family decides.
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const GA = gaPack as unknown as StatePack;
 const MODEL = "claude-sonnet-5-5";
 const LEVELS = ["standard", "honors", "AP", "IB", "DE"] as const;
 
@@ -45,14 +44,22 @@ const SCHEMA = {
   additionalProperties: false,
 };
 
-const SYSTEM = `You help a Georgia high school family choose next year's classes and their level (standard, honors, AP, IB, dual enrollment).
+/** The state's scholarship rules, in the words the AI uses to weigh each course. */
+function stateRules(pack: StatePack | null): string {
+  const main = primaryGpa(pack);
+  if (!pack || !main) return `the family's state has no grade-based state scholarship in ScholarTasks, so weigh college admission and college merit scholarships, which look at rigor and the weighted school GPA`;
+  const tiers = pack.programs.filter((p) => p.rules.min_gpa !== undefined).map((p) => `${p.name} needs a ${p.rules.min_gpa} ${main.label}${p.rules.rigor_courses ? ` and ${p.rules.rigor_courses} rigor courses (${p.rules.rigor_levels?.join(", ")})` : ""}`);
+  return `the ${pack.name} rules (${main.formula.description} ${tiers.join("; ")})`;
+}
 
-Weigh, for each planned course: the student's grades in that subject so far, the family's GPA goal and grade standard, the HOPE rules (HOPE GPA from core classes in grades 9-12; AP, IB and dual enrollment add 0.5 to B-F grades; honors gets nothing extra; HOPE and Zell Miller need 4 rigor courses before graduation), and the total workload (several AP classes at once is a heavy year).
+const system = (pack: StatePack | null) => `You help a ${pack?.name ?? "U.S."} high school family choose next year's classes and their level (standard, honors, AP, IB, dual enrollment).
+
+Weigh, for each planned course: the student's grades in that subject so far, the family's GPA goal and grade standard, ${stateRules(pack)}, and the total workload (several AP classes at once is a heavy year).
 
 - fit: "good fit" if the level matches their record, "stretch" if it's harder but reachable with effort, "reconsider" if it's likely to pull the GPA below their goal or the workload is too heavy.
 - suggested_level: the level you'd suggest; it can equal planned_level.
 - reason: one or two plain sentences that point to their actual grades.
-- rigor_note: where they stand on the 4 rigor courses and whether this plan gets them there in time.
+- rigor_note: where they stand on rigor courses${pack && primaryGpa(pack)?.rigorNeeded ? ` (the state scholarship needs ${primaryGpa(pack)!.rigorNeeded})` : ""} and whether this plan gets them there in time.
 - workload_note: one or two sentences on the overall load.
 - summary: two or three sentences, encouraging and honest.
 - questions_for_counselor: up to 3 short questions to ask the school counselor (prerequisites, what the school offers, dual enrollment options).
@@ -87,7 +94,7 @@ export async function POST(req: Request) {
 
   const { data: st } = await sb.from("students").select("*").eq("id", studentId).maybeSingle();
   if (!st) return json(403, "You don't have access to this student.");
-  const student = st as { first_name: string; grade_level: number; sat: number | null; act: number | null; goal_gpa?: number | null; min_grade?: string | null };
+  const student = st as { first_name: string; state: string; grade_level: number; sat: number | null; act: number | null; goal_gpa?: number | null; min_grade?: string | null };
 
   const limit = await aiDailyLimit(sb, studentId);
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
@@ -98,13 +105,16 @@ export async function POST(req: Request) {
   const { data: gr } = await sb.from("course_grades").select("course, grade, level, core, grade_level, term").eq("student_id", studentId).order("grade_level");
   const rows = (gr as { course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }[]) ?? [];
   const grades: CourseGrade[] = rows.map((r) => ({ term: r.term, course: r.course, grade: r.grade, level: r.level, core: r.core, gradeLevel: r.grade_level }));
-  const goal = student.goal_gpa != null ? Number(student.goal_gpa) : 3;
-  const card = buildScorecard(grades, { currentGrade: student.grade_level, formula: GA.gpa_formulas.ga_hope_gpa!, target: goal, rigorNeeded: 4, minGrade: (student.min_grade ?? "B") as CourseGrade["grade"] });
+  const pack = packFor(student.state);
+  const main = primaryGpa(pack);
+  const label = main?.label ?? "GPA";
+  const goal = student.goal_gpa != null ? Number(student.goal_gpa) : main?.target ?? 3;
+  const card = buildScorecard(grades, { currentGrade: student.grade_level, formula: main?.formula ?? PLAIN, target: goal, rigorNeeded: main?.rigorNeeded, rigorLevels: main?.program.rules.rigor_levels, minGrade: (student.min_grade ?? "B") as CourseGrade["grade"] });
 
   const context = [
     `Student: ${student.first_name}, now in grade ${student.grade_level}; planning grade ${nextGrade ?? Math.min(12, student.grade_level + 1)}.`,
-    `Goal: HOPE GPA ${goal.toFixed(1)}${student.goal_gpa == null ? " (default, not set by the family)" : ""}; lowest grade they're OK with in a core class: ${student.min_grade ?? "B"}.`,
-    `Current HOPE GPA: ${card.stateGpa === null ? "no core grades yet" : displayGpa(card.stateGpa)}. Rigor courses so far: ${card.rigorDone} of 4.`,
+    `Goal: ${label} ${goal.toFixed(2)}${student.goal_gpa == null ? " (default, not set by the family)" : ""}; lowest grade they're OK with in a core class: ${student.min_grade ?? "B"}.`,
+    `Current ${label}: ${card.stateGpa === null ? "no grades yet" : displayGpa(card.stateGpa)}. Rigor courses (AP, IB, dual enrollment) so far: ${card.rigorDone}${card.rigorNeeded ? ` of ${card.rigorNeeded}` : ""}.`,
     `Test scores: SAT ${student.sat ?? "none"}, ACT ${student.act ?? "none"}.`,
     rows.length ? "Grades so far:\n" + rows.map((r) => `- Grade ${r.grade_level} ${r.term}: ${r.course} (${r.level}${r.core ? ", core" : ""}) ${r.grade}`).join("\n") : "No grades saved yet.",
     "Planned courses:\n" + planned.map((c) => `- ${c.course} (${c.level})`).join("\n"),
@@ -116,7 +126,7 @@ export async function POST(req: Request) {
       model: MODEL,
       max_tokens: 8000,
       output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
-      system: SYSTEM,
+      system: system(pack),
       messages: [{ role: "user", content: context }],
     });
     if (res.stop_reason === "refusal") return json(422, "Sorry, advice isn't available for this plan. Try the AI counselor instead.");

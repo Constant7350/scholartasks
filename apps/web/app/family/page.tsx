@@ -4,6 +4,20 @@ import { useCallback, useEffect, useState } from "react";
 import { PERMISSIONS, type PermissionKey } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { STATE_NAMES } from "../../lib/trades";
+import { STATE_PACKS } from "../../lib/state-packs";
+
+/** Every state, ones with full state aid details marked, for the "Lives in" picker. */
+const STATE_OPTIONS = Object.entries(STATE_NAMES).sort((a, b) => a[1].localeCompare(b[1]))
+  .map(([code, name]) => ({ code, label: STATE_PACKS[code] ? `${name} (state aid included)` : name }));
+
+function StateSelect({ id, value, onChange, label }: { id: string; value: string; onChange: (v: string) => void; label?: string }) {
+  return (
+    <select id={id} className="input" aria-label={label} value={value} onChange={(e) => onChange(e.target.value)}>
+      {STATE_OPTIONS.map((o) => <option key={o.code} value={o.code}>{o.label}</option>)}
+    </select>
+  );
+}
 
 interface Student {
   id: string;
@@ -184,6 +198,10 @@ export default function FamilyPage() {
           <label htmlFor="dob">Birth date</label>
           <input id="dob" className="input" type="date" value={child.birth_date} onChange={(e) => setChild({ ...child, birth_date: e.target.value })} />
         </div>
+        <div className="field" style={{ flex: "0 1 230px" }}>
+          <label htmlFor="child-state">Lives in</label>
+          <StateSelect id="child-state" value={child.state} onChange={(v) => setChild({ ...child, state: v })} />
+        </div>
         <div className="field" style={{ flex: "0 1 140px" }}>
           <label htmlFor="grade">Grade</label>
           <select id="grade" className="input" value={child.grade_level} onChange={(e) => setChild({ ...child, grade_level: e.target.value })}>
@@ -242,7 +260,13 @@ export default function FamilyPage() {
             return (
               <div key={s.id} className="panel">
                 <h2>{s.first_name}</h2>
-                <p className="hint">Grade {s.grade_level} · {s.state}</p>
+                <div className="row" style={{ alignItems: "flex-end", gap: 8 }}>
+                  <p className="hint" style={{ margin: 0 }}>Grade {s.grade_level} · lives in</p>
+                  <div className="field" style={{ flex: "0 1 260px", margin: 0 }}>
+                    <StateSelect id={`state-${s.id}`} label={`State ${s.first_name} lives in`} value={s.state} onChange={(v) => void run(() => sb!.from("students").update({ state: v }).eq("id", s.id))} />
+                  </div>
+                </div>
+                <p className="hint" style={{ fontSize: 12, marginTop: 4 }}>The home state decides which state scholarships, grants and deadlines {s.first_name} sees. College searches always include every state.</p>
 
                 {isConnected ? (
                   <p className="note note-ok">✓ {s.first_name} is connected to the student app.</p>

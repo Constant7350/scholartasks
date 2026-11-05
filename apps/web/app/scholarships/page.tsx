@@ -3,15 +3,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   buildScorecard, GROUPS, INTERESTS, matchScholarship, normalizeProfile,
-  type CourseGrade, type IncomeBand, type MatchProfile, type MatchResult, type Scholarship, type StatePack,
+  primaryGpa, type CourseGrade, type IncomeBand, type MatchProfile, type MatchResult, type Scholarship,
 } from "@scholartasks/core";
-import gaPack from "../../../../packs/states/GA.json";
+import { PLAIN_GPA, meritNames, packFor, stateName } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { ReportAi } from "../report-ai";
 
-const GA = gaPack as unknown as StatePack;
 
 interface Student {
   id: string; first_name: string; grade_level: number; state: string; sat: number | null; act: number | null;
@@ -80,14 +79,14 @@ export default function ScholarshipsPage() {
 
   const results = useMemo(() => {
     if (!student || !list) return [];
-    const hope = GA.programs.find((p) => p.rules.gpa_formula);
-    const formula = hope?.rules.gpa_formula ? GA.gpa_formulas[hope.rules.gpa_formula] : undefined;
+    // "HOPE GPA" rules belong to Georgia awards, so only Georgia students get one.
+    const formula = student.state === "GA" ? primaryGpa(packFor("GA"))?.formula ?? PLAIN_GPA : PLAIN_GPA;
     const mine: CourseGrade[] = grades.filter((g) => g.student_id === student.id)
       .map((g) => ({ term: g.term, course: g.course, grade: g.grade, level: g.level, core: g.core, gradeLevel: g.grade_level }));
     const card = formula ? buildScorecard(mine, { currentGrade: student.grade_level, formula, target: 3, schoolWeights: { rigor: student.weight_rigor ?? 1, honors: student.weight_honors ?? 0.5 } }) : null;
     const who = {
       gradeLevel: student.grade_level, state: student.state,
-      hopeGpa: card?.stateGpa ?? null, unweightedGpa: card?.overallGpa ?? null, weightedGpa: card?.schoolGpa ?? null,
+      hopeGpa: student.state === "GA" ? card?.stateGpa ?? null : null, unweightedGpa: card?.overallGpa ?? null, weightedGpa: card?.schoolGpa ?? null,
       sat: student.sat, act: student.act, incomeBand: seesIncome ? student.income_band : null, profile: student.match_profile ?? {},
       colleges: colleges.filter((c) => c.student_id === student.id).map((c) => c.name),
     };
@@ -143,7 +142,7 @@ export default function ScholarshipsPage() {
   return (
     <Page title={title}>
       <p className="hint" style={{ marginTop: -8 }}>
-        Georgia and national scholarships and grants, checked against {student ? `${student.first_name}'s` : "your student's"} grades, test scores and answers below. A &ldquo;Maybe&rdquo; tells you what to check. Always confirm the details on the official site before applying.
+        {student && student.state !== "GA" ? `National scholarships and grants (${stateName(student.state)} state awards like ${meritNames(packFor(student.state))} are on the Grades and Financial aid pages)` : "Georgia and national scholarships and grants"}, checked against {student ? `${student.first_name}'s` : "your student's"} grades, test scores and answers below. A &ldquo;Maybe&rdquo; tells you what to check. Always confirm the details on the official site before applying.
       </p>
       {role === "parent" && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>

@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { loadPacks } from "../packs";
 import { AidGuide, checkAidGuide } from "../aid";
 import { TradesPack, checkTradesPack } from "../trades";
+import { StateAgencies } from "../schema";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../../../packs");
 try {
@@ -18,6 +19,10 @@ try {
   const tradeProblems = checkTradesPack(trades);
   if (tradeProblems.length) throw new Error(`Invalid trades pack:\n${tradeProblems.join("\n")}`);
   console.log(`ok  trades v${trades.version} ${trades.trades.length} trades, ${trades.checklists.length} checklists, ${trades.aid.length} aid programs, ${Object.values(trades.grade_steps).flat().length} grade steps`);
+  const agencies = StateAgencies.parse(JSON.parse(readFileSync(resolve(root, "federal/state-agencies.json"), "utf8")));
+  const dupes = agencies.agencies.filter((a, i) => packs.states.some((s) => s.state === a.state) || agencies.agencies.findIndex((b) => b.state === a.state) !== i);
+  if (dupes.length) throw new Error(`state-agencies.json: ${dupes.map((d) => d.state).join(", ")} listed twice or already has a state pack`);
+  console.log(`ok  state aid offices ${agencies.agencies.length} more states (+${packs.states.length} with full packs)`);
   console.log(`ok  federal aid guide v${guide.version} [${guide.status}] ${guide.cycles.length} cycles, ${guide.steps.length} steps, ${guide.documents.length} documents`);
 } catch (e) {
   console.error((e as Error).message);

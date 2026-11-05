@@ -10,6 +10,11 @@ import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../lib/colleges";
+import { STATE_NAMES } from "../../lib/trades";
+import { packFor } from "../../lib/state-packs";
+import acmJson from "../../../../packs/regions/ACM.json";
+
+const ACM_MEMBERS: string[] = acmJson.members;
 
 interface Student extends CostStudent { first_name: string }
 interface ProgRow { college_id: number; cip: string; level: number; grads: number; earn_1yr: number | null; earn_4yr: number | null; debt: number | null; online: boolean; college: CollegeRow }
@@ -19,7 +24,6 @@ interface Hit { college: CollegeRow; grads: number; earn1: number | null; earn4:
 const QUICK = ["marine-biology", "veterinarian", "nursing", "pre-med", "engineering", "computer-science", "business", "education", "animal-science", "trades"];
 const NET_BANDS = ["$0–30k", "$30–48k", "$48–75k", "$75–110k", "$110k+"];
 const BAND_OF: Record<string, number | null> = { under_30k: 0, "30_60k": 1, "60_110k": 3, "110_200k": 4, over_200k: 4, prefer_not: null };
-const STATE_NAMES: Record<string, string> = { GA: "Georgia", FL: "Florida", AL: "Alabama", SC: "South Carolina", NC: "North Carolina", TN: "Tennessee" };
 
 /** A horizontal bar for simple charts. */
 function Bar({ value, max, label, sub, strong }: { value: number | null; max: number; label: string; sub?: string; strong?: boolean }) {
@@ -88,6 +92,7 @@ export default function MajorsPage() {
   const mayUseIncome = isParent || !!student?.permissions?.see_income_and_costs;
   const home = student?.state ?? "GA";
   const homeName = STATE_NAMES[home] ?? "your state";
+  const acm = !!packFor(home)?.regions.includes("ACM");
 
   useEffect(() => {
     if (!sb || !student) return;
@@ -222,7 +227,7 @@ export default function MajorsPage() {
                           <h3>Tuition: in-state vs out-of-state</h3>
                           <Bar label="In-state" value={c.tuition_in} max={c.tuition_out} strong={c.state === home} />
                           <Bar label="Out-of-state" value={c.tuition_out} max={c.tuition_out} strong={c.state !== home} />
-                          {c.state !== home && home === "GA" && <p className="hint">Georgia students may get in-state tuition here through the <a href="https://www.usg.edu/divisions/academic-common-market/" target="_blank" rel="noreferrer noopener">Academic Common Market</a> if this major isn&apos;t offered in Georgia.</p>}
+                          {c.state !== home && acm && ACM_MEMBERS.includes(c.state) && <p className="hint">{homeName} students may get in-state tuition here through the <a href="https://www.sreb.org/academic-common-market" target="_blank" rel="noreferrer noopener">Academic Common Market</a> if this major isn&apos;t offered in {homeName}.</p>}
                         </>
                       )}
                       <h3>Our estimate for your family</h3>
@@ -436,7 +441,7 @@ export default function MajorsPage() {
             </ul>
             <p className="hint">Things the federal data can&apos;t show, so check them yourself: {field.checks?.length ? "" : "class sizes, internships and the campus feel."}</p>
             {field.checks?.length ? <ul>{field.checks.map((c) => <li key={c.url}><a href={c.url} target="_blank" rel="noreferrer noopener">{c.label}</a></li>)}</ul> : null}
-            {home === "GA" && <p className="hint">Georgia students: the <a href="https://www.usg.edu/divisions/academic-common-market/" target="_blank" rel="noreferrer noopener">Academic Common Market</a> can give in-state tuition at some out-of-state public colleges for majors Georgia doesn&apos;t offer.</p>}
+            {acm && <p className="hint">{homeName} students: the <a href="https://www.sreb.org/academic-common-market" target="_blank" rel="noreferrer noopener">Academic Common Market</a> can give in-state tuition at some out-of-state public colleges in member states for majors {homeName} doesn&apos;t offer.</p>}
             <p className="hint">This is advice to help you compare. The final choice is your family&apos;s. Data: U.S. Department of Education College Scorecard{rows?.[0]?.college?.data_year ? ` (fetched ${rows[0].college.data_year})` : ""} and U.S. Bureau of Labor Statistics.</p>
           </section>
         </>

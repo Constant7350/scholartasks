@@ -101,7 +101,7 @@ export function CostPanel({ sb, studentId, colleges, data, ctx, canEdit, onChang
         </div>
       )}
       {unlinked.length > 0 && <p className="hint">No price yet for {unlinked.map((c) => c.name).join(", ")}. Remove and re-add {unlinked.length === 1 ? "it" : "them"}, picking the name from the list, to link the federal data.</p>}
-      <p className="hint" style={{ marginBottom: 0 }}>How we estimate: full price is the college&apos;s cost of attendance (tuition, fees, housing, food, books). Without an award letter we use what families at your income typically paid there (U.S. Department of Education), or HOPE/Zell if that&apos;s lower, then take off outside scholarships. Every college&apos;s own net price calculator gives a closer number.</p>
+      <p className="hint" style={{ marginBottom: 0 }}>How we estimate: full price is the college&apos;s cost of attendance (tuition, fees, housing, food, books). Without an award letter we use what families at your income typically paid there (U.S. Department of Education), or your state award (like HOPE or Bright Futures) if that&apos;s lower, then take off outside scholarships. Every college&apos;s own net price calculator gives a closer number.</p>
     </section>
   );
 }

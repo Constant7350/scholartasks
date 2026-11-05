@@ -1,6 +1,6 @@
 {
   "note": "Made by presentation/build.mjs. Do not edit by hand.",
-  "minutes": 10,
+  "minutes": 11,
   "slides": [
     {
       "id": "cover",
@@ -60,7 +60,7 @@
     },
     {
       "id": "aid",
-      "title": "FAFSA and Georgia aid"
+      "title": "FAFSA and state aid"
     },
     {
       "id": "todo",

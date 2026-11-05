@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PAYWALL_ON } from "../../lib/prices";
-import type { StatePack } from "@scholartasks/core";
-import gaPack from "../../../../packs/states/GA.json";
+import { checkablePrograms, classOf, testsFor } from "@scholartasks/core";
+import { packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { loadStudy, type StudyContext } from "../study/context";
@@ -14,7 +14,7 @@ import { ReportAi } from "../report-ai";
 interface Question { id: string; exam: Exam; subject: string; topic: string; passage: string | null; question: string; options: string[]; answer_index: number; explanation: string | null; status: string }
 interface Attempt { question_id: string; correct: boolean; created_at: string }
 interface Result { id: string; exam: Exam; sections: Record<string, { right: number; total: number; estimate: number }>; estimate: number; created_at: string }
-interface Scores { id: string; sat: number | null; act: number | null }
+interface Scores { id: string; sat: number | null; act: number | null; state: string; grade_level: number }
 interface Tutor { feedback: string; next_step: string }
 
 // Full timed practice tests belong to the "Study Coach" add-on. Billing isn't
@@ -22,7 +22,18 @@ interface Tutor { feedback: string; next_step: string }
 const STUDY_COACH_OPEN = !PAYWALL_ON;
 const DRILL = 10;
 
-const zell = (gaPack as unknown as StatePack).programs.find((p) => p.id === "ga-zell")?.rules as { tests_any?: { sat?: number; act?: number } } | undefined;
+/** The highest test score the student's state scholarships ask for (Zell Miller in Georgia, Bright Futures in Florida...). */
+function stateTarget(s: Scores | undefined, exam: "SAT" | "ACT"): { score: number; program: string } | null {
+  const pack = packFor(s?.state ?? "GA");
+  if (!pack) return null;
+  const c = s ? classOf(s.grade_level, new Date().toLocaleDateString("en-CA")) : undefined;
+  let best: { score: number; program: string } | null = null;
+  for (const p of checkablePrograms(pack)) {
+    const score = testsFor(p, c)?.[exam === "SAT" ? "sat" : "act"];
+    if (score && (!best || score > best.score)) best = { score, program: p.name.replace(/ \(.*\)$/, "").replace(/^Bright Futures: /, "") };
+  }
+  return best;
+}
 
 type Run =
   | { kind: "drill"; section: Section; qs: Question[]; i: number; picked: number | null; right: number }
@@ -64,7 +75,7 @@ export default function TestPrepPage() {
       const [c, q, sc] = await Promise.all([
         loadStudy(sb, s.session.user.id),
         sb.from("practice_questions").select("id, exam, subject, topic, passage, question, options, answer_index, explanation, status").not("exam", "is", null).eq("kind", "mc").order("created_at"),
-        sb.from("students").select("id, sat, act"),
+        sb.from("students").select("id, sat, act, state, grade_level"),
       ]);
       setCtx(c);
       setCurrent(c.own ?? pickStudent(c.students, c.students[0]?.id));
@@ -315,7 +326,9 @@ export default function TestPrepPage() {
   // ---------- Test prep home ----------
   const examResults = results.filter((r) => r.exam === exam);
   const best = examResults.reduce<number | null>((m, r) => (m == null || r.estimate > m ? r.estimate : m), null);
-  const target = exam === "SAT" ? zell?.tests_any?.sat : zell?.tests_any?.act;
+  const goal = stateTarget(official ?? undefined, exam === "SAT" ? "SAT" : "ACT");
+  const target = goal?.score;
+  const pack = packFor(official?.state ?? "GA");
   const officialScore = exam === "SAT" ? official?.sat : official?.act;
   return (
     <Page title={title}>
@@ -337,7 +350,7 @@ export default function TestPrepPage() {
         <div className="tp-stats">
           <div><span className="hint">Official {exam}</span><b>{officialScore ?? "Not yet"}</b></div>
           <div><span className="hint">Best practice estimate</span><b>{best ?? "No test yet"}</b></div>
-          {target && <div><span className="hint">Zell Miller needs</span><b>{target}</b></div>}
+          {target && <div><span className="hint">{goal?.program} needs</span><b>{target}</b></div>}
         </div>
         {plan.weak.length > 0 ? (
           <>
@@ -348,7 +361,7 @@ export default function TestPrepPage() {
           <p className="hint" style={{ margin: "12px 0 0" }}>Do a few drills and your weakest topics show up here.</p>
         )}
         <p className="hint" style={{ fontSize: 13, margin: "10px 0 0" }}>
-          Got an official score? Save it on <a href="/grades">Grades</a> so scholarships and the counselor use it. {exam === "SAT" ? "Most students take the SAT in spring of junior year and again in the fall of senior year." : "Most students take the ACT in spring of junior year and again in the fall of senior year."} Georgia&apos;s Zell Miller test score must come from a single sitting; check details on <a href="https://www.gafutures.org" target="_blank" rel="noreferrer">GAfutures</a>.
+          Got an official score? Save it on <a href="/grades">Grades</a> so scholarships and the counselor use it. {exam === "SAT" ? "Most students take the SAT in spring of junior year and again in the fall of senior year." : "Most students take the ACT in spring of junior year and again in the fall of senior year."}{pack && <> Some state scholarships only count a single sitting, others take superscores; check {pack.name}&apos;s rules on <a href={pack.aid_site?.url ?? pack.agency.url} target="_blank" rel="noreferrer">{pack.aid_site?.name ?? pack.agency.name}</a>.</>}
         </p>
       </section>
 
@@ -401,7 +414,7 @@ export default function TestPrepPage() {
           {exam === "SAT"
             ? <li><a href="https://bluebook.collegeboard.org" target="_blank" rel="noreferrer">Bluebook</a> (College Board&apos;s app): full-length adaptive SAT practice tests, the same app used on test day.</li>
             : <li><a href="https://www.act.org/content/act/en/products-and-services/the-act/test-preparation.html" target="_blank" rel="noreferrer">ACT test preparation</a>: ACT&apos;s free practice test and sample questions.</li>}
-          <li><a href="https://www.gafutures.org" target="_blank" rel="noreferrer">GAfutures</a>: Georgia&apos;s HOPE and Zell Miller test score rules.</li>
+          {pack && <li><a href={pack.aid_site?.url ?? pack.agency.url} target="_blank" rel="noreferrer">{pack.aid_site?.name ?? pack.agency.name}</a>: {pack.name}&apos;s state scholarship test score rules.</li>}
         </ul>
       </section>
       <section className="panel tp-about">
