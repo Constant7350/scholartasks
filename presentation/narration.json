@@ -49,6 +49,11 @@
       "narration": "Good grades come from good habits, and those start in middle school. ScholarTasks teaches students how to study, lets them test themselves, and gives them a tutor that explains instead of handing over answers. Families set goals together, Grade Rescue catches a slipping grade early, and course advice helps students take harder classes at the right pace."
     },
     {
+      "id": "homework",
+      "title": "Homework Helper",
+      "narration": "Kids today can copy and paste an answer in seconds, and they learn nothing. The Homework Helper is the safe alternative. It helps with any subject, from algebra to essays, but it never gives the answer and never writes for the student. It asks what they tried, gives one hint at a time, checks their work, and asks them to explain their thinking. A second AI checks every reply before the student sees it. Parents see what was practiced, how many hints it took, and every time the helper said no. The goal is a student who can think it through on their own, even with the phone switched off."
+    },
+    {
       "id": "beyond",
       "title": "Beyond grades",
       "narration": "Colleges and scholarships also look at activities, leadership, service and recommendation letters. Each school year, ScholarTasks adds the right milestones for that grade to the to-do list. Students log service hours and activities as they go, keep track of who will write their letters, and build a brag sheet for teachers. A quick check-up shows what is already strong and what to work on next, so senior year is not a scramble."

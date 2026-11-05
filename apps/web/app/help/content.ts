@@ -138,7 +138,7 @@ export const TOPICS: Topic[] = [
     summary: "Each student has switches the parent controls, under \"What (name) can do in the student app\" on the Family page.",
     body: [
       "Enter grades and test scores. When off, the Grades page is view-only for the student.",
-      "Chat with the AI counselor and study coach. When off, the student can't use any AI features.",
+      "Chat with the AI counselor and the Homework Helper. When off, the student can't use any AI features.",
       "See family income band and cost estimates. Off by default for students under 18.",
       "Mark forms and scholarships done without my approval. When off, the student's checkmark waits for your OK.",
       "Change the college list or plan without my approval. When off, colleges the student adds wait for you to tap Approve.",
@@ -665,7 +665,7 @@ export const TOPICS: Topic[] = [
       "Things that use 1: a counselor message, reading a report card or transcript, a grade rescue plan, next year's class advice, and the tutor checking or explaining a question.",
       "Free things that never use any: the scorecard, goals, the study library, multiple-choice practice, and answers from the reviewed answer library.",
       "Ran out? A parent can buy a pack of extra AI messages on Plan and billing. Extra messages are shared by the family, never expire, and are only used after the day's free 10 are gone.",
-      "With the Study Coach add-on, a person gets more tutor help each day.",
+      "With the Homework Helper add-on, a student gets up to 30 Homework Helper and practice-tutor turns a day.",
     ],
   },
 
@@ -789,6 +789,34 @@ export const TOPICS: Topic[] = [
   },
   // ---------- Study and practice ----------
   {
+    id: "homework-helper",
+    area: "Study and practice",
+    title: "Homework Helper: help with any homework, without cheating",
+    href: "/homework",
+    keywords: ["homework", "homework help", "tutor", "math", "essay", "science", "history", "spanish", "coding", "photo", "hint", "cheating", "answers", "safe ai", "chatgpt", "add-on", "study coach", "thinking score"],
+    summary: "An AI tutor for every subject that keeps your student doing the thinking. It gives hints, checks work and explains ideas, but never gives the answer or writes for them.",
+    steps: [
+      "Open Menu, then Homework Helper.",
+      "Pick the subject, then type the problem or tap Add a photo.",
+      "Write what you've tried so far (it gets you better help).",
+      "Tap Give me a hint, Check my work, or Explain the idea.",
+      "Answer the helper's question with your next step. When you finish, explain it back and try the twin problem on paper.",
+    ],
+    body: [
+      "The helper gives one hint at a time, up to three, then keeps asking smaller questions. It never states the final answer to your problem, never does the next step for you, and never writes sentences, essays, translations or code you could hand in.",
+      "Every reply is checked by a second AI before you see it. If a reply gives too much away, it is rewritten or replaced with a guiding question.",
+      "No help on tests or quizzes. The helper offers to help you study the topic afterward instead.",
+      "Parents see a summary on the same page: subjects and topics, a thinking score (problems finished with 0, 1, 2 or 3+ hints, week by week), each time the helper said no to an answer, and any time it suggested talking to a trusted adult. Your full chat is not saved.",
+      "A parent can turn the helper off for a student on the Homework Helper page. Turning off AI chat in Family and permissions turns it off too.",
+      "Each reply uses 1 of the day's AI uses. With the Homework Helper add-on, a student gets up to 30 helper turns a day (400 a month for the family). The helper can make mistakes, so if something looks wrong, ask your teacher, and always follow your teacher's rules about AI.",
+    ],
+    faq: [
+      { q: "Will it just give my student the answers?", a: "No. That is the whole point. It is built to ask before it tells, give hints instead of answers, and check that your student can explain their reasoning." },
+      { q: "Can it help with essays?", a: "Yes, without writing any of it. It asks questions to help your student find their ideas, explains rules, and gives feedback on their own draft." },
+      { q: "Which grades and subjects?", a: "Grades 8 to 12: math, science, English and writing, reading, history and social studies, world languages, computer science, career and technical classes, and study skills." },
+    ],
+  },
+  {
     id: "study",
     area: "Study and practice",
     title: "The study skills library",
@@ -833,7 +861,7 @@ export const TOPICS: Topic[] = [
     body: [
       "Each drill and practice test picks questions at random, starting with ones you haven't answered yet, so repeats are rare until you've seen the whole bank.",
       "Drills are free and use no AI. \"Explain it\" asks the tutor to walk you through a question (1 of today's 10 AI uses).",
-      "Timed practice tests are part of the Study Coach add-on and are free while ScholarTasks is in beta.",
+      "Timed practice tests are part of the Homework Helper add-on and are free while ScholarTasks is in beta.",
       "Scores are rough estimates from short tests, not official scores. Before test day, take a full-length official practice test: Bluebook for the SAT, or ACT's free practice test.",
       "How the questions are made: every question is original, written by the ScholarTasks team (with help from AI) to match the skills, question types and difficulty in College Board's and ACT's published test outlines. We don't copy, reword or adapt questions from official tests, prep books or websites. A teacher on our team checks each one; until then it shows a Draft label.",
       "SAT is a trademark of the College Board and ACT is a trademark of ACT Education Corp. Neither makes, sponsors or endorses ScholarTasks.",
@@ -877,14 +905,14 @@ export const TOPICS: Topic[] = [
   {
     id: "billing",
     area: "Account and privacy",
-    title: "Your plan, Study Coach and extra AI messages",
+    title: "Your plan, Homework Helper and extra AI messages",
     href: "/billing",
-    keywords: ["free", "free plan", "plan", "price", "pay", "payment", "billing", "subscription", "cancel", "card", "receipt", "refund", "study coach", "message pack", "extra messages", "monthly", "yearly", "cost"],
+    keywords: ["free", "free plan", "plan", "price", "pay", "payment", "billing", "subscription", "cancel", "card", "receipt", "refund", "study coach", "homework helper", "message pack", "extra messages", "monthly", "yearly", "cost"],
     summary: "A parent manages one plan for the whole family on the Plan and billing page, from the Menu.",
     steps: [
       "Open Menu, then Plan and billing.",
       "Pick the Family plan, monthly or yearly. Current prices are shown on the page.",
-      "Optional: add Study Coach for more tutor help, or buy a pack of extra AI messages.",
+      "Optional: add the Homework Helper (safe help with any homework, on its own or with the Family plan), or buy a pack of extra AI messages.",
       "Pay on Stripe's secure page. You come back to ScholarTasks when it's done.",
     ],
     body: [
@@ -964,7 +992,7 @@ export const TIPS: Tip[] = [
   { routes: ["*"], sel: ".strip-links", body: "The main pages. The underlined one is where you are now. Tap Home to go back to the start.", topic: "home" },
   { routes: ["*"], sel: ".tabbar", body: "Main pages along the bottom. More opens the full menu.", topic: "home" },
   { routes: ["*"], sel: ".pagestrip .student-switch", body: "Which student you are looking at. Pick another name and every page switches to that student.", topic: "home" },
-  { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
+  { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/homework", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
 
   // Activities
   { routes: ["/activities"], sel: "#checkup h2", body: "What colleges read besides grades, and the next step for each. It changes with your grade.", topic: "beyond-grades" },
@@ -979,6 +1007,8 @@ export const TIPS: Tip[] = [
   { routes: ["/home"], sel: ".tile[href='/scholarships'] b", body: "Scholarships and grants matched to your student, sorted by how well they fit.", topic: "scholarship-matches" },
   { routes: ["/home"], sel: ".tile[href='/practice'] b", body: "Quick self-tests. Multiple choice is free; the tutor gives hints, never homework answers.", topic: "practice" },
   { routes: ["/home"], sel: ".tile[href='/grades'] b", body: "Grades, test scores and whether your student is on track for state scholarships.", topic: "hope" },
+  { routes: ["/homework"], sel: ".hw-start .field span", body: "Type the problem or add a photo, then say what you tried. The helper gives hints, never answers.", topic: "homework-helper" },
+  { routes: ["/homework"], sel: ".hw-switch", body: "Turn the Homework Helper on or off for this student. You see a summary here, never the full chat.", topic: "homework-helper" },
   { routes: ["/home"], sel: ".tile[href='/study'] b", body: "Free lessons on how to study. No AI used.", topic: "study" },
   { routes: ["/home"], sel: ".tile b", text: "Key ", body: "The next aid and college dates for your home state. Draft until checked with the state aid office.", topic: "ga-dates" },
 

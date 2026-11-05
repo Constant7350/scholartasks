@@ -99,8 +99,10 @@ export default function Features() {
           <div>
             <p className="s-kicker">Study skills and test prep</p>
             <h2>A tutor that teaches, not an answer machine</h2>
-            <p>Good grades come from good habits. ScholarTasks teaches students how to study, lets them test themselves and helps them get ready for the SAT and ACT.</p>
+            <p>Good grades come from good habits. ScholarTasks teaches students how to study, helps with homework without doing it for them, lets them test themselves and helps them get ready for the SAT and ACT.</p>
             <ul>
+              <li>Homework Helper for every subject: hints one at a time, checks their work, never gives answers or writes for them, and a second AI checks every reply</li>
+              <li>A thinking score for parents: problems finished with fewer hints each week</li>
               <li>Study skills library, reviewed by a teacher on our team</li>
               <li>Over 600 original SAT and ACT practice questions</li>
               <li>Timed practice tests and a score plan</li>

@@ -1,6 +1,6 @@
 {
   "note": "Made by presentation/build.mjs. Do not edit by hand.",
-  "minutes": 11,
+  "minutes": 12,
   "slides": [
     {
       "id": "cover",
@@ -37,6 +37,10 @@
     {
       "id": "habits",
       "title": "Strong study habits"
+    },
+    {
+      "id": "homework",
+      "title": "Homework Helper"
     },
     {
       "id": "beyond",

@@ -10,6 +10,7 @@
     "scholarships",
     "grades",
     "habits",
+    "homework",
     "beyond",
     "prep",
     "colleges",
@@ -72,6 +73,11 @@
       "slideHash": "66ac7bd62a3120ce",
       "narrationHash": "853afcfe114ed0af",
       "seconds": 25
+    },
+    "homework": {
+      "slideHash": "95ba4d1cc9333242",
+      "narrationHash": "c087f3c0b44b5449",
+      "seconds": 42.3
     },
     "beyond": {
       "slideHash": "e50198e390e185ac",
