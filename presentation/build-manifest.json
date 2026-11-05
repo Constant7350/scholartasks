@@ -1,0 +1,157 @@
+{
+  "note": "Made by presentation/build.mjs: hashes of what was last rendered and narrated.",
+  "order": [
+    "cover",
+    "challenge",
+    "what",
+    "howitworks",
+    "parent",
+    "counselor",
+    "scholarships",
+    "grades",
+    "habits",
+    "beyond",
+    "prep",
+    "colleges",
+    "majors",
+    "trades",
+    "aid",
+    "todo",
+    "phone",
+    "journey",
+    "compare1",
+    "compare2",
+    "better",
+    "privacy",
+    "schools",
+    "cost",
+    "start"
+  ],
+  "slides": {
+    "cover": {
+      "slideHash": "4ee685a77685bdda",
+      "narrationHash": "322135f05dd85261",
+      "seconds": 21.6
+    },
+    "challenge": {
+      "slideHash": "5c1ec3e5ac268aac",
+      "narrationHash": "f13a10e1167d1586",
+      "seconds": 20.2
+    },
+    "what": {
+      "slideHash": "fd2cc467c29aa21c",
+      "narrationHash": "c79577410b18ed96",
+      "seconds": 20.2
+    },
+    "howitworks": {
+      "slideHash": "408d8f8c0ee2453d",
+      "narrationHash": "656a0a44fb9577ed",
+      "seconds": 19.6
+    },
+    "parent": {
+      "slideHash": "3f64c9a1608fd55f",
+      "narrationHash": "db1c97fe69ef6d4e",
+      "seconds": 17.4
+    },
+    "counselor": {
+      "slideHash": "ffc5161d2c68bb39",
+      "narrationHash": "c644db99aff5bb6f",
+      "seconds": 23.1
+    },
+    "scholarships": {
+      "slideHash": "99d7affd1b68be88",
+      "narrationHash": "41704407775695a4",
+      "seconds": 23.5
+    },
+    "grades": {
+      "slideHash": "4e8a6050667e5698",
+      "narrationHash": "df4ab205db207814",
+      "seconds": 21.6
+    },
+    "habits": {
+      "slideHash": "66ac7bd62a3120ce",
+      "narrationHash": "853afcfe114ed0af",
+      "seconds": 25
+    },
+    "beyond": {
+      "slideHash": "e50198e390e185ac",
+      "narrationHash": "9d7e8e3c7fb28c7e",
+      "seconds": 31.2
+    },
+    "prep": {
+      "slideHash": "49035608e697f5ca",
+      "narrationHash": "efbf5590aa9af44a",
+      "seconds": 21.4
+    },
+    "colleges": {
+      "slideHash": "0728a1efd70e2664",
+      "narrationHash": "46cd9415352d1326",
+      "seconds": 22.2
+    },
+    "majors": {
+      "slideHash": "4b0b01d0760eb90f",
+      "narrationHash": "4855bc1eac5ac400",
+      "seconds": 29.2
+    },
+    "trades": {
+      "slideHash": "233004e19d5ba621",
+      "narrationHash": "9e0adbfacf32d974",
+      "seconds": 28
+    },
+    "aid": {
+      "slideHash": "91b1696cb6bdbaa2",
+      "narrationHash": "b4822353e2b413aa",
+      "seconds": 20.7
+    },
+    "todo": {
+      "slideHash": "65caa8e15fe5ca92",
+      "narrationHash": "66ecbf9cbf698117",
+      "seconds": 23.1
+    },
+    "phone": {
+      "slideHash": "47fe6756d32bd885",
+      "narrationHash": "64c61b597facf51f",
+      "seconds": 20.6
+    },
+    "journey": {
+      "slideHash": "cfabc40ed3a6197f",
+      "narrationHash": "176bf83c60683629",
+      "seconds": 29.3
+    },
+    "compare1": {
+      "slideHash": "2ea166aa1c8c2a29",
+      "narrationHash": "e1f1ecb987a5c2bb",
+      "seconds": 21.3
+    },
+    "compare2": {
+      "slideHash": "ec46c75704e18abc",
+      "narrationHash": "d962fe79e9bfe1b4",
+      "seconds": 16.7
+    },
+    "better": {
+      "slideHash": "eca256880e58deb3",
+      "narrationHash": "656a38490d906566",
+      "seconds": 30.5
+    },
+    "privacy": {
+      "slideHash": "406160e40bbc241e",
+      "narrationHash": "3f73a20fa7c1cc7f",
+      "seconds": 21.8
+    },
+    "schools": {
+      "slideHash": "3a209a32457e2cc7",
+      "narrationHash": "4e8c283cee2af4de",
+      "seconds": 36.1
+    },
+    "cost": {
+      "slideHash": "b6dd830b26f99b84",
+      "narrationHash": "b4226291f86486dc",
+      "seconds": 19.2
+    },
+    "start": {
+      "slideHash": "64294ca9c9a84e9b",
+      "narrationHash": "2382f2557481e791",
+      "seconds": 28.6
+    }
+  }
+}

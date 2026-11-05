@@ -1,0 +1,132 @@
+{
+  "voice": "ElevenLabs Max (Gfpl8Yo74Is0W6cPUWWT)",
+  "model": "eleven_multilingual_v2",
+  "note": "One entry per slide id in deck.json order. Edit the text here, then run: node presentation/build.mjs",
+  "slides": [
+    {
+      "id": "cover",
+      "title": "ScholarTasks",
+      "narration": "Hi everyone. I want to show you ScholarTasks, an app our family built to make the college years less stressful. It helps with college plans, scholarships, Georgia's HOPE and Zell Miller money, grades and test prep. It's all in one place, on the phone and on the web."
+    },
+    {
+      "id": "challenge",
+      "title": "The problem",
+      "narration": "Most of us have felt this. Deadlines are spread across a dozen websites. Georgia's HOPE grade point average is counted differently from the one on the report card. Scholarships are all over the internet. And our school counselors have a lot of students. ScholarTasks pulls all of this into one place."
+    },
+    {
+      "id": "what",
+      "title": "What it is",
+      "narration": "Think of it in three parts. Plan: what to do, and when. Fund: how to find and keep the money, from HOPE to private scholarships. Prepare: grades, study habits and test scores, starting as early as eighth grade."
+    },
+    {
+      "id": "howitworks",
+      "title": "How it works",
+      "narration": "Getting started takes a few minutes. A parent signs up and adds a student. The app makes a short join code. You tap Text or Email to send it, and your student types it in on their own phone. From then on, everything the family adds lands in one shared plan."
+    },
+    {
+      "id": "parent",
+      "title": "The family account",
+      "narration": "This is one of the biggest differences from other apps. The parent owns the account, and decides what each student can change. The student has their own app, and does the day to day work. When a student turns eighteen, they get a say in what parents can still see."
+    },
+    {
+      "id": "counselor",
+      "title": "AI counselor",
+      "narration": "The AI counselor is like having a college counselor on call. It can see the student's grades, college list and deadlines, so its answers are about your child, not general advice. It will explain and coach, but it won't do homework or write essays. And it's advice only. Your family makes the decisions."
+    },
+    {
+      "id": "scholarships",
+      "title": "Scholarships",
+      "narration": "Instead of searching a dozen websites, students answer a few questions. Then they see awards sorted into You qualify, Maybe, and Not a fit. There are almost three hundred Georgia and national awards, checked by our team, and re-checked twice a week in scholarship season. One tap adds a deadline to the plan."
+    },
+    {
+      "id": "grades",
+      "title": "Grades 8 to 12",
+      "narration": "HOPE is earned in high school, so starting early matters. From eighth grade on, the scorecard shows the HOPE grade point average next to the school one, so there are no surprises later. If a grade slips, Grade Rescue asks a few questions and builds a simple plan. Course advice helps pick the right classes."
+    },
+    {
+      "id": "habits",
+      "title": "Strong study habits",
+      "narration": "Good grades come from good habits, and those start in middle school. ScholarTasks teaches students how to study, lets them test themselves, and gives them a tutor that explains instead of handing over answers. Families set goals together, Grade Rescue catches a slipping grade early, and course advice helps students take harder classes at the right pace."
+    },
+    {
+      "id": "beyond",
+      "title": "Beyond grades",
+      "narration": "Colleges and scholarships also look at activities, leadership, service and recommendation letters. Each school year, ScholarTasks adds the right milestones for that grade to the to-do list. Students log service hours and activities as they go, keep track of who will write their letters, and build a brag sheet for teachers. A quick check-up shows what is already strong and what to work on next, so senior year is not a scramble."
+    },
+    {
+      "id": "prep",
+      "title": "Study and test prep",
+      "narration": "Test prep is built in. There are over six hundred original practice questions for the SAT and the ACT, plus timed practice tests and a score plan. The study library teaches how to study. A teacher on our team reviews the content. These are our own questions, not copies of real tests."
+    },
+    {
+      "id": "colleges",
+      "title": "Colleges",
+      "narration": "Students can search almost two thousand colleges, take a quick match quiz, and add a school with one tap. Each college shows an estimated cost after Georgia aid and saved scholarships. The essay coach gives feedback, but never writes for the student. And activities and service hours turn into a resume."
+    },
+    {
+      "id": "majors",
+      "title": "Search by major",
+      "narration": "Most students know what they love before they know where to go. Type in a dream, like marine biology, vet or nursing. You'll see what those careers earn, and how many years of school they take. Then you get the strongest programs in your own state first, and across the whole country too, with a yearly cost for your family. It even shows what you could save by starting at a two-year college, then transferring."
+    },
+    {
+      "id": "trades",
+      "title": "Trades and careers",
+      "narration": "Not every student wants a four-year degree, and many great careers start with a trade. ScholarTasks covers fifty skilled trades, with what each one earns, how long training takes, and what license is needed. Students can find training near home or anywhere in the country, follow step by step apply checklists, take a short quiz, and see ways to fund it, like Georgia's HOPE Grant."
+    },
+    {
+      "id": "aid",
+      "title": "FAFSA and Georgia aid",
+      "narration": "Aid forms scare a lot of families. ScholarTasks breaks the FAFSA and Georgia's form into small steps, and explains who does each part. You still file on the official government sites. We never ask for or keep FSA IDs, Social Security numbers or tax returns."
+    },
+    {
+      "id": "todo",
+      "title": "To-do list",
+      "narration": "Everything with a date lands on one to-do list, already sorted into late, due this week, and coming up. Email reminders go out a month before, then two weeks, one week, two days and one day before. Dates can show up in your own calendar, and the phone app can remind the student too."
+    },
+    {
+      "id": "phone",
+      "title": "Phone app",
+      "narration": "Families live on their phones, so ScholarTasks does too. The iPhone and Android apps are in testing now, and the website works on any device. Sign-in is quick with Face ID or a fingerprint, which helps, because teenagers forget passwords. What you add on the phone shows up on the computer too."
+    },
+    {
+      "id": "journey",
+      "title": "Grade 8 to graduation",
+      "narration": "Here's how a family uses it over the years. In eighth and ninth grade, it's the scorecard, study skills and choosing courses. Tenth grade adds HOPE tracking, harder classes, and exploring majors and trades. Eleventh grade is test prep and the college list. Senior year is applications, scholarships and aid forms. Week to week, it takes a few minutes."
+    },
+    {
+      "id": "compare1",
+      "title": "How we compare 1",
+      "narration": "Here's how we compare on planning and funding college. Other apps do one or two of these things well. ScholarTasks is the only one we found that links parent and student, has an AI counselor that knows Georgia, tracks HOPE and Zell Miller, and walks you through the FAFSA, all in one place."
+    },
+    {
+      "id": "compare2",
+      "title": "How we compare 2",
+      "narration": "On grades, test prep and trust, the picture is the same. No other app we found coaches grades and course choices from eighth grade. Our school portal is free for every school. And we will never sell student data."
+    },
+    {
+      "id": "better",
+      "title": "Why we are better",
+      "narration": "If you remember one slide, make it this one. ScholarTasks puts Georgia first, but shows options in every state. It's built for families, and it covers every path, from a four-year degree to a skilled trade. It keeps everything in one place, uses AI honestly, and never sells your child's data. It was made by a Georgia family, with a teacher checking the lessons, and a high school senior testing it."
+    },
+    {
+      "id": "privacy",
+      "title": "Safety and privacy",
+      "narration": "Parents always ask about privacy, and they should. We never sell data, and we never ask for the most sensitive numbers. The app is for ages thirteen and up. Every family's information is kept separate. Students agree before using AI help. And you can delete everything from inside the app."
+    },
+    {
+      "id": "schools",
+      "title": "For schools",
+      "narration": "For school leaders and counselors: ScholarTasks supports your counselors. It doesn't replace them. Our school portal is free for every school. Counselors can see who filed the FAFSA, who has a college list, and who's behind on deadlines. They can email a whole grade at once, and post local scholarships just for their families. Families choose what to share with a school code, and can stop any time. Essays, AI chats and income are never shared."
+    },
+    {
+      "id": "cost",
+      "title": "What it costs",
+      "narration": "Families can start for free, with no credit card. The paid family plan covers every child in the house, and it will cost less than most paid apps for test prep or essays. We're setting final prices now, so I won't quote a number today. But it will be affordable."
+    },
+    {
+      "id": "start",
+      "title": "Questions?",
+      "narration": "Thank you. Everything you saw today is on our website, scholartasks dot com, with a page for schools, a comparison with other apps, this tour, and a contact form. Start as a parent, add your student, and send them the join code. If you get stuck, the help guide walks through every page, or email us at support at scholartasks dot com. I'm happy to take questions."
+    }
+  ]
+}

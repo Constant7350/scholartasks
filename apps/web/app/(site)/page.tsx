@@ -1,5 +1,6 @@
 import { SignedInRedirect } from "../signed-in-redirect";
 import { FaqList, FinalCta } from "./parts";
+import tour from "../admin/presentation/slides.json";
 
 export const metadata = {
   title: "ScholarTasks · College, scholarships and Georgia aid, all in one plan",
@@ -43,7 +44,7 @@ export default function Landing() {
             </p>
             <div className="s-cta">
               <a className="btn" href="/signin">Start free</a>
-              <a className="btn btn-ghost" href="#tour">Watch the 7-minute tour</a>
+              <a className="btn btn-ghost" href="#tour">Watch the {tour.minutes}-minute tour</a>
             </div>
             <p className="s-fine">Free to start. No credit card.</p>
             <ul className="s-trust-row">
@@ -151,11 +152,11 @@ export default function Landing() {
         <div className="site-wrap">
           <div className="s-center">
             <p className="s-kicker">See it for yourself</p>
-            <h2 className="s-title">Take the 7-minute tour</h2>
+            <h2 className="s-title">Take the {tour.minutes}-minute tour</h2>
             <p className="s-lede">A narrated walk through every part of ScholarTasks, made for parents and schools.</p>
           </div>
           <div className="s-video" style={{ maxWidth: 900, margin: "0 auto" }}>
-            <video controls preload="none" poster="/presentation/slide-01-cover.jpg" src="/presentation/scholartasks-presentation.mp4">
+            <video controls preload="none" poster="/presentation/slide-cover.jpg" src="/presentation/scholartasks-presentation.mp4">
               Your browser can't play this video. <a href="/presentation/scholartasks-presentation.mp4">Download it here.</a>
             </video>
           </div>
