@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { LESSONS } from "../../study/lessons";
+import { ReviewNav, timeOf } from "../review-kit";
 
 interface Review { lesson_id: string; status: "approved" | "changes"; notes: string | null; updated_at: string }
 
@@ -15,6 +16,8 @@ export default function LessonReviewPage() {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [open, setOpen] = useState<string | null>(LESSONS[0]!.id);
   const [error, setError] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<Record<string, Date>>({});
+  const [confirmAll, setConfirmAll] = useState(false);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -37,9 +40,27 @@ export default function LessonReviewPage() {
     setError(null);
     const { error: e } = await sb.rpc("set_lesson_review", { p_lesson: id, p_status: status, p_notes: notes[id] ?? "" });
     if (e) return setError(friendly(e));
+    setSavedAt((m) => ({ ...m, [id]: new Date() }));
     await load();
+    // Open the next lesson that hasn't been reviewed yet.
     const i = LESSONS.findIndex((l) => l.id === id);
-    setOpen(LESSONS[i + 1]?.id ?? null);
+    const nextOpen = [...LESSONS.slice(i + 1), ...LESSONS.slice(0, i)].find((l) => !reviews[l.id] && l.id !== id);
+    setOpen(nextOpen?.id ?? null);
+  };
+
+  const notReviewed = LESSONS.filter((l) => !reviews[l.id]);
+  const approveAll = async () => {
+    if (!sb) return;
+    if (!confirmAll) return setConfirmAll(true);
+    setConfirmAll(false); setError(null);
+    const now = new Date();
+    for (const l of notReviewed) {
+      const { error: e } = await sb.rpc("set_lesson_review", { p_lesson: l.id, p_status: "approved", p_notes: notes[l.id] ?? "" });
+      if (e) { setError(friendly(e)); break; }
+      setSavedAt((m) => ({ ...m, [l.id]: now }));
+    }
+    setOpen(null);
+    await load();
   };
 
   const title = "Lesson review";
@@ -50,17 +71,25 @@ export default function LessonReviewPage() {
 
   return (
     <Page title={title}>
+      <ReviewNav />
       <p className="hint" style={{ marginTop: -8 }}>
         Read each study skills lesson as a teacher would. Approve it if it&apos;s accurate and right for grades 8 to 12, or write what should change and pick &quot;Needs changes&quot;. Your notes come to us and we update the lesson. <b>{approved} of {LESSONS.length}</b> approved. Practice questions are reviewed on the <a href="/admin/questions">question review page</a>.
       </p>
       {error && <p className="note note-err" role="alert">{error}</p>}
+      {notReviewed.length > 1 && (
+        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginBottom: 12 }}>
+          <button className="btn btn-inline" onClick={() => void approveAll()}>{confirmAll ? `Tap again to approve all ${notReviewed.length}` : `Approve all ${notReviewed.length} not reviewed`}</button>
+          {confirmAll && <button className="btn btn-ghost btn-inline" onClick={() => setConfirmAll(false)}>Cancel</button>}
+          <span className="hint" style={{ fontSize: 13 }}>Or open each one below. Approving one opens the next.</span>
+        </div>
+      )}
       {LESSONS.map((l) => {
         const r = reviews[l.id];
         return (
           <section key={l.id} className="panel review">
             <button className="lesson-review-head" onClick={() => setOpen(open === l.id ? null : l.id)} aria-expanded={open === l.id}>
               <span><span aria-hidden="true">{l.emoji}</span> <b>{l.title}</b></span>
-              <span className={`pill ${r?.status === "approved" ? "pill-ok" : r?.status === "changes" ? "pill-soon" : ""}`}>{r?.status === "approved" ? "Approved" : r?.status === "changes" ? "Needs changes" : "Not reviewed"}</span>
+              <span className={`pill ${r?.status === "approved" ? "pill-ok" : r?.status === "changes" ? "pill-soon" : ""}`}>{r?.status === "approved" ? "✓ Approved" : r?.status === "changes" ? "Needs changes" : "Not reviewed"}{savedAt[l.id] ? ` · saved ${timeOf(savedAt[l.id]!)}` : ""}</span>
             </button>
             {open === l.id && (
               <div style={{ marginTop: 12 }}>
@@ -82,7 +111,7 @@ export default function LessonReviewPage() {
                   <button className="btn btn-inline" onClick={() => void decide(l.id, "approved")}>Approve</button>
                   <button className="btn btn-ghost btn-inline" onClick={() => void decide(l.id, "changes")}>Needs changes</button>
                 </div>
-                {r && <p className="hint" style={{ fontSize: 12, marginTop: 8 }}>Last saved {new Date(r.updated_at).toLocaleString()}</p>}
+                {r && <p className={savedAt[l.id] ? "note note-ok" : "hint"} style={{ fontSize: 12, marginTop: 8 }} role="status">{savedAt[l.id] ? "✓ Saved" : "Last saved"} {new Date(r.updated_at).toLocaleString()}</p>}
               </div>
             )}
           </section>

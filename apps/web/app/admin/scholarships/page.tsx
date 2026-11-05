@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
+import { chunks, DoneRow, ReviewNav, timeOf, type Done } from "../review-kit";
 
 interface Sch {
   id: string; kind: string; name: string; sponsor: string; url: string; summary: string; how_to_apply: string | null;
@@ -32,6 +33,8 @@ export default function ScholarshipReviewPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState<Record<string, Done & { tab: Tab; name: string }>>({});
+  useEffect(() => setDone({}), [tab]);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -61,6 +64,8 @@ export default function ScholarshipReviewPage() {
     const { data: ses } = await sb.auth.getSession();
     const { error: e } = await sb.from("scholarships").update({ ...patch, reviewed_by: ses.session?.user.id, reviewed_at: new Date().toISOString() }).eq("id", s.id);
     if (e) return setError(friendly(e));
+    const st = (patch.status as string | undefined) ?? s.status;
+    setDone((d) => ({ ...d, [s.id]: { label: st === "retired" ? "Retired" : st === "approved" ? (s.status === "approved" ? "Saved and marked checked" : "Verified") : "Back on the list", at: new Date(), ok: st !== "retired", tab, name: s.name } }));
     setMsg(note);
     void load();
   };
@@ -77,6 +82,7 @@ export default function ScholarshipReviewPage() {
     }
     const { error: e2 } = await sb.from("scholarship_updates").update({ status: accept ? "accepted" : "dismissed" }).eq("id", u.id);
     if (e2) return setError(friendly(e2));
+    setDone((d) => ({ ...d, [u.id]: { label: accept ? "Changes accepted" : "Dismissed", at: new Date(), ok: accept, tab: "updates", name: s?.name ?? "Scholarship" } }));
     setMsg(accept ? `Updated ${s?.name ?? "the scholarship"}.` : "Dismissed.");
     void load();
   };
@@ -154,6 +160,23 @@ export default function ScholarshipReviewPage() {
     void load();
   };
 
+  // "Verify all": marks every award still waiting as verified, without the AI reading each site.
+  const [confirmVerify, setConfirmVerify] = useState(false);
+  const verifyAll = async () => {
+    if (!sb) return;
+    if (!confirmVerify) return setConfirmVerify(true);
+    setConfirmVerify(false); setError(null); setMsg(null);
+    const { data: ses } = await sb.auth.getSession();
+    const ids = list.map((x) => x.id);
+    const at = new Date();
+    for (const part of chunks(ids)) {
+      const { error: e } = await sb.from("scholarships").update({ status: "approved", last_checked: today, reviewed_by: ses.session?.user.id, reviewed_at: at.toISOString() }).in("id", part);
+      if (e) { setError(friendly(e)); break; }
+    }
+    setMsg(`Verified ${ids.length} award${ids.length === 1 ? "" : "s"}.`);
+    void load();
+  };
+
   const title = "Scholarship list review";
   if (!sb) return <Page title={title}><NotConfigured /></Page>;
   if (admin === undefined) return <Page title={title}><p className="hint">Loading…</p></Page>;
@@ -161,6 +184,7 @@ export default function ScholarshipReviewPage() {
 
   return (
     <Page title={title}>
+      <ReviewNav />
       <p className="hint" style={{ marginTop: -8 }}>
         Every scholarship and grant families see. Every Monday (and Thursdays too from September to March) the AI checker reads 25 official sites, oldest first. If an award is still offered and nothing changed, it&apos;s verified automatically. Anything that changed, or that the AI couldn&apos;t confirm, waits under &ldquo;Changes to review&rdquo;, and nothing changes for families until you accept it.
       </p>
@@ -172,7 +196,8 @@ export default function ScholarshipReviewPage() {
 
       {tab === "updates" && (
         <>
-          {updates.length === 0 && <p className="hint">No changes waiting. The weekly check adds them here.</p>}
+          {Object.entries(done).filter(([, d]) => d.tab === "updates").map(([id, d]) => <DoneRow key={id} title={d.name} done={d} />)}
+          {updates.length === 0 && <p className="hint">✓ No changes waiting. The weekly check adds them here.</p>}
           {updates.length > 1 && (
             <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginBottom: 12 }}>
               <button className="btn btn-inline" onClick={() => void acceptAll()}>{confirmAll ? `Tap again to accept all ${updates.length}` : `Accept all ${updates.length}`}</button>
@@ -215,14 +240,22 @@ export default function ScholarshipReviewPage() {
                 </>
               ) : (
                 <>
+                  {list.length > 1 && (
+                    <>
+                      <button className="btn btn-inline" onClick={() => void verifyAll()}>{confirmVerify ? `Tap again to verify all ${list.length}` : `✓ Verify all ${list.length}${q ? " shown" : ""}`}</button>
+                      {confirmVerify && <button className="btn btn-ghost btn-inline" onClick={() => setConfirmVerify(false)}>Cancel</button>}
+                      <span className="hint" style={{ fontSize: 13, flexBasis: "100%" }}>Verify all marks them checked without reading each site. Or let the AI read each site first:</span>
+                    </>
+                  )}
                   <button className="btn btn-inline" onClick={() => void checkAll()}>🤖 Check all {counts.pending} now</button>
                   <span className="hint" style={{ fontSize: 13 }}>The AI reads each official site. Unchanged ones are verified for you. Takes about 20 minutes with this page open, and costs about ${Math.max(1, Math.round(counts.pending * 0.005))} in AI use.</span>
                 </>
               )}
             </div>
           )}
+          {Object.entries(done).filter(([id, d]) => d.tab === tab && byId.get(id)?.status !== tab).map(([id, d]) => <DoneRow key={id} title={d.name} done={d} onUndo={undefined} />)}
           {list.length === 0 && <p className="hint">Nothing here.</p>}
-          {list.map((s) => <Item key={s.id} s={s} busy={busy === s.id} onSave={save} onCheck={aiCheck} today={today} />)}
+          {list.map((s) => <Item key={s.id} s={s} busy={busy === s.id} saved={done[s.id]?.at} onSave={save} onCheck={aiCheck} today={today} />)}
           {tab === "pending" && <AddForm onAdded={load} />}
         </>
       )}
@@ -230,7 +263,7 @@ export default function ScholarshipReviewPage() {
   );
 }
 
-function Item({ s, busy, onSave, onCheck, today }: { s: Sch; busy: boolean; today: string; onSave: (s: Sch, p: Record<string, unknown>, note: string) => Promise<void>; onCheck: (s: Sch) => Promise<void> }) {
+function Item({ s, busy, saved, onSave, onCheck, today }: { s: Sch; busy: boolean; saved?: Date; today: string; onSave: (s: Sch, p: Record<string, unknown>, note: string) => Promise<void>; onCheck: (s: Sch) => Promise<void> }) {
   const [edit, setEdit] = useState<Record<string, string>>({});
   const val = (k: string) => edit[k] ?? (s[k] == null ? "" : String(s[k]));
   const patch = () => {
@@ -246,6 +279,8 @@ function Item({ s, busy, onSave, onCheck, today }: { s: Sch; busy: boolean; toda
     <details className="panel review">
       <summary>
         <b>{s.name}</b> <span className="hint" style={{ fontSize: 13 }}>· {s.kind === "grant" ? "Grant" : "Scholarship"} · {s.amount_text} · {s.deadline ?? s.deadline_text ?? "no deadline"} · checked {s.last_checked ?? "never"}{s.status === "approved" && !s.reviewed_by ? " · verified by AI" : ""}</span>
+        {saved && <span className="pill pill-ok" role="status">✓ Saved {timeOf(saved)}</span>}
+        {Object.keys(edit).length > 0 && <span className="unsaved"> ● Not saved yet</span>}
       </summary>
       <p className="hint" style={{ margin: "8px 0" }}>Given by {s.sponsor}{s.college ? ` · ${s.college}` : ""} · <a href={s.url} target="_blank" rel="noopener noreferrer">Official site ↗</a></p>
       {EDIT_FIELDS.map(([k, label]) => (
@@ -257,7 +292,7 @@ function Item({ s, busy, onSave, onCheck, today }: { s: Sch; busy: boolean; toda
         </div>
       ))}
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <button className="btn btn-inline btn-sm" onClick={() => void onSave(s, { ...patch(), status: "approved", last_checked: today }, `${s.name} is verified.`)}>{s.status === "approved" ? "Save and mark checked" : "Verify"}</button>
+        <button className="btn btn-inline btn-sm" onClick={async () => { await onSave(s, { ...patch(), status: "approved", last_checked: today }, `${s.name} is verified.`); setEdit({}); }}>{s.status === "approved" ? "Save and mark checked" : "Verify"}</button>
         <button className="btn btn-ghost btn-inline btn-sm" disabled={busy} onClick={() => void onCheck(s)}>{busy ? "Checking the official site…" : "🤖 Check with AI"}</button>
         {s.status !== "retired"
           ? <button className="btn btn-ghost btn-inline btn-sm" onClick={() => void onSave(s, { status: "retired" }, `${s.name} retired. Families no longer see it.`)}>Retire</button>
