@@ -1,0 +1,9 @@
+import type { MetadataRoute } from "next";
+
+const BASE = "https://scholartasks.com";
+
+/** Public pages for search engines. Signed-in app pages are left out. */
+export default function sitemap(): MetadataRoute.Sitemap {
+  const pages = ["", "/features", "/compare", "/schools", "/about", "/contact", "/tools/hope", "/trades", "/privacy", "/terms"];
+  return pages.map((p) => ({ url: BASE + p, changeFrequency: "monthly", priority: p === "" ? 1 : 0.7 }));
+}

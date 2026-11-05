@@ -7,8 +7,10 @@ import { PhoneReminders } from "./phone-reminders";
 import { THEME_BOOT } from "../lib/theme";
 
 export const metadata = {
+  metadataBase: new URL("https://scholartasks.com"),
   title: "ScholarTasks",
-  description: "AI college planning for students and parents.",
+  description: "College, scholarships, Georgia aid, grades and test prep for families, from 8th grade to graduation.",
+  openGraph: { siteName: "ScholarTasks", type: "website", images: ["/presentation/slide-01-cover.jpg"] },
   // Opened from the phone's home screen, run full screen like an app (no browser bars).
   appleWebApp: { capable: true, title: "ScholarTasks", statusBarStyle: "default" as const },
 };
