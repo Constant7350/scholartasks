@@ -1,0 +1,1047 @@
+{
+  "kind": "trades",
+  "version": "2026.11-1",
+  "pay_source": "U.S. Bureau of Labor Statistics, Occupational Employment and Wage Statistics, May 2025 (Georgia and national), via O*NET OnLine. Starting = 10th percentile, typical = median.",
+  "trades": [
+    {
+      "slug": "electrician",
+      "name": "Electrician",
+      "category": "electrical",
+      "summary": "Install and repair wiring, lighting and power in homes, businesses and factories.",
+      "work": "You read plans, run wire and conduit, connect panels and outlets, and find and fix problems safely. Indoors and outdoors, on your feet, with a lot of problem solving.",
+      "soc": "47-2111",
+      "cips": ["4603"],
+      "pay": { "ga_start": 37180, "ga_typical": 58320, "us_typical": null },
+      "outlook": "Georgia jobs expected to grow 15% from 2024 to 2034, about 2,340 openings a year.",
+      "paths": [
+        { "kind": "college", "label": "Electrical Systems Technology diploma or Electrical Technician certificate", "length": "About 1 year", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant; pay fees and tools", "checklist": "tech-college" },
+        { "kind": "union", "label": "IBEW/NECA inside wireman apprenticeship (union electrical training)", "length": "4 to 5 years, paid", "cost": "Little or no tuition; you earn while you learn", "note": "Needs one year of algebra with a passing grade and an aptitude test.", "checklist": "union-apprenticeship" },
+        { "kind": "apprenticeship", "label": "Non-union employer apprenticeship (for example through a contractor or Apprentice Georgia)", "length": "4 years, paid", "cost": "Usually free to you", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": true, "georgia": "Georgia licenses electrical contractors, not workers: you work under a licensed contractor. To get your own Class I or II contractor license you need to be 21, have 4 years of experience and pass an exam.", "other_states": "Most other states license journeyman electricians statewide, so you may need a state exam if you move.", "url": "https://rules.sos.ga.gov/gac/121-3" },
+      "hope_career_grant": true,
+      "interests": ["hands", "electric", "precise"],
+      "finders": [{ "label": "Find an IBEW/NECA training center", "url": "https://electricaltrainingalliance.org/SamplePage/ApplyingforApprenticeship" }],
+      "related_majors": ["1510", "1408"],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/47-2111.00?st=GA", "https://www.onetonline.org/link/localtrends/47-2111.00?st=GA", "https://rules.sos.ga.gov/gac/121-3"]
+    },
+    {
+      "slug": "lineworker",
+      "name": "Lineworker (power lines)",
+      "category": "electrical",
+      "summary": "Build and repair the power lines that bring electricity to homes and towns.",
+      "work": "You climb poles and work from bucket trucks, often outdoors in all weather, and help restore power after storms. Physical, team-based work with strong pay.",
+      "soc": "49-9051",
+      "cips": ["4603"],
+      "pay": { "ga_start": 50440, "ga_typical": 80080, "us_typical": 95320 },
+      "paths": [
+        { "kind": "college", "label": "Electrical Lineworker certificate at a Georgia technical college", "length": "About 1 semester", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "school", "label": "Southeast Lineman Training Center, Trenton, Georgia", "length": "15 weeks", "cost": "$24,555 including Class A CDL training", "note": "No dorms; the school helps find local housing. Classes start January, May and September.", "checklist": "private-school" },
+        { "kind": "apprenticeship", "label": "Utility or electric co-op lineworker apprenticeship after school", "length": "3 to 4 years, paid", "cost": "Paid job", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No state license. Most employers want a Class A commercial driver's license (CDL).", "url": "https://dds.georgia.gov" },
+      "hope_career_grant": true,
+      "interests": ["outdoors", "electric", "heights", "action"],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/49-9051.00?st=GA", "https://lineworker.com/programs/elp", "https://www.tcsg.edu/free-tuition/"]
+    },
+    {
+      "slug": "plumber",
+      "name": "Plumber or pipefitter",
+      "category": "building",
+      "summary": "Install and fix water, gas and drain pipes in homes, buildings and plants.",
+      "work": "You read plans, cut and join pipe, install fixtures and water heaters, and track down leaks. Pipefitters build high-pressure systems in factories and power plants.",
+      "soc": "47-2152",
+      "cips": ["4605"],
+      "pay": { "ga_start": 37680, "ga_typical": 57200, "us_typical": 63800 },
+      "paths": [
+        { "kind": "college", "label": "NCCER Plumbing and Pipefitting Technology diploma or certificates", "length": "Under 1 to 1.5 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "union", "label": "UA plumbers and pipefitters apprenticeship (for example Local 72 in Atlanta)", "length": "5 years, paid", "cost": "$60 application fee at Local 72; classes covered", "checklist": "union-apprenticeship" },
+        { "kind": "apprenticeship", "label": "Employer apprenticeship with a plumbing company", "length": "4 to 5 years, paid", "cost": "Usually free to you", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": true, "georgia": "Georgia has a state Journeyman Plumber license: 1 year of plumbing work, three references and an exam. Master Plumber needs 5 years, 2 of them as a licensed journeyman, and an exam.", "other_states": "Nearly every state licenses plumbers, with its own exam.", "url": "https://rules.sos.ga.gov/gac/121-3" },
+      "hope_career_grant": true,
+      "interests": ["hands", "precise"],
+      "finders": [{ "label": "Find a UA local (plumbers and pipefitters)", "url": "https://ua.org" }],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/47-2152.00?st=GA", "https://rules.sos.ga.gov/gac/121-3", "https://hirevets.shrm.org/jobs/6543d189fe4c65001ab64fd7"]
+    },
+    {
+      "slug": "hvac",
+      "name": "HVAC technician (heating and air)",
+      "category": "building",
+      "summary": "Install and repair heating, air conditioning and refrigeration systems.",
+      "work": "You visit homes and businesses, test and fix systems, and handle refrigerants safely. Busy year-round in Georgia's heat.",
+      "soc": "49-9021",
+      "cips": ["4702"],
+      "pay": { "ga_start": 36990, "ga_typical": 56390, "us_typical": 61010 },
+      "paths": [
+        { "kind": "college", "label": "Air Conditioning Technology diploma or certificates", "length": "6 months to 1.5 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "apprenticeship", "label": "Employer or union (UA, SMART) apprenticeship", "length": "3 to 5 years, paid", "cost": "Usually free to you", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": true, "georgia": "Federal EPA Section 608 certification is required to handle refrigerants (no minimum age). To run your own business, Georgia's Conditioned Air Contractor license needs 4 to 5 years of experience, EPA certification, a design course and an exam.", "url": "https://rules.sos.ga.gov/gac/121-3" },
+      "hope_career_grant": true,
+      "interests": ["hands", "machines", "electric"],
+      "sources": ["https://www.onetonline.org/link/localwages/49-9021.00?st=GA", "https://rules.sos.ga.gov/gac/121-3", "https://www.epa.gov/section608"]
+    },
+    {
+      "slug": "welder",
+      "name": "Welder",
+      "category": "manufacturing",
+      "summary": "Join metal parts for buildings, ships, pipelines, cars and machines.",
+      "work": "You use different welding methods (stick, MIG, TIG), read blueprints and pass welding tests. Work is in shops, factories, shipyards and job sites.",
+      "soc": "51-4121",
+      "cips": ["4805"],
+      "pay": { "ga_start": 38030, "ga_typical": 48430, "us_typical": 53750 },
+      "paths": [
+        { "kind": "college", "label": "Welding and Joining Technology diploma or certificates", "length": "A few months to 1 year", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "union", "label": "Pipe welding through UA, Ironworkers or Boilermakers apprenticeships", "length": "4 to 5 years, paid", "cost": "Little or no tuition", "checklist": "union-apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license. Employers want American Welding Society (AWS) certifications, which are welding tests you take.", "url": "https://www.aws.org" },
+      "hope_career_grant": true,
+      "interests": ["hands", "precise", "design"],
+      "sources": ["https://www.onetonline.org/link/localwages/51-4121.00?st=GA", "https://sctech.smartcatalogiq.com/current/catalog/hope-career-grant-programs-tuition-free"]
+    },
+    {
+      "slug": "cnc-machinist",
+      "name": "CNC machinist",
+      "category": "manufacturing",
+      "summary": "Program and run computer-controlled machines that cut precise metal parts.",
+      "work": "You read drawings, set up lathes and mills, write or adjust programs and measure parts to thousandths of an inch.",
+      "soc": "51-4041",
+      "cips": ["4805"],
+      "pay": { "ga_start": 37060, "ga_typical": 52610, "us_typical": 58750 },
+      "paths": [
+        { "kind": "college", "label": "CNC Technology or Precision Machining diploma or certificates", "length": "Under 1 to 2 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "apprenticeship", "label": "Manufacturer apprenticeship", "length": "About 4 years, paid", "cost": "Usually free to you", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license. NIMS credentials are optional and valued." },
+      "hope_career_grant": true,
+      "interests": ["machines", "precise", "computers"],
+      "sources": ["https://www.onetonline.org/link/localwages/51-4041.00?st=GA"]
+    },
+    {
+      "slug": "industrial-maintenance",
+      "name": "Industrial maintenance and mechatronics technician",
+      "category": "manufacturing",
+      "summary": "Keep factory machines, robots and production lines running.",
+      "work": "You troubleshoot electrical, mechanical and computer controls, fix breakdowns and do planned maintenance. Georgia's plants hire these techs constantly.",
+      "soc": "49-9041",
+      "cips": ["4703", "1504"],
+      "pay": { "ga_start": 44730, "ga_typical": 61130, "us_typical": 64520, "note": "Mechatronics technologists: $68,720 typical in Georgia." },
+      "paths": [
+        { "kind": "college", "label": "Industrial Systems Technology or Mechatronics diploma, or certificates", "length": "Under 1 to 2 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "apprenticeship", "label": "Manufacturer apprenticeship", "length": "2 to 4 years, paid", "cost": "Usually free to you", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license." },
+      "hope_career_grant": true,
+      "interests": ["machines", "electric", "computers"],
+      "related_majors": ["1504", "1408"],
+      "sources": ["https://www.onetonline.org/link/localwages/49-9041.00?st=GA", "https://www.onetonline.org/link/localwages/17-3024.00?st=GA"]
+    },
+    {
+      "slug": "auto-technician",
+      "name": "Automotive technician",
+      "category": "mechanics",
+      "summary": "Diagnose and repair cars and light trucks, including hybrids and electric vehicles.",
+      "work": "You use computer scanners and hand tools to find problems, then fix engines, brakes, steering, electrical systems and more.",
+      "soc": "49-3023",
+      "cips": ["4706"],
+      "pay": { "ga_start": 33580, "ga_typical": 49060, "us_typical": 50620 },
+      "outlook": "US jobs expected to grow 5 to 6% from 2025 to 2035.",
+      "paths": [
+        { "kind": "college", "label": "Automotive Technology diploma or certificates", "length": "Under 1 to 2 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "job", "label": "Dealer or manufacturer training programs", "length": "1 to 2 years", "cost": "Varies; some are paid", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license. ASE certifications are optional and raise pay; refrigerant work needs EPA 609." },
+      "hope_career_grant": true,
+      "interests": ["machines", "hands", "computers"],
+      "sources": ["https://www.onetonline.org/link/localwages/49-3023.00?st=GA", "https://www.onetonline.org/link/summary/49-3023.00?st=GA"]
+    },
+    {
+      "slug": "diesel-technician",
+      "name": "Diesel technician",
+      "category": "mechanics",
+      "summary": "Repair the big engines in trucks, buses, tractors and generators.",
+      "work": "You diagnose and rebuild diesel engines, brakes and electronics on heavy vehicles. Strong demand from trucking and logistics around Georgia's ports and highways.",
+      "soc": "49-3031",
+      "cips": ["4706"],
+      "pay": { "ga_start": 45890, "ga_typical": 61370, "us_typical": 61770 },
+      "paths": [
+        { "kind": "college", "label": "Diesel Equipment Technology diploma or certificates", "length": "Under 1 to 2 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "job", "label": "Dealer or fleet apprenticeship", "length": "2 to 4 years, paid", "cost": "Usually free to you", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license. ASE certifications help; some jobs want a CDL to road-test trucks." },
+      "hope_career_grant": true,
+      "interests": ["machines", "hands", "driving"],
+      "sources": ["https://www.onetonline.org/link/localwages/49-3031.00?st=GA"]
+    },
+    {
+      "slug": "heavy-equipment-mechanic",
+      "name": "Heavy equipment mechanic",
+      "category": "mechanics",
+      "summary": "Fix bulldozers, cranes, excavators and farm and mining machines.",
+      "work": "Hydraulics, engines and electronics on huge machines, in shops or out at job sites.",
+      "soc": "49-3042",
+      "cips": ["4703", "4706"],
+      "pay": { "ga_start": 44640, "ga_typical": 60560, "us_typical": 65510 },
+      "paths": [
+        { "kind": "college", "label": "Diesel or heavy equipment program at a technical college", "length": "1 to 2 years", "cost": "Tuition covered in Georgia when the program is on the HOPE Career Grant list", "checklist": "tech-college" },
+        { "kind": "job", "label": "Dealer technician programs (for example equipment makers' dealer networks)", "length": "2 years", "cost": "Varies", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license." },
+      "hope_career_grant": true,
+      "interests": ["machines", "outdoors", "hands"],
+      "sources": ["https://www.onetonline.org/link/localwages/49-3042.00?st=GA"]
+    },
+    {
+      "slug": "collision-repair",
+      "name": "Auto body and collision repair",
+      "category": "mechanics",
+      "summary": "Repair and repaint cars after accidents.",
+      "work": "You straighten frames, replace panels, match paint and make cars look new again. Part craft, part science.",
+      "soc": "49-3021",
+      "cips": ["4706"],
+      "pay": { "ga_start": 36140, "ga_typical": 51190, "us_typical": 54890 },
+      "paths": [
+        { "kind": "college", "label": "Auto Collision Repair diploma or certificates", "length": "Under 1 to 2 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" }
+      ],
+      "license": { "needed": false, "georgia": "No license. I-CAR and ASE training are valued." },
+      "hope_career_grant": true,
+      "interests": ["hands", "machines", "design"],
+      "sources": ["https://www.onetonline.org/link/localwages/49-3021.00?st=GA"]
+    },
+    {
+      "slug": "aircraft-mechanic",
+      "name": "Aircraft mechanic (A&P)",
+      "category": "mechanics",
+      "summary": "Inspect and repair airplanes and helicopters so they are safe to fly.",
+      "work": "You follow strict maintenance manuals on engines, landing gear and electronics. Atlanta's airport, Delta and aerospace plants hire many.",
+      "soc": "49-3011",
+      "cips": ["4706"],
+      "pay": { "ga_start": 47240, "ga_typical": 75640, "us_typical": 79870 },
+      "paths": [
+        { "kind": "college", "label": "Aviation Maintenance Technology at an FAA Part 147 school (several Georgia technical colleges)", "length": "18 to 24 months", "cost": "Aviation Technology is on Georgia's HOPE Career Grant list; ask the college which programs qualify", "checklist": "tech-college" },
+        { "kind": "military", "label": "Military aircraft maintenance", "length": "Varies", "cost": "Paid", "note": "Military experience can count toward the FAA license." }
+      ],
+      "license": { "needed": true, "georgia": "Federal FAA Airframe and Powerplant (A&P) certificate: age 18, read and speak English, finish an FAA Part 147 school or get 18 to 30 months of experience, then pass written, oral and practical tests.", "url": "https://www.faa.gov" },
+      "hope_career_grant": true,
+      "interests": ["machines", "precise"],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/49-3011.00?st=GA", "https://www.tcsg.edu/free-tuition/"]
+    },
+    {
+      "slug": "cdl-truck-driver",
+      "name": "Truck driver (CDL)",
+      "category": "mechanics",
+      "summary": "Drive tractor-trailers and haul goods across the state or the country.",
+      "work": "Long-haul drivers are away for days; local and regional drivers are home most nights. Georgia's ports and warehouses need many drivers.",
+      "soc": "53-3032",
+      "cips": ["4902"],
+      "pay": { "ga_start": 38150, "ga_typical": 57050, "us_typical": 58640 },
+      "paths": [
+        { "kind": "college", "label": "Commercial Truck Driving certificate at a Georgia technical college", "length": "About 8 to 12 weeks", "cost": "HOPE Grant plus up to $1,100 HOPE Career Grant for the program", "checklist": "cdl" },
+        { "kind": "job", "label": "Company-paid CDL training (you agree to drive for them for a time)", "length": "3 to 8 weeks", "cost": "Paid by the company; read the contract", "checklist": "cdl" }
+      ],
+      "license": { "needed": true, "georgia": "Commercial driver's license from Georgia DDS: age 18 to drive only inside Georgia, 21 to cross state lines or haul hazardous materials. You hold a learner's permit at least 14 days and finish federal entry-level driver training first.", "url": "https://dds.georgia.gov" },
+      "hope_career_grant": true,
+      "interests": ["driving", "outdoors"],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/53-3032.00?st=GA", "https://www.gafutures.org/hope-state-aid-programs/hope-zell-miller-grants/hope-career-grant/award-amounts/"]
+    },
+    {
+      "slug": "heavy-equipment-operator",
+      "name": "Heavy equipment operator",
+      "category": "building",
+      "summary": "Run bulldozers, excavators and cranes on road and building projects.",
+      "work": "Outdoor work moving earth and materials with precision; projects change often.",
+      "soc": "47-2073",
+      "cips": ["4902"],
+      "pay": { "ga_start": 37810, "ga_typical": 47880, "us_typical": 59850 },
+      "paths": [
+        { "kind": "union", "label": "Operating Engineers (IUOE) apprenticeship", "length": "3 to 4 years, paid", "cost": "Little or no tuition", "checklist": "union-apprenticeship" },
+        { "kind": "school", "label": "Operator school", "length": "Weeks", "cost": "Varies; compare carefully", "checklist": "private-school" }
+      ],
+      "license": { "needed": false, "georgia": "No state license for most equipment. Crane operators usually need national (NCCCO) certification." },
+      "hope_career_grant": false,
+      "interests": ["outdoors", "machines", "heights"],
+      "finders": [{ "label": "Find an Operating Engineers local", "url": "https://www.iuoe.org/join/find-a-local" }],
+      "sources": ["https://www.onetonline.org/link/localwages/47-2073.00?st=GA", "https://www.iuoe.org/join/find-a-local"]
+    },
+    {
+      "slug": "carpenter",
+      "name": "Carpenter",
+      "category": "building",
+      "summary": "Build frames, floors, stairs and cabinets for homes and buildings.",
+      "work": "You measure, cut and assemble wood and other materials, from framing houses to finish work.",
+      "soc": "47-2031",
+      "cips": ["4602"],
+      "pay": { "ga_start": 34890, "ga_typical": 49350, "us_typical": 60580 },
+      "paths": [
+        { "kind": "college", "label": "Carpentry diploma or Framing Carpenter certificate", "length": "Under 1 to 1.5 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "union", "label": "Carpenters union apprenticeship", "length": "3 to 4 years, paid", "cost": "Little or no tuition", "checklist": "union-apprenticeship" },
+        { "kind": "job", "label": "Learn on the job with a builder", "length": "Varies", "cost": "Paid" }
+      ],
+      "license": { "needed": false, "georgia": "No license for workers. Running your own building company needs a Georgia residential or general contractor license." },
+      "hope_career_grant": true,
+      "interests": ["hands", "design", "outdoors"],
+      "finders": [{ "label": "Carpenters union training", "url": "https://www.carpenters.org" }],
+      "sources": ["https://www.onetonline.org/link/localwages/47-2031.00?st=GA"]
+    },
+    {
+      "slug": "mason",
+      "name": "Brick and block mason",
+      "category": "building",
+      "summary": "Build walls, chimneys and buildings with brick, block and stone.",
+      "work": "Outdoor, physical craft work where you can see what you built for decades.",
+      "soc": "47-2021",
+      "cips": ["4601"],
+      "pay": { "ga_start": 34600, "ga_typical": 50650, "us_typical": 62120 },
+      "paths": [
+        { "kind": "union", "label": "Bricklayers (BAC) apprenticeship", "length": "3 to 4 years, paid", "cost": "Little or no tuition", "checklist": "union-apprenticeship" },
+        { "kind": "college", "label": "Masonry program at some technical colleges", "length": "About 1 year", "cost": "HOPE Grant in Georgia", "checklist": "tech-college" }
+      ],
+      "license": { "needed": false, "georgia": "No license." },
+      "hope_career_grant": false,
+      "interests": ["hands", "outdoors", "design"],
+      "sources": ["https://www.onetonline.org/link/localwages/47-2021.00?st=GA"]
+    },
+    {
+      "slug": "ironworker",
+      "name": "Ironworker",
+      "category": "building",
+      "summary": "Raise the steel frames of bridges, stadiums and tall buildings.",
+      "work": "You work at heights, bolt and weld steel beams and place rebar. Team work with strict safety.",
+      "soc": "47-2221",
+      "cips": ["4805"],
+      "pay": { "ga_start": 38370, "ga_typical": 48090, "us_typical": 62780, "note": "Pay is much higher in some other states." },
+      "paths": [
+        { "kind": "union", "label": "Ironworkers apprenticeship", "length": "3 to 4 years, paid", "cost": "Little or no tuition", "checklist": "union-apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license." },
+      "hope_career_grant": false,
+      "interests": ["heights", "hands", "outdoors"],
+      "finders": [{ "label": "Ironworkers apprenticeship", "url": "https://www.ironworkers.org" }],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/47-2221.00?st=GA"]
+    },
+    {
+      "slug": "sheet-metal",
+      "name": "Sheet metal worker",
+      "category": "building",
+      "summary": "Make and install ducts, roofs, signs and metal parts for buildings.",
+      "work": "Shop and job-site work cutting, bending and joining metal, often on heating and air systems.",
+      "soc": "47-2211",
+      "cips": ["4805"],
+      "pay": { "ga_start": 38820, "ga_typical": 56800, "us_typical": 61800 },
+      "paths": [
+        { "kind": "union", "label": "SMART sheet metal apprenticeship", "length": "4 to 5 years, paid", "cost": "Little or no tuition", "checklist": "union-apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license." },
+      "hope_career_grant": false,
+      "interests": ["hands", "precise"],
+      "finders": [{ "label": "Sheet metal training (ITI)", "url": "https://www.sheetmetal-iti.org" }],
+      "sources": ["https://www.onetonline.org/link/localwages/47-2211.00?st=GA"]
+    },
+    {
+      "slug": "boilermaker",
+      "name": "Boilermaker",
+      "category": "building",
+      "summary": "Build and repair boilers, tanks and vessels in power plants and refineries.",
+      "work": "Heavy welding and rigging on big industrial projects; often travel between job sites.",
+      "soc": "47-2011",
+      "cips": ["4805"],
+      "pay": { "ga_start": 43180, "ga_typical": 64200, "us_typical": 76410 },
+      "paths": [
+        { "kind": "union", "label": "Boilermakers union apprenticeship", "length": "4 years, paid", "cost": "Little or no tuition", "checklist": "union-apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license." },
+      "hope_career_grant": false,
+      "thin_in_georgia": "Few jobs in Georgia. Most work is near power plants, refineries and shipyards in the Gulf Coast, Midwest and other industrial states, and boilermakers often travel.",
+      "interests": ["heights", "hands", "action"],
+      "finders": [{ "label": "Boilermakers apprenticeship", "url": "https://boilermakers.org" }],
+      "sources": ["https://www.onetonline.org/link/localwages/47-2011.00?st=GA"]
+    },
+    {
+      "slug": "elevator-installer",
+      "name": "Elevator installer and repairer",
+      "category": "building",
+      "summary": "Install and fix elevators, escalators and moving walkways.",
+      "work": "Electrical, mechanical and computer work inside elevator shafts and machine rooms. One of the best-paid trades.",
+      "soc": "47-4021",
+      "cips": [],
+      "pay": { "ga_start": null, "ga_typical": 83500, "us_typical": 109910, "note": "Georgia's starting figure is unreliable, so it is left out." },
+      "paths": [
+        { "kind": "union", "label": "Elevator constructors (IUEC) apprenticeship with NEIEP classes", "length": "4 to 5 years, paid", "cost": "Little or no tuition", "note": "Openings are rare and competitive; mostly in big metro areas such as Atlanta.", "checklist": "union-apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "Georgia rules for elevator mechanics are not confirmed yet; many other states require a state license." },
+      "hope_career_grant": false,
+      "interests": ["electric", "machines", "heights"],
+      "finders": [{ "label": "Elevator industry apprenticeship (NEIEP)", "url": "https://www.neiep.org" }],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/47-4021.00?st=GA"]
+    },
+    {
+      "slug": "construction-manager",
+      "name": "Construction manager",
+      "category": "building",
+      "summary": "Run building projects: schedules, budgets, crews and safety.",
+      "work": "Part office, part job site. Many start in a trade, then move up; a degree helps.",
+      "soc": "11-9021",
+      "cips": ["4604", "5220"],
+      "pay": { "ga_start": 71300, "ga_typical": 110810, "us_typical": 114990 },
+      "paths": [
+        { "kind": "college", "label": "Construction Management diploma or certificates, or a two-year degree", "length": "1 to 2 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "job", "label": "Work up from a trade or field engineer role", "length": "Several years", "cost": "Paid" }
+      ],
+      "license": { "needed": false, "georgia": "No license to work as a manager. Owning a building company needs a Georgia residential or general contractor license." },
+      "hope_career_grant": true,
+      "interests": ["heights", "outdoors", "people"],
+      "related_majors": ["5220", "1510"],
+      "sources": ["https://www.onetonline.org/link/localwages/11-9021.00?st=GA"]
+    },
+    {
+      "slug": "solar-installer",
+      "name": "Solar panel installer",
+      "category": "electrical",
+      "summary": "Put solar panels on roofs and in solar farms.",
+      "work": "Outdoor work on roofs and fields mounting panels and connecting them. Wiring hookups are done under an electrical contractor.",
+      "soc": "47-2231",
+      "cips": ["1505"],
+      "pay": { "ga_start": 45080, "ga_typical": 47790, "us_typical": 53140 },
+      "paths": [
+        { "kind": "college", "label": "Photovoltaic Systems Installation and Repair certificate", "length": "1 semester", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "job", "label": "Learn on the job with a solar company", "length": "Months", "cost": "Paid" }
+      ],
+      "license": { "needed": false, "georgia": "No installer license. NABCEP certification is optional." },
+      "hope_career_grant": true,
+      "interests": ["outdoors", "electric", "heights"],
+      "sources": ["https://www.onetonline.org/link/localwages/47-2231.00?st=GA", "https://sctech.smartcatalogiq.com/current/catalog/hope-career-grant-programs-tuition-free"]
+    },
+    {
+      "slug": "wind-turbine-technician",
+      "name": "Wind turbine technician",
+      "category": "electrical",
+      "summary": "Climb and repair the giant turbines on wind farms.",
+      "work": "You climb hundreds of feet, fix gearboxes and electronics, and travel to wind farms.",
+      "soc": "49-9081",
+      "cips": ["1505"],
+      "pay": { "ga_start": null, "ga_typical": null, "us_typical": 64120, "note": "Georgia has too few jobs to report pay." },
+      "paths": [
+        { "kind": "college", "label": "Wind energy technology at community colleges in wind states (for example Iowa, Texas, New Mexico)", "length": "6 months to 2 years", "cost": "Out-of-state tuition unless you move there first", "checklist": "out-of-state-college" },
+        { "kind": "school", "label": "Private wind technician programs", "length": "Months", "cost": "Varies", "checklist": "private-school" }
+      ],
+      "license": { "needed": false, "georgia": "No license; climbing and safety certifications are required by employers." },
+      "hope_career_grant": false,
+      "thin_in_georgia": "Georgia has almost no wind farms. Jobs are mainly in Texas, the Plains (Iowa, Oklahoma, Kansas) and Illinois.",
+      "interests": ["heights", "outdoors", "electric", "action"],
+      "sources": ["https://www.onetonline.org/link/localwages/49-9081.00?st=GA"]
+    },
+    {
+      "slug": "commercial-diver",
+      "name": "Commercial diver",
+      "category": "mechanics",
+      "summary": "Work underwater building, welding and inspecting docks, pipelines and ships.",
+      "work": "Demanding and sometimes risky work, often offshore for weeks. Pairs well with welding skills.",
+      "soc": "49-9092",
+      "cips": ["4903"],
+      "pay": { "ga_start": null, "ga_typical": null, "us_typical": 72990, "note": "Georgia has too few jobs to report pay." },
+      "paths": [
+        { "kind": "college", "label": "Commercial Diving at South Louisiana Community College", "length": "About 1 year", "cost": "Out-of-state tuition plus dive gear", "checklist": "out-of-state-college" },
+        { "kind": "school", "label": "Private dive schools on the Gulf Coast, East Coast and in Seattle", "length": "About 4 to 7 months", "cost": "Often $15,000 or more; check accreditation and federal aid", "checklist": "private-school" }
+      ],
+      "license": { "needed": false, "georgia": "No state license. Employers expect an accredited commercial diving school certificate and a dive physical." },
+      "hope_career_grant": false,
+      "thin_in_georgia": "Most jobs are on the Gulf Coast (Louisiana, Texas) for offshore energy, plus big ports.",
+      "interests": ["water", "action", "hands"],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/49-9092.00?st=GA", "https://solacc.edu/academics/programs-offered/commercial-diving"]
+    },
+    {
+      "slug": "marine-mechanic",
+      "name": "Boat and small engine mechanic",
+      "category": "mechanics",
+      "summary": "Repair boat motors, outboards, lawn equipment and motorcycles.",
+      "work": "Hands-on engine work at marinas, dealers and repair shops; Georgia's coast and lakes have marinas.",
+      "soc": "49-3051",
+      "cips": ["4706"],
+      "pay": { "ga_start": 36860, "ga_typical": 49850, "us_typical": 57550 },
+      "paths": [
+        { "kind": "college", "label": "Small engine or marine technology program", "length": "Under 1 to 2 years", "cost": "HOPE Grant in Georgia", "checklist": "tech-college" },
+        { "kind": "school", "label": "Marine technician schools (Florida and other coastal states)", "length": "About 1 year", "cost": "Varies", "checklist": "private-school" }
+      ],
+      "license": { "needed": false, "georgia": "No license; engine makers offer certifications." },
+      "hope_career_grant": false,
+      "interests": ["water", "machines", "hands"],
+      "sources": ["https://www.onetonline.org/link/localwages/49-3051.00?st=GA"]
+    },
+    {
+      "slug": "ag-mechanic",
+      "name": "Farm equipment mechanic",
+      "category": "animals",
+      "summary": "Keep tractors, combines and irrigation equipment running on farms.",
+      "work": "Engines, hydraulics and GPS electronics, often out on farms. Big need in rural Georgia.",
+      "soc": "49-3041",
+      "cips": ["0102", "4706"],
+      "pay": { "ga_start": 38030, "ga_typical": 50170, "us_typical": 56550 },
+      "paths": [
+        { "kind": "college", "label": "Diesel or agricultural equipment program", "length": "1 to 2 years", "cost": "Tuition covered in Georgia when the program is on the HOPE Career Grant list", "checklist": "tech-college" },
+        { "kind": "job", "label": "Equipment dealer technician program", "length": "2 years", "cost": "Varies", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": false, "georgia": "No license." },
+      "hope_career_grant": false,
+      "interests": ["machines", "outdoors", "animals"],
+      "sources": ["https://www.onetonline.org/link/localwages/49-3041.00?st=GA"]
+    },
+    {
+      "slug": "farrier",
+      "name": "Farrier (horseshoeing)",
+      "category": "animals",
+      "summary": "Trim horses' hooves and fit horseshoes.",
+      "work": "Physical, skilled work at barns and horse farms. Most farriers run their own business and build a client list.",
+      "soc": null,
+      "cips": ["0105"],
+      "pay": { "ga_start": null, "ga_typical": null, "us_typical": null, "note": "There is no federal pay data for farriers; income depends on how many horses you shoe." },
+      "paths": [
+        { "kind": "school", "label": "Farrier school (a few weeks to 6 months), then work alongside an experienced farrier", "length": "Weeks to months, plus 1 to 2 years helping", "cost": "Varies by school", "note": "Only a few farrier schools exist nationwide, mostly outside Georgia.", "checklist": "private-school" }
+      ],
+      "license": { "needed": false, "georgia": "No license. American Farrier's Association certification is voluntary." },
+      "hope_career_grant": false,
+      "thin_in_georgia": "Few farrier schools anywhere; expect to travel for training. Horse country (Kentucky, Texas, Florida, Oklahoma) has the most work.",
+      "interests": ["animals", "hands", "outdoors"],
+      "sources": ["https://www.americanfarriers.com/articles/15514-mike-rowe-works-foundation-scholarship-deadlines-approach"]
+    },
+    {
+      "slug": "vet-technician",
+      "name": "Veterinary technician",
+      "category": "animals",
+      "summary": "The nurse of the animal world: help vets with exams, surgery, X-rays and lab work.",
+      "work": "Hands-on care for pets, horses or farm animals in clinics and hospitals. A great step toward vet school too.",
+      "soc": "29-2056",
+      "cips": ["0183"],
+      "pay": { "ga_start": 35060, "ga_typical": 43060, "us_typical": 47380 },
+      "paths": [
+        { "kind": "college", "label": "Veterinary Technology associate degree (AVMA accredited)", "length": "About 2 years", "cost": "HOPE Scholarship or HOPE Grant can help in Georgia", "checklist": "health-program" }
+      ],
+      "license": { "needed": true, "georgia": "Registered veterinary technician through the Georgia State Board of Veterinary Medicine: finish an accredited program and pass the national VTNE exam." },
+      "hope_career_grant": false,
+      "interests": ["animals", "people", "precise"],
+      "related_majors": ["0109", "0180"],
+      "sources": ["https://www.onetonline.org/link/localwages/29-2056.00?st=GA"]
+    },
+    {
+      "slug": "landscaping",
+      "name": "Landscaping and turf care",
+      "category": "animals",
+      "summary": "Design, plant and care for lawns, golf courses, parks and gardens.",
+      "work": "Outdoor work with plants and equipment; can grow into running your own business or managing a golf course.",
+      "soc": "37-3011",
+      "cips": ["0106"],
+      "pay": { "ga_start": 28710, "ga_typical": 37970, "us_typical": 39150 },
+      "paths": [
+        { "kind": "college", "label": "Horticulture or turfgrass program", "length": "Under 1 to 2 years", "cost": "HOPE Grant in Georgia", "checklist": "tech-college" },
+        { "kind": "job", "label": "Learn on the job", "length": "Varies", "cost": "Paid" }
+      ],
+      "license": { "needed": false, "georgia": "No license for general work. Spraying pesticides for pay needs a Georgia Department of Agriculture applicator license." },
+      "hope_career_grant": false,
+      "interests": ["outdoors", "design"],
+      "sources": ["https://www.onetonline.org/link/localwages/37-3011.00?st=GA"]
+    },
+    {
+      "slug": "water-operator",
+      "name": "Water and wastewater plant operator",
+      "category": "electrical",
+      "summary": "Run the plants that clean drinking water and wastewater for towns.",
+      "work": "You watch gauges and computer controls, test water and keep pumps running. Steady government jobs.",
+      "soc": "51-8031",
+      "cips": ["1505"],
+      "pay": { "ga_start": 36970, "ga_typical": 48930, "us_typical": 60020 },
+      "paths": [
+        { "kind": "job", "label": "Hired as a trainee by a city or county, with short courses", "length": "Months, then exams", "cost": "Often paid by the employer", "checklist": "apprenticeship" }
+      ],
+      "license": { "needed": true, "georgia": "Georgia operator certificates rise by class with experience and exams (State Board of Examiners for water and wastewater operators)." },
+      "hope_career_grant": false,
+      "interests": ["precise", "computers", "outdoors"],
+      "sources": ["https://www.onetonline.org/link/localwages/51-8031.00?st=GA"]
+    },
+    {
+      "slug": "lpn",
+      "name": "Licensed practical nurse (LPN)",
+      "category": "health",
+      "summary": "Care for patients in nursing homes, clinics and hospitals under RNs and doctors.",
+      "work": "You check vital signs, give medicines, change bandages and help patients day to day. A fast start that can lead to an RN degree later.",
+      "soc": "29-2061",
+      "cips": ["5139"],
+      "pay": { "ga_start": 46010, "ga_typical": 62030, "us_typical": 64400 },
+      "paths": [
+        { "kind": "college", "label": "Practical Nursing diploma", "length": "About 12 to 18 months", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "note": "Extra entrance testing and health records are required.", "checklist": "health-program" }
+      ],
+      "license": { "needed": true, "georgia": "Georgia Board of Nursing license after passing the NCLEX-PN exam." },
+      "hope_career_grant": true,
+      "interests": ["people", "action"],
+      "related_majors": ["5138"],
+      "sources": ["https://www.onetonline.org/link/localwages/29-2061.00?st=GA", "https://sctech.smartcatalogiq.com/current/catalog/hope-career-grant-programs-tuition-free"]
+    },
+    {
+      "slug": "cna",
+      "name": "Certified nursing assistant (CNA)",
+      "category": "health",
+      "summary": "Help patients bathe, eat and move, and keep nurses informed.",
+      "work": "Caring, hands-on work in nursing homes and hospitals. The quickest way into health care, often while studying nursing.",
+      "soc": "31-1131",
+      "cips": ["5139"],
+      "pay": { "ga_start": 30300, "ga_typical": 37680, "us_typical": 42260 },
+      "paths": [
+        { "kind": "college", "label": "Nurse Aide certificate", "length": "A few weeks", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "health-program" },
+        { "kind": "job", "label": "Training paid by a nursing home", "length": "Weeks", "cost": "Often free" }
+      ],
+      "license": { "needed": true, "georgia": "Listed on the Georgia nurse aide registry after an approved training program and a written and skills test." },
+      "hope_career_grant": true,
+      "interests": ["people"],
+      "related_majors": ["5138"],
+      "sources": ["https://www.onetonline.org/link/localwages/31-1131.00?st=GA"]
+    },
+    {
+      "slug": "medical-assistant",
+      "name": "Medical assistant",
+      "category": "health",
+      "summary": "Help in doctors' offices with patients, blood draws and paperwork.",
+      "work": "A mix of patient care and office work in clinics; regular daytime hours.",
+      "soc": "31-9092",
+      "cips": ["5108"],
+      "pay": { "ga_start": 34270, "ga_typical": 41600, "us_typical": 45690 },
+      "paths": [
+        { "kind": "college", "label": "Medical Assisting diploma", "length": "About 1 year", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "health-program" }
+      ],
+      "license": { "needed": false, "georgia": "No Georgia license. National certification (CMA or RMA) is valued." },
+      "hope_career_grant": true,
+      "interests": ["people", "precise"],
+      "sources": ["https://www.onetonline.org/link/localwages/31-9092.00?st=GA"]
+    },
+    {
+      "slug": "dental-hygienist",
+      "name": "Dental hygienist",
+      "category": "health",
+      "summary": "Clean teeth, take X-rays and teach patients to care for their teeth.",
+      "work": "One-on-one patient care in dental offices with regular hours and high pay for a two-year degree.",
+      "soc": "29-1292",
+      "cips": ["5106"],
+      "pay": { "ga_start": 74610, "ga_typical": 95490, "us_typical": 98100 },
+      "paths": [
+        { "kind": "college", "label": "Dental Hygiene associate degree (CODA accredited)", "length": "About 2 to 3 years including required classes", "cost": "HOPE Scholarship can help in Georgia", "note": "Competitive entry with science prerequisites.", "checklist": "health-program" }
+      ],
+      "license": { "needed": true, "georgia": "Georgia Board of Dentistry license after an accredited program, the national board exam and a clinical exam." },
+      "hope_career_grant": false,
+      "interests": ["people", "precise"],
+      "sources": ["https://www.onetonline.org/link/localwages/29-1292.00?st=GA"]
+    },
+    {
+      "slug": "surgical-technologist",
+      "name": "Surgical technologist",
+      "category": "health",
+      "summary": "Prepare operating rooms and hand instruments to surgeons.",
+      "work": "Fast-paced, precise teamwork in the operating room.",
+      "soc": "29-2055",
+      "cips": ["5109"],
+      "pay": { "ga_start": 40390, "ga_typical": 64010, "us_typical": 64650 },
+      "paths": [
+        { "kind": "college", "label": "Surgical Technology diploma or associate degree", "length": "1 to 2 years", "cost": "HOPE Grant or Scholarship in Georgia", "checklist": "health-program" }
+      ],
+      "license": { "needed": false, "georgia": "No Georgia license. Employers want the national CST certification." },
+      "hope_career_grant": false,
+      "interests": ["people", "precise", "action"],
+      "sources": ["https://www.onetonline.org/link/localwages/29-2055.00?st=GA"]
+    },
+    {
+      "slug": "radiologic-technologist",
+      "name": "Radiologic (X-ray) technologist",
+      "category": "health",
+      "summary": "Take X-rays and other medical images that help doctors find problems.",
+      "work": "Patient care plus imaging machines; can move up to CT and MRI.",
+      "soc": "29-2034",
+      "cips": ["5109"],
+      "pay": { "ga_start": 49730, "ga_typical": 74550, "us_typical": 80110 },
+      "paths": [
+        { "kind": "college", "label": "Radiologic Technology associate degree", "length": "About 2 years", "cost": "HOPE Scholarship can help in Georgia", "note": "Competitive entry.", "checklist": "health-program" }
+      ],
+      "license": { "needed": true, "georgia": "Employers require national ARRT certification; check Georgia's current state rules." },
+      "hope_career_grant": false,
+      "interests": ["people", "computers", "precise"],
+      "sources": ["https://www.onetonline.org/link/localwages/29-2034.00?st=GA"]
+    },
+    {
+      "slug": "paramedic",
+      "name": "EMT and paramedic",
+      "category": "safety",
+      "summary": "Answer 911 calls and give emergency care on the way to the hospital.",
+      "work": "Shift work on ambulances; you make fast decisions under pressure. EMT comes first, paramedic is the advanced level.",
+      "soc": "29-2043",
+      "cips": ["5109"],
+      "pay": { "ga_start": 40600, "ga_typical": 57660, "us_typical": 60600, "note": "EMTs: $45,550 typical in Georgia." },
+      "paths": [
+        { "kind": "college", "label": "EMT certificate, then Paramedicine diploma", "length": "EMT about 1 semester; paramedic 1 to 2 years more", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "health-program" }
+      ],
+      "license": { "needed": true, "georgia": "State EMS license from the Georgia Department of Public Health after an approved course and the national NREMT exam. Age 18." },
+      "hope_career_grant": true,
+      "interests": ["action", "people", "driving"],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/29-2043.00?st=GA", "https://www.onetonline.org/link/localwages/29-2042.00?st=GA"]
+    },
+    {
+      "slug": "pharmacy-technician",
+      "name": "Pharmacy technician",
+      "category": "health",
+      "summary": "Help pharmacists fill prescriptions and serve customers.",
+      "work": "Careful, detail work in drugstores and hospitals.",
+      "soc": "29-2052",
+      "cips": ["5108"],
+      "pay": { "ga_start": 35160, "ga_typical": 41910, "us_typical": 45750 },
+      "paths": [
+        { "kind": "college", "label": "Pharmacy Technology certificate or diploma", "length": "Under 1 year", "cost": "HOPE Grant in Georgia", "checklist": "health-program" },
+        { "kind": "job", "label": "Drugstore training programs", "length": "Months", "cost": "Paid" }
+      ],
+      "license": { "needed": true, "georgia": "Register with the Georgia Board of Pharmacy. Many employers want national certification (PTCB)." },
+      "hope_career_grant": false,
+      "interests": ["precise", "people"],
+      "sources": ["https://www.onetonline.org/link/localwages/29-2052.00?st=GA"]
+    },
+    {
+      "slug": "cosmetologist",
+      "name": "Cosmetologist and hair designer",
+      "category": "beauty",
+      "summary": "Cut, color and style hair, and do skin and nail care.",
+      "work": "Creative, people-focused work in salons; many cosmetologists build their own clients or open a salon.",
+      "soc": "39-5012",
+      "cips": ["1204"],
+      "pay": { "ga_start": 17310, "ga_typical": 34560, "us_typical": 35790, "note": "Tips and your own client list can raise income a lot." },
+      "paths": [
+        { "kind": "college", "label": "Cosmetology diploma at a technical college", "length": "1,500 hours (at least 9 months)", "cost": "HOPE Grant in Georgia; far cheaper than most private beauty schools", "checklist": "beauty-school" },
+        { "kind": "school", "label": "Private beauty school", "length": "1,500 hours", "cost": "Often $10,000 to $20,000; compare carefully", "checklist": "beauty-school" },
+        { "kind": "apprenticeship", "label": "Apprenticeship in a licensed salon", "length": "3,000 hours", "cost": "Low", "checklist": "beauty-school" }
+      ],
+      "license": { "needed": true, "georgia": "Georgia State Board of Cosmetology and Barbers: age 17, high school diploma or GED, 1,500 school hours (or 3,000 apprenticeship hours), then written and practical exams. Hair designer: 1,325 hours.", "other_states": "Required hours range from about 1,000 to 2,100 by state.", "url": "https://law.justia.com/codes/georgia/2022/title-43/chapter-10/section-43-10-9/" },
+      "hope_career_grant": false,
+      "interests": ["design", "people"],
+      "min_age": 17,
+      "sources": ["https://www.onetonline.org/link/localwages/39-5012.00?st=GA", "https://law.justia.com/codes/georgia/2022/title-43/chapter-10/section-43-10-9/"]
+    },
+    {
+      "slug": "barber",
+      "name": "Barber",
+      "category": "beauty",
+      "summary": "Cut and style hair and shave and trim beards.",
+      "work": "Social work in barbershops; many barbers rent a chair or own the shop.",
+      "soc": "39-5011",
+      "cips": ["1204"],
+      "pay": { "ga_start": 27950, "ga_typical": 30750, "us_typical": 38210, "note": "Tips and a loyal client list raise income." },
+      "paths": [
+        { "kind": "college", "label": "Barbering diploma", "length": "About 1 year", "cost": "HOPE Grant in Georgia", "checklist": "beauty-school" },
+        { "kind": "apprenticeship", "label": "Apprenticeship under a licensed master barber", "length": "Longer than school", "cost": "Low", "checklist": "beauty-school" }
+      ],
+      "license": { "needed": true, "georgia": "Georgia State Board of Cosmetology and Barbers license after approved training and state exams." },
+      "hope_career_grant": false,
+      "interests": ["design", "people"],
+      "min_age": 17,
+      "sources": ["https://www.onetonline.org/link/localwages/39-5011.00?st=GA"]
+    },
+    {
+      "slug": "nail-technician",
+      "name": "Nail technician and esthetician",
+      "category": "beauty",
+      "summary": "Do manicures, nail art, facials and skin care.",
+      "work": "Detailed, creative work with clients in salons and spas.",
+      "soc": "39-5092",
+      "cips": ["1204"],
+      "pay": { "ga_start": 21390, "ga_typical": 26910, "us_typical": 35760, "note": "Tips are often extra." },
+      "paths": [
+        { "kind": "college", "label": "Nail Technician or Esthetician certificate", "length": "Nails 525 hours (4+ months); esthetics 1,000 hours (9+ months)", "cost": "HOPE Grant in Georgia", "checklist": "beauty-school" }
+      ],
+      "license": { "needed": true, "georgia": "Georgia board license: age 17, high school diploma or GED, 525 hours for nails or 1,000 hours for esthetics, then exams.", "url": "https://law.justia.com/codes/georgia/2022/title-43/chapter-10/section-43-10-9/" },
+      "hope_career_grant": false,
+      "interests": ["design", "people", "precise"],
+      "min_age": 17,
+      "sources": ["https://www.onetonline.org/link/localwages/39-5092.00?st=GA", "https://law.justia.com/codes/georgia/2022/title-43/chapter-10/section-43-10-9/"]
+    },
+    {
+      "slug": "police-officer",
+      "name": "Police officer or sheriff's deputy",
+      "category": "safety",
+      "summary": "Protect the community, respond to calls and enforce the law.",
+      "work": "Shift work patrolling, investigating and helping people; physical and mental tests to get in.",
+      "soc": "33-3051",
+      "cips": ["4301"],
+      "pay": { "ga_start": 43690, "ga_typical": 58120, "us_typical": 76210 },
+      "paths": [
+        { "kind": "academy", "label": "Basic Law Enforcement certificate at a technical college or an agency academy", "length": "About 3 to 5 months", "cost": "HOPE Grant plus up to $3,750 HOPE Career Grant in Georgia; agencies often pay recruits", "checklist": "tech-college" }
+      ],
+      "license": { "needed": true, "georgia": "Certified by Georgia POST after the academy and state exam. Many agencies hire at 21." },
+      "hope_career_grant": true,
+      "interests": ["action", "people", "driving"],
+      "min_age": 18,
+      "related_majors": ["4301"],
+      "sources": ["https://www.onetonline.org/link/localwages/33-3051.00?st=GA", "https://www.gafutures.org/hope-state-aid-programs/hope-zell-miller-grants/hope-career-grant/award-amounts/"]
+    },
+    {
+      "slug": "firefighter",
+      "name": "Firefighter",
+      "category": "safety",
+      "summary": "Fight fires and answer medical emergencies.",
+      "work": "24-hour shifts at a station, training, and emergency calls. Most departments want EMT certification too.",
+      "soc": "33-2011",
+      "cips": ["4302"],
+      "pay": { "ga_start": 33000, "ga_typical": 46550, "us_typical": 59280 },
+      "paths": [
+        { "kind": "academy", "label": "Fire academy after being hired by a department, plus EMT", "length": "Several months", "cost": "Usually paid by the department" }
+      ],
+      "license": { "needed": true, "georgia": "Basic Firefighter certification through the Georgia Firefighter Standards and Training Council. Age 18." },
+      "hope_career_grant": false,
+      "interests": ["action", "people", "heights"],
+      "min_age": 18,
+      "sources": ["https://www.onetonline.org/link/localwages/33-2011.00?st=GA"]
+    },
+    {
+      "slug": "it-support",
+      "name": "IT support and help desk",
+      "category": "tech",
+      "summary": "Fix computers, accounts and networks for people at work.",
+      "work": "You solve tech problems in person and over the phone; a common first step into networking and cybersecurity.",
+      "soc": "15-1232",
+      "cips": ["1111"],
+      "pay": { "ga_start": 37750, "ga_typical": 60440, "us_typical": 61860 },
+      "paths": [
+        { "kind": "college", "label": "Help Desk Specialist or CompTIA A+ certificate", "length": "1 to 2 semesters", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" }
+      ],
+      "license": { "needed": false, "georgia": "No license. CompTIA A+ is the usual first certification." },
+      "hope_career_grant": true,
+      "interests": ["computers", "people"],
+      "related_majors": ["1101", "1110"],
+      "sources": ["https://www.onetonline.org/link/localwages/15-1232.00?st=GA"]
+    },
+    {
+      "slug": "network-technician",
+      "name": "Network technician",
+      "category": "tech",
+      "summary": "Set up and maintain the networks and Wi-Fi that businesses run on.",
+      "work": "Install routers and switches, watch network health and fix outages.",
+      "soc": "15-1231",
+      "cips": ["1109"],
+      "pay": { "ga_start": 47910, "ga_typical": 79180, "us_typical": 76220 },
+      "paths": [
+        { "kind": "college", "label": "Networking Specialist diploma or Cisco certificates", "length": "1 to 2 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" }
+      ],
+      "license": { "needed": false, "georgia": "No license. Network+ and Cisco CCNA are common." },
+      "hope_career_grant": true,
+      "interests": ["computers", "electric"],
+      "related_majors": ["1101", "1109"],
+      "sources": ["https://www.onetonline.org/link/localwages/15-1231.00?st=GA"]
+    },
+    {
+      "slug": "cybersecurity",
+      "name": "Cybersecurity technician",
+      "category": "tech",
+      "summary": "Protect computers and networks from hackers.",
+      "work": "Watch for attacks, fix weak spots and respond to incidents. Top pay usually comes after a few years of IT experience.",
+      "soc": "15-1212",
+      "cips": ["1110"],
+      "pay": { "ga_start": 77060, "ga_typical": 128970, "us_typical": 129180, "note": "These figures are for experienced information security analysts; first jobs often start in IT support." },
+      "paths": [
+        { "kind": "college", "label": "Cybersecurity diploma or certificate", "length": "1 to 2 years", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" }
+      ],
+      "license": { "needed": false, "georgia": "No license. CompTIA Security+ is the usual starting certification." },
+      "hope_career_grant": true,
+      "interests": ["computers", "precise"],
+      "related_majors": ["1110", "1107"],
+      "sources": ["https://www.onetonline.org/link/localwages/15-1212.00?st=GA"]
+    },
+    {
+      "slug": "drone-pilot",
+      "name": "Commercial drone pilot",
+      "category": "tech",
+      "summary": "Fly drones for photos, surveys, farms, inspections and film.",
+      "work": "Often a skill added to another job (real estate, farming, construction, film) or a small business.",
+      "soc": null,
+      "cips": ["4901"],
+      "pay": { "ga_start": null, "ga_typical": null, "us_typical": null, "note": "No federal pay data; income depends on the work." },
+      "paths": [
+        { "kind": "college", "label": "Small Unmanned Aircraft (drone) certificate", "length": "1 semester", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" }
+      ],
+      "license": { "needed": true, "georgia": "Federal FAA Part 107 remote pilot certificate: age 16, pass the knowledge test and a security check.", "url": "https://www.faa.gov/uas" },
+      "hope_career_grant": true,
+      "interests": ["computers", "outdoors", "design"],
+      "min_age": 16,
+      "sources": ["https://sctech.smartcatalogiq.com/current/catalog/hope-career-grant-programs-tuition-free"]
+    },
+    {
+      "slug": "chef",
+      "name": "Cook and chef",
+      "category": "food",
+      "summary": "Cook in restaurants, hotels, hospitals and catering, and lead a kitchen.",
+      "work": "Fast-paced kitchen work, nights and weekends; head chefs plan menus and run the crew.",
+      "soc": "35-1011",
+      "cips": ["1205"],
+      "pay": { "ga_start": 43300, "ga_typical": 66230, "us_typical": 62470, "note": "Chefs and head cooks. Line cooks: $35,940 typical in Georgia." },
+      "paths": [
+        { "kind": "college", "label": "Culinary Arts diploma or degree", "length": "1 to 2 years", "cost": "HOPE Grant or Scholarship in Georgia", "checklist": "tech-college" },
+        { "kind": "job", "label": "Work up from line cook", "length": "Several years", "cost": "Paid" }
+      ],
+      "license": { "needed": false, "georgia": "No license; a food safety certificate (ServSafe) is common." },
+      "hope_career_grant": false,
+      "interests": ["cooking", "design", "action"],
+      "sources": ["https://www.onetonline.org/link/localwages/35-1011.00?st=GA", "https://www.onetonline.org/link/localwages/35-2014.00?st=GA"]
+    },
+    {
+      "slug": "film-crew",
+      "name": "Film and TV set crew",
+      "category": "tech",
+      "summary": "Build sets, run lights and rigging, or do hair and makeup on film and TV productions.",
+      "work": "Long days on set, project to project. Georgia is one of the biggest filming states in the country.",
+      "soc": null,
+      "cips": ["5006"],
+      "pay": { "ga_start": null, "ga_typical": null, "us_typical": null, "note": "Pay is by the day or week and depends on the job and union status." },
+      "paths": [
+        { "kind": "college", "label": "Georgia Film Academy certificates at technical colleges (on-set production, grip and rigging, lighting, scenic, hair and makeup)", "length": "1 to 2 semesters", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" }
+      ],
+      "license": { "needed": false, "georgia": "No license." },
+      "hope_career_grant": true,
+      "interests": ["design", "hands", "heights"],
+      "sources": ["https://sctech.smartcatalogiq.com/current/catalog/hope-career-grant-programs-tuition-free"]
+    },
+    {
+      "slug": "logistics",
+      "name": "Logistics and warehouse technician",
+      "category": "mechanics",
+      "summary": "Move goods through warehouses, ports and distribution centers.",
+      "work": "Run forklifts and scanners, manage inventory and shipping; can move up to logistics management.",
+      "soc": "53-7051",
+      "cips": ["5202"],
+      "pay": { "ga_start": 36690, "ga_typical": 43210, "us_typical": 46420, "note": "Forklift and industrial truck operators." },
+      "paths": [
+        { "kind": "college", "label": "Logistics Management certificates", "length": "1 to 2 semesters", "cost": "Tuition covered in Georgia with HOPE Grant + HOPE Career Grant", "checklist": "tech-college" },
+        { "kind": "job", "label": "Hired and trained by a warehouse", "length": "Weeks", "cost": "Paid" }
+      ],
+      "license": { "needed": false, "georgia": "No license; forklift certification is done by the employer." },
+      "hope_career_grant": true,
+      "interests": ["driving", "machines", "computers"],
+      "sources": ["https://www.onetonline.org/link/localwages/53-7051.00?st=GA"]
+    }
+  ],
+  "checklists": [
+    {
+      "id": "tech-college",
+      "title": "Apply to a technical or community college",
+      "summary": "Open admission: most students who apply get in. These are the usual steps at Georgia's 22 technical colleges; other states' colleges are similar.",
+      "steps": [
+        { "key": "pick", "title": "Pick a college and program, and check its next start date", "days": 3 },
+        { "key": "apply", "title": "Fill out the college's online application and pay the fee ($25 in Georgia)", "days": 10 },
+        { "key": "ids", "title": "Send proof of residency and lawful presence (driver's license or ID)", "days": 17 },
+        { "key": "transcript", "title": "Ask your school counselor to send your high school transcript (or send GED scores)", "days": 17 },
+        { "key": "placement", "title": "Send SAT or ACT scores, or take the ACCUPLACER placement test", "days": 24 },
+        { "key": "fafsa", "title": "File the FAFSA so you get Pell and state grants", "days": 14, "url": "https://studentaid.gov" },
+        { "key": "hope", "title": "Make sure the HOPE Grant (and HOPE Career Grant) show on your aid offer", "days": 30, "url": "https://www.gafutures.org/hope-state-aid-programs/hope-zell-miller-grants/hope-career-grant/award-amounts/", "georgia": true },
+        { "key": "orient", "title": "Go to orientation, register for classes and buy tools or uniforms", "days": 45 }
+      ]
+    },
+    {
+      "id": "dual-enrollment",
+      "title": "Take a trade class in high school (Georgia Dual Enrollment)",
+      "summary": "Free tuition, fees and books for up to 30 college hours. 10th graders can take career-tech classes; 11th and 12th graders can take any approved class.",
+      "steps": [
+        { "key": "counselor", "title": "Talk to your school counselor about which trade classes fit your schedule", "days": 7 },
+        { "key": "apply", "title": "Apply to the technical college as a high school (dual enrollment) student", "days": 14, "url": "https://www.tcsg.edu/sei/dual-enrollment/" },
+        { "key": "funding", "title": "Fill out the Dual Enrollment funding application on GAfutures", "days": 21, "url": "https://www.gafutures.org" },
+        { "key": "parent", "title": "Parent signs the Dual Enrollment participation agreement online", "days": 21 },
+        { "key": "approve", "title": "Counselor and college approve your courses", "days": 35 }
+      ]
+    },
+    {
+      "id": "union-apprenticeship",
+      "title": "Apply for a union apprenticeship",
+      "summary": "Paid on-the-job training plus classes. Apply to the local union or training center where you want to live and work, in any state.",
+      "steps": [
+        { "key": "find", "title": "Find the local union or training center near where you want to work and note when applications open", "days": 3, "url": "https://www.apprenticeship.gov/finder" },
+        { "key": "papers", "title": "Gather your transcript (showing a passing algebra grade), diploma or GED, driver's license and birth certificate", "days": 14 },
+        { "key": "study", "title": "Practice algebra and reading for the aptitude test (no calculator allowed for electrical)", "days": 21 },
+        { "key": "apply", "title": "Submit the application and fee when the window is open", "days": 30 },
+        { "key": "test", "title": "Take the aptitude test", "days": 45 },
+        { "key": "interview", "title": "Prepare for and go to the interview", "days": 75 },
+        { "key": "list", "title": "Stay reachable while you are on the ranked list; update your phone and address", "days": 100 }
+      ]
+    },
+    {
+      "id": "apprenticeship",
+      "title": "Find an employer apprenticeship",
+      "summary": "Get hired by a company that trains you while you work. You are paid from day one.",
+      "steps": [
+        { "key": "search", "title": "Search apprenticeship openings for this trade near you (and in other states if you are open to moving)", "days": 3, "url": "https://www.apprenticeship.gov/finder" },
+        { "key": "college", "title": "Ask the technical college's apprenticeship coordinator which employers are hiring", "days": 10 },
+        { "key": "resume", "title": "Update your resume with any shop classes, jobs and certifications", "days": 10 },
+        { "key": "apply", "title": "Apply to at least three employers", "days": 21 },
+        { "key": "followup", "title": "Follow up on each application and get ready for interviews", "days": 35 }
+      ]
+    },
+    {
+      "id": "cdl",
+      "title": "Get a commercial driver's license (CDL)",
+      "summary": "18 for driving inside one state, 21 to cross state lines.",
+      "steps": [
+        { "key": "school", "title": "Pick a CDL program on the federal training provider registry (technical college or company school)", "days": 3, "url": "https://tpr.fmcsa.dot.gov" },
+        { "key": "medical", "title": "Pass a DOT medical exam", "days": 14 },
+        { "key": "permit", "title": "Pass the written tests and get your commercial learner's permit", "days": 21, "url": "https://dds.georgia.gov" },
+        { "key": "training", "title": "Finish entry-level driver training (classroom and behind the wheel)", "days": 60 },
+        { "key": "road", "title": "Take the skills (road) test at least 14 days after getting your permit", "days": 75 }
+      ]
+    },
+    {
+      "id": "beauty-school",
+      "title": "Start cosmetology, barbering or nail school",
+      "summary": "Georgia requires set training hours, then state exams.",
+      "steps": [
+        { "key": "compare", "title": "Compare a technical college program with private schools: cost, hours and exam pass rates", "days": 7 },
+        { "key": "apply", "title": "Apply and send your diploma or GED (you must be at least 17)", "days": 14 },
+        { "key": "fafsa", "title": "File the FAFSA for Pell and the HOPE Grant", "days": 14, "url": "https://studentaid.gov" },
+        { "key": "kit", "title": "Buy your kit and uniform", "days": 30 },
+        { "key": "hours", "title": "Track your training hours toward the state requirement", "days": 120 },
+        { "key": "exam", "title": "Apply for the state board written and practical exams", "days": 300 }
+      ]
+    },
+    {
+      "id": "health-program",
+      "title": "Apply to a health care program",
+      "summary": "Health programs add entrance tests, shots and a background check to the usual college steps, and some have waiting lists.",
+      "steps": [
+        { "key": "apply", "title": "Apply to the college and the program, and check its entry requirements and deadline", "days": 7 },
+        { "key": "test", "title": "Take any required entrance test (for example the TEAS for nursing)", "days": 30 },
+        { "key": "records", "title": "Get shot records, a physical and CPR certification", "days": 30 },
+        { "key": "background", "title": "Complete the background check and drug screen", "days": 45 },
+        { "key": "fafsa", "title": "File the FAFSA for Pell and the HOPE Grant", "days": 14, "url": "https://studentaid.gov" },
+        { "key": "exam", "title": "Near the end of the program, register for the licensing or certification exam", "days": 300 }
+      ]
+    },
+    {
+      "id": "private-school",
+      "title": "Check out a private or specialty trade school",
+      "summary": "Some trades are only taught at private schools. Check the facts before you sign.",
+      "steps": [
+        { "key": "accredited", "title": "Check the school is accredited and accepts federal aid (search it on College Scorecard)", "days": 3, "url": "https://collegescorecard.ed.gov" },
+        { "key": "outcomes", "title": "Ask for graduation and job placement rates and total cost including tools and housing", "days": 7 },
+        { "key": "compare", "title": "Compare with a public technical college or apprenticeship for the same trade", "days": 10 },
+        { "key": "money", "title": "Apply for scholarships and file the FAFSA before signing anything", "days": 14 },
+        { "key": "apply", "title": "Apply and plan travel and housing", "days": 30 }
+      ]
+    },
+    {
+      "id": "out-of-state-college",
+      "title": "Train at a college in another state",
+      "summary": "Out-of-state tuition is usually 2 to 4 times higher, and Georgia's HOPE money cannot be used outside Georgia.",
+      "steps": [
+        { "key": "cost", "title": "Compare out-of-state tuition with the in-state price and total living costs", "days": 7 },
+        { "key": "residency", "title": "Ask the college how to qualify for in-state tuition (often 12 months living there first)", "days": 10 },
+        { "key": "apply", "title": "Apply to the college and program", "days": 21 },
+        { "key": "fafsa", "title": "File the FAFSA: Pell Grants work in any state", "days": 14, "url": "https://studentaid.gov" },
+        { "key": "scholarships", "title": "Apply for trade scholarships that work anywhere (for example mikeroweWORKS)", "days": 30, "url": "https://mikeroweworks.org/scholarship" },
+        { "key": "housing", "title": "Plan housing and travel", "days": 45 }
+      ]
+    }
+  ]
+}
