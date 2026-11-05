@@ -59,6 +59,7 @@ export const NAV: NavItem[] = [
   { href: "/admin/questions", label: "Review practice questions", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/lessons", label: "Review study lessons", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/scholarships", label: "Review scholarships", icon: "✅", roles: ALL, group: "team" },
+  { href: "/admin/trades", label: "Review trade facts", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/college-data", label: "Load college data", icon: "🏫", roles: ALL, group: "team" },
   { href: "/admin/presentation", label: "Presentation for parents and schools", icon: "🎤", roles: ALL, group: "team" },
 ];

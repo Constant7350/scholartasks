@@ -1,0 +1,157 @@
+[
+ {
+  "kind": "scholarship",
+  "deadline": null,
+  "scope": "US",
+  "grades": [
+   12
+  ],
+  "min_gpa": null,
+  "gpa_kind": null,
+  "min_sat": null,
+  "min_act": null,
+  "max_income": null,
+  "need_based": false,
+  "citizen_required": false,
+  "interests": [
+   "Trades"
+  ],
+  "groups": null,
+  "college_type": "technical",
+  "college": null,
+  "other_requirements": "Must be enrolled (or starting) in a construction-related program or apprenticeship.",
+  "automatic": false,
+  "name": "NAWIC Founders' Scholarship Foundation Scholarships",
+  "sponsor": "NAWIC Founders' Scholarship Foundation",
+  "url": "https://www.nawic.org/nfsf_scholarships",
+  "summary": "Scholarships for students and apprentices training for construction careers, including the building trades. The foundation gives more than $600,000 a year.",
+  "how_to_apply": "Apply online at nfsf.nawic.org between September and early March for the next school year.",
+  "amount_text": "From $2,000",
+  "amount_max": null,
+  "deadline_text": "Opens in September; closes March 6"
+ },
+ {
+  "kind": "scholarship",
+  "deadline": null,
+  "scope": "US",
+  "grades": [
+   12
+  ],
+  "min_gpa": null,
+  "gpa_kind": null,
+  "min_sat": null,
+  "min_act": null,
+  "max_income": null,
+  "need_based": false,
+  "citizen_required": false,
+  "interests": [
+   "Trades"
+  ],
+  "groups": null,
+  "college_type": "technical",
+  "college": null,
+  "other_requirements": "Must be enrolled in a plumbing or HVAC program, or be an apprentice with a PHCC member contractor.",
+  "automatic": false,
+  "name": "PHCC Educational Foundation Scholarships",
+  "sponsor": "PHCC Educational Foundation",
+  "url": "https://www.phccfoundation.org/scholarships",
+  "summary": "About 75 awards a year for students in plumbing or HVAC programs at trade schools and community colleges, and for apprentices working for PHCC member contractors.",
+  "how_to_apply": "Apply online: answer five short questions about your interest in the trade and send one letter of recommendation from an instructor, advisor or employer.",
+  "amount_text": "$1,500 to $10,000 (most are $3,000)",
+  "amount_max": 10000,
+  "deadline_text": "May 1"
+ },
+ {
+  "kind": "scholarship",
+  "deadline": null,
+  "scope": "US",
+  "grades": [
+   12
+  ],
+  "min_gpa": null,
+  "gpa_kind": null,
+  "min_sat": null,
+  "min_act": null,
+  "max_income": null,
+  "need_based": false,
+  "citizen_required": false,
+  "interests": [
+   "Trades"
+  ],
+  "groups": null,
+  "college_type": "technical",
+  "college": null,
+  "other_requirements": null,
+  "automatic": false,
+  "name": "GE Aerospace-Reagan Workforce Readiness Scholarship",
+  "sponsor": "Ronald Reagan Presidential Foundation and GE Aerospace",
+  "url": "https://www.reaganfoundation.org/education/ge-aerospace-reagan-workforce-readiness-scholarship",
+  "summary": "For high school seniors heading into technical training or certifications for aircraft maintenance, avionics, welding, CNC machining, electrical, industrial maintenance, robotics, quality inspection or logistics careers.",
+  "how_to_apply": "Apply online through the foundation's page (run by Kaleidoscope). Sign up there to be told when the next application opens.",
+  "amount_text": "Up to $10,000 a year, for up to two years",
+  "amount_max": 20000,
+  "deadline_text": "Usually May 1"
+ },
+ {
+  "kind": "scholarship",
+  "deadline": null,
+  "scope": "US",
+  "grades": [
+   12
+  ],
+  "min_gpa": null,
+  "gpa_kind": null,
+  "min_sat": null,
+  "min_act": null,
+  "max_income": null,
+  "need_based": true,
+  "citizen_required": false,
+  "interests": [
+   "Trades"
+  ],
+  "groups": null,
+  "college_type": "technical",
+  "college": null,
+  "other_requirements": "High school diploma or GED by the time you start, an approved FAFSA, and a vehicle technician program at an accredited school. U.S. citizens, permanent residents and DACA students.",
+  "automatic": false,
+  "name": "TechForce Foundation Scholarships",
+  "sponsor": "TechForce Foundation",
+  "url": "https://techforce.org/scholarships-and-grants",
+  "summary": "Need-based scholarships and grants for students training to be automotive, diesel, collision, aviation, marine or motorcycle technicians.",
+  "how_to_apply": "Create a free TechForce account, build a profile and apply under Scholarships. Applications run in cycles all year; check the decision-day calendar.",
+  "amount_text": "Varies (about $3 million awarded so far in 2026)",
+  "amount_max": null,
+  "deadline_text": "Several cycles a year"
+ },
+ {
+  "kind": "scholarship",
+  "deadline": null,
+  "scope": "GA",
+  "grades": [
+   12
+  ],
+  "min_gpa": null,
+  "gpa_kind": null,
+  "min_sat": null,
+  "min_act": null,
+  "max_income": null,
+  "need_based": false,
+  "citizen_required": false,
+  "interests": [
+   "Trades"
+  ],
+  "groups": null,
+  "college_type": "technical",
+  "college": null,
+  "other_requirements": "High school graduate, GED or graduating senior; drug free with a safe driving record; at an accredited technical college within 50 miles of Sawnee EMC in Cumming.",
+  "automatic": false,
+  "name": "Sawnee EMC Brian Johnson Memorial Lineworker Scholarship",
+  "sponsor": "Sawnee Electric Membership Foundation",
+  "url": "https://sawnee.coop/lineworker-scholarship",
+  "summary": "Helps students in an electrical lineworker program at a technical college near Cumming, Georgia, such as Lanier Technical College or North Georgia Technical College. Paid to the college for tuition, books and fees.",
+  "how_to_apply": "Download the application from Sawnee EMC's page and mail it to the Sawnee Electric Membership Foundation.",
+  "amount_text": "Varies",
+  "amount_max": null,
+  "deadline_text": "Ask Sawnee EMC for this year's date"
+ }
+]

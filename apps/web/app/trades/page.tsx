@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { TRADE_CATEGORIES, payLine, type TradeCategory } from "@scholartasks/core";
 import { Page } from "../ui";
 import { TRADES, TRADES_PACK } from "../../lib/trades";
+import { TradeAidList } from "./aid-list";
+import { TradeGradeSteps } from "./grade-steps";
 import "./trades.css";
 
 /**
@@ -87,6 +89,14 @@ export default function TradesPage() {
           ))}
         </ul>
       )}
+
+      <TradeGradeSteps />
+
+      <section className="panel" id="paying">
+        <h2>Paying for trade school</h2>
+        <p className="hint">Grants you don&apos;t pay back, programs that pay you while you train, and free training in other states. <a href="/scholarships">Trade scholarships</a> are on the Scholarships page.</p>
+        <TradeAidList />
+      </section>
 
       <p className="hint small">
         Pay: {TRADES_PACK.pay_source} Always confirm program details with the school or program before applying.

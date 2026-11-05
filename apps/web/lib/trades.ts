@@ -26,3 +26,6 @@ export const NATIONAL_FINDERS = [
   { label: "Apprenticeship openings in every state (U.S. Department of Labor)", url: "https://www.apprenticeship.gov/finder" },
   { label: "Training programs near any ZIP code (CareerOneStop)", url: "https://www.careeronestop.org/Toolkit/Training/find-local-training.aspx" },
 ];
+
+/** Ways to pay for trade training: federal, Georgia and other states' programs. */
+export const TRADE_AID = TRADES_PACK.aid;

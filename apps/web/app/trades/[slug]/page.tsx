@@ -3,6 +3,7 @@ import { PATH_KINDS, TRADE_CATEGORIES } from "@scholartasks/core";
 import { Page } from "../../ui";
 import { NATIONAL_FINDERS, TRADES, TRADES_PACK, checklistById, dollars, tradeBySlug } from "../../../lib/trades";
 import { AddChecklist } from "../add-checklist";
+import { TradeAidList } from "../aid-list";
 import { TrainingFinder } from "../finder";
 import "../trades.css";
 
@@ -99,13 +100,9 @@ export default async function TradePage({ params }: { params: Promise<{ slug: st
 
       <section className="panel">
         <h2>Paying for it</h2>
-        <ul className="trade-links">
-          {t.hope_career_grant && <li>Georgia residents: the HOPE Grant plus the HOPE Career Grant cover tuition for this trade at Georgia's technical colleges. You still pay fees, books and tools.</li>}
-          <li>File the FAFSA: the Pell Grant (up to $7,395 for 2026-27) works at any eligible school in any state. <a href="/aid">FAFSA steps</a></li>
-          <li>Apprenticeships pay you while you train, so most have no tuition at all.</li>
-          <li><a href="/scholarships">Scholarships</a>, including trade scholarships such as mikeroweWORKS and the American Welding Society.</li>
-          <li>Training in another state: Georgia's HOPE money only works at Georgia schools, and out-of-state tuition is usually 2 to 4 times higher.</li>
-        </ul>
+        {t.hope_career_grant && <p className="note">Georgia residents: the HOPE Grant plus the HOPE Career Grant cover tuition for this trade at Georgia&apos;s technical colleges. You still pay fees, books and tools.</p>}
+        <p className="hint">Georgia&apos;s HOPE money only works at Georgia schools, and out-of-state tuition is usually 2 to 4 times higher. Look for <a href="/scholarships">trade scholarships</a> too, such as mikeroweWORKS and the American Welding Society.</p>
+        <TradeAidList />
       </section>
 
       {t.related_majors.length > 0 && (

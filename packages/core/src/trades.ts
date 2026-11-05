@@ -112,12 +112,41 @@ export const ApplyChecklist = z.object({
 });
 export type ApplyChecklist = z.infer<typeof ApplyChecklist>;
 
+/**
+ * A way to pay for trade training: federal ("US"), Georgia ("GA") or another
+ * state's free-training program (two-letter code), shown as "if you live there".
+ */
+export const TradeAid = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  name: z.string().min(3),
+  state: z.string().regex(/^(US|[A-Z]{2})$/),
+  amount: z.string().min(3),
+  summary: z.string().min(20),
+  who: z.string().min(10),
+  apply: z.string().min(10),
+  url: z.string().url(),
+});
+export type TradeAid = z.infer<typeof TradeAid>;
+
+/** A trade-path step for one school grade, added to the To-do list like the "beyond grades" milestones. */
+export const GradeStep = z.object({
+  key: z.string().regex(/^[a-z0-9-]+$/),
+  title: z.string().min(10),
+  /** Month and day in the school year (Aug-Jul), e.g. "09-30". */
+  due: z.string().regex(/^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),
+  link: z.string().optional(),
+});
+export type GradeStep = z.infer<typeof GradeStep>;
+
 export const TradesPack = z.object({
   kind: z.literal("trades"),
   version: z.string(),
   pay_source: z.string(),
   trades: z.array(Trade).min(1),
   checklists: z.array(ApplyChecklist).min(1),
+  aid: z.array(TradeAid).default([]),
+  /** Grades 8 to 12, keyed "8".."12". */
+  grade_steps: z.record(z.string().regex(/^(8|9|10|11|12)$/), z.array(GradeStep)).default({}),
 });
 export type TradesPack = z.infer<typeof TradesPack>;
 
@@ -130,6 +159,18 @@ export function checkTradesPack(p: TradesPack): string[] {
     if (seen.has(t.slug)) out.push(`duplicate trade ${t.slug}`);
     seen.add(t.slug);
     for (const path of t.paths) if (path.checklist && !ids.has(path.checklist)) out.push(`${t.slug}: unknown checklist ${path.checklist}`);
+  }
+  const aidIds = new Set<string>();
+  for (const a of p.aid) {
+    if (aidIds.has(a.id)) out.push(`duplicate aid ${a.id}`);
+    aidIds.add(a.id);
+  }
+  for (const [g, steps] of Object.entries(p.grade_steps)) {
+    const keys = new Set<string>();
+    for (const s of steps) {
+      if (keys.has(s.key)) out.push(`grade ${g}: duplicate step ${s.key}`);
+      keys.add(s.key);
+    }
   }
   for (const c of p.checklists) {
     const keys = new Set<string>();
@@ -176,4 +217,35 @@ export function payLine(t: Trade): string {
   if (t.pay.ga_typical) return `${f(t.pay.ga_typical)} typical in Georgia`;
   if (t.pay.us_typical) return `${f(t.pay.us_typical)} typical in the US`;
   return "Pay varies";
+}
+
+/** Ways to pay for training: federal and home-state programs first, then other states' programs. */
+export function aidFor(aid: TradeAid[], homeState: string | null | undefined) {
+  const home = homeState ?? "GA";
+  return {
+    here: aid.filter((a) => a.state === "US" || a.state === home),
+    elsewhere: aid.filter((a) => a.state !== "US" && a.state !== home),
+  };
+}
+
+/** The task id for a grade-by-grade trade step: one of each per student. */
+export const tradeGradeTaskId = (grade: number, key: string) => `tg:${grade}:${key}`;
+
+/** Trade steps for a grade. Grades 6 and 7 get the 8th grade list. */
+export const gradeStepsFor = (p: TradesPack, grade: number) => p.grade_steps[String(Math.max(8, Math.min(12, grade)))] ?? [];
+
+/**
+ * Facts the monthly AI check reads against official sites: each aid program
+ * and each trade's Georgia license rule. The subject is the stable key the
+ * check results are saved under.
+ */
+export function checkableFacts(p: TradesPack): { subject: string; title: string; url: string; claim: string }[] {
+  const out = p.aid.map((a) => ({
+    subject: `aid:${a.id}`, title: a.name, url: a.url,
+    claim: `${a.name} (${a.state === "US" ? "federal" : a.state}). Amount: ${a.amount}. ${a.summary} Who: ${a.who} How to apply: ${a.apply}`,
+  }));
+  for (const t of p.trades) {
+    if (t.license.url) out.push({ subject: `license:${t.slug}`, title: `${t.name} license`, url: t.license.url, claim: `${t.name} in Georgia: ${t.license.georgia}` });
+  }
+  return out;
 }

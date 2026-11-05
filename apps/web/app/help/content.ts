@@ -238,7 +238,7 @@ export const TOPICS: Topic[] = [
     area: "College plan",
     title: "Trades and trade schools",
     href: "/trades",
-    keywords: ["trade", "trade school", "technical college", "vocational", "apprenticeship", "union", "electrician", "welder", "welding", "plumber", "HVAC", "lineworker", "CDL", "truck", "cosmetology", "LPN", "mechanic", "HOPE Career Grant", "free tuition", "dual enrollment", "farrier"],
+    keywords: ["trade", "trade school", "technical college", "vocational", "apprenticeship", "union", "electrician", "welder", "welding", "plumber", "HVAC", "lineworker", "CDL", "truck", "cosmetology", "LPN", "mechanic", "HOPE Career Grant", "free tuition", "dual enrollment", "farrier", "Workforce Pell", "WIOA", "TN Promise", "youth apprenticeship", "SkillsUSA"],
     summary: "Explore skilled trades you can train for in weeks to a few years: what each pays, ways to train, licensing, schools in Georgia and every other state, and checklists to apply.",
     steps: [
       "Open Menu, then Trades and trade schools.",
@@ -246,6 +246,8 @@ export const TOPICS: Topic[] = [
       "Not sure? Tap the quiz and pick what you enjoy.",
       "Open a trade to see pay, ways to train, licensing and Where to train. Pick any state in the finder to see its schools.",
       "Under Steps to apply, tap Add steps to put a checklist on the student's To-do list and calendar.",
+      "Scroll down on the Trades page for Planning a trade in grades 8 to 12: pick the student's grade and tap Add steps.",
+      "Paying for trade school (on the Trades page, each trade page and the Financial aid page) lists the Pell Grant, Workforce Pell, HOPE, apprenticeships and free training in other states.",
     ],
     body: [
       "Anyone can look at the trade pages without signing in. Adding a checklist needs a ScholarTasks account.",
