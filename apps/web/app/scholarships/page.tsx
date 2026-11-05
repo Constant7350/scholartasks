@@ -20,7 +20,7 @@ interface Student {
 interface Row extends Scholarship {
   kind: "scholarship" | "grant";
   sponsor: string; url: string; summary: string; how_to_apply: string | null; amount_text: string; amount_max: number | null;
-  deadline_text: string | null; automatic: boolean; status: "pending" | "approved" | "retired"; last_checked: string | null; school_id?: string | null;
+  deadline_text: string | null; automatic: boolean; status: "pending" | "approved" | "retired" | "found"; last_checked: string | null; school_id?: string | null;
 }
 interface Choice { id: string; student_id: string; scholarship_id: string; choice: "added" | "hidden"; task_id: string | null; done_steps?: number[]; essay_draft?: string | null }
 interface GradeRow { student_id: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }
@@ -90,7 +90,7 @@ export default function ScholarshipsPage() {
       sat: student.sat, act: student.act, incomeBand: seesIncome ? student.income_band : null, profile: student.match_profile ?? {},
       colleges: colleges.filter((c) => c.student_id === student.id).map((c) => c.name),
     };
-    return list.filter((s) => s.status !== "retired").map((s) => ({ s, r: matchScholarship(s, who) }))
+    return list.filter((s) => s.status === "approved" || s.status === "pending").map((s) => ({ s, r: matchScholarship(s, who) }))
       .sort((a, b) => (a.s.deadline ?? "9999").localeCompare(b.s.deadline ?? "9999") || (b.s.amount_max ?? 0) - (a.s.amount_max ?? 0));
   }, [student, list, grades, seesIncome, colleges]);
 
