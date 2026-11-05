@@ -5,6 +5,7 @@ import { checkableFacts } from "@scholartasks/core";
 import { friendly, supabase } from "../../../lib/supabase";
 import { TRADES_PACK } from "../../../lib/trades";
 import { NotConfigured, Page } from "../../ui";
+import { DoneRow, ReviewNav, type Done } from "../review-kit";
 
 interface Check {
   subject: string; title: string; url: string; checked_on: string | null; result: string; summary: string | null;
@@ -25,6 +26,7 @@ export default function TradeChecksPage() {
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [rows, setRows] = useState<Check[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState<Record<string, Done>>({});
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -47,6 +49,14 @@ export default function TradeChecksPage() {
     const { data: u } = await sb.auth.getUser();
     const { error: e } = await sb.from("trade_checks").update({ status, reviewed_by: u.user?.id ?? null, reviewed_at: new Date().toISOString() }).eq("subject", subject);
     if (e) return setError(friendly(e));
+    setDone((d) => ({ ...d, [subject]: { label: status === "fixed" ? "Marked fixed" : "Marked not a problem", at: new Date(), ok: true } }));
+    void load();
+  };
+  const undo = async (subject: string) => {
+    if (!sb) return;
+    const { error: e } = await sb.from("trade_checks").update({ status: "review", reviewed_by: null, reviewed_at: null }).eq("subject", subject);
+    if (e) return setError(friendly(e));
+    setDone((d) => { const n = { ...d }; delete n[subject]; return n; });
     void load();
   };
 
@@ -56,6 +66,7 @@ export default function TradeChecksPage() {
 
   return (
     <Page title={title}>
+      <ReviewNav />
       <p className="hint">
         Early each month the AI reads {FACTS.length} trade facts (aid programs and Georgia license rules) on their official sites.
         Anything it couldn&apos;t confirm shows here. To fix one, ask Claude in the ScholarTasks project to update the trades list, then press Fixed.
@@ -63,8 +74,9 @@ export default function TradeChecksPage() {
       {error && <p className="note note-err" role="alert">{error}</p>}
 
       <section className="panel">
-        <h2>{review.length ? `${review.length} to review` : "Nothing to review"}</h2>
+        <h2>{review.length ? `${review.length} to review` : "✓ Nothing to review"}</h2>
         {review.length === 0 && <p className="hint" style={{ margin: 0 }}>Every checked fact matched its official site.</p>}
+        {Object.entries(done).map(([subj, d]) => <DoneRow key={subj} title={rows.find((r) => r.subject === subj)?.title ?? subj} done={d} onUndo={() => void undo(subj)} />)}
         <ul className="items">
           {review.map((r) => {
             const fact = FACTS.find((f) => f.subject === r.subject);

@@ -742,3 +742,19 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
   .bar-row { grid-template-columns: 1fr auto; }
   .bar-row .bar-track { grid-column: 1 / -1; grid-row: 2; }
 }
+
+/* Team review pages (admin/review-kit.tsx) */
+.review-bar { display: grid; gap: 10px; }
+.review-bar-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.review-bar-row:last-child:not(:first-child) { justify-content: flex-start; }
+.review-mode { grid-template-columns: 1fr 1fr; max-width: 300px; margin: 0; }
+.review-done { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: var(--ok-soft); color: var(--ok); padding-top: 12px; padding-bottom: 12px; }
+.review-done-off { background: var(--warm-tint); color: var(--muted); }
+.review-done-title { flex: 1 1 200px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.review-one-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 4px 0 8px; }
+.review-head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.unsaved { color: #8a6514; font-weight: 600; font-size: 13px; }
+.review-nav { display: flex; gap: 6px; flex-wrap: wrap; margin: -6px 0 18px; }
+.review-nav a { font-size: 14px; font-weight: 600; text-decoration: none; padding: 7px 12px; border-radius: 999px; background: var(--warm-tint); color: var(--muted); }
+.review-nav a[aria-current="page"] { background: var(--navy); color: #fff; }
+.review-nav a[aria-current="page"] .sch-count { background: rgba(255,255,255,0.25); color: #fff; }
