@@ -23,7 +23,7 @@ const PART2: [string, string, string[]][] = [
   ["Essay feedback that never writes", "Yes", ["No", "No", "No", "Some", "No", "No"]],
   ["Activities and resume", "Yes", ["Yes", "Yes", "No", "No", "No", "No"]],
   ["Reminders", "Email, calendar, phone", ["Email, phone", "Yes", "Yes", "No", "Email", "Phone"]],
-  ["School counselor dashboard", "Planned", ["Yes", "Yes", "Yes", "No", "No", "Yes"]],
+  ["School counselor dashboard", "Yes (free)", ["Yes", "Yes", "Yes", "No", "No", "Yes"]],
   ["Never sells student data", "Yes", ["Yes", "Yes", "Opt-in to colleges", "Colleges buy access", "Unclear", "Yes"]],
 ];
 
