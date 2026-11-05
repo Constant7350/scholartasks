@@ -74,6 +74,47 @@ function Steps({ step }: { step: 1 | 2 | 3 | 4 }) {
   );
 }
 
+function RemoveStudent({ id, name, onRemoved }: { id: string; name: string; onRemoved: (msg: string) => void }) {
+  const [asking, setAsking] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const remove = async () => {
+    const sb = supabase();
+    if (!sb) return;
+    setBusy(true); setErr(null);
+    try {
+      const { data } = await sb.auth.getSession();
+      const res = await fetch("/api/family/remove-student", {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${data.session?.access_token ?? ""}` },
+        body: JSON.stringify({ student: id, confirm: true }),
+      });
+      const j = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) throw new Error(j.error ?? "Something went wrong. Please try again.");
+      onRemoved(`${name} was removed.`);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+      setBusy(false);
+    }
+  };
+  return (
+    <div style={{ marginTop: 14 }}>
+      {!asking ? (
+        <button className="btn btn-ghost btn-inline" style={{ color: "#b42318" }} onClick={() => setAsking(true)}>Remove {name}</button>
+      ) : (
+        <div className="note note-err" style={{ margin: 0 }}>
+          <p style={{ margin: "0 0 10px" }}>
+            Remove {name} from your family? This deletes {name}'s grades, college and scholarship lists, tasks and everything else saved for them, and their student app sign-in. It can't be undone.
+          </p>
+          <button className="btn btn-inline" style={{ background: "#b42318" }} disabled={busy} onClick={() => void remove()}>{busy ? "Removing…" : `Yes, remove ${name}`}</button>
+          <button className="btn btn-ghost btn-inline" style={{ marginLeft: 8 }} disabled={busy} onClick={() => { setAsking(false); setErr(null); }}>Cancel</button>
+          {err && <p role="alert" style={{ margin: "10px 0 0" }}>{err}</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function FamilyPage() {
   const sb = supabase();
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
@@ -81,6 +122,7 @@ export default function FamilyPage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [invites, setInvites] = useState<Invite[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [familyName, setFamilyName] = useState("");
   const [child, setChild] = useState({ first_name: "", birth_date: "", grade_level: "9", state: "GA" });
 
@@ -174,6 +216,7 @@ export default function FamilyPage() {
     <Page title={family ? family.name : "Set up your family"}>
       <Steps step={step} />
       {error && <p className="note note-err" role="alert">{error}</p>}
+      {notice && <p className="note note-ok">{notice}</p>}
 
       {!family ? (
         <div className="panel">
@@ -247,6 +290,7 @@ export default function FamilyPage() {
                     </label>
                   ))}
                 </details>
+                <RemoveStudent id={s.id} name={s.first_name} onRemoved={(m) => { setNotice(m); void load(); }} />
               </div>
             );
           })}
