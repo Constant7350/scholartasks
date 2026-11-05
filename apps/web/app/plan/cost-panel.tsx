@@ -49,7 +49,7 @@ export function CostPanel({ sb, studentId, colleges, data, ctx, canEdit, onChang
         </p>
       ) : (
         <>
-          <p className="hint" style={{ marginTop: 0 }}>Cheapest first. Estimates per year, before loans or work-study. Tap a college to see the math.</p>
+          <p className="hint" style={{ marginTop: 0 }}>Cheapest first. Estimates per year, before loans or work-study. Tap a college to see the math. Award letters in? <a href="/plan/offers">Compare them side by side</a>, with loans split out.</p>
           <div style={{ overflowX: "auto" }}>
             <table className="cost-compare">
               <thead><tr><th>College</th><th className="num">Full price</th><th className="num">Our estimate</th><th className="num">4 years</th></tr></thead>

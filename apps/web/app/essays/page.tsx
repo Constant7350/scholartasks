@@ -5,6 +5,7 @@ import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { ReportAi } from "../report-ai";
+import { EssayBundles } from "./bundles";
 
 interface Student { id: string; first_name: string }
 interface Essay {
@@ -267,6 +268,9 @@ export default function EssaysPage() {
       </section>
 
       {open && <Editor key={open.id} essay={open} colleges={myColleges} onSaved={onSaved} onRemove={() => void remove(open)} />}
+
+      <EssayBundles key={student.id} sb={sb} studentId={student.id} essays={mine} onEssaysChanged={load} />
+      <p className="hint">Short answers you reuse (bio, career goals, service) are ready to copy on your <a href="/activities/profile">Application profile</a>.</p>
     </Page>
   );
 }

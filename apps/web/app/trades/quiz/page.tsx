@@ -19,7 +19,7 @@ export default function TradeQuiz() {
 
   return (
     <Page title="Which trade fits me?">
-      <p className="hint"><a href="/trades">← All trades</a></p>
+      <p className="hint"><a href="/trades">← All trades</a> · Want college careers too? <a href="/majors/quiz">Take the full career quiz</a></p>
       <section className="panel">
         <h2>What do you enjoy?</h2>
         <p className="hint">Pick as many as you like. The more you pick, the better the match.</p>

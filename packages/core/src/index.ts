@@ -13,3 +13,4 @@ export * from "./badges";
 export * from "./majors";
 export * from "./trades";
 export * from "./contact";
+export * from "./application";
