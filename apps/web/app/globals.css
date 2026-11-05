@@ -778,3 +778,11 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
 .mk-table { border-collapse: collapse; width: 100%; font-size: 14px; }
 .mk-table th, .mk-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #ece6db; font-variant-numeric: tabular-nums; }
 .mk-step-head .pill { white-space: nowrap; flex-shrink: 0; }
+
+/* Homework Helper */
+.hw-start { display: grid; gap: 4px; }
+.hw-start .field { margin-bottom: 8px; }
+.hw-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+.hw-reply .pill { margin: 0 0 6px; display: inline-block; }
+.hw-switch { display: flex; gap: 8px; align-items: center; margin: 8px 0 12px; font-size: 15px; }
+.hw-scroll { overflow-x: auto; }

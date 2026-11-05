@@ -165,6 +165,12 @@ export default function Home() {
           <span>A step-by-step FAFSA, GAfutures and HOPE checklist with your own document list and reminders. You file on the official sites; we never ask for passwords or SSNs.</span>
           <span className="tile-go">Open the checklist →</span>
         </a>
+        <a className="tile" href="/homework">
+          <span className="tile-icon">🦉</span>
+          <b>Homework Helper</b>
+          <span>Stuck on homework in any subject? Get one hint at a time and have your work checked. It never gives the answer, so you still learn it.</span>
+          <span className="tile-go">Get unstuck →</span>
+        </a>
         <a className="tile" href="/study">
           <span className="tile-icon">📚</span>
           <b>Study skills library</b>

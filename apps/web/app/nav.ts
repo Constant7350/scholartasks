@@ -45,6 +45,7 @@ export const NAV: NavItem[] = [
   { href: "/scholarships", label: "Scholarships and grants", short: "Scholarships", icon: "💰", roles: ALL, group: "student", strip: true, tab: 4 },
   { href: "/aid", label: "FAFSA and aid forms", short: "Aid forms", icon: "🧾", roles: ALL, group: "student" },
   { href: "/plan/offers", label: "Compare aid offers", short: "Offers", icon: "⚖️", roles: ALL, group: "student" },
+  { href: "/homework", label: "Homework Helper", short: "Homework", icon: "🦉", roles: ["parent", "student"], group: "student", strip: true },
   { href: "/counselor", label: "AI counselor", short: "Counselor", icon: "🤖", roles: ALL, group: "student", strip: true },
   { href: "/study", label: "Study skills library", short: "Study", icon: "📚", roles: ALL, group: "student", strip: true },
   { href: "/practice", label: "Practice questions", short: "Practice", icon: "✏️", roles: ALL, group: "student", strip: true },

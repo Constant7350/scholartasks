@@ -21,7 +21,6 @@ export async function POST(req: Request) {
   const { data: subs } = await who.admin.from("billing_subscriptions").select("kind, status").eq("family_id", who.familyId);
   const has = (kind: string) => ((subs as { kind: string; status: string }[]) ?? []).some((s) => s.kind === kind && ["active", "trialing", "past_due"].includes(s.status));
   if (entry.kind !== "pack" && has(entry.kind)) return json(409, "Your family already has this. Use Manage billing to switch between monthly and yearly.");
-  if (entry.kind === "study_coach" && !has("family")) return json(409, "Study Coach is an add-on. Start the Family plan first.");
 
   try {
     const customer = await customerFor(who.admin, who.familyId, who.email, async (familyId, email) =>

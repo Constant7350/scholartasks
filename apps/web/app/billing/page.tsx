@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
-import { CATALOG as C, FAMILY_DAILY_LIMIT, FREE_DAILY_LIMIT, FREE_PLAN_INCLUDES, PAYWALL_ON, STUDY_COACH_DAILY_LIMIT, money } from "../../lib/prices";
+import { CATALOG as C, FAMILY_DAILY_LIMIT, FREE_DAILY_LIMIT, FREE_PLAN_INCLUDES, HOMEWORK_DAILY_LIMIT, HOMEWORK_MONTHLY_LIMIT, PAYWALL_ON, money } from "../../lib/prices";
 import { inPhoneApp } from "../../lib/passkeys-client";
 import { NotConfigured, Page } from "../ui";
 
@@ -13,8 +13,8 @@ const ACTIVE = ["active", "trialing", "past_due"];
 const DONE_TEXT: Record<string, string> = {
   family_month: "Thanks! Your Family plan is starting.",
   family_year: "Thanks! Your Family plan is starting.",
-  coach_month: "Thanks! Study Coach is being added.",
-  coach_year: "Thanks! Study Coach is being added.",
+  coach_month: "Thanks! Homework Helper is being added.",
+  coach_year: "Thanks! Homework Helper is being added.",
   pack_100: "Thanks! Your extra AI messages are being added.",
 };
 
@@ -118,7 +118,7 @@ export default function BillingPage() {
         <p className="note">Set up your family first on <a href="/family">Family and permissions</a>, then come back to choose a plan.</p>
       )}
       {signedIn && plan?.family_id && !isParent && (
-        <p className="note">Your parent manages the family's plan. Ask them if you need more AI messages or Study Coach.</p>
+        <p className="note">Your parent manages the family's plan. Ask them if you need more AI messages or the Homework Helper.</p>
       )}
 
       {!PAYWALL_ON && (
@@ -152,22 +152,19 @@ export default function BillingPage() {
         </div>
 
         <div className={`tile${hasCoach ? " tile-ok" : ""}`}>
-          <span className="tile-icon">🧑‍🏫</span>
-          <b>Study Coach add-on {hasCoach && <span className="pill pill-ok">Active</span>}</b>
-          <span>More tutor help on practice questions (up to {STUDY_COACH_DAILY_LIMIT} AI uses a day per person) and full-length practice tests as they arrive. The tutor coaches; it never does homework.</span>
-          <span><b>{money(C.coach_month.cents)} a month</b> or <b>{money(C.coach_year.cents)} a year</b>, on top of the Family plan.</span>
+          <span className="tile-icon">🦉</span>
+          <b>Homework Helper add-on {hasCoach && <span className="pill pill-ok">Active</span>}</b>
+          <span>A safe AI tutor for every subject, from math to essays, that never gives answers or writes for your student. It gives one hint at a time, checks their work and asks them to explain their thinking. You see what they practiced and when it said no. Up to {HOMEWORK_DAILY_LIMIT} helper turns a day per student ({HOMEWORK_MONTHLY_LIMIT} a month per family), plus more practice-tutor help and full practice tests.</span>
+          <span><b>{money(C.coach_month.cents)} a month</b> or <b>{money(C.coach_year.cents)} a year</b> for the whole family. Works with or without the Family plan.</span>
           {hasCoach ? (
             <span>{renewal(coachSub)}</span>
           ) : isParent && plan?.family_id ? (
-            hasFamily ? (
-              <div className="share-row">
-                <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "coach_year")}>{busy === "coach_year" ? "Opening…" : `${money(C.coach_year.cents)} a year`}</button>
-                <button className="btn btn-ghost btn-inline" disabled={!!busy} onClick={() => go("checkout", "coach_month")}>{busy === "coach_month" ? "Opening…" : `${money(C.coach_month.cents)} a month`}</button>
-              </div>
-            ) : (
-              <span className="hint">Start the Family plan first.</span>
-            )
+            <div className="share-row">
+              <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "coach_year")}>{busy === "coach_year" ? "Opening…" : `${money(C.coach_year.cents)} a year`}</button>
+              <button className="btn btn-ghost btn-inline" disabled={!!busy} onClick={() => go("checkout", "coach_month")}>{busy === "coach_month" ? "Opening…" : `${money(C.coach_month.cents)} a month`}</button>
+            </div>
           ) : null}
+          <a href="/homework">See the Homework Helper</a>
         </div>
 
         <div className="tile">

@@ -17,7 +17,7 @@ interface Result { id: string; exam: Exam; sections: Record<string, { right: num
 interface Scores { id: string; sat: number | null; act: number | null }
 interface Tutor { feedback: string; next_step: string }
 
-// Full timed practice tests belong to the "Study Coach" add-on. Billing isn't
+// Full timed practice tests belong to the "Homework Helper" add-on (formerly Study Coach). Billing isn't
 // switched on yet (PAYWALL_ON in lib/prices.ts), so everyone gets them in beta.
 const STUDY_COACH_OPEN = !PAYWALL_ON;
 const DRILL = 10;
@@ -369,7 +369,7 @@ export default function TestPrepPage() {
       </div>
 
       <section className="panel">
-        <p className="eyebrow">Study Coach{STUDY_COACH_OPEN ? " · free during the beta" : ""}</p>
+        <p className="eyebrow">Homework Helper add-on{STUDY_COACH_OPEN ? " · free during the beta" : ""}</p>
         <h2>Timed {exam} practice test</h2>
         <p className="hint">
           {sections.filter((s) => science || !s.optional).map((s) => `${s.short}: ${s.count} questions in ${s.minutes} min`).join(" · ")}.

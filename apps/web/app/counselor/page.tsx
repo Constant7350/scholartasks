@@ -1,6 +1,7 @@
 "use client";
 
-import { Fragment, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Formatted } from "../formatted";
 import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
@@ -22,29 +23,6 @@ const GENERAL_STARTERS = [
   "How do the FAFSA and the GSFAPP differ?",
 ];
 const storeKey = (id: string | null) => `st-counselor-${id}`;
-
-/** Bold, https links, bullet and numbered lists only; everything is rendered as text, never as HTML. */
-function inline(text: string): ReactNode[] {
-  return text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https:\/\/[^\s)]+\))/g).map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**") && part.length > 4) return <strong key={i}>{part.slice(2, -2)}</strong>;
-    const link = /^\[([^\]]+)\]\((https:\/\/[^\s)]+)\)$/.exec(part);
-    if (link) return <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer">{link[1]}</a>;
-    return <Fragment key={i}>{part}</Fragment>;
-  });
-}
-function Formatted({ text }: { text: string }) {
-  const blocks = text.trim().split(/\n{2,}/);
-  return (
-    <>
-      {blocks.map((b, i) => {
-        const lines = b.split("\n");
-        if (lines.every((l) => /^\s*[-*•]\s+/.test(l))) return <ul key={i}>{lines.map((l, j) => <li key={j}>{inline(l.replace(/^\s*[-*•]\s+/, ""))}</li>)}</ul>;
-        if (lines.every((l) => /^\s*\d+[.)]\s+/.test(l))) return <ol key={i}>{lines.map((l, j) => <li key={j}>{inline(l.replace(/^\s*\d+[.)]\s+/, ""))}</li>)}</ol>;
-        return <p key={i}>{lines.map((l, j) => <Fragment key={j}>{j > 0 && <br />}{inline(l.replace(/^#+\s*/, ""))}</Fragment>)}</p>;
-      })}
-    </>
-  );
-}
 
 export default function CounselorPage() {
   const sb = supabase();

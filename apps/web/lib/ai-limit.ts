@@ -4,7 +4,7 @@ import { FAMILY_DAILY_LIMIT, FREE_DAILY_LIMIT, PAYWALL_ON, STUDY_COACH_DAILY_LIM
 /**
  * How many AI uses a day this person gets, from the family's plan. While
  * PAYWALL_ON is false (beta) everyone gets the Family plan's amount.
- * Pass tutor=true for practice-tutor help, which Study Coach raises.
+ * Pass tutor=true for practice-tutor help, which the Homework Helper add-on raises.
  */
 export async function aiDailyLimit(sb: SupabaseClient, studentId: string | null, tutor = false): Promise<number> {
   const plan = await sb.rpc("my_plan", { p_student: studentId });

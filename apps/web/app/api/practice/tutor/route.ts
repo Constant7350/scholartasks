@@ -69,7 +69,7 @@ export async function POST(req: Request) {
   const question = q as { exam: string | null; passage: string | null; subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null };
   if (mode === "check" && question.kind !== "written") return json(400, "Only written questions can be checked.");
 
-  // Families with the Study Coach add-on get more tutor help each day.
+  // Families with the Homework Helper add-on get more tutor help each day.
   const limit = await aiDailyLimit(sb, studentId, true);
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
