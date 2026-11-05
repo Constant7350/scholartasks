@@ -20,7 +20,8 @@ export function Footer() {
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="/delete-account">Delete account</a>
-      <a href={`mailto:${SUPPORT_EMAIL}`}>Contact</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
     </footer>
   );
 }
