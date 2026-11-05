@@ -1,15 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { buildScorecard, countWords, displayGpa, type CourseGrade, type StatePack } from "@scholartasks/core";
-import gaPack from "../../../../../packs/states/GA.json";
+import { buildScorecard, countWords, displayGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
+import { PLAIN_GPA, packFor } from "../../../lib/state-packs";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { rememberedStudent } from "../../../lib/current-student";
 import { CopyButton } from "../../copy-button";
 import { CATEGORIES, RECOGNITION, gradeText, hoursPerYear, type Activity } from "../shared";
 
-const GA = gaPack as unknown as StatePack;
 
 interface Student {
   id: string; first_name: string; grade_level: number; state: string; sat: number | null; act: number | null;
@@ -86,8 +85,9 @@ export default function ApplicationProfile() {
   if (!student) return <Page title="Application profile"><p className="hint">Add a student on the <a href="/family">Family</a> page first.</p></Page>;
 
   const cg: CourseGrade[] = grades.map((r) => ({ term: r.term, course: r.course, grade: r.grade, level: r.level, core: r.core, gradeLevel: r.grade_level }));
-  const hope = GA.programs.find((p) => p.rules.gpa_formula);
-  const formula = hope?.rules.gpa_formula ? GA.gpa_formulas[hope.rules.gpa_formula] : undefined;
+  const pack = packFor(student.state);
+  const main = primaryGpa(pack);
+  const formula = main?.formula ?? PLAIN_GPA;
   const w = { rigor: Number(student.weight_rigor ?? 1), honors: Number(student.weight_honors ?? 0.5) };
   const card = formula && cg.length ? buildScorecard(cg, { currentGrade: student.grade_level, formula, target: 3, schoolWeights: w }) : null;
   const activities = items.filter((i) => i.kind === "activity");
@@ -139,7 +139,7 @@ export default function ApplicationProfile() {
         <ul className="items">
           <Line id="p-gpa" label="GPA, unweighted (4.0 scale)" value={card?.overallGpa != null ? displayGpa(card.overallGpa) : ""} />
           <Line id="p-wgpa" label="GPA, weighted (your school's extra points)" value={card?.schoolGpa != null ? displayGpa(card.schoolGpa) : ""} />
-          <Line id="p-hope" label="HOPE GPA estimate" value={card?.stateGpa != null ? displayGpa(card.stateGpa) : ""} hint="Your official HOPE GPA is on GAfutures. Use that one on Georgia forms." />
+          {main && <Line id="p-hope" label={`${main.label} estimate`} value={card?.stateGpa != null ? displayGpa(card.stateGpa) : ""} hint={`Your official ${main.label} comes from ${pack?.aid_site?.name ?? `the ${pack?.agency.name}`}. Use that one on ${pack?.name} forms.`} />}
           <Line id="p-sat" label="SAT" value={student.sat ? String(student.sat) : ""} />
           <Line id="p-act" label="ACT" value={student.act ? String(student.act) : ""} />
           <Line id="p-ap" label="AP, IB and dual enrollment courses" value={hard.map((c) => c.course).join(", ")} />

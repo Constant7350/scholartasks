@@ -1,0 +1,305 @@
+{
+  "kind": "state-agencies",
+  "version": "2026.11-draft",
+  "note": "State student aid offices for states that don't have a full ScholarTasks state pack yet. Agency names and home pages only; program names are for the AI counselor to mention, never amounts. DRAFT: check each link before relying on it. States not listed get a search link.",
+  "agencies": [
+    {
+      "state": "AK",
+      "name": "Alaska Commission on Postsecondary Education",
+      "url": "https://acpe.alaska.gov",
+      "programs": [
+        "Alaska Performance Scholarship",
+        "Alaska Education Grant"
+      ]
+    },
+    {
+      "state": "AZ",
+      "name": "Arizona Commission for Postsecondary Education",
+      "url": "https://highered.az.gov",
+      "programs": [
+        "Arizona Promise Program (at state universities)"
+      ]
+    },
+    {
+      "state": "CA",
+      "name": "California Student Aid Commission",
+      "url": "https://www.csac.ca.gov",
+      "programs": [
+        "Cal Grant",
+        "Middle Class Scholarship",
+        "California Dream Act Application"
+      ]
+    },
+    {
+      "state": "CO",
+      "name": "Colorado Department of Higher Education",
+      "url": "https://cdhe.colorado.gov",
+      "programs": [
+        "Colorado Student Grant"
+      ]
+    },
+    {
+      "state": "CT",
+      "name": "Connecticut Office of Higher Education",
+      "url": "https://portal.ct.gov/ohe",
+      "programs": [
+        "Roberta B. Willis Scholarship"
+      ]
+    },
+    {
+      "state": "DC",
+      "name": "Office of the State Superintendent of Education (DC TAG)",
+      "url": "https://osse.dc.gov",
+      "programs": [
+        "DC Tuition Assistance Grant (DC TAG)"
+      ]
+    },
+    {
+      "state": "IA",
+      "name": "Iowa College Aid",
+      "url": "https://iowacollegeaid.gov",
+      "programs": [
+        "Iowa Tuition Grant",
+        "Last-Dollar Scholarship"
+      ]
+    },
+    {
+      "state": "ID",
+      "name": "Idaho State Board of Education",
+      "url": "https://boardofed.idaho.gov",
+      "programs": [
+        "Idaho Opportunity Scholarship"
+      ]
+    },
+    {
+      "state": "IL",
+      "name": "Illinois Student Assistance Commission (ISAC)",
+      "url": "https://www.isac.org",
+      "programs": [
+        "Monetary Award Program (MAP) Grant"
+      ]
+    },
+    {
+      "state": "IN",
+      "name": "Indiana Commission for Higher Education",
+      "url": "https://www.in.gov/che",
+      "programs": [
+        "Frank O'Bannon Grant",
+        "21st Century Scholars"
+      ]
+    },
+    {
+      "state": "KS",
+      "name": "Kansas Board of Regents",
+      "url": "https://www.kansasregents.org",
+      "programs": [
+        "Kansas Comprehensive Grant"
+      ]
+    },
+    {
+      "state": "MA",
+      "name": "Massachusetts Office of Student Financial Assistance",
+      "url": "https://www.mass.edu/osfa",
+      "programs": [
+        "MASSGrant Plus",
+        "MassEducate (free community college)"
+      ]
+    },
+    {
+      "state": "MD",
+      "name": "Maryland Higher Education Commission",
+      "url": "https://mhec.maryland.gov",
+      "programs": [
+        "Guaranteed Access Grant",
+        "Educational Assistance Grant"
+      ]
+    },
+    {
+      "state": "ME",
+      "name": "Finance Authority of Maine (FAME)",
+      "url": "https://www.famemaine.com",
+      "programs": [
+        "Maine State Grant"
+      ]
+    },
+    {
+      "state": "MI",
+      "name": "Michigan Student Aid",
+      "url": "https://www.michigan.gov/mistudentaid",
+      "programs": [
+        "Michigan Achievement Scholarship"
+      ]
+    },
+    {
+      "state": "MN",
+      "name": "Minnesota Office of Higher Education",
+      "url": "https://www.ohe.state.mn.us",
+      "programs": [
+        "Minnesota State Grant",
+        "North Star Promise"
+      ]
+    },
+    {
+      "state": "MO",
+      "name": "Missouri Department of Higher Education and Workforce Development",
+      "url": "https://dhewd.mo.gov",
+      "programs": [
+        "Access Missouri Grant",
+        "Bright Flight Scholarship",
+        "A+ Scholarship"
+      ]
+    },
+    {
+      "state": "MT",
+      "name": "Montana University System",
+      "url": "https://mus.edu",
+      "programs": [
+        "Montana University System Honor Scholarship"
+      ]
+    },
+    {
+      "state": "ND",
+      "name": "North Dakota University System",
+      "url": "https://www.ndus.edu",
+      "programs": [
+        "North Dakota Academic and CTE Scholarship"
+      ]
+    },
+    {
+      "state": "NE",
+      "name": "Nebraska Coordinating Commission for Postsecondary Education",
+      "url": "https://ccpe.nebraska.gov",
+      "programs": [
+        "Nebraska Opportunity Grant"
+      ]
+    },
+    {
+      "state": "NJ",
+      "name": "Higher Education Student Assistance Authority (HESAA)",
+      "url": "https://www.hesaa.org",
+      "programs": [
+        "Tuition Aid Grant (TAG)",
+        "Community College Opportunity Grant"
+      ]
+    },
+    {
+      "state": "NM",
+      "name": "New Mexico Higher Education Department",
+      "url": "https://hed.nm.gov",
+      "programs": [
+        "Legislative Lottery Scholarship",
+        "Opportunity Scholarship"
+      ]
+    },
+    {
+      "state": "NY",
+      "name": "Higher Education Services Corporation (HESC)",
+      "url": "https://www.hesc.ny.gov",
+      "programs": [
+        "Tuition Assistance Program (TAP)",
+        "Excelsior Scholarship"
+      ]
+    },
+    {
+      "state": "OH",
+      "name": "Ohio Department of Higher Education",
+      "url": "https://highered.ohio.gov",
+      "programs": [
+        "Ohio College Opportunity Grant"
+      ]
+    },
+    {
+      "state": "OK",
+      "name": "Oklahoma State Regents for Higher Education",
+      "url": "https://www.okhighered.org",
+      "programs": [
+        "Oklahoma's Promise",
+        "Oklahoma Tuition Aid Grant"
+      ]
+    },
+    {
+      "state": "OR",
+      "name": "Oregon Office of Student Access and Completion",
+      "url": "https://oregonstudentaid.gov",
+      "programs": [
+        "Oregon Opportunity Grant",
+        "Oregon Promise"
+      ]
+    },
+    {
+      "state": "PA",
+      "name": "Pennsylvania Higher Education Assistance Agency (PHEAA)",
+      "url": "https://www.pheaa.org",
+      "programs": [
+        "PA State Grant"
+      ]
+    },
+    {
+      "state": "RI",
+      "name": "Rhode Island Office of the Postsecondary Commissioner",
+      "url": "https://riopc.edu",
+      "programs": [
+        "Rhode Island Promise"
+      ]
+    },
+    {
+      "state": "SD",
+      "name": "South Dakota Board of Regents",
+      "url": "https://www.sdbor.edu",
+      "programs": [
+        "South Dakota Opportunity Scholarship"
+      ]
+    },
+    {
+      "state": "TX",
+      "name": "Texas Higher Education Coordinating Board",
+      "url": "https://www.highered.texas.gov",
+      "programs": [
+        "TEXAS Grant",
+        "Texas Application for State Financial Aid (TASFA)"
+      ]
+    },
+    {
+      "state": "UT",
+      "name": "Utah System of Higher Education",
+      "url": "https://ushe.edu",
+      "programs": [
+        "Opportunity Scholarship"
+      ]
+    },
+    {
+      "state": "VT",
+      "name": "Vermont Student Assistance Corporation (VSAC)",
+      "url": "https://www.vsac.org",
+      "programs": [
+        "Vermont Grant"
+      ]
+    },
+    {
+      "state": "WA",
+      "name": "Washington Student Achievement Council",
+      "url": "https://wsac.wa.gov",
+      "programs": [
+        "Washington College Grant"
+      ]
+    },
+    {
+      "state": "WI",
+      "name": "Wisconsin Higher Educational Aids Board",
+      "url": "https://heab.state.wi.us",
+      "programs": [
+        "Wisconsin Grant"
+      ]
+    },
+    {
+      "state": "WV",
+      "name": "West Virginia Higher Education Policy Commission",
+      "url": "https://www.wvhepc.edu",
+      "programs": [
+        "PROMISE Scholarship",
+        "West Virginia Higher Education Grant",
+        "WV Invests Grant"
+      ]
+    }
+  ]
+}

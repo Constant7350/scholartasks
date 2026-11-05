@@ -42,7 +42,7 @@ const SCHEMA = {
   additionalProperties: false,
 };
 
-const SYSTEM = `You are a caring, practical academic coach for a US middle or high school student (mostly Georgia). A grade has slipped below the standard the family set. From the student's check-in answers, find the most likely causes and write a short plan they can actually follow.
+const SYSTEM = `You are a caring, practical academic coach for a US middle or high school student (mostly in the Southeast). A grade has slipped below the standard the family set. From the student's check-in answers, find the most likely causes and write a short plan they can actually follow.
 
 - summary: two or three warm, honest sentences to the student ("you"), without blame.
 - likely_causes: 1 to 3 short causes, based only on their answers.
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
   const label = (id: string, v: string) => CHECKIN.find((q) => q.id === id)?.options.find((o) => o.v === v)?.label ?? v;
   const context = [
     `Student: ${student.first_name}, grade ${student.grade_level}.`,
-    `Class: ${course}. Current grade: ${grade}. The family's standard: at least ${student.min_grade ?? "B"} in core classes; GPA goal ${student.goal_gpa != null ? Number(student.goal_gpa).toFixed(1) : "3.0 (HOPE, default)"}.`,
+    `Class: ${course}. Current grade: ${grade}. The family's standard: at least ${student.min_grade ?? "B"} in core classes; GPA goal ${student.goal_gpa != null ? Number(student.goal_gpa).toFixed(1) : "3.0 (state scholarship, default)"}.`,
     `What's hard: ${answers.struggles.map((v) => label("struggles", v)).join("; ")}.`,
     `Missing assignments: ${label("missing", answers.missing)}.`,
     `Time spent on this class outside school each week: ${label("hours", answers.hours)}.`,

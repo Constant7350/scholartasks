@@ -30,7 +30,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
               <h4>Try it</h4>
               <ul>
                 <li><a href="/signin">Start free</a></li>
-                <li><a href="/tools/hope">HOPE and Zell checker</a></li>
+                <li><a href="/tools/hope">State scholarship checker</a></li>
                 <li><a href="/trades">Explore the trades</a></li>
                 <li><a href="/help">Help guide</a></li>
               </ul>

@@ -9,7 +9,7 @@ const uga: CollegeFacts = {
   netPriceByIncome: [8000, 9000, 12000, 18000, 22000], programs: { biological: 0.08, agriculture: 0.03 },
 };
 const priv: CollegeFacts = { ...uga, id: 2, name: "Private U", ownership: 2, tuitionIn: 50000, tuitionOut: 50000, costOfAttendance: 70000, netPriceByIncome: [15000, 18000, 22000, 30000, 45000], programs: { business_marketing: 0.3 } };
-const hope = (status: ProgramResult["status"]): ProgramResult => ({ programId: "ga-hope", programName: "HOPE Scholarship", status, gpa: 3.4, gaps: [], sourceUrl: "" });
+const hope = (status: ProgramResult["status"]): ProgramResult => ({ programId: "ga-hope", programName: "HOPE Scholarship", status, gpa: 3.4, gaps: [], checks: [], sourceUrl: "" });
 
 describe("estimateCost", () => {
   it("uses what families at this income typically pay", () => {

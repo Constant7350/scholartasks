@@ -70,7 +70,7 @@ export function NextYearCard({ sb, studentId, name, gradeLevel, aiAllowed }: {
   return (
     <section className="panel">
       <h2>Plan {next}th grade classes</h2>
-      <p className="hint">List the classes {name} is thinking about and the level of each. The AI weighs the goal, the grades so far and HOPE's rigor rule, then suggests where to stretch and where to play it safe. This is advice only, so check with the school counselor before signing up.</p>
+      <p className="hint">List the classes {name} is thinking about and the level of each. The AI weighs the goal, the grades so far and your state scholarship's rules, then suggests where to stretch and where to play it safe. This is advice only, so check with the school counselor before signing up.</p>
 
       <div className="row" style={{ alignItems: "end" }}>
         <div className="field"><label htmlFor="ny-course">Add a class</label>

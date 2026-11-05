@@ -9,7 +9,7 @@ Website: https://scholartasks.com
 | Folder | What it is |
 | --- | --- |
 | `packages/core` | The rules engine shared by web and phone: state-pack schema, scholarship GPA calculator, program eligibility, reminder schedule |
-| `packs/states`, `packs/regions` | State and region packs (data, not code). Georgia and the Academic Common Market are drafts |
+| `packs/states`, `packs/regions` | State and region packs (data, not code): Georgia, Florida, Alabama, South Carolina, North Carolina, Tennessee, Mississippi, Louisiana, Kentucky, Virginia, Arkansas and the Academic Common Market, all drafts. `packs/federal/state-agencies.json` lists the aid office for every other state |
 | `supabase/migrations` | Database schema: parent-owned family accounts, student permissions, row-level security, tamper-evident audit log |
 | `supabase/tests` | Database checks for permissions and the audit log |
 | `apps/web` | Website (Next.js): Georgia HOPE / Zell Miller checker, sign-in, parent family page (add children, invite codes, permissions), student join page |
@@ -51,7 +51,9 @@ Paid message packs are used only after a person's free daily AI uses run out. No
 
 Nothing state-specific lives in app code. To add a state:
 
-1. Copy `packs/states/GA.json` to `packs/states/XX.json` and fill in its programs, GPA formula, forms and deadlines, with a `source_url` for each program.
+1. Copy `packs/states/GA.json` (or a closer match, e.g. `TN.json` for "GPA or test score" rules) to `packs/states/XX.json` and fill in its programs, GPA formula (with a `label`), forms, deadlines, aid steps and `counselor_notes`, with a `source_url` for each program. Remove the state from `packs/federal/state-agencies.json`.
+   Rules can say a GPA *or* a test score is enough (`min_met`), need a class rank (`class_rank_top_pct`), change scores for a graduating class (`tests_by_class`), and list things the app can't check (`also`).
+1. Add one import line for the pack in `apps/web/lib/state-packs.ts` (a test fails if you forget). Nothing else in the app names a state.
 2. Run `pnpm validate-packs` and add test transcripts for the state's GPA formula in `packages/core/test`.
 3. Have a reviewer verify every value against the state agency, then set `verification.last_verified`.
 4. Move `status` from `draft` to `review`, then `beta` (invited schools only), then `live`.

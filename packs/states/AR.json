@@ -1,0 +1,285 @@
+{
+  "kind": "state",
+  "state": "AR",
+  "name": "Arkansas",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [
+    "ACM"
+  ],
+  "agency": {
+    "name": "Arkansas Division of Higher Education (ADHE)",
+    "url": "https://adhe.edu"
+  },
+  "gpa_formulas": {
+    "ar_gpa": {
+      "label": "Arkansas Challenge GPA",
+      "description": "High school GPA on a 4.0 scale from every course, grades 9-12 (estimate; the high school reports the official GPA).",
+      "courses": "all",
+      "grade_levels": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "scale": {
+        "A": 4,
+        "B": 3,
+        "C": 2,
+        "D": 1,
+        "F": 0
+      },
+      "weights": [],
+      "rounding": "none"
+    }
+  },
+  "programs": [
+    {
+      "id": "ar-challenge",
+      "name": "Arkansas Academic Challenge Scholarship",
+      "type": "merit",
+      "summary": "Lottery scholarship for a 3.0 GPA, or a 19 ACT (990 SAT) with a lower GPA, or a Diploma of Merit. Apply in SAMS by July 1.",
+      "rules": {
+        "gpa_formula": "ar_gpa",
+        "min_gpa": 3.0,
+        "tests_any": {
+          "sat": 990,
+          "act": 19
+        },
+        "min_met": 1,
+        "also": [
+          "With a 3.0 GPA, any ACT, SAT or Accuplacer score on record",
+          "A Diploma of Merit also qualifies",
+          "Arkansas resident (6 months)",
+          "SAMS application by July 1"
+        ]
+      },
+      "award": {
+        "summary": "$2,000 the first year, then $4,000, $4,000 and $5,000 at four-year colleges ($2,000 then $3,000 at two-year colleges). Academic Challenge PLUS adds up to $1,500 a semester the first year for students with financial need.",
+        "estimate": {
+          "public": 3750,
+          "private_per_year": 3750
+        }
+      },
+      "application": [
+        "SAMS",
+        "FAFSA"
+      ],
+      "source_url": "https://sams.adhe.edu/Scholarship/Details/ACST"
+    },
+    {
+      "id": "ar-governors-distinguished",
+      "name": "Governor's Distinguished Scholarship",
+      "type": "merit",
+      "summary": "Arkansas's top award for a 32 ACT (1410 SAT) and a 3.5 GPA (National Merit finalists need only the score). Apply in SAMS by March 1.",
+      "rules": {
+        "gpa_formula": "ar_gpa",
+        "min_gpa": 3.5,
+        "tests_any": {
+          "sat": 1410,
+          "act": 32
+        },
+        "also": [
+          "SAMS application and FAFSA by March 1",
+          "The February ACT is the last test that counts"
+        ]
+      },
+      "award": {
+        "summary": "Up to $10,000 a year for four years, including housing.",
+        "estimate": {
+          "public": 10000,
+          "private_per_year": 10000
+        }
+      },
+      "application": [
+        "SAMS",
+        "FAFSA"
+      ],
+      "source_url": "https://sams.adhe.edu/Scholarship/Details/GDS"
+    },
+    {
+      "id": "ar-governors-scholars",
+      "name": "Governor's Scholars",
+      "type": "merit",
+      "summary": "For students with a Diploma of Distinction, or an associate degree by the summer after graduation.",
+      "rules": {},
+      "award": {
+        "summary": "Up to $5,000 a year for four years."
+      },
+      "application": [
+        "SAMS",
+        "FAFSA"
+      ],
+      "source_url": "https://sams.adhe.edu/Scholarship/Details/GS"
+    },
+    {
+      "id": "ar-future",
+      "name": "ArFuture Grant",
+      "type": "grant",
+      "summary": "Tuition and fees for certificates and associate degrees in STEM and high-demand fields, after other aid. Part-time students qualify.",
+      "rules": {},
+      "award": {
+        "summary": "Tuition and mandatory fees left after other aid, for up to five semesters."
+      },
+      "application": [
+        "SAMS",
+        "FAFSA"
+      ],
+      "source_url": "https://sams.adhe.edu/scholarship/details/ARFUTURE"
+    },
+    {
+      "id": "ar-workforce-challenge",
+      "name": "Arkansas Workforce Challenge Scholarship",
+      "type": "grant",
+      "summary": "For short training in healthcare, information technology and industry, including non-credit classes. Apply 30 days before class starts.",
+      "rules": {},
+      "award": {
+        "summary": "Up to $3,000 per program (2026-27)."
+      },
+      "application": [
+        "SAMS"
+      ],
+      "source_url": "https://sams.adhe.edu/Scholarship/Details/AWC"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "SAMS"
+  ],
+  "deadlines": [
+    {
+      "id": "ar-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; also used for Academic Challenge PLUS)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ar-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ar-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; also used for Academic Challenge PLUS)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "ar-gds-2027",
+      "title": "Governor's Distinguished Scholarship: SAMS application and FAFSA due",
+      "form": "SAMS",
+      "date": "2027-03-01",
+      "kind": "deadline",
+      "where": "https://sams.adhe.edu/Scholarship/Details/GDS",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ar-challenge-2027",
+      "title": "Academic Challenge and Governor's Scholars: SAMS application due",
+      "form": "SAMS",
+      "date": "2027-07-01",
+      "kind": "deadline",
+      "where": "https://sams.adhe.edu/Scholarship/Details/ACST",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ar-gds-2028",
+      "title": "Governor's Distinguished Scholarship: SAMS application and FAFSA due",
+      "form": "SAMS",
+      "date": "2028-03-01",
+      "kind": "deadline",
+      "where": "https://sams.adhe.edu/Scholarship/Details/GDS",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "ar-challenge-2028",
+      "title": "Academic Challenge and Governor's Scholars: SAMS application due",
+      "form": "SAMS",
+      "date": "2028-07-01",
+      "kind": "deadline",
+      "where": "https://sams.adhe.edu/Scholarship/Details/ACST",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "ar-sams",
+      "stage": "file",
+      "order": 33,
+      "title": "Apply for Arkansas scholarships in SAMS",
+      "who": "student",
+      "minutes": 15,
+      "summary": "Arkansas state scholarships use one state application site, SAMS. One profile covers Academic Challenge, Governor's Scholars and more.",
+      "how": [
+        "Create a student account in SAMS and fill in the profile.",
+        "Apply for the Academic Challenge Scholarship by July 1 after graduation (Governor's Distinguished: March 1).",
+        "File the FAFSA too; Academic Challenge PLUS and the Governor's awards use it."
+      ],
+      "link": {
+        "label": "Open SAMS",
+        "url": "https://sams.adhe.edu"
+      },
+      "watch_out": [
+        "Never type passwords or Social Security numbers into ScholarTasks."
+      ]
+    }
+  ],
+  "aid_site": {
+    "name": "SAMS (Arkansas scholarship application)",
+    "url": "https://sams.adhe.edu"
+  },
+  "counselor_notes": [
+    "Arkansas Academic Challenge (lottery): a 3.0 GPA with any test score on record, or a 19 ACT with a lower GPA, or a Diploma of Merit; $2,000 the first year rising to $5,000 at four-year colleges; apply in SAMS by July 1. Governor's Distinguished Scholarship: 32 ACT (1410 SAT) and 3.5 GPA, up to $10,000 a year, due March 1. Arkansas rewrote many programs under Act 341 of 2025 (the ACCESS Act), so check SAMS for the current rules. ACCESS to Acceleration pays $65 a credit hour for concurrent (dual) credit in high school."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with the Arkansas Division of Higher Education before this pack moves to review. Changes under Act 341 of 2025 continue through 2029."
+  }
+}

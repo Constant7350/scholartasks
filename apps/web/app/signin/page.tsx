@@ -13,7 +13,7 @@ type PwAction = "signin" | "signup";
 const PERKS = [
   "Every scholarship, state aid and college deadline in one plan",
   "Reminders before anything is due, so nothing slips",
-  "Georgia HOPE and Zell Miller tracking from 8th grade on",
+  "State scholarship tracking (HOPE, Bright Futures, TOPS and more) from 8th grade on",
   "You decide what your student can see and do",
 ];
 

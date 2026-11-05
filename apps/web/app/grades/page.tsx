@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { displayGpa, evaluateStatePrograms, type CourseGrade, type StatePack } from "@scholartasks/core";
-import gaPack from "../../../../packs/states/GA.json";
+import { displayGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
+import { checkStatePrograms, packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { CoursePicker } from "./course-picker";
@@ -15,7 +15,6 @@ import { TranscriptsCard } from "./transcripts-card";
 import { RescueCard, type RescueTarget } from "./rescue-card";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
-const GA = gaPack as unknown as StatePack;
 const LETTERS = ["A", "B", "C", "D", "F"] as const;
 const LEVELS: Record<string, string> = { standard: "Standard", honors: "Honors", AP: "AP", IB: "IB", DE: "Dual enrollment" };
 const TERMS = ["Fall", "Spring", "Full year", "Summer"];
@@ -66,26 +65,28 @@ export default function GradesPage() {
 
   const mine = rows.filter((r) => r.student_id === current);
   const results = useMemo(() => {
-    if (!student || student.state !== GA.state) return [];
+    if (!student) return [];
     const grades: CourseGrade[] = mine.map((r) => ({ term: r.term, course: r.course, grade: r.grade, level: r.level, core: r.core, gradeLevel: r.grade_level }));
-    return evaluateStatePrograms({ state: student.state, gradeLevel: student.grade_level, grades, sat: student.sat ?? undefined, act: student.act ?? undefined }, GA);
+    return checkStatePrograms(student, grades);
   }, [student, mine]);
 
-  if (!sb) return <Page title="Grades and HOPE"><NotConfigured /></Page>;
-  if (role === undefined) return <Page title="Grades and HOPE"><p className="hint">Loading…</p></Page>;
+  if (!sb) return <Page title="Grades and scholarships"><NotConfigured /></Page>;
+  if (role === undefined) return <Page title="Grades and scholarships"><p className="hint">Loading…</p></Page>;
   if (!role || !student)
     return (
-      <Page title="Grades and HOPE">
+      <Page title="Grades and scholarships">
         <div className="panel family-card">
           <div>
             <h2>Add your student first</h2>
-            <p className="hint" style={{ margin: 0 }}>Grades belong to a student. Add yours, then come back. Or try the <a href="/tools/hope">quick HOPE checker</a> without saving anything.</p>
+            <p className="hint" style={{ margin: 0 }}>Grades belong to a student. Add yours, then come back. Or try the <a href="/tools/hope">quick state scholarship checker</a> without saving anything.</p>
           </div>
           <a className="btn btn-inline link-btn" href="/family">Add a student</a>
         </div>
       </Page>
     );
 
+  const pack = packFor(student.state);
+  const label = primaryGpa(pack)?.label ?? "GPA";
   const canEdit = role === "parent" || !!student.permissions?.enter_grades;
   const run = async (fn: () => PromiseLike<{ error: unknown }>) => {
     setError(null);
@@ -111,11 +112,11 @@ export default function GradesPage() {
       {error && <p className="note note-err" role="alert">{error}</p>}
       {!canEdit && <p className="note note-info">Your parent has turned off grade entry for your account, so this page is view-only.</p>}
 
-      {student.state === GA.state && (
+      {(
         <GpaScorecard
           rows={mine}
           currentGrade={student.grade_level}
-          pack={GA}
+          pack={pack}
           goal={student.goal_gpa == null ? null : Number(student.goal_gpa)}
           minGrade={student.min_grade}
           weights={{ rigor: Number(student.weight_rigor ?? 1), honors: Number(student.weight_honors ?? 0.5) }}
@@ -123,8 +124,9 @@ export default function GradesPage() {
           onRescue={aiAllowed ? (course, grade) => setRescue({ course, grade }) : undefined}
         />
       )}
-      {student.state === GA.state && (
+      {(
         <GoalsCard
+          pack={pack}
           name={student.first_name}
           goal={student.goal_gpa == null ? null : Number(student.goal_gpa)}
           minGrade={student.min_grade ?? "B"}
@@ -138,16 +140,21 @@ export default function GradesPage() {
           <div key={r.programId} className={`tile ${r.status === "eligible" ? "tile-ok" : ""}`}>
             <b>{r.programName}</b>
             <span className="big-num">{r.gpa === null ? "—" : displayGpa(r.gpa)}</span>
-            <span>{r.gpa === null ? "Add core courses to see the HOPE GPA." : "HOPE GPA from the core courses below"}</span>
+            <span>{r.gpa === null ? `Add courses to see the ${label}.` : `${label} from the courses below`}</span>
             {r.status === "eligible" ? (
               <span className="pill pill-ok">On track to qualify</span>
             ) : (
               <ul className="gaps">{r.gaps.map((g, i) => <li key={i}>{g.message}</li>)}</ul>
             )}
+            {r.checks.length > 0 && <span className="hint" style={{ fontSize: 12 }}>Also needed: {r.checks.join("; ")}.</span>}
           </div>
         ))}
       </section>
-      <p className="hint" style={{ fontSize: 12 }}>Estimate only. GAfutures calculates the official HOPE GPA. Georgia rules come from a draft pack being checked with GSFC.</p>
+      {pack ? (
+        <p className="hint" style={{ fontSize: 12 }}>Estimate only. {pack.aid_site ? `${pack.aid_site.name} shows` : `The ${pack.agency.name} decides`} the official {label}. {pack.name} rules come from a draft pack being checked with the {pack.agency.name}.{results.length === 0 ? ` ${pack.name} has no grade-based state scholarship; its state grants are on the financial aid page.` : ""}</p>
+      ) : (
+        <p className="hint" style={{ fontSize: 12 }}>ScholarTasks doesn&apos;t have {student.state} state scholarship rules yet. Grades, the scorecard and national scholarships all still work; see the <a href="/aid">financial aid page</a> for your state&apos;s aid office.</p>
+      )}
 
       <section className="panel">
         <h2>Test scores</h2>
@@ -168,7 +175,7 @@ export default function GradesPage() {
       <RescueCard sb={sb} studentId={student.id} name={student.first_name} isParent={role === "parent"} aiAllowed={aiAllowed}
         courses={rescueCourses} target={rescue} onTargetUsed={clearRescue} />
 
-      {student.state === GA.state && (
+      {(
         <NextYearCard sb={sb} studentId={student.id} name={student.first_name} gradeLevel={student.grade_level} aiAllowed={aiAllowed} />
       )}
 
@@ -185,7 +192,7 @@ export default function GradesPage() {
 
       <section className="panel">
         <h2>Courses and grades</h2>
-        <p className="hint">Add final grades for each course. Core courses (English, math, science, social studies and world languages) count toward HOPE.</p>
+        <p className="hint">Add final grades for each course. Core courses (English, math, science, social studies and world languages) count toward {label === "GPA" ? "most state scholarships" : `the ${label}`}.</p>
         {canEdit && (
           <form
             className="row"

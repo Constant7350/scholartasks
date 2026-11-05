@@ -1,23 +1,28 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { displayGpa, evaluateStatePrograms, type CourseGrade, type StatePack } from "@scholartasks/core";
-import gaPack from "../../../packs/states/GA.json";
+import { checkablePrograms, displayGpa, evaluateStatePrograms, primaryGpa, type CourseGrade } from "@scholartasks/core";
+import { PACKED_STATES, packFor } from "../lib/state-packs";
 
-const GA = gaPack as unknown as StatePack;
 const LETTERS = ["A", "B", "C", "D", "F"] as const;
 const LEVELS = ["standard", "honors", "AP", "IB", "DE"] as const;
+/** States with a grade-based scholarship to check. */
+const STATES = PACKED_STATES.filter((p) => checkablePrograms(p).length > 0);
 
-export function HopeChecker() {
+export function HopeChecker({ initialState = "GA" }: { initialState?: string }) {
+  const [state, setState] = useState(STATES.some((s) => s.state === initialState) ? initialState : "GA");
   const [grades, setGrades] = useState<CourseGrade[]>([]);
   const [course, setCourse] = useState("");
   const [grade, setGrade] = useState<CourseGrade["grade"]>("A");
   const [level, setLevel] = useState<CourseGrade["level"]>("standard");
   const [sat, setSat] = useState("");
+  const [act, setAct] = useState("");
+  const pack = packFor(state)!;
+  const label = primaryGpa(pack)?.label ?? "GPA";
 
   const results = useMemo(
-    () => evaluateStatePrograms({ state: "GA", gradeLevel: 10, grades, sat: sat ? Number(sat) : undefined }, GA),
-    [grades, sat],
+    () => evaluateStatePrograms({ state, gradeLevel: 10, grades, sat: sat ? Number(sat) : undefined, act: act ? Number(act) : undefined }, pack),
+    [grades, sat, act, state, pack],
   );
 
   const add = () => {
@@ -28,8 +33,14 @@ export function HopeChecker() {
 
   return (
     <section className="panel">
-      <h2>Georgia HOPE and Zell Miller checker</h2>
-      <div className="row">
+      <h2>{pack.name} scholarship checker</h2>
+      <div className="field" style={{ maxWidth: 260 }}>
+        <label htmlFor="hc-state">State you live in</label>
+        <select id="hc-state" className="input" value={state} onChange={(e) => setState(e.target.value)}>
+          {STATES.map((s) => <option key={s.state} value={s.state}>{s.name}</option>)}
+        </select>
+      </div>
+      <div className="row" style={{ marginTop: 14 }}>
         <div className="field">
           <label htmlFor="hc-course">Core course</label>
           <input id="hc-course" className="input" placeholder="e.g. Algebra II" value={course} onChange={(e) => setCourse(e.target.value)} />
@@ -48,9 +59,15 @@ export function HopeChecker() {
         </div>
         <button className="btn btn-inline" onClick={add} disabled={!course.trim()}>Add course</button>
       </div>
-      <div className="field" style={{ maxWidth: 220, marginTop: 14 }}>
-        <label htmlFor="hc-sat">SAT score (optional)</label>
-        <input id="hc-sat" className="input" placeholder="e.g. 1200" value={sat} inputMode="numeric" onChange={(e) => setSat(e.target.value.replace(/\D/g, ""))} />
+      <div className="row" style={{ marginTop: 14 }}>
+        <div className="field" style={{ maxWidth: 200 }}>
+          <label htmlFor="hc-sat">SAT score (optional)</label>
+          <input id="hc-sat" className="input" placeholder="e.g. 1200" value={sat} inputMode="numeric" onChange={(e) => setSat(e.target.value.replace(/\D/g, ""))} />
+        </div>
+        <div className="field" style={{ maxWidth: 200 }}>
+          <label htmlFor="hc-act">ACT score (optional)</label>
+          <input id="hc-act" className="input" placeholder="e.g. 25" value={act} inputMode="numeric" onChange={(e) => setAct(e.target.value.replace(/\D/g, ""))} />
+        </div>
       </div>
       <ul>
         {grades.map((g, i) => (
@@ -60,12 +77,16 @@ export function HopeChecker() {
       {results.map((r) => (
         <div key={r.programId} style={{ marginTop: 12 }}>
           <strong>{r.programName}</strong>: {r.status === "eligible" ? "on track to qualify" : "not yet"}
-          {r.gpa !== null && <span> (HOPE GPA {displayGpa(r.gpa)})</span>}
+          {r.gpa !== null && <span> ({label} {displayGpa(r.gpa)})</span>}
           <ul>
             {r.gaps.map((g, i) => <li key={i}>{g.message}</li>)}
+            {r.checks.map((c, i) => <li key={`c${i}`} className="hint">Also needed: {c}</li>)}
           </ul>
         </div>
       ))}
+      <p className="hint" style={{ fontSize: 12 }}>
+        Rules for {pack.name} come from a draft data pack still being checked with the {pack.agency.name}. Confirm on <a href={pack.aid_site?.url ?? pack.agency.url} target="_blank" rel="noreferrer noopener">{pack.aid_site?.name ?? pack.agency.name}</a>.
+      </p>
     </section>
   );
 }

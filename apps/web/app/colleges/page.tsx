@@ -6,6 +6,7 @@ import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../lib/colleges";
+import { STATE_NAMES } from "../../lib/trades";
 
 interface Student extends CostStudent { first_name: string; match_profile: { interests?: string[] } | null }
 
@@ -123,7 +124,7 @@ export default function CollegesPage() {
       <p className="hint">Answer five quick questions. We look through every four-year college in the federal College Scorecard and show a yearly price for your family. Tap Add to put a college on your list. Know what you want to study? <a href="/majors">Search colleges by major</a>.</p>
 
       <section className="panel quiz">
-        {pick("1. Where?", [["home", student.state === "GA" ? "Georgia" : "My state"], ["region", "The Southeast"], ["anywhere", "Anywhere in the U.S."]], "where")}
+        {pick("1. Where?", [["home", STATE_NAMES[student.state] ?? "My state"], ["region", "The Southeast"], ["anywhere", "Anywhere in the U.S."]], "where")}
         {pick("2. How big?", [["small", "Small (under 5,000)"], ["medium", "Medium"], ["large", "Large (15,000+)"], ["any", "No preference"]], "size")}
         {pick("3. Public or private?", [["public", "Public"], ["private", "Private"], ["any", "Either"]], "type")}
         <fieldset className="quiz-q">

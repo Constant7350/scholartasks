@@ -1,0 +1,161 @@
+{
+  "kind": "state",
+  "state": "NC",
+  "name": "North Carolina",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [],
+  "agency": {
+    "name": "North Carolina State Education Assistance Authority (NCSEAA)",
+    "url": "https://www.ncseaa.edu"
+  },
+  "gpa_formulas": {},
+  "programs": [
+    {
+      "id": "nc-next-nc",
+      "name": "Next NC Scholarship",
+      "type": "need",
+      "summary": "For families with an adjusted gross income of $80,000 or less and a Student Aid Index of 7,500 or less: at least $5,000 a year at a UNC System university or $3,000 at a community college, from the FAFSA (the Pell Grant counts toward it).",
+      "rules": {},
+      "award": {
+        "summary": "At least $5,000 a year at UNC System universities and $3,000 at NC community colleges (federal and state grants combined)."
+      },
+      "application": [
+        "FAFSA",
+        "Residency Determination (RDS)"
+      ],
+      "source_url": "https://www.cfnc.org/pay-for-college/scholarship-search/next-nc-scholarship"
+    },
+    {
+      "id": "nc-promise",
+      "name": "NC Promise tuition",
+      "type": "tuition_discount",
+      "summary": "$500 a semester tuition for North Carolina residents at Elizabeth City State, Fayetteville State, UNC Pembroke and Western Carolina. No application.",
+      "rules": {},
+      "award": {
+        "summary": "Tuition of $500 a semester for in-state students (fees, housing and meals are extra)."
+      },
+      "application": [
+        "Residency Determination (RDS)"
+      ],
+      "source_url": "https://www.northcarolina.edu/impact/affordability-efficiency/nc-promise/"
+    },
+    {
+      "id": "nc-need-based-private",
+      "name": "NC Need-Based Scholarship (private colleges)",
+      "type": "need",
+      "summary": "Need-based award for North Carolina residents at eligible private nonprofit North Carolina colleges, from the FAFSA.",
+      "rules": {},
+      "award": {
+        "summary": "Set each year by the state."
+      },
+      "application": [
+        "FAFSA",
+        "Residency Determination (RDS)"
+      ],
+      "source_url": "https://www.cfnc.org"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "Residency Determination (RDS)"
+  ],
+  "deadlines": [
+    {
+      "id": "nc-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; also used for the Next NC Scholarship)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "nc-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "nc-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; also used for the Next NC Scholarship)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "nc-next-nc-2027-unc",
+      "title": "Next NC Scholarship priority date for UNC System universities (FAFSA filed)",
+      "form": "FAFSA",
+      "date": "2027-06-01",
+      "kind": "priority",
+      "where": "https://www.cfnc.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "nc-rds",
+      "stage": "accounts",
+      "order": 30,
+      "title": "Complete North Carolina's Residency Determination (RDS)",
+      "who": "family",
+      "minutes": 20,
+      "summary": "North Carolina colleges use the Residency Determination Service to decide in-state tuition and state grants. Skip it and the student is treated as out-of-state.",
+      "how": [
+        "Open the Residency Determination Service site and sign in with the student's account.",
+        "Answer the questions about where the family has lived for the past 12 months. A parent may need to help.",
+        "Save the Residency Certificate Number and give it to each North Carolina college that asks."
+      ],
+      "link": {
+        "label": "Open the Residency Determination Service",
+        "url": "https://www.ncresidency.org"
+      },
+      "watch_out": [
+        "Never type passwords or Social Security numbers into ScholarTasks."
+      ]
+    }
+  ],
+  "aid_site": {
+    "name": "CFNC (College Foundation of North Carolina)",
+    "url": "https://www.cfnc.org"
+  },
+  "counselor_notes": [
+    "North Carolina has no statewide merit scholarship like HOPE. State money is need-based: the Next NC Scholarship (AGI $80,000 or less) comes from the FAFSA. Every student must complete the Residency Determination Service (RDS) to get in-state tuition and state grants.",
+    "NC Promise sets tuition at $500 a semester for residents at Elizabeth City State, Fayetteville State, UNC Pembroke and Western Carolina. Career and College Promise gives free community college classes to eligible high school juniors and seniors, and the Comprehensive Articulation Agreement lets an associate degree transfer to UNC System universities. CFNC (cfnc.org) is the state's planning and application site."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with the NC State Education Assistance Authority before this pack moves to review."
+  }
+}

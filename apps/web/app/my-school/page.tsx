@@ -15,7 +15,7 @@ const SHARE: Record<Link["share"], { label: string; detail: string }> = {
   },
   progress_grades: {
     label: "Progress and grades",
-    detail: "Everything above, plus course grades and the HOPE GPA.",
+    detail: "Everything above, plus course grades and the state scholarship GPA.",
   },
 };
 const NEVER = "Never shared: essays, notes, AI counselor chats, family income, aid answers, or anything about parents.";

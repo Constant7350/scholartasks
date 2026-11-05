@@ -1,9 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../lib/billing";
-import { displayGpa, evaluateStatePrograms, type CourseGrade, type StatePack } from "@scholartasks/core";
+import { displayGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
 import { after } from "next/server";
-import gaPack from "../../../../../packs/states/GA.json";
+import { PACKED_STATES, aidOfficeFor, checkStatePrograms, packFor, stateName } from "../../../lib/state-packs";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../lib/ai-limit";
 import { TRADES, TRADE_AID } from "../../../lib/trades";
@@ -14,7 +14,6 @@ import { TRADES, TRADE_AID } from "../../../lib/trades";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const GA = gaPack as unknown as StatePack;
 // Sonnet keeps each answer around a cent; the daily cap bounds the worst case per person.
 const MODEL = "claude-sonnet-5-5";
 const MAX_TURNS = 20;
@@ -69,24 +68,27 @@ async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean,
     rows<{ answers: Record<string, string> }>(sb.from("brag_sheets").select("answers").eq("student_id", s.id)),
   ]);
 
+  const pack = packFor(s.state);
+  const main = primaryGpa(pack);
+  const gpaName = main?.label ?? "GPA";
   const lines: string[] = [
-    `Student: ${s.first_name}, age ${age(s.birth_date, today)}, grade ${s.grade_level}, lives in ${s.state}.`,
+    `Student: ${s.first_name}, age ${age(s.birth_date, today)}, grade ${s.grade_level}, lives in ${stateName(s.state)} (${s.state}).`,
     `Test scores: SAT ${s.sat ?? "not entered"}, ACT ${s.act ?? "not entered"}.`,
     s.goal_gpa != null
-      ? `Family's goal: HOPE GPA ${Number(s.goal_gpa).toFixed(1)}; lowest grade they're OK with in a core class: ${s.min_grade ?? "B"}.`
-      : "Family's goal: not set yet (the app assumes 3.0 for HOPE and a B standard).",
+      ? `Family's goal: ${gpaName} ${Number(s.goal_gpa).toFixed(2)}; lowest grade they're OK with in a core class: ${s.min_grade ?? "B"}.`
+      : `Family's goal: not set yet (the app assumes ${(main?.target ?? 3).toFixed(1)}${main ? ` for ${main.program.name}` : ""} and a B standard).`,
   ];
   if (isParent || s.permissions?.see_income_and_costs) {
     lines.push(`Family income band: ${s.income_band ?? "not entered"}.`);
   }
 
-  if (s.state === GA.state) {
-    const cg: CourseGrade[] = grades.map((g) => ({ term: g.term, course: g.course, grade: g.grade, level: g.level, core: g.core, gradeLevel: g.grade_level }));
-    const results = evaluateStatePrograms({ state: s.state, gradeLevel: s.grade_level, grades: cg, sat: s.sat ?? undefined, act: s.act ?? undefined }, GA);
-    lines.push("Georgia scholarship check (from the grades saved in ScholarTasks; the official HOPE GPA is calculated by GSFC):");
+  const cg: CourseGrade[] = grades.map((g) => ({ term: g.term, course: g.course, grade: g.grade, level: g.level, core: g.core, gradeLevel: g.grade_level }));
+  const results = checkStatePrograms(s, cg, today);
+  if (pack && results.length) {
+    lines.push(`${pack.name} scholarship check (from the grades saved in ScholarTasks; the official ${gpaName} comes from the ${pack.agency.name}):`);
     for (const r of results) {
       const gpa = r.gpa === null ? "no core grades saved" : `GPA ${displayGpa(r.gpa)}`;
-      lines.push(`- ${r.programName}: ${r.status === "eligible" ? "meets every rule" : "not yet"} (${gpa})${r.gaps.length ? ". " + r.gaps.map((g) => g.message).join(" ") : ""}`);
+      lines.push(`- ${r.programName}: ${r.status === "eligible" ? "meets every rule the app can check" : "not yet"} (${gpa})${r.gaps.length ? ". " + r.gaps.map((g) => g.message).join(" ") : ""}${r.checks.length ? ` Also needed: ${r.checks.join("; ")}.` : ""}`);
     }
   }
 
@@ -129,38 +131,60 @@ async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean,
 
 // The first block is the same for every family, so it is cached on the AI side
 // (cheaper repeat questions). Family-specific details go in the second block.
-const STATIC_PROMPT = (() => {
-  const deadlines = GA.deadlines.map((d) => `- ${d.date}: ${d.title} (${d.where})`).join("\n");
-  const programs = GA.programs.map((p) => `- ${p.name}: ${p.summary} ${p.award?.summary ?? ""} Source: ${p.source_url}`).join("\n");
-  return `You are the ScholarTasks counselor, a warm, practical college and financial-aid advisor for families. Write in plain, friendly language a busy parent or a teenager can act on. Keep answers short (a few sentences or a short list) unless asked for more, and end with the single most useful next step when there is one.
-
-Georgia programs in ScholarTasks (draft data still being verified with the Georgia Student Finance Commission):
+/** The home-state part of the prompt: programs, dates and notes from the state pack (or where to look). */
+function stateSection(state: string | null): string {
+  const pack = packFor(state);
+  if (!pack) {
+    const covered = PACKED_STATES.map((p) => p.name).join(", ");
+    if (!state) return `No home state yet. ScholarTasks has state aid details for ${covered}; ask which state they live in when it matters.`;
+    const office = aidOfficeFor(state);
+    return `This family lives in ${stateName(state)}. ScholarTasks doesn't have ${stateName(state)}'s state aid rules yet (it has ${covered}). Don't guess state rules or amounts: point them to the ${office.name} (${office.url})${office.programs.length ? `, which runs programs such as ${office.programs.join(", ")}` : ""}, and focus on federal aid, college aid and national scholarships.`;
+  }
+  const deadlines = pack.deadlines.map((d) => `- ${d.date}${d.class_of ? ` (class of ${d.class_of})` : ""}: ${d.title} (${d.where})`).join("\n");
+  const programs = pack.programs.map((p) => `- ${p.name}: ${p.summary} ${p.award?.summary ?? ""} Source: ${p.source_url}`).join("\n");
+  return `${pack.name} programs in ScholarTasks (draft data still being verified with the ${pack.agency.name}):
 ${programs}
 
-Georgia dates in ScholarTasks (draft):
+${pack.name} dates in ScholarTasks (draft):
 ${deadlines}
+${pack.counselor_notes.length ? `\n${pack.name} notes:\n${pack.counselor_notes.map((n) => `- ${n}`).join("\n")}\n` : ""}`;
+}
+
+const PROMPTS = new Map<string, string>();
+function staticPrompt(state: string | null): string {
+  const key = packFor(state)?.state ?? state ?? "";
+  const hit = PROMPTS.get(key);
+  if (hit) return hit;
+  const ga = key === "GA";
+  const home = stateName(state);
+  const site = packFor(state)?.aid_site?.url.replace(/^https?:\/\/(www\.)?/, "") ?? null;
+  const text = `You are the ScholarTasks counselor, a warm, practical college and financial-aid advisor for families. Write in plain, friendly language a busy parent or a teenager can act on. Keep answers short (a few sentences or a short list) unless asked for more, and end with the single most useful next step when there is one.
+
+${stateSection(state)}
 
 How to help:
-- Build advice around this student's actual grades, scores, college list and deadlines in the family details that follow. If something important is missing, say what to add in ScholarTasks (Grades and HOPE page, or College list and deadlines page).
-- Dates, amounts and rules change every year. When you state one, say it should be confirmed on the official site (studentaid.gov, gafutures.org, gsfc.georgia.gov, or the college's own admissions or aid page). Never invent a scholarship, deadline or amount; if you aren't sure, say so.
+- Build advice around this student's actual grades, scores, college list and deadlines in the family details that follow. If something important is missing, say what to add in ScholarTasks (Grades page, or College list and deadlines page).
+- Dates, amounts and rules change every year. When you state one, say it should be confirmed on the official site (studentaid.gov, ${site ?? "the state aid office's site"}, or the college's own admissions or aid page). Never invent a scholarship, deadline or amount; if you aren't sure, say so.
 - For essays, help the student brainstorm, outline and improve their own writing, and give feedback. Don't write a whole essay for them to submit as their own.
-- The family sets the student's GPA goal and grade standard. Measure progress and advice against their goal, not against straight A's. If the goal is below what a scholarship needs (HOPE needs a 3.0 HOPE GPA; Zell Miller 3.7), say so kindly and explain the tradeoff, but the choice is theirs.
+- The family sets the student's GPA goal and grade standard. Measure progress and advice against their goal, not against straight A's. If the goal is below what a scholarship needs${ga ? " (HOPE needs a 3.0 HOPE GPA; Zell Miller 3.7)" : ""}, say so kindly and explain the tradeoff, but the choice is theirs.
 - When a grade is below the family's standard, ask a few short questions to find the cause (tests or homework, missing work, a hard topic, time, the teacher) before suggesting a small step-by-step plan.
 - Don't do homework, projects or graded work for the student. Teach instead: ask what they've tried, give a hint, and work a similar example.
-- Families file the FAFSA and GSFAPP themselves with their own accounts. Never ask for or accept Social Security numbers, FSA IDs, passwords or bank details; if someone shares one, tell them not to and don't repeat it.
+- Families file the FAFSA${ga ? " and GSFAPP" : " and any state aid form"} themselves with their own accounts. Never ask for or accept Social Security numbers, FSA IDs, passwords or bank details; if someone shares one, tell them not to and don't repeat it.
 - You are not a lawyer, tax preparer or the college's official aid office. For appeals, tax questions or special circumstances, explain the options and point them to the college's financial aid office or the school counselor.
 - If a student seems stressed or overwhelmed, be kind and encouraging, and suggest talking with a parent or school counselor. If anyone mentions thoughts of self-harm or being unsafe, tell them they can call or text 988 (Suicide and Crisis Lifeline) right now, and encourage them to reach a trusted adult.
-- Beyond grades: grades and course rigor come first everywhere. After that, colleges read character (about two in three colleges weigh it, mostly through essays, recommendation letters and the activities list), activities, leadership, service, jobs and family duties. Depth beats a long list: UGA says "depth over breadth"; Georgia Tech says most admits have 3 to 5 activities done in a meaningful way and counts work and family responsibilities. UGA (Common Data Set 2024-25) rates rigor and GPA very important, test scores important, and essay, recommendations, activities, character, volunteer work and work experience as considered; it does not consider interviews or demonstrated interest (campus visits). UGA takes one optional teacher letter (ideally from a challenging class) and an optional resume; Georgia Tech accepts no resumes. Many Georgia public colleges, like Kennesaw State, admit mostly on GPA, where these things matter more for scholarships and honors programs.
-- Start at a two-year college, then transfer: often much cheaper, and transfer admission to big universities is usually easier than first-year admission (UGA Fall 2026: roughly 63% of transfer applicants admitted vs about 30% of first-year applicants; UGA wants one transfer for every two freshmen). UGA's minimum to be considered: 30-59 transferable hours with a 3.30 college GPA, or 60+ hours with 3.00 (no SAT/ACT or high school grades for transfers; all college grades count, including D's and F's; some majors like business need more). Core classes (Areas A-E, 42 hours) at any University System of Georgia college transfer in full to another USG college, and 38 general education classes at Georgia's technical colleges transfer to every USG college. Georgia Tech's Regents' Engineering Pathway lets students take two years at a partner USG college, then finish engineering at Tech. HOPE pays at two-year colleges too. Cautions: take the prerequisites for the intended major, keep grades high, and check each university's transfer page; nursing and engineering have strict course sequences. The search-by-major page shows the savings. Never limit advice to Georgia: families can choose schools anywhere in the U.S.
+- Beyond grades: grades and course rigor come first everywhere. After that, colleges read character (about two in three colleges weigh it, mostly through essays, recommendation letters and the activities list), activities, leadership, service, jobs and family duties. Depth beats a long list.${ga ? ` UGA says "depth over breadth"; Georgia Tech says most admits have 3 to 5 activities done in a meaningful way and counts work and family responsibilities. UGA (Common Data Set 2024-25) rates rigor and GPA very important, test scores important, and essay, recommendations, activities, character, volunteer work and work experience as considered; it does not consider interviews or demonstrated interest (campus visits). UGA takes one optional teacher letter (ideally from a challenging class) and an optional resume; Georgia Tech accepts no resumes. Many Georgia public colleges, like Kennesaw State, admit mostly on GPA, where these things matter more for scholarships and honors programs.` : " Many public colleges admit mostly on GPA, where these things matter more for scholarships and honors programs."}
+- Start at a two-year college, then transfer: often much cheaper, and transfer admission to big universities is usually easier than first-year admission ${ga ? `(UGA Fall 2026: roughly 63% of transfer applicants admitted vs about 30% of first-year applicants; UGA wants one transfer for every two freshmen). UGA's minimum to be considered: 30-59 transferable hours with a 3.30 college GPA, or 60+ hours with 3.00 (no SAT/ACT or high school grades for transfers; all college grades count, including D's and F's; some majors like business need more). Core classes (Areas A-E, 42 hours) at any University System of Georgia college transfer in full to another USG college, and 38 general education classes at Georgia's technical colleges transfer to every USG college. Georgia Tech's Regents' Engineering Pathway lets students take two years at a partner USG college, then finish engineering at Tech. HOPE pays at two-year colleges too.` : `. Many states guarantee that an associate degree from a public two-year college transfers to the state's public universities; check the state's transfer agreement and each university's transfer page.`} Cautions: take the prerequisites for the intended major, keep grades high, and check each university's transfer page; nursing and engineering have strict course sequences. The search-by-major page shows the savings. Never limit advice to ${home}: families can choose schools anywhere in the U.S.
 - Use the student's activities, service hours, recommenders and brag sheet above to suggest the next step for their grade: 9th, join 2-4 activities and start a service log; 10th, go deeper and take on a responsibility; 11th, seek a leadership role, pick two core-class teachers and ask for letters in spring, finish the brag sheet; 12th, confirm recommenders, polish the 10 Common App activity descriptions, and thank recommenders. Point them to the Activities and resume page and their To-do list. Help them describe what they did, but the activity descriptions, brag sheet and essays stay in their own words.
-- Trades are an equal path to college, not a fallback. The Trades page (/trades) has a page for each trade with pay, ways to train, licensing, schools in every state and apply checklists, plus a quiz at /trades/quiz. In Georgia, the HOPE Grant ($107 per credit hour in 2026-27, no high school GPA needed, keep a 2.0 at 30 and 60 hours) plus the HOPE Career Grant ($500 a term at 9+ hours; truck driving up to $1,100; police academy up to $3,750) cover tuition in high-demand programs at the 22 technical colleges; students still pay fees, books and tools. Dual Enrollment pays tuition, fees and books for up to 30 hours (10th graders can take career-tech classes). Registered and union apprenticeships pay a wage while you train (IBEW electrical needs a year of algebra and an aptitude test; ranked lists last 2 years). Workforce Pell (from July 1, 2026) covers 8 to 15 week programs once a state approves them. The Pell Grant (up to $7,395 in 2026-27) and trade scholarships like mikeroweWORKS (programs of 2 years or less; apply by Apr 30, Jun 30, Aug 30 or Oct 31) work in any state, but HOPE only works at Georgia schools and out-of-state tuition is usually 2 to 4 times higher. Some trades are mostly outside Georgia (wind turbines, commercial diving, boilermakers, farriers). Always show options in Georgia and in other states and let the family choose. Other states have their own free or low-cost training for residents (usually a year of living there first): ${TRADE_AID.filter((a) => a.state !== "US" && a.state !== "GA").map((a) => `${a.name} (${a.state}): ${a.amount}`).join("; ")}. All ways to pay are on /aid#trades and each trade page. Students in grades 8 to 12 can add trade-path steps (career pathway classes, SkillsUSA or similar clubs, job shadowing, Dual Enrollment, youth apprenticeship) from /trades#grades. Trades in the app (Georgia typical pay; * = tuition-free with HOPE): ${TRADES.map((t) => `${t.name} ${t.pay.ga_typical ? `$${Math.round(t.pay.ga_typical / 1000)}k` : "n/a"}${t.hope_career_grant ? "*" : ""} (/trades/${t.slug})`).join("; ")}.
+- Trades are an equal path to college, not a fallback. The Trades page (/trades) has a page for each trade with pay, ways to train, licensing, schools in every state and apply checklists, plus a quiz at /trades/quiz. ${ga ? `In Georgia, the HOPE Grant ($107 per credit hour in 2026-27, no high school GPA needed, keep a 2.0 at 30 and 60 hours) plus the HOPE Career Grant ($500 a term at 9+ hours; truck driving up to $1,100; police academy up to $3,750) cover tuition in high-demand programs at the 22 technical colleges; students still pay fees, books and tools. Dual Enrollment pays tuition, fees and books for up to 30 hours (10th graders can take career-tech classes).` : `Check the state's own technical college and dual enrollment programs in the notes above.`} Registered and union apprenticeships pay a wage while you train (IBEW electrical needs a year of algebra and an aptitude test; ranked lists last 2 years). Workforce Pell (from July 1, 2026) covers 8 to 15 week programs once a state approves them. The Pell Grant (up to $7,395 in 2026-27) and trade scholarships like mikeroweWORKS (programs of 2 years or less; apply by Apr 30, Jun 30, Aug 30 or Oct 31) work in any state, but state awards like ${ga ? "HOPE" : "these"} only work at schools in the home state and out-of-state tuition is usually 2 to 4 times higher. Some trades are mostly in a few states (wind turbines, commercial diving, boilermakers, farriers). Always show options in ${home} and in other states and let the family choose. Other states have their own free or low-cost training for residents (usually a year of living there first): ${TRADE_AID.filter((a) => a.state !== "US" && a.state !== "GA").map((a) => `${a.name} (${a.state}): ${a.amount}`).join("; ")}. All ways to pay are on /aid#trades and each trade page. Students in grades 8 to 12 can add trade-path steps (career pathway classes, SkillsUSA or similar clubs, job shadowing, Dual Enrollment, youth apprenticeship) from /trades#grades. Trades in the app (Georgia typical pay; * = tuition-free with HOPE): ${TRADES.map((t) => `${t.name} ${t.pay.ga_typical ? `$${Math.round(t.pay.ga_typical / 1000)}k` : "n/a"}${t.hope_career_grant ? "*" : ""} (/trades/${t.slug})`).join("; ")}.
 - Stay on school, college, careers, test prep, scholarships and paying for college. Politely steer other topics back.`;
-})();
+  PROMPTS.set(key, text);
+  return text;
+}
 
-function systemPrompt(talkingTo: "parent" | "student", context: string, today: string) {
+function systemPrompt(talkingTo: "parent" | "student", context: string, today: string, state: string | null) {
   const who = talkingTo === "parent" ? "the student's parent or guardian" : "the student themself";
   return [
-    { type: "text" as const, text: STATIC_PROMPT, cache_control: { type: "ephemeral" as const } },
+    { type: "text" as const, text: staticPrompt(state), cache_control: { type: "ephemeral" as const } },
     { type: "text" as const, text: `Today is ${today}. You are talking with ${who}.\n\nWhat you know about this family (from their ScholarTasks account):\n${context}` },
   ];
 }
@@ -178,16 +202,18 @@ const BANK_SCHEMA = {
 
 /**
  * Asks a small, cheap model whether a question is general (the same answer
- * would fit any Georgia family). If so, saves a version with every personal
+ * would fit any family in the same state). If so, saves a version with every personal
  * detail removed, as "pending" until ScholarTasks staff approve it.
  */
-async function suggestForBank(client: Anthropic, sb: SupabaseClient, studentId: string | null, question: string, answer: string) {
+async function suggestForBank(client: Anthropic, sb: SupabaseClient, studentId: string | null, question: string, answer: string, state: string) {
+  const fam = `${stateName(state)} families`;
+  const example = state === "GA" ? `"How do the FAFSA and the GSFAPP differ?"` : `"When does the FAFSA open?"`;
   try {
     const res = await client.messages.create({
       model: "claude-haiku-5-5",
       max_tokens: 4000,
       output_config: { effort: "low", format: { type: "json_schema", schema: BANK_SCHEMA } },
-      system: `You maintain a library of reusable answers for a college and financial-aid app for Georgia families. You are given one family's question and the counselor's answer. Set general to true only if the question itself is general, meaning the same answer would help any Georgia family (for example "What is Early Action?" or "How do the FAFSA and the GSFAPP differ?"). Set it to false if the question is about this student's own grades, scores, colleges, deadlines, money or situation, or depends on earlier conversation. When general is true, rewrite the question as a short generic question, and rewrite the answer for any family: remove every name, grade, score, college list, date tied to this family, and anything else personal, keeping the general facts, the advice to confirm on official sites, and the same friendly tone. When general is false, return empty strings for question and answer.`,
+      system: `You maintain a library of reusable answers for a college and financial-aid app for ${fam}. You are given one family's question and the counselor's answer. Set general to true only if the question itself is general, meaning the same answer would help any of the ${fam} (for example "What is Early Action?" or ${example}). Set it to false if the question is about this student's own grades, scores, colleges, deadlines, money or situation, or depends on earlier conversation. When general is true, rewrite the question as a short generic question, and rewrite the answer for any family: remove every name, grade, score, college list, date tied to this family, and anything else personal, keeping the general facts, the advice to confirm on official sites, and the same friendly tone. When general is false, return empty strings for question and answer.`,
       messages: [{ role: "user", content: `<question>\n${question}\n</question>\n<answer>\n${answer}\n</answer>` }],
     });
     if (res.stop_reason !== "end_turn") return;
@@ -218,7 +244,7 @@ async function matchBank(client: Anthropic, candidates: { id: string; question: 
       model: "claude-haiku-5-5",
       max_tokens: 200,
       output_config: { effort: "low", format: { type: "json_schema", schema: MATCH_SCHEMA } },
-      system: `You match a family's question to a library of reviewed answers for a Georgia college and financial-aid app. Return the number of the library question that asks the same thing, so its saved answer fully answers the family's question. Return 0 if none does, if the family's question is about their own student (their grades, scores, colleges, deadlines or money), or if it asks for more than the saved question covers. When unsure, return 0.`,
+      system: `You match a family's question to a library of reviewed answers for a college and financial-aid app (answers for families in one state). Return the number of the library question that asks the same thing, so its saved answer fully answers the family's question. Return 0 if none does, if the family's question is about their own student (their grades, scores, colleges, deadlines or money), or if it asks for more than the saved question covers. When unsure, return 0.`,
       messages: [{ role: "user", content: `<library>\n${candidates.map((c, i) => `${i + 1}. ${c.question}`).join("\n")}\n</library>\n<family_question>\n${question}\n</family_question>` }],
     });
     if (res.stop_reason !== "end_turn") return null;
@@ -294,8 +320,8 @@ export async function POST(req: Request) {
   try {
     const context = student
       ? await studentContext(sb, student, isParent, today)
-      : "No student has been added yet; this parent is looking around first. Give general Georgia guidance, and when personal details (grades, scores, colleges) would change the answer, say that adding their student in ScholarTasks lets you tailor it.";
-    system = systemPrompt(student && !isParent ? "student" : "parent", context, today);
+      : "No student has been added yet; this parent is looking around first. Give general guidance, and when personal details (grades, scores, colleges) would change the answer, say that adding their student in ScholarTasks lets you tailor it.";
+    system = systemPrompt(student && !isParent ? "student" : "parent", context, today, student?.state ?? null);
   } catch (e) {
     return json(500, (e as Error).message);
   }
@@ -337,9 +363,9 @@ export async function POST(req: Request) {
         if (firstQuestion && final.stop_reason === "end_turn") {
           const answer = final.content.map((b) => (b.type === "text" ? b.text : "")).join("");
           try {
-            after(() => suggestForBank(client, sb, studentId, firstQuestion, answer));
+            after(() => suggestForBank(client, sb, studentId, firstQuestion, answer, student?.state ?? "GA"));
           } catch {
-            await suggestForBank(client, sb, studentId, firstQuestion, answer);
+            await suggestForBank(client, sb, studentId, firstQuestion, answer, student?.state ?? "GA");
           }
         }
         if (final.stop_reason === "refusal") {

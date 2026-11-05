@@ -1,9 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { evaluateStatePrograms, type CollegeFacts, type CostInput, type CourseGrade, type IncomeBand, type StatePack } from "@scholartasks/core";
-import gaPack from "../../../packs/states/GA.json";
-
-const GA = gaPack as unknown as StatePack;
-const PACKS: Record<string, StatePack> = { GA };
+import type { CollegeFacts, CostInput, CourseGrade, IncomeBand } from "@scholartasks/core";
+import { checkStatePrograms, packFor } from "./state-packs";
 
 /** A row of the colleges table (College Scorecard data). */
 export interface CollegeRow {
@@ -32,16 +29,16 @@ export interface CostStudent {
 
 /**
  * What the cost estimate needs about this student: home state, income range
- * (only when this viewer may see it), HOPE/Zell standing and outside awards.
+ * (only when this viewer may see it), state scholarship standing (HOPE, Bright Futures...) and outside awards.
  */
 export async function costInput(sb: SupabaseClient, s: CostStudent, mayUseIncome: boolean): Promise<CostInput> {
-  const pack = PACKS[s.state] ?? null;
+  const pack = packFor(s.state);
   let statePrograms: CostInput["statePrograms"] = [];
   if (pack) {
     const { data } = await sb.from("course_grades").select("term, course, grade, level, core, grade_level").eq("student_id", s.id);
     const grades: CourseGrade[] = ((data as { term: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number }[]) ?? [])
       .map((g) => ({ term: g.term, course: g.course, grade: g.grade, level: g.level, core: g.core, gradeLevel: g.grade_level }));
-    statePrograms = evaluateStatePrograms({ state: s.state, gradeLevel: s.grade_level, grades, sat: s.sat ?? undefined, act: s.act ?? undefined }, pack);
+    statePrograms = checkStatePrograms(s, grades);
   }
   return {
     homeState: s.state,

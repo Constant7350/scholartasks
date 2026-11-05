@@ -1,0 +1,330 @@
+{
+  "kind": "state",
+  "state": "MS",
+  "name": "Mississippi",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [
+    "ACM"
+  ],
+  "agency": {
+    "name": "Mississippi Office of Student Financial Aid",
+    "url": "https://www.msfinancialaid.org"
+  },
+  "gpa_formulas": {
+    "ms_gpa": {
+      "label": "Mississippi GPA",
+      "description": "High school GPA on a 4.0 scale from every course, grades 9-12 (estimate; the college reports the official GPA).",
+      "courses": "all",
+      "grade_levels": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "scale": {
+        "A": 4,
+        "B": 3,
+        "C": 2,
+        "D": 1,
+        "F": 0
+      },
+      "weights": [],
+      "rounding": "none"
+    }
+  },
+  "programs": [
+    {
+      "id": "ms-help",
+      "name": "HELP Grant (Higher Education Legislative Plan)",
+      "type": "merit_and_need",
+      "summary": "Full tuition at Mississippi public colleges for students with a 2.5 GPA, a 20 ACT, the HELP high school courses, and a Pell Grant from the FAFSA.",
+      "rules": {
+        "gpa_formula": "ms_gpa",
+        "min_gpa": 2.5,
+        "tests_any": {
+          "act": 20
+        },
+        "also": [
+          "The HELP high school course list",
+          "A full or partial Pell Grant from the FAFSA",
+          "Family income under the HELP limit",
+          "MAAPP by March 31 of senior year"
+        ]
+      },
+      "award": {
+        "summary": "Full tuition and required fees at Mississippi public colleges for up to 8 semesters (private colleges: the average public amount).",
+        "estimate": {
+          "public": "tuition"
+        }
+      },
+      "application": [
+        "MAAPP",
+        "FAFSA"
+      ],
+      "source_url": "https://www.msfinancialaid.org/programs/help-higher-ed-legislative-plan/"
+    },
+    {
+      "id": "ms-mesg",
+      "name": "Mississippi Eminent Scholars Grant (MESG)",
+      "type": "merit",
+      "summary": "For a 3.5 GPA and a 29 ACT (1350 SAT), or National Merit semifinalists and finalists.",
+      "rules": {
+        "gpa_formula": "ms_gpa",
+        "min_gpa": 3.5,
+        "tests_any": {
+          "sat": 1350,
+          "act": 29
+        },
+        "also": [
+          "MAAPP by September 15"
+        ]
+      },
+      "award": {
+        "summary": "Up to $2,500 a year (not more than tuition).",
+        "estimate": {
+          "public": 2500,
+          "private_per_year": 2500
+        }
+      },
+      "application": [
+        "MAAPP"
+      ],
+      "source_url": "https://www.msfinancialaid.org/mesg/"
+    },
+    {
+      "id": "ms-mtag",
+      "name": "Mississippi Tuition Assistance Grant (MTAG)",
+      "type": "merit",
+      "summary": "For a 2.5 GPA and a 15 ACT. Not for students who get the largest Pell Grant.",
+      "rules": {
+        "gpa_formula": "ms_gpa",
+        "min_gpa": 2.5,
+        "tests_any": {
+          "act": 15
+        },
+        "also": [
+          "Not eligible with the maximum Pell Grant",
+          "MAAPP by September 15"
+        ]
+      },
+      "award": {
+        "summary": "Up to $500 a year as a freshman and sophomore and $1,000 a year as a junior and senior.",
+        "estimate": {
+          "public": 500,
+          "private_per_year": 500
+        }
+      },
+      "application": [
+        "MAAPP"
+      ],
+      "source_url": "https://www.msfinancialaid.org/mtag/"
+    },
+    {
+      "id": "ms-nissan",
+      "name": "Nissan Scholarship",
+      "type": "merit_and_need",
+      "summary": "Full tuition, fees and books at a Mississippi public college for seniors with a 2.5 GPA, a 20 ACT, financial need and leadership. Separate application and essay.",
+      "rules": {
+        "gpa_formula": "ms_gpa",
+        "min_gpa": 2.5,
+        "tests_any": {
+          "act": 20
+        },
+        "also": [
+          "Financial need and leadership",
+          "Short signed essay",
+          "Apply by March 1 of senior year"
+        ]
+      },
+      "award": {
+        "summary": "Full tuition, required fees and a book allowance for up to four years."
+      },
+      "application": [
+        "Nissan Scholarship application",
+        "FAFSA"
+      ],
+      "source_url": "https://www.msfinancialaid.org/nissan/"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "MAAPP",
+    "Nissan Scholarship application"
+  ],
+  "deadlines": [
+    {
+      "id": "ms-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; needed for HELP)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ms-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ms-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; needed for HELP)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "ms-maapp-2027-opens",
+      "title": "Mississippi Aid Application (MAAPP) opens for HELP, MTAG and MESG",
+      "form": "MAAPP",
+      "date": "2026-10-01",
+      "kind": "opens",
+      "where": "https://www.msfinancialaid.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ms-nissan-2027",
+      "title": "Nissan Scholarship application due",
+      "form": "Nissan Scholarship application",
+      "date": "2027-03-01",
+      "kind": "deadline",
+      "where": "https://www.msfinancialaid.org/nissan/",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ms-help-2027",
+      "title": "HELP Grant: MAAPP due (documents due April 30)",
+      "form": "MAAPP",
+      "date": "2027-03-31",
+      "kind": "deadline",
+      "where": "https://www.msfinancialaid.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ms-mtag-2027",
+      "title": "MTAG and MESG: MAAPP due (documents due October 15)",
+      "form": "MAAPP",
+      "date": "2027-09-15",
+      "kind": "deadline",
+      "where": "https://www.msfinancialaid.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ms-maapp-2028-opens",
+      "title": "Mississippi Aid Application (MAAPP) opens for HELP, MTAG and MESG",
+      "form": "MAAPP",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://www.msfinancialaid.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "ms-nissan-2028",
+      "title": "Nissan Scholarship application due",
+      "form": "Nissan Scholarship application",
+      "date": "2028-03-01",
+      "kind": "deadline",
+      "where": "https://www.msfinancialaid.org/nissan/",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "ms-help-2028",
+      "title": "HELP Grant: MAAPP due (documents due April 30)",
+      "form": "MAAPP",
+      "date": "2028-03-31",
+      "kind": "deadline",
+      "where": "https://www.msfinancialaid.org",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "ms-maapp",
+      "stage": "file",
+      "order": 33,
+      "title": "Mississippi Aid Application (MAAPP)",
+      "who": "student",
+      "minutes": 15,
+      "summary": "Mississippi's state grants (HELP, MTAG and MESG) need their own state application, the MAAPP, besides the FAFSA.",
+      "how": [
+        "Create an account on the Mississippi Office of Student Financial Aid site and complete the MAAPP after October 1 of senior year.",
+        "For HELP, submit by March 31 and send the documents it asks for by April 30.",
+        "For MTAG and MESG, the deadline is September 15, but there's no reason to wait."
+      ],
+      "link": {
+        "label": "Open the Mississippi Aid Application",
+        "url": "https://www.msfinancialaid.org"
+      },
+      "watch_out": [
+        "The state says these deadlines are set by law, with no exceptions."
+      ]
+    }
+  ],
+  "aid_site": {
+    "name": "Mississippi Aid Application (MAAPP)",
+    "url": "https://www.msfinancialaid.org"
+  },
+  "counselor_notes": [
+    "Mississippi's state aid needs the MAAPP state application: HELP (full tuition; 2.5 GPA, 20 ACT, HELP courses and a Pell Grant; due March 31), MESG (3.5 GPA and 29 ACT, $2,500) and MTAG (2.5 GPA and 15 ACT; $500 to $1,000; due September 15). Students get only one of these state grants a term (the larger one), for up to 8 semesters, and need 12 credit hours a term. Superscored ACTs are accepted. The state warned that spring 2027 awards could be cut if the budget gap isn't closed."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with the Mississippi Office of Student Financial Aid before this pack moves to review. HELP income limits change each year and are not modeled."
+  }
+}
