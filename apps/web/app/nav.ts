@@ -35,6 +35,7 @@ export const NAV: NavItem[] = [
   { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "student", strip: true, tab: 2 },
   { href: "/colleges", label: "Find colleges", short: "Find colleges", icon: "🔎", roles: ALL, group: "student" },
   { href: "/majors", label: "Search colleges by major", short: "By major", icon: "🧭", roles: ALL, group: "student" },
+  { href: "/trades", label: "Trades and trade schools", short: "Trades", icon: "🔧", roles: ALL, group: "student" },
   { href: "/grades", label: "Grades and HOPE", short: "Grades", icon: "🎓", roles: ALL, group: "student", strip: true, tab: 3 },
   { href: "/grades/record", label: "Academic record (print)", short: "Record", icon: "📄", roles: ALL, group: "student" },
   { href: "/essays", label: "College essays", short: "Essays", icon: "✍️", roles: ALL, group: "student" },

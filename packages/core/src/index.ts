@@ -11,3 +11,4 @@ export * from "./aid";
 export * from "./colleges";
 export * from "./badges";
 export * from "./majors";
+export * from "./trades";
