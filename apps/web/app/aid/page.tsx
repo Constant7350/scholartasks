@@ -20,6 +20,8 @@ import guideJson from "../../../../packs/federal/aid-guide.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import "./aid.css";
+import "../trades/trades.css";
+import { TradeAidList } from "../trades/aid-list";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 
 const GA = gaPack as unknown as StatePack;
@@ -353,6 +355,14 @@ export default function AidPage() {
           </section>
         );
       })}
+      <section className="panel" id="trades">
+        <h2>Paying for trade school or a short program</h2>
+        <p className="hint">
+          For a technical college, apprenticeship or trade school. The FAFSA above still matters: it unlocks the Pell Grant and, in Georgia, the HOPE Grant.
+          See every trade on the <a href="/trades">Trades page</a>.
+        </p>
+        <TradeAidList homeState={student.state} />
+      </section>
       <p className="hint" style={{ fontSize: 13 }}>
         Draft guide, being checked against StudentAid.gov and the Georgia Student Finance Commission. Always follow the official sites if anything differs.
       </p>

@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/scholarships",
       "schedule": "0 9 * * 1,4"
+    },
+    {
+      "path": "/api/cron/trades",
+      "schedule": "0 10 1-5 * *"
     }
   ]
 }

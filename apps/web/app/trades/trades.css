@@ -1,0 +1,43 @@
+/* Trades section: explorer cards, trade pages, finder and checklists. */
+.lead { font-size: 18px; line-height: 1.5; margin: 4px 0 16px; }
+.small { font-size: 13px; }
+.check { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; }
+.check select { font: inherit; padding: 6px 8px; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; }
+
+.trade-callouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.trade-callout { display: grid; gap: 4px; margin: 0; text-decoration: none; color: inherit; }
+a.trade-callout:hover { border-color: var(--navy); }
+
+.trade-chips { justify-content: flex-start; margin-bottom: 12px; }
+.trade-filters { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin: 4px 0 8px; }
+
+.trade-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.trade-card { display: grid; gap: 6px; height: 100%; box-sizing: border-box; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); color: inherit; text-decoration: none; }
+.trade-card:hover { border-color: var(--navy); }
+.trade-card .hint { margin: 0; font-size: 14px; }
+.trade-pay { font-weight: 700; color: var(--navy); }
+.trade-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.trade-tags .pill { margin-left: 0; }
+
+.trade-away { background: var(--gold-soft); padding: 12px 14px; border-radius: 12px; }
+.trade-paths { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.trade-paths li { display: grid; gap: 4px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.trade-paths li:last-child { border-bottom: 0; padding-bottom: 0; }
+.trade-paths .pill { margin-left: 0; justify-self: start; }
+.trade-paths .hint { margin: 0; }
+.trade-links { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.trade-schools .item-main .hint { margin: 0; }
+.trade-checklist { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
+.trade-checklist:first-of-type { border-top: 0; margin-top: 0; }
+.trade-checklist h3 { margin: 0 0 4px; font-size: 17px; }
+.trade-checklist ol { margin: 8px 0 12px; padding-left: 20px; display: grid; gap: 4px; }
+
+.trade-aid-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.trade-aid { display: grid; gap: 4px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.trade-aid:last-child { border-bottom: 0; padding-bottom: 0; }
+.trade-aid .hint { margin: 0; font-size: 14px; }
+.trade-aid-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.trade-aid-head .pill { margin-left: 0; }
+.trade-more { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+.trade-more > summary { cursor: pointer; font-weight: 600; color: var(--navy); }
+.trade-grade-steps { margin: 8px 0 12px; padding-left: 20px; display: grid; gap: 4px; }

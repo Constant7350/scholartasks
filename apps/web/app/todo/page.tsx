@@ -150,7 +150,7 @@ export default function TodoPage() {
       const choice = choices.find((c) => c.task_id === t.id);
       const list = choice ? stepRows.find((r) => r.scholarship_id === choice.scholarship_id)?.steps : undefined;
       out.push({
-        key: "t" + t.id, title: t.title, kind: KINDS[t.kind] ?? t.kind, due: t.due_on, done: t.status === "done",
+        key: "t" + t.id, title: t.title, kind: /^t[gr]:/.test(t.deadline_id ?? "") ? "Trade path" : KINDS[t.kind] ?? t.kind, due: t.due_on, done: t.status === "done",
         pending: t.status === "needs_parent_approval", url: t.url ?? milestoneById(t.deadline_id)?.link ?? null, amount: t.amount, task: t,
         steps: choice && list?.length ? { list, done: choice.done_steps ?? [], choice } : undefined,
       });
