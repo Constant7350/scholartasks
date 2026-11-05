@@ -1,15 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { buildScorecard, displayGpa, type CourseGrade, type StatePack } from "@scholartasks/core";
-import gaPack from "../../../../../packs/states/GA.json";
+import { buildScorecard, displayGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
+import { PLAIN_GPA, packFor } from "../../../lib/state-packs";
 import { supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { rememberedStudent } from "../../../lib/current-student";
 import { printPage } from "../../../lib/print";
 import { CATEGORIES, RECOGNITION, gradeText, hoursPerYear, type Activity } from "../shared";
 
-const GA = gaPack as unknown as StatePack;
 
 interface Student {
   id: string; first_name: string; grade_level: number; state: string; sat: number | null; act: number | null;
@@ -65,8 +64,8 @@ export default function ResumePage() {
   if (!student) return <Page title="Resume"><p className="hint">Add a student on the <a href="/family">Family</a> page first.</p></Page>;
 
   const cg: CourseGrade[] = grades.map((r) => ({ term: r.term, course: r.course, grade: r.grade, level: r.level, core: r.core, gradeLevel: r.grade_level }));
-  const hope = GA.programs.find((p) => p.rules.gpa_formula);
-  const formula = hope?.rules.gpa_formula ? GA.gpa_formulas[hope.rules.gpa_formula] : undefined;
+  const main = primaryGpa(packFor(student.state));
+  const formula = main?.formula ?? PLAIN_GPA;
   const w = { rigor: Number(student.weight_rigor ?? 1), honors: Number(student.weight_honors ?? 0.5) };
   const card = formula && cg.length ? buildScorecard(cg, { currentGrade: student.grade_level, formula, target: 3, schoolWeights: w }) : null;
   const activities = items.filter((i) => i.kind === "activity");

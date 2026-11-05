@@ -1,0 +1,347 @@
+{
+  "kind": "state",
+  "state": "LA",
+  "name": "Louisiana",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [
+    "ACM"
+  ],
+  "agency": {
+    "name": "Louisiana Office of Student Financial Assistance (LOSFA)",
+    "url": "https://mylosfa.la.gov"
+  },
+  "gpa_formulas": {
+    "la_tops_gpa": {
+      "label": "TOPS core GPA",
+      "description": "TOPS core GPA: the 19 TOPS core units on a 4.0 scale; AP, IB, dual enrollment and designated honors courses earn one extra point (an A counts 5.0).",
+      "courses": "core_only",
+      "grade_levels": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "scale": {
+        "A": 4,
+        "B": 3,
+        "C": 2,
+        "D": 1,
+        "F": 0
+      },
+      "weights": [
+        {
+          "levels": [
+            "honors",
+            "AP",
+            "IB",
+            "DE"
+          ],
+          "add": 1.0,
+          "applies_to": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
+        }
+      ],
+      "rounding": "none"
+    }
+  },
+  "programs": [
+    {
+      "id": "la-tops-excellence",
+      "name": "TOPS Excellence",
+      "type": "merit",
+      "summary": "Louisiana's top TOPS level: a 3.5 TOPS core GPA and a 31 ACT (1390 SAT).",
+      "rules": {
+        "gpa_formula": "la_tops_gpa",
+        "min_gpa": 3.5,
+        "tests_any": {
+          "sat": 1390,
+          "act": 31
+        },
+        "also": [
+          "The 19-unit TOPS core curriculum",
+          "A score from a single test sitting (no superscores)",
+          "FAFSA or the TOPS online application by July 1 after graduation",
+          "Louisiana resident"
+        ]
+      },
+      "award": {
+        "summary": "Tuition and mandatory fees, up to $12,000 a year at Louisiana public colleges or $8,500 at private ones.",
+        "estimate": {
+          "public": "tuition",
+          "private_per_year": 8500
+        }
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://mylosfa.la.gov/tops/"
+    },
+    {
+      "id": "la-tops-honors",
+      "name": "TOPS Honors",
+      "type": "merit",
+      "summary": "A 3.5 TOPS core GPA and a 27 ACT (1260 SAT).",
+      "rules": {
+        "gpa_formula": "la_tops_gpa",
+        "min_gpa": 3.5,
+        "tests_any": {
+          "sat": 1260,
+          "act": 27
+        },
+        "also": [
+          "The 19-unit TOPS core curriculum",
+          "A score from a single test sitting (no superscores)",
+          "FAFSA or the TOPS online application by July 1 after graduation",
+          "Louisiana resident"
+        ]
+      },
+      "award": {
+        "summary": "The college's TOPS amount plus $800 a year.",
+        "estimate": {
+          "public": "tuition"
+        }
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://mylosfa.la.gov/tops/"
+    },
+    {
+      "id": "la-tops-performance",
+      "name": "TOPS Performance",
+      "type": "merit",
+      "summary": "A 3.25 TOPS core GPA and a 23 ACT (1130 SAT).",
+      "rules": {
+        "gpa_formula": "la_tops_gpa",
+        "min_gpa": 3.25,
+        "tests_any": {
+          "sat": 1130,
+          "act": 23
+        },
+        "also": [
+          "The 19-unit TOPS core curriculum",
+          "A score from a single test sitting (no superscores)",
+          "FAFSA or the TOPS online application by July 1 after graduation",
+          "Louisiana resident"
+        ]
+      },
+      "award": {
+        "summary": "The college's TOPS amount plus $400 a year.",
+        "estimate": {
+          "public": "tuition"
+        }
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://mylosfa.la.gov/tops/"
+    },
+    {
+      "id": "la-tops-opportunity",
+      "name": "TOPS Opportunity",
+      "type": "merit",
+      "summary": "A 2.5 TOPS core GPA and a 20 ACT (1030 SAT).",
+      "rules": {
+        "gpa_formula": "la_tops_gpa",
+        "min_gpa": 2.5,
+        "tests_any": {
+          "sat": 1030,
+          "act": 20
+        },
+        "also": [
+          "The 19-unit TOPS core curriculum",
+          "A score from a single test sitting (no superscores)",
+          "FAFSA or the TOPS online application by July 1 after graduation",
+          "Louisiana resident"
+        ]
+      },
+      "award": {
+        "summary": "A set TOPS amount that depends on the Louisiana college (close to tuition at most public colleges).",
+        "estimate": {
+          "public": "tuition"
+        }
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://mylosfa.la.gov/tops/"
+    },
+    {
+      "id": "la-tops-tech",
+      "name": "TOPS Tech",
+      "type": "merit",
+      "summary": "For career and technical programs: a 2.5 TOPS Tech core GPA and a 17 ACT (920 SAT) or ACT WorkKeys Silver.",
+      "rules": {
+        "gpa_formula": "la_tops_gpa",
+        "min_gpa": 2.5,
+        "tests_any": {
+          "sat": 920,
+          "act": 17
+        },
+        "also": [
+          "The TOPS Tech core curriculum",
+          "FAFSA or the TOPS online application by July 1 after graduation",
+          "Louisiana resident"
+        ]
+      },
+      "award": {
+        "summary": "The TOPS Tech amount for up to two years of technical training."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://mylosfa.la.gov/tops/tops-tech/"
+    },
+    {
+      "id": "la-go-grant",
+      "name": "Louisiana GO Grant",
+      "type": "need",
+      "summary": "Need-based grant for students who get a Pell Grant, from the FAFSA. The college sets the amount.",
+      "rules": {},
+      "award": {
+        "summary": "Set by the college from its state money."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://mylosfa.la.gov/paying-for-college/scholarships-grants/"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "TOPS online application"
+  ],
+  "deadlines": [
+    {
+      "id": "la-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; it is also the TOPS application)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "la-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "la-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; it is also the TOPS application)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "la-tops-2027",
+      "title": "TOPS: file the FAFSA (or the TOPS online application) by July 1",
+      "form": "FAFSA",
+      "date": "2027-07-01",
+      "kind": "deadline",
+      "where": "https://mylosfa.la.gov/tops/",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "la-tops-2028",
+      "title": "TOPS: file the FAFSA (or the TOPS online application) by July 1",
+      "form": "FAFSA",
+      "date": "2028-07-01",
+      "kind": "deadline",
+      "where": "https://mylosfa.la.gov/tops/",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "la-student-hub",
+      "stage": "accounts",
+      "order": 30,
+      "title": "Student makes a LOSFA Student Hub account",
+      "who": "student",
+      "minutes": 10,
+      "summary": "The LOSFA Student Hub shows the student's TOPS status and award.",
+      "how": [
+        "Open the LOSFA Student Hub and create an account with the student's own email.",
+        "After senior grades are final, check the TOPS status there."
+      ],
+      "link": {
+        "label": "Open the LOSFA Student Hub",
+        "url": "https://mylosfa.la.gov/applications/student-hub/"
+      },
+      "watch_out": [
+        "Never type passwords or Social Security numbers into ScholarTasks."
+      ]
+    },
+    {
+      "id": "la-tops-apply",
+      "stage": "file",
+      "order": 33,
+      "title": "Apply for TOPS by July 1",
+      "who": "student",
+      "minutes": 5,
+      "summary": "The FAFSA counts as the TOPS application. Families who don't file the FAFSA can use the shorter TOPS online application instead.",
+      "how": [
+        "If you filed the FAFSA, TOPS is applied for. Mark this step done.",
+        "Otherwise, complete the TOPS online application in the Student Hub by July 1 after graduation.",
+        "The last test date that counts without losing a semester is the April ACT (March SAT) of senior year."
+      ],
+      "link": {
+        "label": "Applying for TOPS",
+        "url": "https://mylosfa.la.gov/tops/applying-for-tops/"
+      },
+      "optional": true
+    }
+  ],
+  "aid_site": {
+    "name": "LOSFA Student Hub",
+    "url": "https://mylosfa.la.gov/applications/student-hub/"
+  },
+  "counselor_notes": [
+    "Louisiana TOPS levels: Tech (2.5 GPA, 17 ACT), Opportunity (2.5, 20 ACT), Performance (3.25, 23 ACT, +$400), Honors (3.5, 27 ACT, +$800) and Excellence (3.5, 31 ACT, up to $12,000). The TOPS core GPA uses 19 core units with an extra point for AP, IB, dual enrollment and designated honors. TOPS needs a single-sitting score (no superscores); the April ACT of senior year is the last date without losing a semester. File the FAFSA (or TOPS online application) by July 1 after graduation. TOPS only pays at Louisiana colleges."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with LOSFA before this pack moves to review. Campus TOPS amounts are approximated as tuition."
+  }
+}

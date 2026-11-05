@@ -1,11 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { displayGpa, evaluateStatePrograms, type CourseGrade, type StatePack } from "@scholartasks/core";
-import gaPack from "../../../../packs/states/GA.json";
+import { computeGpa, displayGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
+import { gpaLabel, packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 
-const GA = gaPack as unknown as StatePack;
 
 export interface School {
   id: string; name: string; city: string; state: string;
@@ -33,11 +32,12 @@ const FILTERS: [Filter, string][] = [
 
 const daysAgo = (d: string | null) => (d ? Math.floor((Date.now() - new Date(d + "T12:00:00").getTime()) / 86400000) : null);
 
+/** The school state's scholarship GPA (HOPE GPA in Georgia, Bright Futures GPA in Florida...). */
 function hopeGpa(r: Row, state: string): number | null {
-  if (!r.grades || state !== GA.state) return null;
+  const main = primaryGpa(packFor(state));
+  if (!r.grades || !main) return null;
   const grades: CourseGrade[] = r.grades.map((g) => ({ term: g.term, course: g.course, grade: g.grade, level: g.level, core: g.core, gradeLevel: g.grade_level }));
-  const res = evaluateStatePrograms({ state: GA.state, gradeLevel: r.grade_level, grades, sat: r.sat ?? undefined, act: r.act ?? undefined }, GA);
-  return res.find((p) => p.programId === "ga-hope")?.gpa ?? null;
+  return computeGpa(grades, main.formula).gpa;
 }
 
 function csvCell(v: unknown) {
@@ -94,7 +94,7 @@ export function Dashboard({ school, role, onChanged }: { school: School; role: "
 
   const exportCsv = () => {
     const head = ["First name", "Grade", "Class of", "Colleges on list", "Applications sent", "Accepted", "FAFSA filed", "Aid steps done",
-      "Scholarships saved", "Overdue deadlines", "Due in 14 days", "SAT", "ACT", "HOPE GPA (if shared)", "Last active"];
+      "Scholarships saved", "Overdue deadlines", "Due in 14 days", "SAT", "ACT", `${gpaLabel(school.state)} (if shared)`, "Last active"];
     const lines = list.map((r) => {
       const g = hopeGpa(r, school.state);
       return [r.first_name, r.grade_level, r.class_of, r.colleges, r.submitted, r.accepted, r.fafsa_submitted ? "yes" : "no", r.aid_steps_done,
@@ -144,7 +144,7 @@ export function Dashboard({ school, role, onChanged }: { school: School; role: "
           <div style={{ overflowX: "auto" }}>
             <table className="record-table school-table">
               <thead>
-                <tr><th>Student</th><th>Grade</th><th>Colleges</th><th>FAFSA</th><th>Scholarships</th><th>Deadlines</th><th>Tests</th><th>HOPE GPA</th><th>Last active</th><th></th></tr>
+                <tr><th>Student</th><th>Grade</th><th>Colleges</th><th>FAFSA</th><th>Scholarships</th><th>Deadlines</th><th>Tests</th><th>{gpaLabel(school.state)}</th><th>Last active</th><th></th></tr>
               </thead>
               <tbody>
                 {list.map((r) => {

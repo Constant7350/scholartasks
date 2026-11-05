@@ -1,0 +1,143 @@
+{
+  "kind": "state",
+  "state": "AL",
+  "name": "Alabama",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [
+    "ACM"
+  ],
+  "agency": {
+    "name": "Alabama Commission on Higher Education (ACHE)",
+    "url": "https://www.ache.edu"
+  },
+  "gpa_formulas": {},
+  "programs": [
+    {
+      "id": "al-asap",
+      "name": "Alabama Student Assistance Program (ASAP)",
+      "type": "need",
+      "summary": "Need-based grant for Alabama residents at about 80 Alabama colleges, decided from the FAFSA. Each college has a fixed amount, so file as soon as the FAFSA opens.",
+      "rules": {},
+      "award": {
+        "summary": "$300 to $5,000 a year, set by the college."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.ache.edu"
+    },
+    {
+      "id": "al-asgp",
+      "name": "Alabama Student Grant Program",
+      "type": "grant",
+      "summary": "A grant (not based on need) for Alabama residents at a short list of eligible private Alabama colleges.",
+      "rules": {},
+      "award": {
+        "summary": "Up to $3,000 a year (draft figure)."
+      },
+      "application": [
+        "College aid form"
+      ],
+      "source_url": "https://www.ache.edu"
+    },
+    {
+      "id": "al-gi-dependent",
+      "name": "Alabama G.I. Dependent Scholarship",
+      "type": "grant",
+      "summary": "For children, stepchildren and spouses of Alabama veterans with a 40% or higher service-connected rating: in-state tuition plus books at Alabama public colleges.",
+      "rules": {},
+      "award": {
+        "summary": "In-state undergraduate tuition (up to a per-credit limit) plus up to $1,000 a semester for books and fees, after other aid."
+      },
+      "application": [
+        "ADVA application",
+        "FAFSA"
+      ],
+      "source_url": "https://va.alabama.gov"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "College aid form",
+    "ADVA application"
+  ],
+  "deadlines": [
+    {
+      "id": "al-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; also used for the Alabama Student Assistance Program)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "al-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "al-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; also used for the Alabama Student Assistance Program)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "al-asap-early",
+      "stage": "file",
+      "order": 31,
+      "title": "File early for Alabama's need-based grant",
+      "who": "family",
+      "minutes": 2,
+      "summary": "Alabama's ASAP grant comes from a fixed amount at each college, handed out first come, first served from the FAFSA.",
+      "how": [
+        "Submit the FAFSA as soon as it opens in senior year.",
+        "List every Alabama college you're considering on the FAFSA so each one can offer ASAP.",
+        "Ask each college's aid office if it has its own scholarship application and deadline."
+      ],
+      "link": {
+        "label": "ACHE student aid",
+        "url": "https://www.ache.edu"
+      }
+    }
+  ],
+  "counselor_notes": [
+    "Alabama has no statewide merit scholarship like HOPE. The big merit money comes from the colleges themselves: many Alabama public universities give automatic scholarships for GPA and ACT or SAT scores, with early deadlines (often December 1 to February 1). Always check each college's own scholarship page.",
+    "Alabama's need-based grant (ASAP) comes from the FAFSA; file it as soon as it opens. Dual enrollment scholarships at Alabama community colleges can cover college classes in high school (ask the school counselor)."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with the Alabama Commission on Higher Education before this pack moves to review."
+  }
+}

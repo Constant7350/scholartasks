@@ -1,16 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { deadlineAppliesTo, type CostInput, type StatePack } from "@scholartasks/core";
-import gaPack from "../../../../packs/states/GA.json";
+import { deadlineAppliesTo, type CostInput } from "@scholartasks/core";
+import { packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { costInput, type CollegeRow, type CostStudent } from "../../lib/colleges";
 import { CollegePicker } from "../colleges/college-picker";
 import { CostPanel } from "./cost-panel";
-
-const GA = gaPack as unknown as StatePack;
 
 interface Student extends CostStudent { first_name: string; permissions: Record<string, boolean> }
 interface College {
@@ -118,7 +116,8 @@ export default function PlanPage() {
     ];
     return items.sort((a, b) => a.due.localeCompare(b.due)).filter((i) => daysUntil(i.due) <= 60).slice(0, 8);
   }, [myColleges, myTasks]);
-  const packDates = student ? GA.deadlines.filter((d) => deadlineAppliesTo(d, student.grade_level, todayIso()) && daysUntil(d.date) >= 0) : [];
+  const pack = student ? packFor(student.state) : null;
+  const packDates = student && pack ? pack.deadlines.filter((d) => deadlineAppliesTo(d, student.grade_level, todayIso()) && daysUntil(d.date) >= 0) : [];
 
   if (!sb) return <Page title="College plan"><NotConfigured /></Page>;
   if (!me) return <Page title="College plan"><p className="hint">Loading…</p></Page>;
@@ -309,8 +308,8 @@ export default function PlanPage() {
 
       {packDates.length > 0 && (
         <section className="panel">
-          <h2>Georgia dates for grade {student.grade_level}</h2>
-          <p className="hint">Draft dates, being checked with the Georgia Student Finance Commission. For step-by-step FAFSA help, open the <a href="/aid">financial aid checklist</a>.</p>
+          <h2 className="state-dates">{pack?.name} dates for grade {student.grade_level}</h2>
+          <p className="hint">Draft dates, being checked with the {pack?.agency.name}. For step-by-step FAFSA help, open the <a href="/aid">financial aid checklist</a>.</p>
           <ul className="items">
             {packDates.map((d) => {
               const added = myTasks.some((t) => t.deadline_id === d.id);

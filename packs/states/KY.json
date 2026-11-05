@@ -1,0 +1,223 @@
+{
+  "kind": "state",
+  "state": "KY",
+  "name": "Kentucky",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [
+    "ACM"
+  ],
+  "agency": {
+    "name": "Kentucky Higher Education Assistance Authority (KHEAA)",
+    "url": "https://www.kheaa.com"
+  },
+  "gpa_formulas": {
+    "ky_kees_gpa": {
+      "label": "KEES GPA",
+      "description": "KEES GPA: each high school year's GPA on a 4.0 scale, as reported by the school (this estimate uses every course, unweighted, all years together).",
+      "courses": "all",
+      "grade_levels": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "scale": {
+        "A": 4,
+        "B": 3,
+        "C": 2,
+        "D": 1,
+        "F": 0
+      },
+      "weights": [],
+      "rounding": "two_decimals"
+    }
+  },
+  "programs": [
+    {
+      "id": "ky-kees",
+      "name": "KEES (Kentucky Educational Excellence Scholarship)",
+      "type": "merit",
+      "summary": "Earned every year of high school: each year with a 2.75 GPA or higher adds money, plus a bonus for the best ACT or SAT. No application; it is used at Kentucky colleges.",
+      "rules": {
+        "gpa_formula": "ky_kees_gpa",
+        "min_gpa": 2.75,
+        "also": [
+          "The KEES high school curriculum",
+          "Kentucky resident",
+          "No application: the high school reports grades to KHEAA"
+        ]
+      },
+      "award": {
+        "summary": "$187 to $500 for each high school year with a 2.75+ GPA, plus a $36 to $500 ACT/SAT bonus (15 to 28+ ACT), paid every college year. Most students earn about $1,000 to $2,500 a year.",
+        "estimate": {
+          "public": 1500,
+          "private_per_year": 1500
+        }
+      },
+      "application": [],
+      "source_url": "https://www.kheaa.com/web/scholarships-grants.faces"
+    },
+    {
+      "id": "ky-cap",
+      "name": "College Access Program (CAP) Grant",
+      "type": "need",
+      "summary": "Need-based grant from the FAFSA, first come, first served until money runs out.",
+      "rules": {},
+      "award": {
+        "summary": "Up to $5,300 a year at four-year colleges and $2,500 at two-year colleges."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.kheaa.com/web/scholarships-grants.faces"
+    },
+    {
+      "id": "ky-ktg",
+      "name": "Kentucky Tuition Grant (KTG)",
+      "type": "need",
+      "summary": "Need-based grant for full-time students at eligible private Kentucky colleges, from the FAFSA, first come, first served.",
+      "rules": {},
+      "award": {
+        "summary": "Up to $3,300 a year."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.kheaa.com/web/scholarships-grants.faces"
+    },
+    {
+      "id": "ky-work-ready",
+      "name": "Work Ready Kentucky Scholarship",
+      "type": "grant",
+      "summary": "Pays tuition left after other grants for certificates, diplomas and associate of applied science degrees in high-demand fields.",
+      "rules": {},
+      "award": {
+        "summary": "Tuition left after other aid, up to the KCTCS rate."
+      },
+      "application": [
+        "FAFSA",
+        "MyKHEAA"
+      ],
+      "source_url": "https://www.kheaa.com/web/scholarships-grants.faces"
+    },
+    {
+      "id": "ky-dual-credit",
+      "name": "Dual Credit Scholarship",
+      "type": "grant",
+      "summary": "Pays for college classes taken in grades 11 and 12 at Kentucky colleges.",
+      "rules": {},
+      "award": {
+        "summary": "Dual credit tuition up to a set amount per credit hour."
+      },
+      "application": [
+        "MyKHEAA"
+      ],
+      "source_url": "https://www.kheaa.com/web/scholarships-grants.faces"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "MyKHEAA"
+  ],
+  "deadlines": [
+    {
+      "id": "ky-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; CAP and KTG are first come, first served)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ky-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "ky-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; CAP and KTG are first come, first served)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "ky-mykheaa",
+      "stage": "accounts",
+      "order": 30,
+      "title": "Student makes a MyKHEAA account to see KEES",
+      "who": "student",
+      "minutes": 10,
+      "summary": "KEES money is earned every year of high school. MyKHEAA shows how much the student has earned so far.",
+      "how": [
+        "Open MyKHEAA and create an account with the student's own email.",
+        "Check the KEES balance after each school year and tell the school counselor if a year is missing."
+      ],
+      "link": {
+        "label": "Open MyKHEAA",
+        "url": "https://www.kheaa.com/web/home.faces"
+      },
+      "watch_out": [
+        "Never type passwords or Social Security numbers into ScholarTasks."
+      ]
+    },
+    {
+      "id": "ky-file-early",
+      "stage": "file",
+      "order": 31,
+      "title": "File early: Kentucky grants run out",
+      "who": "family",
+      "minutes": 2,
+      "summary": "The CAP Grant and Kentucky Tuition Grant are handed out in FAFSA order until the money is gone, often by early spring.",
+      "how": [
+        "Submit the FAFSA as soon as it opens in senior year.",
+        "List every Kentucky college you're considering."
+      ],
+      "link": {
+        "label": "KHEAA grants",
+        "url": "https://www.kheaa.com/web/scholarships-grants.faces"
+      }
+    }
+  ],
+  "aid_site": {
+    "name": "MyKHEAA",
+    "url": "https://www.kheaa.com/web/home.faces"
+  },
+  "counselor_notes": [
+    "Kentucky KEES is earned each high school year (2.75+ GPA adds $187 to $500 a year) plus an ACT/SAT bonus (15 to 28+ ACT adds $36 to $500); no application. Students from families eligible for free or reduced-price lunch can earn more for AP, IB or Cambridge exam scores of 3 or higher. KEES is kept with a 2.5 GPA after the first college year and 3.0 after that (or 2.5 while on track). CAP and KTG grants are first come, first served from the FAFSA. Work Ready Kentucky covers tuition for high-demand certificates and associate degrees."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with KHEAA before this pack moves to review. KEES is modeled as a single 2.75 GPA rule; the per-year award table is in the summary only."
+  }
+}

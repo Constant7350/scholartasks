@@ -12,7 +12,7 @@ interface Msg { role: "user" | "assistant"; content: string; fromBank?: boolean 
 
 const STARTERS = [
   "What should we be doing this month?",
-  "Is my student on track for HOPE and Zell Miller?",
+  "Is my student on track for our state's scholarships?",
   "Which deadlines are coming up first?",
   "How do the FAFSA and the GSFAPP differ?",
 ];

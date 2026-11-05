@@ -1,14 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { buildScorecard, displayGpa, type CourseGrade, type StatePack } from "@scholartasks/core";
-import gaPack from "../../../../../packs/states/GA.json";
+import { buildScorecard, displayGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
+import { PLAIN_GPA, packFor } from "../../../lib/state-packs";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { rememberedStudent } from "../../../lib/current-student";
 import { printPage } from "../../../lib/print";
 
-const GA = gaPack as unknown as StatePack;
 const LEVELS: Record<string, string> = { standard: "Standard", honors: "Honors", AP: "AP", IB: "IB", DE: "Dual enrollment" };
 const TERM_ORDER = ["Fall", "Spring", "Full year", "Summer"];
 
@@ -58,8 +57,9 @@ export default function RecordPage() {
   if (!student) return <Page title="Academic record"><p className="hint">Add a student on the <a href="/family">Family</a> page first.</p></Page>;
 
   const grades: CourseGrade[] = rows.map((r) => ({ term: r.term, course: r.course, grade: r.grade, level: r.level, core: r.core, gradeLevel: r.grade_level }));
-  const hope = GA.programs.find((p) => p.rules.gpa_formula);
-  const formula = hope?.rules.gpa_formula ? GA.gpa_formulas[hope.rules.gpa_formula] : undefined;
+  const main = primaryGpa(packFor(student.state));
+  const hope = main?.program;
+  const formula = main?.formula ?? PLAIN_GPA;
   const w = { rigor: Number(student.weight_rigor ?? 1), honors: Number(student.weight_honors ?? 0.5) };
   const card = formula ? buildScorecard(grades, { currentGrade: student.grade_level, formula, target: 3, rigorNeeded: hope?.rules.rigor_courses, rigorLevels: hope?.rules.rigor_levels, schoolWeights: w }) : null;
   const years = [6, 7, 8, 9, 10, 11, 12].map((y) => ({
@@ -121,7 +121,7 @@ export default function RecordPage() {
           <tbody>
             <tr><th>Unweighted GPA (all courses, A = 4)</th><td>{gpa(card?.overallGpa)}</td></tr>
             <tr><th>Weighted GPA (AP/IB/DE +{w.rigor}, honors +{w.honors})</th><td>{gpa(card?.schoolGpa)}</td></tr>
-            {student.state === GA.state && <tr><th>Estimated HOPE GPA (core courses, grades 9–12)</th><td>{gpa(card?.stateGpa)}</td></tr>}
+            {main && <tr><th>Estimated {main.label} ({main.formula.courses === "core_only" ? "core courses" : "all courses"}, grades 9–12)</th><td>{gpa(card?.stateGpa)}</td></tr>}
             <tr><th>AP, IB and dual enrollment courses</th><td>{card?.rigorDone ?? 0}</td></tr>
             <tr><th>Best SAT / ACT</th><td>{student.sat ?? "—"} / {student.act ?? "—"}</td></tr>
           </tbody>

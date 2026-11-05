@@ -1,0 +1,313 @@
+{
+  "kind": "state",
+  "state": "TN",
+  "name": "Tennessee",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [
+    "ACM"
+  ],
+  "agency": {
+    "name": "Tennessee Student Assistance Corporation (TSAC)",
+    "url": "https://www.tn.gov/collegepays.html"
+  },
+  "gpa_formulas": {
+    "tn_hope_gpa": {
+      "label": "Tennessee HOPE GPA",
+      "description": "Tennessee HOPE GPA: the final overall GPA on a 4.0 scale. Tennessee uses the school's weighted GPA; this estimate is unweighted, so it may be a little low.",
+      "courses": "all",
+      "grade_levels": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "scale": {
+        "A": 4,
+        "B": 3,
+        "C": 2,
+        "D": 1,
+        "F": 0
+      },
+      "weights": [],
+      "rounding": "none"
+    }
+  },
+  "programs": [
+    {
+      "id": "tn-hope",
+      "name": "Tennessee HOPE Scholarship",
+      "type": "merit",
+      "summary": "Lottery scholarship for a 21 ACT (1060 SAT) or a 3.0 GPA: either one is enough. Pays at Tennessee public and eligible private colleges.",
+      "rules": {
+        "gpa_formula": "tn_hope_gpa",
+        "min_gpa": 3.0,
+        "tests_any": {
+          "sat": 1060,
+          "act": 21
+        },
+        "min_met": 1,
+        "also": [
+          "Tennessee resident for one year before enrolling",
+          "Enroll within 16 months of graduating",
+          "FAFSA by September 1 for fall"
+        ]
+      },
+      "award": {
+        "summary": "$2,250 a semester ($4,500 a year) as a freshman and sophomore and $2,850 a semester ($5,700 a year) as a junior and senior at four-year colleges; $1,600 a semester at two-year colleges.",
+        "estimate": {
+          "public": 4500,
+          "private_per_year": 4500
+        }
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.tn.gov/collegepays/money-for-college/tn-education-lottery-programs/tennessee-hope-scholarship.html"
+    },
+    {
+      "id": "tn-gams",
+      "name": "General Assembly Merit Scholarship (HOPE supplement)",
+      "type": "merit",
+      "summary": "Adds to HOPE for a 3.75 GPA and a 29 ACT (1330 SAT).",
+      "rules": {
+        "gpa_formula": "tn_hope_gpa",
+        "min_gpa": 3.75,
+        "tests_any": {
+          "sat": 1330,
+          "act": 29
+        }
+      },
+      "award": {
+        "summary": "An extra $500 a semester ($1,000 a year) on top of HOPE."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.tn.gov/collegepays.html"
+    },
+    {
+      "id": "tn-aspire",
+      "name": "Aspire Award (HOPE supplement)",
+      "type": "merit_and_need",
+      "summary": "Adds to HOPE for students who earn HOPE and whose family income (AGI) is $36,000 or less.",
+      "rules": {
+        "gpa_formula": "tn_hope_gpa",
+        "min_gpa": 3.0,
+        "tests_any": {
+          "sat": 1060,
+          "act": 21
+        },
+        "min_met": 1,
+        "also": [
+          "Family adjusted gross income of $36,000 or less (from the FAFSA)"
+        ]
+      },
+      "award": {
+        "summary": "An extra $750 a semester ($1,500 a year) at four-year colleges; $250 a semester at two-year colleges."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.tn.gov/collegepays.html"
+    },
+    {
+      "id": "tn-promise",
+      "name": "Tennessee Promise",
+      "type": "grant",
+      "summary": "Free tuition and fees at Tennessee community colleges and TCATs (colleges of applied technology) after other grants, with a mentor. Apply in the fall of senior year.",
+      "rules": {},
+      "award": {
+        "summary": "Tuition and mandatory fees left after Pell, HOPE and state grants, for up to five semesters."
+      },
+      "application": [
+        "TN Promise application",
+        "FAFSA"
+      ],
+      "source_url": "https://www.tn.gov/tnpromise.html"
+    },
+    {
+      "id": "tn-tsaa",
+      "name": "Tennessee Student Assistance Award (TSAA)",
+      "type": "need",
+      "summary": "Need-based grant from the FAFSA. Money runs out each year, so file as early as possible.",
+      "rules": {},
+      "award": {
+        "summary": "About $1,000 a semester at public colleges and up to $2,000 a semester at private colleges (draft)."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.tn.gov/collegepays.html"
+    },
+    {
+      "id": "tn-wilder-naifeh",
+      "name": "Wilder-Naifeh Technical Skills Grant",
+      "type": "grant",
+      "summary": "Grant for students at Tennessee Colleges of Applied Technology (TCATs). No GPA or income requirement.",
+      "rules": {},
+      "award": {
+        "summary": "About $667 a trimester at TCATs."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.tn.gov/collegepays.html"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "TN Promise application"
+  ],
+  "deadlines": [
+    {
+      "id": "tn-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; also used for HOPE, TN Promise and TSAA)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "tn-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "tn-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; also used for HOPE, TN Promise and TSAA)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    },
+    {
+      "id": "tn-promise-2027",
+      "title": "Apply for Tennessee Promise (free community college) by November 1 of senior year",
+      "form": "TN Promise application",
+      "date": "2026-11-01",
+      "kind": "deadline",
+      "where": "https://www.tn.gov/tnpromise.html",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "tn-tsaa-2027-priority",
+      "title": "Tennessee Student Assistance Award: file the FAFSA by March 1 (money runs out)",
+      "form": "FAFSA",
+      "date": "2027-03-01",
+      "kind": "priority",
+      "where": "https://www.tn.gov/collegepays.html",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "tn-hope-2027-fafsa",
+      "title": "Tennessee HOPE: FAFSA due by September 1 for fall",
+      "form": "FAFSA",
+      "date": "2027-09-01",
+      "kind": "deadline",
+      "where": "https://www.tn.gov/collegepays/money-for-college/tn-education-lottery-programs/tennessee-hope-scholarship.html",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "tn-promise-2028",
+      "title": "Apply for Tennessee Promise (free community college) by November 1 of senior year",
+      "form": "TN Promise application",
+      "date": "2027-11-01",
+      "kind": "deadline",
+      "where": "https://www.tn.gov/tnpromise.html",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "tn-promise-app",
+      "stage": "file",
+      "order": 34,
+      "title": "Tennessee Promise application (free community college)",
+      "who": "student",
+      "minutes": 10,
+      "summary": "Tennessee Promise has its own short application in the fall of senior year. Apply even if a four-year college is the plan: it keeps a free option open.",
+      "how": [
+        "Apply on the Tennessee Promise site by November 1 of senior year.",
+        "File the FAFSA and go to the required meeting with your Promise partner.",
+        "Do the community service hours Tennessee Promise asks for before each term."
+      ],
+      "link": {
+        "label": "Apply for Tennessee Promise",
+        "url": "https://www.tn.gov/tnpromise.html"
+      }
+    },
+    {
+      "id": "tn-hope-at-college",
+      "stage": "decide",
+      "order": 15,
+      "title": "Make sure HOPE shows on your aid offer",
+      "who": "family",
+      "minutes": 5,
+      "summary": "Once the FAFSA is on file, the Tennessee college adds HOPE (and any supplement) to the aid offer.",
+      "how": [
+        "Look for Tennessee HOPE on the chosen Tennessee college's aid offer. If it's missing, ask the financial aid office.",
+        "HOPE is kept with a 2.75 college GPA at 24 and 48 hours and a 3.0 at 72 and 96 hours (or a 2.75 overall with a 3.0 that semester)."
+      ],
+      "link": {
+        "label": "Tennessee HOPE Scholarship",
+        "url": "https://www.tn.gov/collegepays/money-for-college/tn-education-lottery-programs/tennessee-hope-scholarship.html"
+      }
+    }
+  ],
+  "aid_site": {
+    "name": "College for TN",
+    "url": "https://www.collegefortn.org"
+  },
+  "counselor_notes": [
+    "Tennessee HOPE needs a 21 ACT (1060 SAT) or a 3.0 GPA, not both. Supplements: General Assembly Merit Scholarship (3.75 GPA and 29 ACT, +$1,000 a year) and Aspire (family AGI $36,000 or less, +$1,500). HOPE only pays at Tennessee colleges; file the FAFSA by September 1 for fall.",
+    "Tennessee Promise gives free tuition at community colleges and TCATs: apply by November 1 of senior year, file the FAFSA, attend a meeting and do community service. The Dual Enrollment Grant pays for college classes in high school. College for TN (collegefortn.org) is the state planning site."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with the Tennessee Student Assistance Corporation before this pack moves to review. Tennessee uses a weighted GPA; this pack estimates it unweighted until the state's weighting rules are modeled."
+  }
+}

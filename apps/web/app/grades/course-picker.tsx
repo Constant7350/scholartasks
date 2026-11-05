@@ -39,7 +39,7 @@ export function CoursePicker({ value, onChange, onPick, id = "g-course" }: { val
           ) : (
             groups.map((g) => (
               <div key={g.name}>
-                <p className="picker-group">{g.name}{g.core ? " · counts for HOPE" : ""}</p>
+                <p className="picker-group">{g.name}{g.core ? " · core class" : ""}</p>
                 {g.courses.map((c) => (
                   <button
                     type="button"

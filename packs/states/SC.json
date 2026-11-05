@@ -1,0 +1,289 @@
+{
+  "kind": "state",
+  "state": "SC",
+  "name": "South Carolina",
+  "version": "2027.0-draft",
+  "status": "draft",
+  "regions": [
+    "ACM"
+  ],
+  "agency": {
+    "name": "South Carolina Commission on Higher Education (CHE)",
+    "url": "https://che.sc.gov"
+  },
+  "gpa_formulas": {
+    "sc_ugp_gpa": {
+      "label": "SC Uniform Grading Policy GPA",
+      "description": "South Carolina Uniform Grading Policy (UGP) GPA: every course on a 4.0 scale, +0.5 for honors and +1.0 for AP, IB and dual enrollment (A to D grades).",
+      "courses": "all",
+      "grade_levels": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "scale": {
+        "A": 4,
+        "B": 3,
+        "C": 2,
+        "D": 1,
+        "F": 0
+      },
+      "weights": [
+        {
+          "levels": [
+            "honors"
+          ],
+          "add": 0.5,
+          "applies_to": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
+        },
+        {
+          "levels": [
+            "AP",
+            "IB",
+            "DE"
+          ],
+          "add": 1.0,
+          "applies_to": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ]
+        }
+      ],
+      "rounding": "none"
+    }
+  },
+  "programs": [
+    {
+      "id": "sc-palmetto",
+      "name": "Palmetto Fellows Scholarship",
+      "type": "merit",
+      "summary": "South Carolina's top merit award: a 3.5 UGP GPA, a 1200 SAT or 27 ACT, and top 6% of the class (or a 4.0 GPA with a 1400 SAT or 32 ACT, no rank needed).",
+      "rules": {
+        "gpa_formula": "sc_ugp_gpa",
+        "min_gpa": 3.5,
+        "tests_any": {
+          "sat": 1200,
+          "act": 27
+        },
+        "class_rank_top_pct": 6,
+        "also": [
+          "Second route: a 4.0 UGP GPA plus a 1400 SAT or 32 ACT (no class rank needed)",
+          "The high school counselor submits the application in senior year (early round in December, late round in February)",
+          "South Carolina resident"
+        ]
+      },
+      "award": {
+        "summary": "Up to $6,700 the first year, then $7,500 a year ($10,000 a year in approved math and science majors).",
+        "estimate": {
+          "public": 6700,
+          "private_per_year": 6700
+        }
+      },
+      "application": [
+        "Palmetto Fellows application"
+      ],
+      "source_url": "https://che.sc.gov"
+    },
+    {
+      "id": "sc-life",
+      "name": "LIFE Scholarship",
+      "type": "merit",
+      "summary": "For four-year colleges, meet 2 of 3: a 3.0 UGP GPA, a 1100 SAT or 24 ACT, top 30% of the class. Two-year and technical colleges need only the 3.0 GPA. No application.",
+      "rules": {
+        "gpa_formula": "sc_ugp_gpa",
+        "min_gpa": 3.0,
+        "tests_any": {
+          "sat": 1100,
+          "act": 24
+        },
+        "class_rank_top_pct": 30,
+        "min_met": 2,
+        "also": [
+          "No application: the South Carolina college checks the final high school transcript",
+          "South Carolina resident"
+        ]
+      },
+      "award": {
+        "summary": "Up to $4,700 tuition plus a $300 book allowance a year at four-year colleges (up to $7,500 total after the first year in approved math and science majors); tuition plus $300 at two-year and technical colleges.",
+        "estimate": {
+          "public": 5000,
+          "private_per_year": 5000
+        }
+      },
+      "application": [],
+      "source_url": "https://che.sc.gov"
+    },
+    {
+      "id": "sc-hope",
+      "name": "South Carolina HOPE Scholarship",
+      "type": "merit",
+      "summary": "First-year award at four-year South Carolina colleges for students with a 3.0 UGP GPA who don't get LIFE or Palmetto Fellows. A 3.0 college GPA after the first year can lead to LIFE.",
+      "rules": {
+        "gpa_formula": "sc_ugp_gpa",
+        "min_gpa": 3.0,
+        "also": [
+          "Only for students who don't qualify for LIFE or Palmetto Fellows",
+          "No application"
+        ]
+      },
+      "award": {
+        "summary": "Up to $2,800 plus a $300 book allowance, first year only.",
+        "estimate": {
+          "public": 3100,
+          "private_per_year": 3100
+        }
+      },
+      "application": [],
+      "source_url": "https://che.sc.gov"
+    },
+    {
+      "id": "sc-need-based",
+      "name": "South Carolina Need-based Grant",
+      "type": "need",
+      "summary": "Need-based grant at South Carolina public colleges, decided from the FAFSA. Money is limited, so file early.",
+      "rules": {},
+      "award": {
+        "summary": "Up to about $2,500 a year for full-time students (set by the college)."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://che.sc.gov"
+    },
+    {
+      "id": "sc-tuition-grant",
+      "name": "South Carolina Tuition Grant",
+      "type": "need",
+      "summary": "Need-based grant for South Carolina residents at eligible private South Carolina colleges, decided from the FAFSA. File early; the state deadline is in late spring.",
+      "rules": {},
+      "award": {
+        "summary": "Set each year by the South Carolina Tuition Grants Commission."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.sctuitiongrants.org"
+    },
+    {
+      "id": "sc-wins",
+      "name": "SC WINS (technical colleges)",
+      "type": "grant",
+      "summary": "Helps pay tuition left after other aid at South Carolina technical colleges, plus a book allowance, for South Carolina residents.",
+      "rules": {},
+      "award": {
+        "summary": "Tuition and fees left after other grants, at SC technical colleges (eligible programs)."
+      },
+      "application": [
+        "FAFSA"
+      ],
+      "source_url": "https://www.sctechsystem.edu"
+    }
+  ],
+  "forms": [
+    "FAFSA",
+    "Palmetto Fellows application"
+  ],
+  "deadlines": [
+    {
+      "id": "sc-fafsa-2027-28-opens",
+      "title": "File the 2027-28 FAFSA (needed for Pell Grants; also used for South Carolina need-based grants)",
+      "form": "FAFSA",
+      "date": "2026-09-23",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2025 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "sc-fafsa-2027-28-deadline",
+      "title": "Federal deadline for the 2027-28 FAFSA (state and college aid dates are much earlier)",
+      "form": "FAFSA",
+      "date": "2028-06-30",
+      "kind": "deadline",
+      "where": "https://studentaid.gov",
+      "documents": [],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2027
+    },
+    {
+      "id": "sc-fafsa-2028-29-opens",
+      "title": "File the 2028-29 FAFSA (needed for Pell Grants; also used for South Carolina need-based grants)",
+      "form": "FAFSA",
+      "date": "2027-10-01",
+      "kind": "opens",
+      "where": "https://studentaid.gov",
+      "documents": [
+        "Student and parent StudentAid.gov accounts (FSA IDs)",
+        "2026 federal tax return info",
+        "Bank and investment balances"
+      ],
+      "grade_levels": [
+        12
+      ],
+      "class_of": 2028
+    }
+  ],
+  "aid_steps": [
+    {
+      "id": "sc-palmetto-ask",
+      "stage": "gather",
+      "order": 22,
+      "title": "Ask the school counselor about Palmetto Fellows",
+      "who": "student",
+      "minutes": 5,
+      "summary": "Palmetto Fellows is the one South Carolina award that needs an application, and the high school counselor submits it. LIFE and SC HOPE need no application.",
+      "how": [
+        "Early in senior year, ask the school counselor if you're on track for Palmetto Fellows (GPA, test score and class rank).",
+        "Make sure your best SAT or ACT score is sent to the school before the December or February round.",
+        "For LIFE, make sure your final transcript goes to the South Carolina college you choose."
+      ],
+      "link": {
+        "label": "South Carolina state scholarships",
+        "url": "https://che.sc.gov"
+      }
+    },
+    {
+      "id": "sc-award-at-college",
+      "stage": "decide",
+      "order": 15,
+      "title": "Make sure LIFE, Palmetto or SC HOPE shows on your aid offer",
+      "who": "family",
+      "minutes": 5,
+      "summary": "The South Carolina college adds LIFE, Palmetto Fellows or SC HOPE to the aid offer once it has the final transcript.",
+      "how": [
+        "Look for the award on the South Carolina college's aid offer. If it's missing, ask the financial aid office.",
+        "To keep LIFE or Palmetto, keep a 3.0 college GPA and earn 30 credit hours each year."
+      ],
+      "link": {
+        "label": "South Carolina state scholarships",
+        "url": "https://che.sc.gov"
+      }
+    }
+  ],
+  "counselor_notes": [
+    "South Carolina scholarships use the Uniform Grading Policy (UGP) GPA. LIFE and SC HOPE need no application (the college checks the final transcript); Palmetto Fellows is submitted by the high school counselor in December or February of senior year. LIFE and Palmetto are kept with a 3.0 college GPA and 30 credit hours a year. They only pay at South Carolina colleges.",
+    "Lottery Tuition Assistance helps at South Carolina two-year and technical colleges, and SC WINS covers what's left at technical colleges."
+  ],
+  "verification": {
+    "last_verified": null,
+    "verified_by": null,
+    "note": "DRAFT from third-party summaries checked in November 2026. Every rule, amount and date must be verified with the South Carolina Commission on Higher Education before this pack moves to review. Palmetto Fellows round dates and the UGP weights must be confirmed."
+  }
+}
