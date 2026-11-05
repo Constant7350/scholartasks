@@ -57,6 +57,7 @@ export const NAV: NavItem[] = [
   { href: "/admin/questions", label: "Review practice questions", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/lessons", label: "Review study lessons", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/scholarships", label: "Review scholarships", icon: "✅", roles: ALL, group: "team" },
+  { href: "/admin/presentation", label: "Presentation for parents and schools", icon: "🎤", roles: ALL, group: "team" },
 ];
 
 /** True when this nav item is the page you are on (or a page inside it). */
