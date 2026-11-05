@@ -100,6 +100,19 @@ export const TOPICS: Topic[] = [
     ],
   },
   {
+    id: "remove-student",
+    area: "Family",
+    title: "Remove a student",
+    href: "/family",
+    keywords: ["remove student", "delete student", "delete child", "remove child", "wrong student", "test student"],
+    summary: "A parent can remove a student from the family. This deletes everything saved for that student and their student app sign-in.",
+    steps: [
+      "Open Menu, then Family and permissions.",
+      "Under the student's name, tap Remove (name).",
+      "Read the warning, then tap Yes, remove (name). It can't be undone.",
+    ],
+  },
+  {
     id: "invite-student",
     area: "Family",
     title: "Connect your student's phone with a code",
