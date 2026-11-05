@@ -68,6 +68,17 @@ const schools = [
   ...(await all({ "school.operating": "1", "school.state": "GA", "school.degrees_awarded.predominant": "2" })),
 ];
 
+// National picture for every degree level (certificate to doctorate), from
+// every college fetched: how many programs, and the middle (median) of what
+// their graduates earn and owe. Used for "earning potential by degree level".
+const SUMMARY_LEVELS = new Set([1, 2, 3, 5, 6, 7]);
+const summary = {};
+const median = (xs) => {
+  const v = xs.filter((x) => x != null).sort((a, b) => a - b);
+  if (!v.length) return null;
+  const m = Math.floor(v.length / 2);
+  return Math.round(v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2);
+};
 let shown = false;
 const titles = {};
 const out = [];
@@ -83,15 +94,23 @@ for (const s of schools) {
   for (const p of progs) {
     const f = flat(p);
     const level = num(f["credential.level"]);
-    if (!KEEP_LEVELS.has(level)) continue;
     const code = String(f.code ?? "").replace(/\D/g, "").padStart(4, "0").slice(0, 4);
     if (code.length !== 4) continue;
     const grads = pick(f, [/counts\.ipeds_awards2$/, /counts\.ipeds_awards1$/]);
     if (!grads) continue;
+    if (f.title && !titles[code]) titles[code] = String(f.title).replace(/\.$/, "").trim();
+    const e1 = pick(f, [/earnings\.(highest\.)?1_yr\.overall_median_earnings$/, /1_yr.*median_earnings$/]);
+    const e4 = pick(f, [/earnings\.(highest\.)?4_yr\.overall_median_earnings$/, /earnings\.(highest\.)?3_yr\.overall_median_earnings$/, /earnings\.(highest\.)?2_yr\.overall_median_earnings$/]);
+    const dbt = pick(f, [/debt\.staff_grad_plus\.all\.eval_inst\.median$/, /debt\.staff_grad_plus\.all\.all_inst\.median$/, /debt\..*\.median$/]);
+    if (SUMMARY_LEVELS.has(level)) {
+      const k = `${code}:${level}`;
+      const t = (summary[k] ??= { programs: 0, grads: 0, e1: [], e4: [], debt: [] });
+      t.programs++; t.grads += grads; t.e1.push(e1); t.e4.push(e4); t.debt.push(dbt);
+    }
+    if (!KEEP_LEVELS.has(level)) continue;
     const key = `${s.id}:${code}:${level}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    if (f.title && !titles[code]) titles[code] = String(f.title).replace(/\.$/, "").trim();
     const earn1 = pick(f, [/earnings\.(highest\.)?1_yr\.overall_median_earnings$/, /1_yr.*median_earnings$/]);
     const earn4 = pick(f, [/earnings\.(highest\.)?4_yr\.overall_median_earnings$/, /earnings\.(highest\.)?3_yr\.overall_median_earnings$/, /earnings\.(highest\.)?2_yr\.overall_median_earnings$/]);
     const debt = pick(f, [/debt\.staff_grad_plus\.all\.eval_inst\.median$/, /debt\.staff_grad_plus\.all\.all_inst\.median$/, /debt\..*\.median$/]);
@@ -104,6 +123,11 @@ writeFileSync("supabase/seed/college_programs.json", JSON.stringify({
   source: "U.S. Department of Education College Scorecard, field of study data",
   columns: ["college_id", "cip4", "level", "grads", "earn_1yr", "earn_4yr", "debt"],
   titles,
+  summary_columns: ["cip4", "level", "programs", "grads", "earn_1yr", "earn_4yr", "debt"],
+  summary: Object.entries(summary).map(([k, t]) => {
+    const [cip, level] = k.split(":");
+    return [cip, Number(level), t.programs, t.grads, median(t.e1), median(t.e4), median(t.debt)];
+  }).sort((a, b) => a[0].localeCompare(b[0]) || a[1] - b[1]),
   rows: out,
 }) + "\n");
 console.log(`wrote ${out.length} programs at ${new Set(out.map((r) => r[0])).size} colleges, ${Object.keys(titles).length} fields`);
