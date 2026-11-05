@@ -145,6 +145,47 @@ export const TOPICS: Topic[] = [
     ],
   },
 
+  {
+    id: "my-school",
+    area: "Family",
+    title: "Connect to your school counselor",
+    href: "/my-school",
+    keywords: ["school", "counselor", "code", "share", "high school", "guidance"],
+    summary: "If your school uses ScholarTasks, connect with the school code so your counselor can see how things are going and send reminders. It's free, and you choose what to share.",
+    steps: [
+      "Get the 8-character school code from your counselor (or open the link they sent).",
+      "Open Menu > My school and type the code. Check the school name is right.",
+      "Pick what the school can see: progress only, or progress and grades.",
+      "Tap Connect. If a student under 18 connects, a parent taps Approve on their own My school page first.",
+    ],
+    body: [
+      "Progress only: college list counts, applications sent, whether the FAFSA is filed, saved scholarships, overdue deadlines, SAT/ACT scores and when the student last used the app.",
+      "Progress and grades adds course grades and the HOPE GPA. Only a parent, or a student who is 18 or older, can turn this on.",
+      "The school never sees essays, notes, AI counselor chats, family income, aid answers or anything about parents.",
+      "Tap Stop sharing at any time. Connections end on their own after the student's senior year.",
+    ],
+  },
+  {
+    id: "school-portal",
+    area: "Family",
+    title: "For counselors: the free school portal",
+    href: "/school",
+    keywords: ["counselor", "school", "portal", "dashboard", "caseload", "staff code", "fafsa completion"],
+    summary: "School counselors see the students whose families connected to their school, send reminders and post local scholarships. It's free for every school.",
+    steps: [
+      "Sign in with your school email, then open /school and fill in Set up your school.",
+      "The ScholarTasks team checks your school, usually within a school day.",
+      "Share your school code or link with families (newsletter, email, FAFSA night).",
+      "Use the filters to find seniors without a FAFSA, students with no college list, or overdue deadlines. Download a CSV any time.",
+      "Add other counselors: send them the staff link from Add counselors.",
+    ],
+    faq: [
+      { q: "Is it really free?", a: "Yes. The school portal is free for every school. Families use ScholarTasks free and can upgrade for the AI counselor and tutor." },
+      { q: "Can we upload our student list?", a: "Not yet. For now families connect themselves and choose what to share. Roster upload is coming with a school data agreement." },
+      { q: "Who sees that I looked at a student?", a: "Every look at the student list is written to a tamper-evident log." },
+    ],
+  },
+
   // ---------- College plan ----------
   {
     id: "plan-colleges",

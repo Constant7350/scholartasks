@@ -50,6 +50,8 @@ export const NAV: NavItem[] = [
   { href: "/family", label: "Family, students and permissions", icon: "👪", roles: ["parent"], group: "family" },
   { href: "/family", label: "Set up my family (parents)", icon: "👪", roles: ["none"], group: "family" },
   { href: "/join", label: "I'm a student: join with a code", icon: "🔑", roles: ["none"], group: "family" },
+  { href: "/my-school", label: "My school (connect to your counselor)", short: "My school", icon: "🏫", roles: ["parent", "student"], group: "family" },
+  { href: "/school", label: "School counselor portal (free)", icon: "🏫", roles: ["none", "parent"], group: "family" },
   { href: "/security", label: "Face ID, sign-in and account", short: "Account", icon: "🔐", roles: ALL, group: "family" },
   { href: "/billing", label: "Plan and billing", short: "Billing", icon: "💳", roles: ["parent", "student"], group: "family", webOnly: true },
 
@@ -60,6 +62,7 @@ export const NAV: NavItem[] = [
   { href: "/admin/lessons", label: "Review study lessons", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/scholarships", label: "Review scholarships", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/trades", label: "Review trade facts", icon: "✅", roles: ALL, group: "team" },
+  { href: "/admin/schools", label: "Approve schools", icon: "🏫", roles: ALL, group: "team" },
   { href: "/admin/college-data", label: "Load college data", icon: "🏫", roles: ALL, group: "team" },
   { href: "/admin/presentation", label: "Presentation for parents and schools", icon: "🎤", roles: ALL, group: "team" },
 ];

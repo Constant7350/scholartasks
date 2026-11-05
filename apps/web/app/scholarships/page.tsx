@@ -21,7 +21,7 @@ interface Student {
 interface Row extends Scholarship {
   kind: "scholarship" | "grant";
   sponsor: string; url: string; summary: string; how_to_apply: string | null; amount_text: string; amount_max: number | null;
-  deadline_text: string | null; automatic: boolean; status: "pending" | "approved" | "retired"; last_checked: string | null;
+  deadline_text: string | null; automatic: boolean; status: "pending" | "approved" | "retired"; last_checked: string | null; school_id?: string | null;
 }
 interface Choice { id: string; student_id: string; scholarship_id: string; choice: "added" | "hidden"; task_id: string | null; done_steps?: number[]; essay_draft?: string | null }
 interface GradeRow { student_id: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }
@@ -200,6 +200,7 @@ function ScholarshipCard({ s, r, choice, onAdd, onHide }: {
         </div>
         <div style={{ textAlign: "right" }}>
           <b className="sch-amount">{s.amount_text}</b>
+          {s.school_id && <div><span className="pill pill-ok">From your school</span></div>}
           {s.status === "pending" && <div><span className="pill pill-soon">Not yet verified</span></div>}
         </div>
       </div>

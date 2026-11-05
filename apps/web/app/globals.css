@@ -758,3 +758,8 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
 .review-nav a { font-size: 14px; font-weight: 600; text-decoration: none; padding: 7px 12px; border-radius: 999px; background: var(--warm-tint); color: var(--muted); }
 .review-nav a[aria-current="page"] { background: var(--navy); color: #fff; }
 .review-nav a[aria-current="page"] .sch-count { background: rgba(255,255,255,0.25); color: #fff; }
+
+/* School portal caseload table: one line per cell, scrolls sideways on phones. */
+.school-table th, .school-table td { white-space: nowrap; vertical-align: middle; }
+.school-table td:last-child, .school-table thead th:last-child { text-align: right; }
+.page:has(.school-table) { max-width: 1040px; }

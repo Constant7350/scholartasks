@@ -2,14 +2,15 @@ import { FaqList, FinalCta, PageHead } from "../parts";
 
 export const metadata = {
   title: "For schools and counselors · ScholarTasks",
-  description: "ScholarTasks supports school counselors: families arrive better prepared, and Georgia aid rules are explained the same way to everyone. School licenses and a counselor dashboard are coming.",
+  description: "ScholarTasks supports school counselors with a free school portal: see which connected students need help, send reminders and post local scholarships.",
 };
 
 const FAQ = [
   { q: "Does ScholarTasks replace our counselors?", a: "No. It's meant to support them. Families get the routine answers and reminders at home, so counselor time can go to the conversations that need a person." },
   { q: "Is student data shared with colleges or advertisers?", a: "No. We never sell student data. We never ask for FSA IDs, Social Security numbers or tax returns, and each family's information is kept separate." },
-  { q: "Is there a counselor dashboard?", a: "It's planned, but not built yet. We'd love a few Georgia schools to help shape it, so it shows what counselors actually need." },
-  { q: "How would school licenses work?", a: "We're working that out now with interested schools. Get in touch and we'll set up a time to talk." },
+  { q: "What does the school portal cost?", a: "Nothing. The school portal is free for every school. Families use ScholarTasks free and can upgrade for the AI counselor and tutor. AI packages for whole schools will come later." },
+  { q: "What can counselors see?", a: "Only students whose families connected to your school, and only what each family chose to share: progress, or progress and grades. Never essays, AI chats, income or aid answers. Every look is recorded." },
+  { q: "Can we upload our roster?", a: "Not yet. Families connect themselves with your school code, so you can start without a data agreement. Roster upload comes later with a signed student data privacy agreement." },
 ];
 
 export default function Schools() {
@@ -32,11 +33,12 @@ export default function Schools() {
 
       <section className="s-section">
         <div className="site-wrap">
-          <p className="s-kicker">Coming next</p>
-          <h2 className="s-title">Help us shape the counselor dashboard</h2>
-          <p className="s-lede">A counselor dashboard and school licenses are next on our list. We're looking for a few Georgia schools to try it early and tell us what would help most.</p>
+          <p className="s-kicker">Free for every school</p>
+          <h2 className="s-title">The school counselor portal</h2>
+          <p className="s-lede">See which connected students haven't filed the FAFSA, have no college list or have overdue deadlines. Send a reminder to a whole grade in one step, and post local scholarships only your families see.</p>
           <div className="s-cta">
-            <a className="btn" href="/contact?topic=school">Talk with us</a>
+            <a className="btn" href="/school">Set up your school</a>
+            <a className="btn btn-ghost" href="/contact?topic=school">Talk with us</a>
             <a className="btn btn-ghost" href="/#tour">Watch the tour</a>
           </div>
         </div>
