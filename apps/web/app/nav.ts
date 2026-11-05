@@ -65,6 +65,7 @@ export const NAV: NavItem[] = [
   { href: "/admin/schools", label: "Approve schools", icon: "🏫", roles: ALL, group: "team" },
   { href: "/admin/college-data", label: "Load college data", icon: "🏫", roles: ALL, group: "team" },
   { href: "/admin/presentation", label: "Presentation for parents and schools", icon: "🎤", roles: ALL, group: "team" },
+  { href: "/admin/marketing", label: "Marketing and business plan", icon: "📣", roles: ALL, group: "team" },
 ];
 
 /** True when this nav item is the page you are on (or a page inside it). */
