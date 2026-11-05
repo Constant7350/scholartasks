@@ -1,0 +1,15 @@
+{
+  "name": "scholartasks-presentation",
+  "private": true,
+  "description": "Builds the parent and school presentation (slide pictures, Max narration, video). See README.md.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node build.mjs --check"
+  },
+  "dependencies": {
+    "@fontsource-variable/domine": "5.3.0",
+    "@fontsource-variable/nunito-sans": "5.3.0",
+    "lucide-static": "1.69.0"
+  }
+}

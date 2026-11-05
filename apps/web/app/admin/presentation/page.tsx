@@ -3,39 +3,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
+import deck from "./slides.json";
 
 /**
  * Team-only presenter for the "ScholarTasks for Families and Schools" deck.
- * Slide pictures and the Max-voice narration live in public/presentation/.
- * To update: re-render the slides and re-run the narration, then replace the files there
- * (names are slide-NN-<id>.jpg / .mp3, in the order below).
+ * Everything here is made by presentation/build.mjs from the files in /presentation
+ * (slide HTML, narration.json). Do not edit slides.json or public/presentation by hand:
+ * change the slide or its narration, then run the build. See presentation/README.md.
  */
-const SLIDES: { id: string; title: string }[] = [
-  { id: "cover", title: "ScholarTasks" },
-  { id: "challenge", title: "The problem" },
-  { id: "what", title: "What it is" },
-  { id: "howitworks", title: "How it works" },
-  { id: "parent", title: "The family account" },
-  { id: "counselor", title: "AI counselor" },
-  { id: "scholarships", title: "Scholarships" },
-  { id: "grades", title: "Grades 8 to 12" },
-  { id: "habits", title: "Strong study habits" },
-  { id: "beyond", title: "Beyond grades" },
-  { id: "prep", title: "Study and test prep" },
-  { id: "colleges", title: "Colleges" },
-  { id: "aid", title: "FAFSA and Georgia aid" },
-  { id: "todo", title: "To-do list" },
-  { id: "phone", title: "Phone app" },
-  { id: "journey", title: "Grade 8 to graduation" },
-  { id: "compare1", title: "How we compare 1" },
-  { id: "compare2", title: "How we compare 2" },
-  { id: "better", title: "Why we are better" },
-  { id: "privacy", title: "Safety and privacy" },
-  { id: "schools", title: "For schools" },
-  { id: "cost", title: "What it costs" },
-  { id: "start", title: "Questions?" },
-];
-const file = (i: number, ext: "jpg" | "mp3") => `/presentation/slide-${String(i + 1).padStart(2, "0")}-${SLIDES[i]?.id}.${ext}`;
+const SLIDES: { id: string; title: string }[] = deck.slides;
+const file = (i: number, ext: "jpg" | "mp3") => `/presentation/slide-${SLIDES[i]?.id}.${ext}`;
 const VIDEO = "/presentation/scholartasks-presentation.mp4";
 const GAP_MS = 900; // pause between slides when the voice moves on by itself
 const BAR_BTN = { color: "#FAF7F0", borderColor: "#5A7DB0", padding: "8px 12px" };
@@ -113,7 +90,7 @@ export default function PresentationPage() {
   return (
     <Page title={title}>
       <p className="hint" style={{ marginTop: -8 }}>
-        23 slides with narration in the Max voice (about 9 minutes). Press <b>Start the show</b> to play it full screen with the voice, or step through the slides yourself and talk over them.
+        {SLIDES.length} slides with narration in the Max voice (about {deck.minutes} minutes). Press <b>Start the show</b> to play it full screen with the voice, or step through the slides yourself and talk over them.
       </p>
       <div className="share-row" style={{ display: "flex", flexWrap: "wrap", gap: 8, margin: "12px 0" }}>
         <button className="btn btn-inline" onClick={startShow}>▶ Start the show</button>

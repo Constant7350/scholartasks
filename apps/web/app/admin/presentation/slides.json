@@ -1,0 +1,106 @@
+{
+  "note": "Made by presentation/build.mjs. Do not edit by hand.",
+  "minutes": 10,
+  "slides": [
+    {
+      "id": "cover",
+      "title": "ScholarTasks"
+    },
+    {
+      "id": "challenge",
+      "title": "The problem"
+    },
+    {
+      "id": "what",
+      "title": "What it is"
+    },
+    {
+      "id": "howitworks",
+      "title": "How it works"
+    },
+    {
+      "id": "parent",
+      "title": "The family account"
+    },
+    {
+      "id": "counselor",
+      "title": "AI counselor"
+    },
+    {
+      "id": "scholarships",
+      "title": "Scholarships"
+    },
+    {
+      "id": "grades",
+      "title": "Grades 8 to 12"
+    },
+    {
+      "id": "habits",
+      "title": "Strong study habits"
+    },
+    {
+      "id": "beyond",
+      "title": "Beyond grades"
+    },
+    {
+      "id": "prep",
+      "title": "Study and test prep"
+    },
+    {
+      "id": "colleges",
+      "title": "Colleges"
+    },
+    {
+      "id": "majors",
+      "title": "Search by major"
+    },
+    {
+      "id": "trades",
+      "title": "Trades and careers"
+    },
+    {
+      "id": "aid",
+      "title": "FAFSA and Georgia aid"
+    },
+    {
+      "id": "todo",
+      "title": "To-do list"
+    },
+    {
+      "id": "phone",
+      "title": "Phone app"
+    },
+    {
+      "id": "journey",
+      "title": "Grade 8 to graduation"
+    },
+    {
+      "id": "compare1",
+      "title": "How we compare 1"
+    },
+    {
+      "id": "compare2",
+      "title": "How we compare 2"
+    },
+    {
+      "id": "better",
+      "title": "Why we are better"
+    },
+    {
+      "id": "privacy",
+      "title": "Safety and privacy"
+    },
+    {
+      "id": "schools",
+      "title": "For schools"
+    },
+    {
+      "id": "cost",
+      "title": "What it costs"
+    },
+    {
+      "id": "start",
+      "title": "Questions?"
+    }
+  ]
+}
