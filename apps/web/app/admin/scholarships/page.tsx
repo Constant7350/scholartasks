@@ -4,17 +4,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { chunks, DoneRow, ReviewNav, timeOf, type Done } from "../review-kit";
+import { Finder } from "./finder";
 
 interface Sch {
   id: string; kind: string; name: string; sponsor: string; url: string; summary: string; how_to_apply: string | null;
   amount_text: string; amount_max: number | null; deadline: string | null; deadline_text: string | null; min_gpa: number | null;
-  other_requirements: string | null; status: "pending" | "approved" | "retired"; last_checked: string | null; college: string | null;
-  reviewed_by: string | null;
+  other_requirements: string | null; status: "pending" | "approved" | "retired" | "found"; last_checked: string | null; college: string | null;
+  reviewed_by: string | null; found_from?: string | null;
   [k: string]: unknown;
 }
 interface Update { id: string; scholarship_id: string; summary: string; proposed: Record<string, unknown>; sources: string[]; status: string; created_at: string }
 
-const TABS = [["updates", "Changes to review"], ["pending", "Not yet verified"], ["approved", "Verified"], ["retired", "Retired"]] as const;
+const TABS = [["updates", "Changes to review"], ["found", "Found by AI"], ["pending", "Not yet verified"], ["approved", "Verified"], ["retired", "Retired"]] as const;
 type Tab = (typeof TABS)[number][0];
 const EDIT_FIELDS = [
   ["url", "Official link"], ["amount_text", "Amount (as families see it)"], ["amount_max", "Largest amount in dollars"],
@@ -55,7 +56,7 @@ export default function ScholarshipReviewPage() {
 
   const byId = useMemo(() => new Map(all.map((s) => [s.id, s])), [all]);
   const list = useMemo(() => all.filter((s) => s.status === tab && (!q || `${s.name} ${s.sponsor} ${s.college ?? ""}`.toLowerCase().includes(q.toLowerCase()))), [all, tab, q]);
-  const counts = { updates: updates.length, pending: all.filter((s) => s.status === "pending").length, approved: all.filter((s) => s.status === "approved").length, retired: all.filter((s) => s.status === "retired").length };
+  const counts = { updates: updates.length, found: all.filter((s) => s.status === "found").length, pending: all.filter((s) => s.status === "pending").length, approved: all.filter((s) => s.status === "approved").length, retired: all.filter((s) => s.status === "retired").length };
   const today = new Date().toISOString().slice(0, 10);
 
   const save = async (s: Sch, patch: Record<string, unknown>, note: string) => {
@@ -76,7 +77,7 @@ export default function ScholarshipReviewPage() {
     if (accept && s) {
       // Accepting a checked change also verifies the award (unless it's being retired).
       const { data: ses } = await sb.auth.getSession();
-      const extra = s.status === "pending" && u.proposed.status !== "retired" ? { status: "approved", reviewed_by: ses.session?.user.id, reviewed_at: new Date().toISOString() } : {};
+      const extra = (s.status === "pending" || s.status === "found") && u.proposed.status !== "retired" ? { status: "approved", reviewed_by: ses.session?.user.id, reviewed_at: new Date().toISOString() } : {};
       const { error: e } = await sb.from("scholarships").update({ ...extra, ...u.proposed, last_checked: today }).eq("id", s.id);
       if (e) return setError(friendly(e));
     }
@@ -116,7 +117,7 @@ export default function ScholarshipReviewPage() {
     setError(null); setMsg(null);
     stopRef.current = false;
     const waiting = new Set(updates.map((u) => u.scholarship_id));
-    const queue = all.filter((s) => s.status === "pending" && !waiting.has(s.id));
+    const queue = all.filter((s) => s.status === (tab === "found" ? "found" : "pending") && !waiting.has(s.id));
     const tally = { done: 0, total: queue.length, verified: 0, review: 0, failed: 0 };
     setBulk({ ...tally });
     const worker = async () => {
@@ -148,7 +149,7 @@ export default function ScholarshipReviewPage() {
       const s = byId.get(u.scholarship_id);
       if (Object.keys(u.proposed).length && s) {
         // Accepting a checked change also counts as verifying the award (unless it's being retired).
-        const extra = s.status === "pending" && u.proposed.status !== "retired" ? { status: "approved", reviewed_by: me, reviewed_at: new Date().toISOString() } : {};
+        const extra = (s.status === "pending" || s.status === "found") && u.proposed.status !== "retired" ? { status: "approved", reviewed_by: me, reviewed_at: new Date().toISOString() } : {};
         const { error: e } = await sb.from("scholarships").update({ ...extra, ...u.proposed, last_checked: today }).eq("id", s.id);
         if (e) { setError(friendly(e)); break; }
       }
@@ -186,9 +187,9 @@ export default function ScholarshipReviewPage() {
     <Page title={title}>
       <ReviewNav />
       <p className="hint" style={{ marginTop: -8 }}>
-        Every scholarship and grant families see. Every Monday (and Thursdays too from September to March) the AI checker reads 25 official sites, oldest first. If an award is still offered and nothing changed, it&apos;s verified automatically. Anything that changed, or that the AI couldn&apos;t confirm, waits under &ldquo;Changes to review&rdquo;, and nothing changes for families until you accept it.
+        Every scholarship and grant families see. Every Monday (and Thursdays too from September to March) the AI checker reads 25 official sites, oldest first. If an award is still offered and nothing changed, it&apos;s verified automatically. Anything that changed, or that the AI couldn&apos;t confirm, waits under &ldquo;Changes to review&rdquo;, and nothing changes for families until you accept it. Every Tuesday the AI finder also looks for new awards on official sites; they wait under &ldquo;Found by AI&rdquo;, hidden from families, until the checker confirms each one.
       </p>
-      <div className="tabs" role="tablist" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
+      <div className="tabs" role="tablist" style={{ gridTemplateColumns: "repeat(5, 1fr)" }}>
         {TABS.map(([k, label]) => <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{label} <span className="sch-count">{counts[k]}</span></button>)}
       </div>
       {error && <p className="note note-err" role="alert">{error}</p>}
@@ -231,7 +232,8 @@ export default function ScholarshipReviewPage() {
       {tab !== "updates" && (
         <>
           <div className="field" style={{ maxWidth: 360 }}><label htmlFor="sch-q">Search</label><input id="sch-q" className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, organization or college" /></div>
-          {tab === "pending" && counts.pending > 0 && (
+          {tab === "found" && <Finder onFound={load} />}
+          {(tab === "pending" || tab === "found") && counts[tab] > 0 && (
             <div className="panel" style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
               {bulk ? (
                 <>
@@ -240,15 +242,15 @@ export default function ScholarshipReviewPage() {
                 </>
               ) : (
                 <>
-                  {list.length > 1 && (
+                  {list.length > 1 && tab === "pending" && (
                     <>
                       <button className="btn btn-inline" onClick={() => void verifyAll()}>{confirmVerify ? `Tap again to verify all ${list.length}` : `✓ Verify all ${list.length}${q ? " shown" : ""}`}</button>
                       {confirmVerify && <button className="btn btn-ghost btn-inline" onClick={() => setConfirmVerify(false)}>Cancel</button>}
                       <span className="hint" style={{ fontSize: 13, flexBasis: "100%" }}>Verify all marks them checked without reading each site. Or let the AI read each site first:</span>
                     </>
                   )}
-                  <button className="btn btn-inline" onClick={() => void checkAll()}>🤖 Check all {counts.pending} now</button>
-                  <span className="hint" style={{ fontSize: 13 }}>The AI reads each official site. Unchanged ones are verified for you. Takes about 20 minutes with this page open, and costs about ${Math.max(1, Math.round(counts.pending * 0.005))} in AI use.</span>
+                  <button className="btn btn-inline" onClick={() => void checkAll()}>🤖 Check all {counts[tab]} now</button>
+                  <span className="hint" style={{ fontSize: 13 }}>The AI reads each official site. Unchanged ones are verified for you. Takes about 20 minutes with this page open, and costs about ${Math.max(1, Math.round(counts[tab] * 0.005))} in AI use.</span>
                 </>
               )}
             </div>
@@ -278,7 +280,7 @@ function Item({ s, busy, saved, onSave, onCheck, today }: { s: Sch; busy: boolea
   return (
     <details className="panel review">
       <summary>
-        <b>{s.name}</b> <span className="hint" style={{ fontSize: 13 }}>· {s.kind === "grant" ? "Grant" : "Scholarship"} · {s.amount_text} · {s.deadline ?? s.deadline_text ?? "no deadline"} · checked {s.last_checked ?? "never"}{s.status === "approved" && !s.reviewed_by ? " · verified by AI" : ""}</span>
+        <b>{s.name}</b> <span className="hint" style={{ fontSize: 13 }}>· {s.kind === "grant" ? "Grant" : "Scholarship"} · {s.amount_text} · {s.deadline ?? s.deadline_text ?? "no deadline"} · checked {s.last_checked ?? "never"}{s.status === "approved" && !s.reviewed_by ? " · verified by AI" : ""}{s.found_from ? ` · ${s.found_from}` : ""}</span>
         {saved && <span className="pill pill-ok" role="status">✓ Saved {timeOf(saved)}</span>}
         {Object.keys(edit).length > 0 && <span className="unsaved"> ● Not saved yet</span>}
       </summary>
