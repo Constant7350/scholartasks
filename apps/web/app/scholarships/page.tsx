@@ -10,6 +10,7 @@ import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { ReportAi } from "../report-ai";
+import { DraftImport } from "../attach-buttons";
 
 
 interface Student {
@@ -406,6 +407,7 @@ function ApplyHelp({ s, choice }: { s: Row; choice: Choice }) {
       )}
       <input className="input" style={{ marginTop: 6, maxWidth: 260 }} placeholder="Length limit, e.g. 500 words" value={limit} onChange={(e) => setLimit(e.target.value)} />
       <textarea className="input" rows={10} style={{ marginTop: 6 }} placeholder="Your draft" value={draft} maxLength={12000} onChange={(e) => setDraft(e.target.value)} />
+      <DraftImport studentId={choice.student_id} draft={draft} onText={(t) => setDraft(t.slice(0, 12000))} disabled={busy !== null} />
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginTop: 6 }}>
         <span className="hint">{words} words</span>
         <button className="btn btn-ghost btn-inline btn-sm" disabled={busy !== null} onClick={() => void saveDraft()}>Save draft</button>

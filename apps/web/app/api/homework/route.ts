@@ -20,8 +20,8 @@ export const maxDuration = 60;
 const MODEL = "claude-sonnet-5-5";
 const CHECKER = "claude-haiku-5-5";
 const MAX_TURNS = 16;
-const MAX_CHARS = 4000;
-const MAX_IMAGE_BYTES = 3_500_000; // base64 characters; the page shrinks photos well below this
+const MAX_CHARS = 8000; // room for an essay draft from a Word file
+const MAX_FILE_CHARS = 3_500_000; // base64 characters; the page shrinks photos and caps PDFs below this
 
 const json = (status: number, error: string) => Response.json({ error }, { status });
 
@@ -98,12 +98,13 @@ export async function POST(req: Request) {
   const valid =
     messages.length > 0 && messages[messages.length - 1]!.role === "user" &&
     messages.every((m, i) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim().length > 0 && m.content.length <= MAX_CHARS && (i === 0 || m.role !== messages[i - 1]!.role));
-  if (!valid) return json(400, "Messages must be under 4,000 characters.");
-  let image: { media_type: "image/jpeg" | "image/png" | "image/webp"; data: string } | null = null;
+  if (!valid) return json(400, "Messages must be under 8,000 characters.");
+  // A photo (image) or a PDF of the assignment or the student's work, sent once with a message.
+  let image: { media_type: "image/jpeg" | "image/png" | "image/webp" | "application/pdf"; data: string } | null = null;
   if (typeof body.image === "string" && body.image) {
-    const m = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/.exec(body.image);
-    if (!m || m[2]!.length > MAX_IMAGE_BYTES) return json(400, "That photo didn't work. Try a smaller photo, or type the problem.");
-    image = { media_type: m[1] as "image/jpeg" | "image/png" | "image/webp", data: m[2]! };
+    const m = /^data:(image\/(?:jpeg|png|webp)|application\/pdf);base64,([A-Za-z0-9+/=]+)$/.exec(body.image);
+    if (!m || m[2]!.length > MAX_FILE_CHARS) return json(400, "That photo or file didn't work. Try a smaller one, send only the pages you need, or type the problem.");
+    image = { media_type: m[1] as "image/jpeg" | "image/png" | "image/webp" | "application/pdf", data: m[2]! };
   }
 
   const sb = createClient(url, key, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false, autoRefreshToken: false } });
@@ -141,7 +142,12 @@ export async function POST(req: Request) {
   history.push({
     role: "user",
     content: image
-      ? [{ type: "image", source: { type: "base64", media_type: image.media_type, data: image.data } }, { type: "text", text: last.content }]
+      ? [
+          image.media_type === "application/pdf"
+            ? { type: "document", source: { type: "base64", media_type: "application/pdf", data: image.data } }
+            : { type: "image", source: { type: "base64", media_type: image.media_type, data: image.data } },
+          { type: "text", text: last.content },
+        ]
       : last.content,
   });
 
@@ -220,7 +226,7 @@ export async function POST(req: Request) {
     solved: final.solved,
     said_no: saidNo,
     safety: final.safety,
-    problem_text: final.problem_text.slice(0, 300),
+    problem_text: final.problem_text.slice(0, 800),
     checked: true,
     rewritten,
   }, { headers: { "Cache-Control": "no-store" } });
