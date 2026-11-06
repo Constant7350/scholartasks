@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { friendly, supabase } from "../../lib/supabase";
-import { passkeysSupported, signInWithPasskey, unlockName } from "../../lib/passkeys-client";
+import { inPhoneApp, passkeysSupported, signInWithPasskey, unlockName } from "../../lib/passkeys-client";
 import { Brand } from "../brand";
 import { NotConfigured, Page } from "../ui";
 
@@ -64,10 +64,12 @@ export default function SignIn() {
     const why = back.get("error_description") || back.get("error");
     if (why) setError(friendly({ message: why.replace(/\+/g, " ") }));
     if (back.get("deleted") === "1") setDeleted(true);
-    // Only show "Continue with Google" once Google is switched on in Supabase.
+    // Only show "Continue with Google" once Google is switched on in Supabase, and never
+    // inside the phone app: Google blocks sign-in inside apps, and Apple's rules would
+    // then also require Sign in with Apple.
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (url && key)
+    if (url && key && !inPhoneApp())
       fetch(`${url}/auth/v1/settings`, { headers: { apikey: key } })
         .then((r) => r.json())
         .then((j) => setGoogle(!!j?.external?.google))

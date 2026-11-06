@@ -13,8 +13,9 @@ export default function Privacy() {
 
       <h2>Who can use ScholarTasks</h2>
       <p>
-        A parent or guardian creates the family account. Students must be at least 13 years old, and a student joins only with a code their parent
-        creates. We do not knowingly collect information from children under 13. If you believe a child under 13 has given us information, email{" "}
+        A parent or guardian creates the family account. A student gets their own sign-in only at 13 or older, and joins only with a code their parent
+        creates. A parent may add a child aged 10 to 12 in grades 6 to 8 to their own account and use ScholarTasks with them; the child has no sign-in,
+        and nothing about them is sent to an AI service until they turn 13. We do not knowingly collect information directly from children under 13. If you believe a child under 13 has given us information, email{" "}
         <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a> and we will delete it.
       </p>
 

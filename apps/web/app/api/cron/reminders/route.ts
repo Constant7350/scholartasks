@@ -83,8 +83,10 @@ export async function GET(req: Request) {
     for (const i of items) await sb.rpc("mark_reminder_sent", { p_user: userId, p_item_type: i.item_type, p_item: i.item_id, p_days: i.days_before });
     sent++;
   }
+  // School rosters are deleted 45 days after their data agreement ends.
+  const purged = await sb.rpc("purge_school_rosters");
   // Text reminders (opt-in, 7 days, 1 day and the day of; capped each month).
   let texts: Awaited<ReturnType<typeof sendTextReminders>> | { error: string };
   try { texts = await sendTextReminders(sb, todayEastern(), appUrl); } catch (e) { texts = { error: e instanceof Error ? e.message : "texts failed" }; }
-  return Response.json({ ok: failed.length === 0, emails_sent: sent, failed: failed.length, texts });
+  return Response.json({ ok: failed.length === 0, emails_sent: sent, failed: failed.length, texts, rosters_purged: purged.error ? null : purged.data });
 }

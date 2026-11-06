@@ -12,6 +12,7 @@ export const SITE_LINKS = [
   { href: "/schools", label: "For schools" },
   { href: "/about", label: "About us" },
   { href: "/contact", label: "Contact" },
+  { href: "/es", label: "Español" },
 ];
 
 /** Header for the public website. Signed-in visitors get a button back to their plan. */

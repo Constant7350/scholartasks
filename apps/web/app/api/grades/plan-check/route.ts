@@ -6,6 +6,8 @@ import { packFor } from "../../../../lib/state-packs";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../../lib/ai-limit";
 import { subjectOf } from "../../../grades/courses";
+import { aiLanguageNote } from "../../../../lib/lang";
+import { aiOffMessage } from "../../../../lib/ai-off";
 
 // AI check of a student's four-year course plan. Reads the saved plan and
 // grades, adds the rules check from core, and returns advice. Nothing is saved.
@@ -57,7 +59,7 @@ export async function POST(req: Request) {
   const limit = await aiDailyLimit(sb, studentId);
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
-  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
+  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? aiOffMessage(turn.error) : "Something went wrong. Please try again.");
   if (turn.data === false) return json(429, limitReached(limit));
 
   const pack = packFor(student.state);
@@ -90,7 +92,7 @@ Never invent the school's course offerings; say "if your school offers it". This
       model: MODEL,
       max_tokens: 6000,
       output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
-      system,
+      system: system + aiLanguageNote(req),
       messages: [{ role: "user", content: context }],
     });
     if (res.stop_reason === "refusal" || res.stop_reason === "max_tokens") return json(422, "Sorry, the plan couldn't be checked this time. Try again later.");

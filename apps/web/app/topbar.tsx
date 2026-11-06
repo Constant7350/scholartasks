@@ -8,6 +8,9 @@ import { Brand } from "./brand";
 import { HelpButton, HelpLayer } from "./help/balloons";
 import { inPhoneApp } from "../lib/passkeys-client";
 import { ThemePicker } from "./theme-picker";
+import { LangPicker } from "./lang-picker";
+import { UI, navLabel, navShort } from "./nav-es";
+import { useLang } from "../lib/lang-client";
 import { NAV, bestMatch, isActive, type NavGroup, type NavItem, type NavRole } from "./nav";
 
 interface Who { role: NavRole; students: { id: string; first_name: string }[]; own: string | null; admin: boolean }
@@ -75,19 +78,21 @@ export function TopBar() {
     window.location.href = "/signin";
   };
 
+  const lang = useLang();
+  const t = UI[lang];
   const role: NavRole = who?.role ?? "none";
   const items = NAV.filter((i) => i.roles.includes(role) && (i.group !== "team" || who?.admin) && !(i.webOnly && inApp));
   const here = bestMatch(items, path);
   const isParent = role === "parent";
   const kids = who?.students ?? [];
   const student = kids.find((k) => k.id === current);
-  const studentTitle = role === "student" ? "My pages" : isParent && student ? `${student.first_name}'s pages` : "Pages";
+  const studentTitle = role === "student" ? t.myPages : isParent && student ? t.pagesOf(student.first_name) : t.pages;
 
   const groups: { key: NavGroup; title: string }[] = [
     { key: "student", title: studentTitle },
-    { key: "family", title: isParent ? "Family" : "Get connected" },
-    { key: "help", title: "Help" },
-    { key: "team", title: "ScholarTasks team" },
+    { key: "family", title: isParent ? t.family : t.connected },
+    { key: "help", title: t.help },
+    { key: "team", title: t.team },
   ];
 
   const link = (i: NavItem, cls: string, label: string) => (
@@ -98,7 +103,7 @@ export function TopBar() {
 
   const switcher = isParent && kids.length > 0 && (
     <label className="student-switch">
-      <span className="student-switch-label">Viewing</span>
+      <span className="student-switch-label">{t.viewing}</span>
       {kids.length === 1 ? (
         <b>{kids[0]?.first_name}</b>
       ) : (
@@ -122,11 +127,11 @@ export function TopBar() {
         <Brand href={signedIn ? "/home" : "/"} />
         <nav>
           <HelpButton />
-          {signedIn === false && <a href="/signin">Sign in</a>}
+          {signedIn === false && <a href="/signin">{t.signIn}</a>}
           {signedIn && (
             <details className="menu" ref={menu}>
-              <summary aria-label="Open menu">
-                Menu
+              <summary aria-label={t.openMenu}>
+                {t.menu}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
               </summary>
               <div className="menu-list" role="menu">
@@ -137,14 +142,16 @@ export function TopBar() {
                   return (
                     <div key={g.key} className="menu-group">
                       <p className="menu-heading">{g.title}</p>
-                      {list.map((i) => link(i, "menu-item", i.label))}
+                      {list.map((i) => link(i, "menu-item", navLabel(i, lang)))}
                     </div>
                   );
                 })}
                 <hr />
                 <ThemePicker />
                 <hr />
-                <button role="menuitem" className="menu-item" onClick={signOut}><span aria-hidden="true">🚪</span> Sign out</button>
+                <LangPicker />
+                <hr />
+                <button role="menuitem" className="menu-item" onClick={signOut}><span aria-hidden="true">🚪</span> {t.signOut}</button>
               </div>
             </details>
           )}
@@ -158,7 +165,7 @@ export function TopBar() {
             <nav className="strip-links" aria-label="Main pages">
               {items.filter((i) => i.strip).map((i) => (
                 <a key={i.href} className={isActive(i.href, path) ? "nav-on" : ""} href={i.href} aria-current={isActive(i.href, path) ? "page" : undefined}>
-                  {i.short ?? i.label}
+                  {navShort(i, lang)}
                 </a>
               ))}
             </nav>
@@ -171,12 +178,12 @@ export function TopBar() {
           {tabs.map((i) => (
             <a key={i.href} className={isActive(i.href, path) ? "nav-on" : ""} href={i.href} aria-current={isActive(i.href, path) ? "page" : undefined}>
               <span className="tabbar-icon" aria-hidden="true">{i.icon}</span>
-              <span>{i.short ?? i.label}</span>
+              <span>{navShort(i, lang)}</span>
             </a>
           ))}
-          <button type="button" data-menu-toggle className={moreOn ? "nav-on" : ""} onClick={openMenu} aria-label="More pages">
+          <button type="button" data-menu-toggle className={moreOn ? "nav-on" : ""} onClick={openMenu} aria-label={t.more}>
             <span className="tabbar-icon" aria-hidden="true">☰</span>
-            <span>More</span>
+            <span>{t.more}</span>
           </button>
         </nav>
       )}

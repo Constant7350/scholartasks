@@ -13,8 +13,8 @@ insert into t values ('student', add_student((select v::uuid from t where k='fam
 do $$ begin
   assert (select state from students where id = (select v::uuid from t where k='student')) = 'GA', 'state is upper-cased';
   begin
-    perform add_student((select v::uuid from t where k='family'), 'Tiny', (current_date - interval '12 years')::date, 7, 'GA');
-    raise exception 'FAIL: under-13 student should be refused';
+    perform add_student((select v::uuid from t where k='family'), 'Tiny', (current_date - interval '9 years')::date, 7, 'GA');
+    raise exception 'FAIL: under-10 student should be refused (10-12 allowed in grades 6-8, see test 43)';
   exception when raise_exception then
     if sqlerrm not like '%at least 13%' then raise; end if;
   end;

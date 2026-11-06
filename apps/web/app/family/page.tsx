@@ -24,6 +24,7 @@ interface Student {
   family_id: string;
   first_name: string;
   grade_level: number;
+  birth_date?: string | null;
   state: string;
   permissions: Record<PermissionKey, boolean>;
 }
@@ -129,6 +130,14 @@ function RemoveStudent({ id, name, onRemoved }: { id: string; name: string; onRe
   );
 }
 
+/** True when a birth date (YYYY-MM-DD) is less than 13 years ago. */
+function under13(birth: string | null | undefined): boolean {
+  if (!birth) return false;
+  const b = new Date(`${birth}T12:00:00`), t = new Date();
+  const thirteen = new Date(b.getFullYear() + 13, b.getMonth(), b.getDate());
+  return t < thirteen;
+}
+
 export default function FamilyPage() {
   const sb = supabase();
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
@@ -147,7 +156,7 @@ export default function FamilyPage() {
     if (!s.session) return;
     const [f, st, inv] = await Promise.all([
       sb.from("families").select("id, name"),
-      sb.from("students").select("id, family_id, first_name, grade_level, state, permissions").order("first_name"),
+      sb.from("students").select("id, family_id, first_name, grade_level, state, permissions, birth_date").order("first_name"),
       sb.from("family_invites").select("student_id, code, expires_at, accepted_at").order("created_at", { ascending: false }),
     ]);
     setFamilies((f.data as Family[]) ?? []);
@@ -205,7 +214,7 @@ export default function FamilyPage() {
         <div className="field" style={{ flex: "0 1 140px" }}>
           <label htmlFor="grade">Grade</label>
           <select id="grade" className="input" value={child.grade_level} onChange={(e) => setChild({ ...child, grade_level: e.target.value })}>
-            {[8, 9, 10, 11, 12].map((g) => <option key={g} value={g}>Grade {g}</option>)}
+            {[6, 7, 8, 9, 10, 11, 12].map((g) => <option key={g} value={g}>Grade {g}</option>)}
           </select>
         </div>
         <button
@@ -288,6 +297,8 @@ export default function FamilyPage() {
                         </p>
                         <ShareInvite name={s.first_name} code={code.code} expires={code.expires_at} />
                       </div>
+                    ) : under13(s.birth_date) ? (
+                      <p className="hint" style={{ margin: 0 }}>{s.first_name} gets their own sign-in at 13. Until then, use ScholarTasks together from your account. AI help also starts at 13; study lessons, practice questions, the career quiz and the grades scorecard work now.</p>
                     ) : (
                       <button className="btn btn-inline" onClick={() => run(() => sb.rpc("create_student_invite", { p_student: s.id }))}>
                         Invite {s.first_name} to the student app

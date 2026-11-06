@@ -3,6 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../../lib/billing";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../../lib/ai-limit";
+import { aiLanguageNote } from "../../../../lib/lang";
+import { aiOffMessage } from "../../../../lib/ai-off";
 
 // The practice tutor: checks a written answer to a bank question, or helps a
 // student who is stuck on one. It only ever talks about questions from the
@@ -73,7 +75,7 @@ export async function POST(req: Request) {
   const limit = await aiDailyLimit(sb, studentId, true);
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
-  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
+  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? aiOffMessage(turn.error) : "Something went wrong. Please try again.");
   if (turn.data === false) return json(429, limitReached(limit));
 
   const student = st as { first_name: string; grade_level: number };
@@ -95,7 +97,7 @@ export async function POST(req: Request) {
       model: MODEL,
       max_tokens: 4000,
       output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
-      system: SYSTEM,
+      system: SYSTEM + aiLanguageNote(req),
       messages: [{ role: "user", content: context }],
     });
     if (res.stop_reason === "refusal") return json(422, "Sorry, the tutor can't help with that one.");

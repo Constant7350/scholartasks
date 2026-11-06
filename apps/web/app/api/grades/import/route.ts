@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../../lib/billing";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../../lib/ai-limit";
+import { aiOffMessage } from "../../../../lib/ai-off";
 
 // Reads a report card or transcript (photo or PDF) and returns the courses it
 // finds. Nothing is saved here: the family checks the list and saves it
@@ -85,7 +86,7 @@ export async function POST(req: Request) {
   const limit = await aiDailyLimit(sb, studentId);
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
-  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
+  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? aiOffMessage(turn.error) : "Something went wrong. Please try again.");
   if (turn.data === false) return json(429, limitReached(limit));
 
   const doc = isPdf

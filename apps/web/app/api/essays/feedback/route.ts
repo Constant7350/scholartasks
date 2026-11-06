@@ -3,6 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../../lib/billing";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../../lib/ai-limit";
+import { aiLanguageNote } from "../../../../lib/lang";
+import { aiOffMessage } from "../../../../lib/ai-off";
 
 // The college essay coach: feedback on a Common App personal statement or a
 // college's supplemental essay, or brainstorming questions before a draft
@@ -89,7 +91,7 @@ export async function POST(req: Request) {
   const limit = await aiDailyLimit(sb, essay.student_id);
   const turn = await sb.rpc("ai_take_turn", { p_student: essay.student_id, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
-  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
+  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? aiOffMessage(turn.error) : "Something went wrong. Please try again.");
   if (turn.data === false) return json(429, limitReached(limit));
 
   const activities = ((acts.data as { kind: string; position: string; organization: string | null; description: string | null }[] | null) ?? [])
@@ -111,7 +113,7 @@ export async function POST(req: Request) {
       model: MODEL,
       max_tokens: 4000,
       output_config: { effort: "low", format: { type: "json_schema", schema: mode === "feedback" ? FEEDBACK_SCHEMA : BRAINSTORM_SCHEMA } },
-      system: mode === "feedback" ? FEEDBACK_SYSTEM : BRAINSTORM_SYSTEM,
+      system: (mode === "feedback" ? FEEDBACK_SYSTEM : BRAINSTORM_SYSTEM) + aiLanguageNote(req),
       messages: [{ role: "user", content: context }],
     });
     if (res.stop_reason === "refusal") return json(422, "Sorry, the coach can't help with that one.");

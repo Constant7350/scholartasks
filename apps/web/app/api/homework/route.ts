@@ -6,6 +6,8 @@ import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../lib/ai-limit";
 import { HOMEWORK_DAILY_LIMIT, HOMEWORK_MONTHLY_LIMIT, PAYWALL_ON } from "../../../lib/prices";
 import { CHECKER_RULES, HELPER_RULES, HELP_TYPES, SAFE_FALLBACK, gradeBand, subjectById, type HelpType } from "../../../lib/homework";
+import { aiLanguageNote } from "../../../lib/lang";
+import { aiOffMessage } from "../../../lib/ai-off";
 
 // Homework Helper. Every reply is written by the helper model, then read by a
 // separate checker model before the student sees it: a reply that gives away
@@ -117,7 +119,7 @@ export async function POST(req: Request) {
     if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
     if (turn.error.code === "PGRST202" || turn.error.code === "42883") return json(503, "The Homework Helper needs the latest database update first.");
     if (/helper turned off/.test(turn.error.message)) return json(403, "A parent has turned off the Homework Helper for your account.");
-    if (/not allowed/.test(turn.error.message)) return json(403, "AI help is turned off for this student. A parent can turn on AI chat in Family and permissions.");
+    if (/not allowed/.test(turn.error.message)) return json(403, aiOffMessage(turn.error, "AI help is turned off for this student. A parent can turn on AI chat in Family and permissions."));
     return json(500, "Something went wrong. Please try again.");
   }
   if (turn.data === false) {
@@ -132,7 +134,7 @@ export async function POST(req: Request) {
   // The long fixed rules come first and are cached; the per-student parts follow.
   const system: Anthropic.TextBlockParam[] = [
     { type: "text", text: HELPER_RULES, cache_control: { type: "ephemeral" } },
-    { type: "text", text: `SUBJECT RULES\n${subject.rules}\n\nABOUT THIS STUDENT\n${ctx.text}` },
+    { type: "text", text: `SUBJECT RULES\n${subject.rules}\n\nABOUT THIS STUDENT\n${ctx.text}${aiLanguageNote(req)}` },
   ];
   const last = messages[messages.length - 1]!;
   const history: Anthropic.MessageParam[] = messages.slice(0, -1).map((m) => ({ role: m.role, content: m.content }));
