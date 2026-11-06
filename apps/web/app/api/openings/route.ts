@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { checkOpening, openingReviewFlags } from "@scholartasks/core";
+import { checkOpening, openingReviewFlags, PART_TIME_KINDS } from "@scholartasks/core";
 import { SUPPORT_EMAIL, TRADE_SLUGS, emailShell, esc, kindLabel, place, sendEmail } from "../../../lib/openings";
 
 export const runtime = "nodejs";
@@ -27,6 +27,7 @@ export async function POST(req: Request) {
   const check = checkOpening(await req.json().catch(() => null), { tradeSlugs: TRADE_SLUGS });
   if (!check.ok) return check.spam ? json(200, { ok: true }) : json(400, { error: check.error });
   const o = check.opening;
+  if ((PART_TIME_KINDS as readonly string[]).includes(o.kind)) return json(400, { error: "Weekend and holiday jobs are posted from a company account at scholartasks.com/employers." });
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

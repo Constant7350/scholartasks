@@ -66,8 +66,8 @@ export async function POST(req: Request) {
   }
 
   // applied / decided: the family can see this row.
-  const { data } = await sb.from("job_applications").select("id, status, student_id, opening_id, updated_at").eq("id", id).maybeSingle();
-  const a = data as { status: string; student_id: string; opening_id: string; updated_at: string } | null;
+  const { data } = await sb.from("job_applications").select("id, status, student_id, opening_id, updated_at, applied_outside").eq("id", id).maybeSingle();
+  const a = data as { status: string; student_id: string; opening_id: string; updated_at: string; applied_outside: boolean } | null;
   if (!a || !fresh(a.updated_at)) return json(200, { ok: true, emailed: false });
   const { data: op } = await admin.from("local_openings").select("title, contact_name, contact_email, employer_id").eq("id", a.opening_id).maybeSingle();
   const o = op as { title: string; contact_name: string; contact_email: string; employer_id: string | null } | null;
@@ -86,13 +86,13 @@ export async function POST(req: Request) {
         to: u.user.email,
         subject: `${s.first_name} applied for a job: please review`,
         html: emailShell("Your OK is needed", `<p>${esc(s.first_name)} applied for <b>${esc(o.title)}</b> in ScholarTasks.</p>
-          <p>Nothing goes to the company until you read the application and tick <b>I agree</b>.</p>
+          <p>${a.applied_outside ? "They applied on the company's own site and logged it here. Please read the consent and tick <b>I agree</b> or decline." : "Nothing goes to the company until you read the application and tick <b>I agree</b>."}</p>
           <p><a href="${SITE}/jobs">Review the application</a></p>`),
       })) || emailed;
     }
     return json(200, { ok: true, emailed });
   }
-  if (a.status === "sent") {
+  if (a.status === "sent" && !a.applied_outside) {
     const emailed = await sendEmail({
       to: o.contact_email,
       subject: `New application: ${o.title}`,

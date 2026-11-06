@@ -168,6 +168,7 @@ function TeamCard({ o, reports, onDecide, onFeature }: {
         <p className="pre">{o.description}</p>
         {o.requirements && <><p><b>What they need</b></p><p className="pre">{o.requirements}</p></>}
         <p><b>How to apply</b></p><p className="pre">{o.how_to_apply}</p>
+        {(o.extra_questions ?? []).length > 0 && <><p><b>Company&apos;s questions</b> (check none ask for private details or anything about race, religion, health or family)</p><ul>{o.extra_questions!.map((q) => <li key={q}>{q}</li>)}</ul></>}
         {o.apply_url && <p><a href={o.apply_url} target="_blank" rel="noreferrer nofollow">{o.apply_url}</a></p>}
         <p className="hint">Shows until {o.show_until}{o.review_note ? ` · Last note: ${o.review_note}` : ""}</p>
       </details>

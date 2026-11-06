@@ -50,6 +50,12 @@ export const OPENING_LAW_LINKS = [
 /** Kinds for students' part-time work, shown under "Weekend and holiday jobs". */
 export const PART_TIME_KINDS = ["weekend", "holiday"] as const satisfies readonly OpeningKind[];
 
+/** Kinds for trades and apprenticeships (shown under Trades). Kept apart from weekend and holiday jobs. */
+export const TRADE_KINDS = (Object.keys(OPENING_KINDS) as OpeningKind[]).filter((k) => !(PART_TIME_KINDS as readonly string[]).includes(k));
+
+/** Most questions a company can add to the ScholarTasks application form. */
+export const JOB_MAX_QUESTIONS = 3;
+
 /**
  * Extra rules a company agrees to before posting weekend and holiday jobs from a company
  * account, where students apply inside ScholarTasks. Based on the federal Fair Labor

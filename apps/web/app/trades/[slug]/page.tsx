@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { PATH_KINDS, TRADE_CATEGORIES } from "@scholartasks/core";
+import { PATH_KINDS, TRADE_CATEGORIES, TRADE_KINDS } from "@scholartasks/core";
 import { Page } from "../../ui";
 import { NATIONAL_FINDERS, TRADES, TRADES_PACK, checklistById, dollars, tradeBySlug } from "../../../lib/trades";
 import { AddChecklist } from "../add-checklist";
@@ -86,7 +86,7 @@ export default async function TradePage({ params }: { params: Promise<{ slug: st
       <section className="panel">
         <h2>Local openings and apprenticeships</h2>
         <p className="hint">Posted by companies and checked by our review team. Your home state first, then across the country.</p>
-        <OpeningsList trade={t.slug} compact />
+        <OpeningsList trade={t.slug} compact kinds={TRADE_KINDS} />
       </section>
 
       <section className="panel">

@@ -397,6 +397,7 @@ export const TOPICS: Topic[] = [
       "Open Menu, then Apprenticeships and local openings. Or open a trade and scroll to Local openings and apprenticeships.",
       "Openings in your home state show first, then the rest of the country. Change Home state, Trade or Kind to narrow the list.",
       "Tap Details and how to apply, then apply the way the company asks: their website, email or phone.",
+      "Applied on a company's site? Tap I applied: keep track. A parent agrees, it shows under My applications on this page, and if you're hired it goes on your resume in one tap.",
       "Something wrong, like a company asking for money? Tap Report a problem. Our team looks at every report.",
     ],
     body: [
@@ -435,7 +436,7 @@ export const TOPICS: Topic[] = [
     summary: "Part-time jobs from local companies our review team checked. Students apply in the app, and a parent always agrees before the company sees anything.",
     steps: [
       "Open Menu, then Weekend and holiday jobs. Pick a job and tap Apply in ScholarTasks.",
-      "Write a short message, say when you can work, and choose the email or phone to share.",
+      "Write a short message, answer the company's questions if it asked any, say when you can work, and choose the email or phone to share.",
       "A parent gets an email, reads the consent, ticks I agree and taps Agree and send. A parent applying for their student agrees in the same step.",
       "Follow it under My job applications: Sent, Seen, The company wants to meet, Hired or Not this time. You can take it back any time before you're hired.",
       "Hired? Tap Add to activities and resume (as work, or as leadership if you led others).",
@@ -457,11 +458,12 @@ export const TOPICS: Topic[] = [
     steps: [
       "Open scholartasks.com/employers and tap Create a company account. Sign up with your work email.",
       "Fill in your company, read the teen job rules, tick I agree and tap Make my company account. Our review team checks your company.",
-      "Post a job: kind, pay, days and hours, and the youngest age you can take. Our team checks each job before students see it.",
+      "Post a job: weekend or holiday, pay, days and hours, the youngest age you can take, and up to 3 questions of your own. Our team checks each job before students see it.",
       "Applications arrive after a parent agrees. Move each one along: Mark as seen, Let's meet, Hired or Not this time. The family sees it right away.",
       "After someone worked for you, tap Write a reference letter about their work ethic and character.",
     ],
     body: [
+      "Weekend and holiday jobs are kept apart from trades and apprenticeships, with their own rules. Apprenticeships and trade openings are posted free at scholartasks.com/trades/post.",
       "The rules follow the federal teen work laws: limited hours for 14 and 15 year olds, no hazardous jobs under 18, work permits where the state needs them, at least minimum wage, and meeting students only at the workplace.",
       "Posting is free while we launch. Later a weekend or holiday job post will be a small flat fee, and nothing is charged without your OK. Students and families never pay.",
     ],

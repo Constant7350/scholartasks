@@ -1,5 +1,7 @@
 import { Page } from "../../ui";
+import { TRADE_KINDS } from "@scholartasks/core";
 import { OpeningsList } from "../openings-list";
+import { MyApplications } from "../../jobs/applications";
 import "../trades.css";
 
 export const metadata = {
@@ -20,8 +22,9 @@ export default function OpeningsPage() {
         You decide who to contact. Apply the way each company asks; ScholarTasks never sends your details to companies.
         Looking for more? The <a href="https://www.apprenticeship.gov/finder" target="_blank" rel="noreferrer">U.S. Department of Labor apprenticeship finder</a> covers every state.
       </p>
-      <OpeningsList />
-      <p className="hint" style={{ marginTop: 24 }}>Do you hire for a trade? <a href="/trades/post">Post an opening for free</a>. Our team reviews it before students see it.</p>
+      <MyApplications part="trades" />
+      <OpeningsList kinds={TRADE_KINDS} />
+      <p className="hint" style={{ marginTop: 24 }}>Looking for part-time work instead? See <a href="/jobs">Weekend and holiday jobs</a>. Do you hire for a trade? <a href="/trades/post">Post an opening for free</a>. Our team reviews it before students see it.</p>
     </Page>
   );
 }

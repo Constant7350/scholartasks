@@ -14,6 +14,7 @@ export interface CompanyApplication {
   id: string; opening_id: string; opening_title: string; first_name: string; grade_level: number; age: number;
   message: string; availability: string | null; share_email: string | null; share_phone: string | null;
   parent_email: string | null; status: JobApplicationStatus; employer_note: string | null; sent_at: string;
+  questions?: string[]; answers?: string[];
 }
 
 export interface Employer {

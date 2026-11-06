@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { checkOpening, OPENING_KINDS, OPENING_MAX_DAYS, OPENING_MIN_AGES, OPENING_STATES, PART_TIME_KINDS, PART_TIME_POST_FEE, TEEN_JOB_RULES, type OpeningKind } from "@scholartasks/core";
+import { checkOpening, JOB_MAX_QUESTIONS, OPENING_KINDS, OPENING_MAX_DAYS, OPENING_MIN_AGES, OPENING_STATES, PART_TIME_KINDS, PART_TIME_POST_FEE, TEEN_JOB_RULES, type OpeningKind } from "@scholartasks/core";
 import { friendly, supabase } from "../../../lib/supabase";
 import { STATE_NAMES } from "../../../lib/trades";
 import { kindLabel, place, TRADE_SLUGS } from "../../../lib/openings";
@@ -135,7 +135,8 @@ function PostJob({ me, onDone }: { me: Employer; onDone: () => void }) {
       how_to_apply: f.how_to_apply || "Apply in ScholarTasks.", agree: "on" }, { tradeSlugs: TRADE_SLUGS });
     if (!r.ok) return setError(r.error);
     setBusy(true); setError("");
-    const { data, error: err } = await sb.rpc("employer_post_opening", { p: { ...r.opening, apply_in_app: true } });
+    const extra = Array.from({ length: JOB_MAX_QUESTIONS }, (_, i) => (f[`q${i}`] ?? "").trim()).filter((q) => q.length >= 3);
+    const { data, error: err } = await sb.rpc("employer_post_opening", { p: { ...r.opening, apply_in_app: true, extra_questions: extra } });
     setBusy(false);
     if (err) return setError(/too many/.test(err.message) ? "That's a lot of posts for one day. Please try again tomorrow." : jobError(err.message));
     if (typeof data === "string") void notifyJobs(data, "posted");
@@ -149,7 +150,7 @@ function PostJob({ me, onDone }: { me: Employer; onDone: () => void }) {
       <div className="row">
         <div className="field"><label htmlFor="j-kind">What kind?</label>
           <select className="input" id="j-kind" name="kind" defaultValue="weekend">
-            {[...PART_TIME_KINDS, "job", "internship"].map((k) => <option key={k} value={k}>{OPENING_KINDS[k as OpeningKind]}</option>)}
+            {PART_TIME_KINDS.map((k) => <option key={k} value={k}>{OPENING_KINDS[k as OpeningKind]}</option>)}
           </select>
         </div>
         <div className="field"><label htmlFor="j-age">Youngest age you can take</label>
@@ -173,6 +174,13 @@ function PostJob({ me, onDone }: { me: Employer; onDone: () => void }) {
       <div className="field"><label htmlFor="j-until">Show until</label>
         <input className="input" id="j-until" name="show_until" type="date" min={day(new Date(now.getTime() + 86_400_000))} max={day(new Date(now.getTime() + OPENING_MAX_DAYS * 86_400_000))} defaultValue={day(new Date(now.getTime() + PART_TIME_POST_FEE.days * 86_400_000))} />
       </div>
+      <fieldset className="field" style={{ border: 0, padding: 0 }}>
+        <legend>Your own questions (optional, up to {JOB_MAX_QUESTIONS})</legend>
+        <span className="hint small">Students answer these on the ScholarTasks form. Don&apos;t ask for Social Security numbers, bank details, home addresses, age beyond the minimum, or anything about race, religion, health or family.</span>
+        {Array.from({ length: JOB_MAX_QUESTIONS }, (_, i) => (
+          <input key={i} className="input" name={`q${i}`} maxLength={200} aria-label={`Question ${i + 1}`} placeholder={i === 0 ? "Can you work the Saturday after Thanksgiving?" : i === 1 ? "Have you worked with customers before?" : "How will you get to work?"} />
+        ))}
+      </fieldset>
       <p className="hint small">Ages 14 and 15 can work only outside school hours, up to 3 hours on a school day and 18 in a school week, between 7 a.m. and 7 p.m. (9 p.m. in summer).</p>
       <button className="btn" type="submit" disabled={busy}>{busy ? "Sending…" : "Send for review"}</button>
       {error && <p className="note note-err" role="alert">{error}</p>}
@@ -201,6 +209,7 @@ function Applications({ apps, onChange }: { apps: CompanyApplication[]; onChange
             <p className="hint">For {a.opening_title} · {statusLabel(a.status)}</p>
             <p className="pre">{a.message}</p>
             {a.availability && <p><b>Can work:</b> {a.availability}</p>}
+            {(a.questions ?? []).map((q, i) => <p key={q}><b>{q}</b><br />{a.answers?.[i]}</p>)}
             <p><b>Contact:</b> {[a.share_email, a.share_phone].filter(Boolean).join(" · ")}{a.parent_email ? <> · <b>Parent:</b> {a.parent_email}</> : null}</p>
             <p className="hint small">Please copy the parent on every reply.</p>
             {a.employer_note && <p className="hint small">Your note: {a.employer_note}</p>}
