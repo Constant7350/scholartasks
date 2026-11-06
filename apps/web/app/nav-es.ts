@@ -11,6 +11,7 @@ const ES: Record<string, [label: string, short?: string]> = {
   "College list and deadlines": ["Universidades y fechas límite", "Plan"],
   "Find colleges": ["Buscar universidades", "Universidades"],
   "Search colleges by major": ["Buscar por carrera", "Por carrera"],
+  "Compare colleges": ["Comparar universidades", "Comparar"],
   "Career quiz": ["¿Qué carrera me queda?", "Test de carreras"],
   "Trades and trade schools": ["Oficios y escuelas técnicas", "Oficios"],
   "Grades and scholarships": ["Calificaciones y becas", "Notas"],

@@ -290,6 +290,27 @@ export const TOPICS: Topic[] = [
     ],
   },
   {
+    id: "compare-colleges",
+    area: "College plan",
+    title: "Compare colleges side by side",
+    href: "/colleges/compare",
+    keywords: ["compare", "compare colleges", "side by side", "rank", "ranking", "which college", "best college for me", "strength in major", "cost", "graduation rate", "1st 2nd 3rd"],
+    summary: "Put up to 6 colleges side by side and see each one's place (1st, 2nd, 3rd...) on strength in the major, cost for your family, graduation, pay after, debt and chance of getting in, plus an overall place that uses what matters most to you.",
+    steps: [
+      "Open Menu, then Compare colleges. Colleges on your college list show up on their own.",
+      "Type a college name to add more, or tap × to take one off.",
+      "Pick the major (for example Biology). Strength in the major shows the college's place in your state, like \"25th of 48 in Georgia\".",
+      "Open What matters most to you? and set each one to Skip, A little, Some or A lot. The overall place changes right away and is remembered on this device.",
+      "Tap Copy a link to this comparison to send it to someone in your family.",
+    ],
+    body: [
+      "Every score is out of 100, higher is better. The cheapest college scores 100 on cost and the others less the more they cost; the same for debt. Highest pay scores 100.",
+      "Chance of getting in uses the admission rate, adjusted by how your SAT compares with the college's average when both are known.",
+      "Places are only among the colleges you are comparing, and ties share a place. Missing data gets no place and doesn't count against a college.",
+      "Data: U.S. Department of Education College Scorecard. This is advice to help you compare; the final choice is your family's.",
+    ],
+  },
+  {
     id: "career-quiz",
     area: "College plan",
     title: "Career quiz: which career fits me?",
