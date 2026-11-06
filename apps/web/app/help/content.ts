@@ -93,7 +93,7 @@ export const TOPICS: Topic[] = [
     area: "Family",
     title: "My parent space: your own lists, separate from your student's",
     href: "/parent",
-    keywords: ["parent space", "my space", "parent home", "my own list", "as my child", "as the student", "separate", "parent view", "save for myself", "share with student", "suggest", "review quiz", "quiz answers", "other parent", "co-parent"],
+    keywords: ["permissions", "sign-offs", "sign off", "consent", "consents", "signed", "signature", "approve", "approvals", "waiting for me", "parent space", "my space", "parent home", "my own list", "as my child", "as the student", "separate", "parent view", "save for myself", "share with student", "suggest", "review quiz", "quiz answers", "other parent", "co-parent"],
     summary: "Parents have their own space. Search colleges and scholarships, save them to your own list with a note, and look over your student's career quiz. Nothing you save there goes on your student's plan or shows as their work.",
     steps: [
       "Open Menu, then My parent space (or tap Open my space on the Home page).",
@@ -108,6 +108,7 @@ export const TOPICS: Topic[] = [
       "If you take the career quiz yourself to try it out, it stays on your device and is not saved as your student's. If your student took it on your phone or computer, tap the button at the bottom of the results to save it as theirs.",
       "Searching in your own space never changes your student's search answers. Grades and scores are still used for prices and Reach, Match or Likely.",
       "Two parents in the family each get their own lists, and each can see the other's picks (but only change their own).",
+      "Permissions and sign-offs, at the top of My parent space, shows everything waiting for your OK (job applications, school connections, to-dos marked done, college list changes), with a button that takes you to sign or approve it. Below that you can change what each student may do without asking you, and see every consent you have signed, with the date, how you proved it was you, and the exact wording.",
     ],
   },
   {
