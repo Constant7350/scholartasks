@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { FILE_ACCEPT, readAttachment, type Attachment } from "../lib/attach";
 import { supabase } from "../lib/supabase";
+import { VoiceButton } from "./voice";
 
 /**
  * Two buttons: "Take a photo" opens the camera on a phone, "Upload a file"
@@ -52,7 +53,7 @@ export function AttachPreview({ a, onRemove }: { a: Attachment; onRemove: () => 
  * text file goes straight into the box; a photo or PDF is typed out word for
  * word (1 AI use), never fixed or improved.
  */
-export function DraftImport({ studentId, draft, onText, disabled }: { studentId: string; draft: string; onText: (text: string) => void; disabled?: boolean }) {
+export function DraftImport({ studentId, draft, onText, disabled, max = 20000 }: { studentId: string; draft: string; onText: (text: string) => void; disabled?: boolean; max?: number }) {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const put = (text: string, note: string) => {
@@ -88,9 +89,10 @@ export function DraftImport({ studentId, draft, onText, disabled }: { studentId:
   return (
     <div className="attach-draft">
       <div className="share-row">
+        <VoiceButton value={draft} onText={onText} max={max} disabled={disabled || busy} small />
         <AttachButtons onPick={(a) => void pick(a)} onError={(t) => setMsg({ ok: false, text: t })} disabled={disabled || busy} small photoLabel="Photo of my draft" fileLabel={busy ? "Reading your draft…" : "Upload my draft"} />
       </div>
-      <p className="hint" style={{ margin: "4px 0 0" }}>Wrote it on paper or in Word or Google Docs? Add it here. A photo is typed out word for word (1 AI use); nothing is fixed or changed.</p>
+      <p className="hint" style={{ margin: "4px 0 0" }}>Talk it out with Speak, or wrote it on paper or in Word or Google Docs? Add it here. A photo is typed out word for word (1 AI use); nothing is fixed or changed.</p>
       {msg && <p className={`note ${msg.ok ? "note-ok" : "note-err"}`} role="status" style={{ marginTop: 6 }}>{msg.text}</p>}
     </div>
   );

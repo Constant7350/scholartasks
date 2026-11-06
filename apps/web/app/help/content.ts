@@ -921,7 +921,7 @@ export const TOPICS: Topic[] = [
     summary: "Ask anything about colleges, scholarships, aid forms and deadlines. Answers use your student's saved grades, college list and deadlines.",
     steps: [
       "Open Menu, then AI counselor.",
-      "Tap a starter question or type your own, then tap Send.",
+      "Tap a starter question or type your own (or tap 🎤 Speak and talk), then tap Send.",
       "Tap Start over to begin a fresh conversation.",
     ],
     body: [
@@ -941,6 +941,27 @@ export const TOPICS: Topic[] = [
       "Free things that never use any: the scorecard, goals, the study library, multiple-choice practice, and answers from the reviewed answer library.",
       "Ran out? A parent can buy a pack of extra AI messages on Plan and billing. Extra messages are shared by the family, never expire, and are only used after the day's free 10 are gone.",
       "With the Homework Helper add-on, a student gets up to 30 Homework Helper and practice-tutor turns a day.",
+    ],
+  },
+  {
+    id: "voice",
+    area: "AI counselor",
+    title: "Talk instead of type, and hear answers read aloud",
+    href: "/homework",
+    keywords: ["voice", "speak", "talk", "dictate", "dictation", "microphone", "mic", "read aloud", "listen", "speech", "hablar"],
+    summary: "Every box where a student writes to an AI helper has a 🎤 Speak button. Talk, and your words appear in the box so you can read and fix them before you send.",
+    steps: [
+      "Tap 🎤 Speak next to the box. The first time, your browser asks to use the microphone: tap Allow.",
+      "Talk normally. Your words show up in the box as you speak.",
+      "Tap Stop when you're done, fix anything it heard wrong, then send.",
+      "In the ScholarTasks phone app, Speak opens the keyboard: tap the 🎤 on the keyboard and talk.",
+      "Under an AI answer, tap 🔊 Read aloud to hear it. Tap Stop reading to stop.",
+    ],
+    body: [
+      "Speak is in the AI counselor, the Homework Helper, the practice and SAT/ACT tutor, the essay coaches, grade rescue plans, and the ideas and plan steps of the essay challenge. The challenge essay itself is typed, so the judges see your own writing grow.",
+      "Speak and Read aloud are free and never use an AI use. They use your phone's or browser's own voice tools.",
+      "ScholarTasks never records or keeps any sound. Only the words in the box reach us, the same as typing. Some browsers, like Chrome, turn speech into words with the browser maker's service.",
+      "Talking it through is a great way to explain your thinking to the Homework Helper. The helper still gives hints, never the answer.",
     ],
   },
 
@@ -1333,6 +1354,8 @@ export interface Tip {
 }
 
 export const TIPS: Tip[] = [
+  // Speak instead of typing (every AI helper)
+  { routes: ["/counselor", "/homework", "/practice", "/test-prep", "/essays", "/scholarships", "/grades", "/challenge"], sel: ".voice-btn", body: "Tap Speak and talk instead of typing. Your words appear in the box so you can fix them before sending. Free, and no sound is kept.", topic: "voice" },
   // Every page
   { routes: ["*"], sel: "details.menu summary", body: "Every page is in this menu. Students see their own pages; parents also see Family and permissions. Help and Sign out are at the bottom.", topic: "home" },
   { routes: ["*"], sel: ".strip-links", body: "The main pages. The underlined one is where you are now. Tap Home to go back to the start.", topic: "home" },

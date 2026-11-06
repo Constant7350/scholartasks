@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
+import { ReadAloud } from "./voice";
 
-/** "Report this answer" under an AI answer (Google Play AI-generated content rule). */
+/** "Read aloud" and "Report this answer" under an AI answer (Google Play AI-generated content rule). */
 export function ReportAi({ feature, text }: { feature: string; text: string }) {
   const sb = supabase();
   const [state, setState] = useState<"idle" | "open" | "sending" | "sent" | "error">("idle");
@@ -29,6 +30,7 @@ export function ReportAi({ feature, text }: { feature: string; text: string }) {
   if (state === "idle")
     return (
       <p className="report-ai">
+        <ReadAloud text={text} />
         <button type="button" className="linkish" onClick={() => setState("open")}>Report this answer</button>
       </p>
     );

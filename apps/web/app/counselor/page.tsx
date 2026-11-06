@@ -1,5 +1,6 @@
 "use client";
 
+import { VoiceButton } from "../voice";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Formatted } from "../formatted";
 import { supabase } from "../../lib/supabase";
@@ -162,6 +163,7 @@ export default function CounselorPage() {
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(draft); } }}
             />
+            <VoiceButton chat value={draft} onText={setDraft} max={4000} disabled={busy} />
             <button className="btn btn-inline" disabled={busy || !draft.trim()}>{busy ? "…" : "Send"}</button>
           </form>
           <div className="chat-foot">

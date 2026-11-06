@@ -1,5 +1,6 @@
 "use client";
 
+import { VoiceButton } from "../voice";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
@@ -312,6 +313,7 @@ export default function HomeworkPage() {
                 <textarea className="input" rows={3} maxLength={2000} placeholder="Type the problem or question, or add a photo or file" value={problem} onChange={(e) => setProblem(e.target.value)} />
               </label>
               <div className="share-row">
+                <VoiceButton value={problem} onText={setProblem} max={2000} disabled={busy} />
                 <AttachButtons onPick={setAtt} onError={setError} disabled={busy} photoLabel={att ? "New photo" : "Take a photo"} />
                 {att && <AttachPreview a={att} onRemove={() => setAtt(null)} />}
               </div>
@@ -319,6 +321,10 @@ export default function HomeworkPage() {
                 <span>What have you tried so far?</span>
                 <textarea className="input" rows={2} maxLength={1500} placeholder="Your steps, your answer, or where you got stuck" value={tried} onChange={(e) => setTried(e.target.value)} />
               </label>
+              <div className="share-row" style={{ marginTop: -6 }}>
+                <VoiceButton value={tried} onText={setTried} max={1500} disabled={busy} small />
+                <span className="hint">Explaining out loud is quick, and it helps you think.</span>
+              </div>
               <div className="share-row">
                 {START_KINDS.map((k, i) => (
                   <button key={k.id} className={`btn btn-inline${i ? " btn-ghost" : ""}`} disabled={busy || (!problem.trim() && !att)} onClick={() => start(k.id)}>{k.label}</button>
@@ -360,6 +366,7 @@ export default function HomeworkPage() {
                   onChange={(e) => setDraft(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(draft, chatAtt); } }}
                 />
+                <VoiceButton chat value={draft} onText={setDraft} max={4000} disabled={busy} />
                 <button className="btn btn-inline" disabled={busy || (!draft.trim() && !chatAtt)}>{busy ? "…" : "Send"}</button>
               </form>
               <div className="chips" style={{ justifyContent: "flex-start" }}>
