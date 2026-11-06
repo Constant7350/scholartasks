@@ -54,7 +54,7 @@ export default function StudyLibraryPage() {
           </a>
         ))}
       </div>
-      <p className="hint" style={{ fontSize: 12 }}>Lessons marked Draft are still being checked by our teacher reviewer.</p>
+      <p className="hint" style={{ fontSize: 12 }}>Lessons marked Draft are still being checked by our review team.</p>
     </Page>
   );
 }

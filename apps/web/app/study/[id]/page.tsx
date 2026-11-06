@@ -57,7 +57,7 @@ export default function LessonPage() {
     <Page>
       <a href="/study" className="hint">← All lessons</a>
       <h1 style={{ marginBottom: 4 }}><span aria-hidden="true">{lesson.emoji}</span> {lesson.title}</h1>
-      <p className="hint">{lesson.minutes} min read{ctx.reviews[lesson.id] !== "approved" ? " · Draft, being checked by our teacher reviewer" : " · Reviewed by a teacher"}</p>
+      <p className="hint">{lesson.minutes} min read{ctx.reviews[lesson.id] !== "approved" ? " · Draft, being checked by our review team" : " · Checked by our review team"}</p>
 
       <section className="panel">
         <p style={{ marginTop: 0, fontSize: 17 }}><b>{lesson.summary}</b></p>
