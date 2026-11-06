@@ -36,7 +36,7 @@
     {
       "id": "scholarships",
       "title": "Scholarships",
-      "narration": "Instead of searching a dozen websites, students answer a few questions. Then they see awards sorted into You qualify, Maybe, and Not a fit. There are hundreds of Georgia and national awards, and the list grows every week. Each new award is checked on its official page before families see it, and re-checked twice a week in scholarship season. One tap adds a deadline to the plan. Essays that ask the same kind of question are bundled, so one strong draft can start the others. And a copy-ready profile holds every answer a form asks for."
+      "narration": "Instead of searching a dozen websites, students answer a few questions. Then they see awards sorted into You qualify, Maybe, and Not a fit. There are hundreds of Georgia and national awards, and the list grows every week. Each new award is checked on its official page before families see it, and re-checked twice a week in scholarship season. Then students apply step by step, right in the app. Each award gets its own page with the questions on the form, the papers and recommendation letters it needs, and a bar that shows what to do next. Short answers they already wrote show up as a starting point, and a copy-ready profile fills in the rest. For your school's own local scholarships, students send the application to the counselor right inside the app. And the app keeps track of what was sent and what was won."
     },
     {
       "id": "grades",
@@ -116,7 +116,7 @@
     {
       "id": "compare3",
       "title": "How we compare 3",
-      "narration": "This fall we added the things other apps still did better. A four-year course plan that checks HOPE's harder-class rule. Reach, match and likely based on grades and harder classes, not just test scores. A homework helper that never gives answers. Side-by-side aid offers. Spanish menus and AI answers. Parent-managed accounts from sixth grade. And roster upload for schools. In our latest check, ScholarTasks covers more of the list than any other app."
+      "narration": "This fall we added the things other apps still did better. A four-year course plan that checks HOPE's harder-class rule. Reach, match and likely based on grades and harder classes, not just test scores. A homework helper that never gives answers. Side-by-side aid offers. Spanish menus and AI answers. Parent-managed accounts from sixth grade. Roster upload for schools. And now, applying to scholarships right inside the app. In our latest check, ScholarTasks covers more of the list than any other app."
     },
     {
       "id": "better",
@@ -131,7 +131,7 @@
     {
       "id": "schools",
       "title": "For schools",
-      "narration": "For school leaders and counselors: ScholarTasks supports your counselors. It doesn't replace them. Our school portal is free for every school. Counselors can see who filed the FAFSA, who has a college list, and who's behind on deadlines. They can upload a class roster to see who has joined, email a whole grade at once, and post local scholarships just for their families. Families choose what to share with a school code, and can stop any time. Essays, AI chats and income are never shared."
+      "narration": "For school leaders and counselors: ScholarTasks supports your counselors. It doesn't replace them. Our school portal is free for every school. Counselors can see who filed the FAFSA, who has a college list, and who's behind on deadlines. They can upload a class roster to see who has joined, email a whole grade at once, and post local scholarships just for their families. Students apply for those right in the app, and counselors mark each one awarded or not. Families choose what to share with a school code, and can stop any time. Essays, AI chats and income are never shared, unless a student chooses to send an essay with an application for the school's own scholarship."
     },
     {
       "id": "cost",

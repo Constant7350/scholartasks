@@ -35,7 +35,7 @@ export default function Schools() {
         <div className="site-wrap">
           <p className="s-kicker">Free for every school</p>
           <h2 className="s-title">The school counselor portal</h2>
-          <p className="s-lede">See which connected students haven't filed the FAFSA, have no college list or have overdue deadlines. Send a reminder to a whole grade in one step, and post local scholarships only your families see.</p>
+          <p className="s-lede">See which connected students haven't filed the FAFSA, have no college list or have overdue deadlines. Send a reminder to a whole grade in one step, and post local scholarships only your families see. Students apply for them right in the app, and you mark each one awarded or not.</p>
           <div className="s-cta">
             <a className="btn" href="/school">Set up your school</a>
             <a className="btn btn-ghost" href="/contact?topic=school">Talk with us</a>
