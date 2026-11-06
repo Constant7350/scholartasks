@@ -422,7 +422,7 @@ export const TOPICS: Topic[] = [
       "Tap Start my Common App essay, then pick one of the seven prompts (650 words, at least 250).",
       "For a college's own essays, tap Add a college's essay, pick the college from your list, paste its prompt and word limit.",
       "Stuck? Tap Help me find a topic. The coach asks questions drawn from your activities.",
-      "Wrote it on paper, in Word or in Google Docs? Tap Upload my draft (a Word .docx or text file goes straight in) or Photo of my draft (it is typed out word for word, using 1 AI use). Read it over and fix anything misread.",
+      "Wrote it on paper, in Word or in Google Docs? Tap Upload my draft (a Word file, old or new, or a Pages, OpenOffice, RTF or text file goes straight in) or Photo of my draft (it is typed out word for word, using 1 AI use). Read it over and fix anything misread.",
       "When you have a draft, tap Get feedback. Tick Finished when it's done.",
     ],
     body: [
@@ -907,7 +907,7 @@ export const TOPICS: Topic[] = [
     summary: "An AI tutor for every subject that keeps your student doing the thinking. It gives hints, checks work and explains ideas, but never gives the answer or writes for them.",
     steps: [
       "Open Menu, then Homework Helper.",
-      "Pick the subject, then type the problem, tap Take a photo (of the worksheet or your work), or tap Upload a file (a photo, PDF, Word or Excel file of the assignment).",
+      "Pick the subject, then type the problem, tap Take a photo (of the worksheet or your work), or tap Upload a file (a photo, PDF, or a Word, Excel or PowerPoint file of the assignment). Older Word and Excel files, OpenOffice files, Apple Pages and Numbers, and RTF files are converted automatically.",
       "Write what you've tried so far (it gets you better help).",
       "Tap Give me a hint, Check my work, or Explain the idea.",
       "Answer the helper's question with your next step. When you finish, explain it back and try the twin problem on paper.",

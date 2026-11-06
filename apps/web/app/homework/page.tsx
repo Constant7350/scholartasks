@@ -262,7 +262,7 @@ export default function HomeworkPage() {
                   <button key={k.id} className={`btn btn-inline${i ? " btn-ghost" : ""}`} disabled={busy || (!problem.trim() && !att)} onClick={() => start(k.id)}>{k.label}</button>
                 ))}
               </div>
-              <p className="hint" style={{ margin: 0 }}>Tip: showing what you tried gets you better help, faster. Snap a photo of your worksheet or your work, or upload the assignment (photo, PDF, Word or Excel file).</p>
+              <p className="hint" style={{ margin: 0 }}>Tip: showing what you tried gets you better help, faster. Snap a photo of your worksheet or your work, or upload the assignment (photo, PDF, Word, Excel or PowerPoint, old or new).</p>
             </div>
           ) : (
             <div className="chat-log" aria-live="polite">
