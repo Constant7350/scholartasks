@@ -17,3 +17,4 @@ export * from "./application";
 export * from "./course-plan";
 export * from "./common-app";
 export * from "./compare";
+export * from "./faith";

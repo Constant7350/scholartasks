@@ -2,6 +2,7 @@ import type { StatePack } from "./schema";
 import type { ProgramResult } from "./eligibility";
 import type { IncomeBand } from "./scholarships";
 import { computeGpa, type CourseGrade } from "./gpa";
+import { fitsSchoolType, type SchoolType } from "./faith";
 
 /** One college from the federal College Scorecard (see supabase/seed/colleges.json). */
 export interface CollegeFacts {
@@ -23,6 +24,8 @@ export interface CollegeFacts {
   netPriceByIncome: (number | null)[];
   /** Share of degrees in each program family, 0-1. */
   programs: Record<string, number>;
+  /** Scorecard religious affiliation code (see faith.ts), when the college reports one. */
+  religiousAffiliation?: number | null;
 }
 
 
@@ -220,7 +223,10 @@ export const INTEREST_PROGRAMS: Record<string, string[]> = {
 export interface MatchAnswers {
   where: "home" | "region" | "anywhere";
   size: "small" | "medium" | "large" | "any";
-  type: "public" | "private" | "any";
+  /** Public, private, Christian (private colleges with a Christian church affiliation) or any. */
+  type: SchoolType;
+  /** With type "christian": one church family (see CHURCH_FAMILIES), or null for any Christian college. */
+  church?: string | null;
   interests: string[];
   /** Highest yearly estimate the family wants to see, or null for any. */
   budget: number | null;
@@ -238,8 +244,7 @@ export function sizeOf(n: number | null): "small" | "medium" | "large" | null {
 export function matchScore(c: CollegeFacts, a: MatchAnswers, homeState: string, estimate: number | null): number | null {
   if (a.where === "home" && c.state !== homeState) return null;
   if (a.where === "region" && c.state !== homeState && !SOUTHEAST.includes(c.state)) return null;
-  if (a.type === "public" && c.ownership !== 1) return null;
-  if (a.type === "private" && c.ownership === 1) return null;
+  if (!fitsSchoolType(c, a.type, a.church)) return null;
   if (c.ownership === 3) return null; // for-profit colleges are left out of matches
   if (a.budget != null && estimate != null && estimate > a.budget) return null;
   let score = 50;

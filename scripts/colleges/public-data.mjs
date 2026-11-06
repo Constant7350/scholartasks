@@ -8,5 +8,5 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const out = join(root, "apps", "web", "public", "data");
 mkdirSync(out, { recursive: true });
-for (const f of ["colleges.json", "college_programs.json"]) copyFileSync(join(root, "supabase", "seed", f), join(out, f));
+for (const f of ["colleges.json", "college_programs.json", "college_faith.json"]) copyFileSync(join(root, "supabase", "seed", f), join(out, f));
 console.log("copied college data to apps/web/public/data");

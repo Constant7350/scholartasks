@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { faithLabel } from "@scholartasks/core";
 import { OWNERSHIP, searchColleges, type CollegeRow } from "../../lib/colleges";
 
 /**
@@ -48,7 +49,7 @@ export function CollegePicker({ sb, id, value, onChange }: {
           {hits.map((c, i) => (
             <li key={c.id}>
               <button type="button" className="picker-item" role="option" aria-selected={i === active} onMouseDown={(e) => e.preventDefault()} onClick={() => pick(c)}>
-                <b>{c.name}</b> <span className="hint">{c.city ? `${c.city}, ` : ""}{c.state} · {OWNERSHIP[c.ownership]}</span>
+                <b>{c.name}</b> <span className="hint">{c.city ? `${c.city}, ` : ""}{c.state} · {OWNERSHIP[c.ownership]}{faithLabel(c.religious_affiliation) ? ` · ${faithLabel(c.religious_affiliation)}` : ""}</span>
               </button>
             </li>
           ))}

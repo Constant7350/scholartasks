@@ -62,15 +62,16 @@ export default function CollegeDataPage() {
     setError(null); setMsg(null);
     try {
       setStep("Downloading the data…"); setDone(0); setTotal(0);
-      const [cj, pj] = await Promise.all([
+      const [cj, pj, fj] = await Promise.all([
         fetch("/data/colleges.json").then((r) => r.json()) as Promise<{ fetched: string; rows: CollegeJson[] }>,
         fetch("/data/college_programs.json").then((r) => r.json()) as Promise<ProgramsJson>,
+        fetch("/data/college_faith.json").then((r) => r.json()) as Promise<{ faith: Record<string, number> }>,
       ]);
       await upsert("colleges", cj.rows.map((r) => ({
         id: r.id, name: r.name, city: r.city, state: r.state, url: fixUrl(r.url), price_calc_url: fixUrl(r.calc), ownership: r.own, degree: r.deg,
         size: r.size, admit_rate: r.adm, sat_avg: r.sat, act_mid: r.act, tuition_in: r.tin, tuition_out: r.tout, cost_attendance: r.coa,
         avg_net_price: r.avgnet, net_price: r.net, grad_rate: r.grad, earnings: r.earn, median_debt: r.debt, programs: r.prog, data_year: cj.fetched,
-        updated_at: new Date().toISOString(),
+        religious_affiliation: fj.faith[String(r.id)] ?? null, updated_at: new Date().toISOString(),
       })), "id", "Colleges");
       await upsert("study_fields", Object.entries(pj.titles).map(([cip, title]) => ({ cip, title })), "cip", "Major names");
       await upsert("field_earnings", pj.summary.map((s) => ({ cip: s[0], level: s[1], programs: s[2], grads: s[3], earn_1yr: s[4], earn_4yr: s[5], debt: s[6] })), "cip,level", "Pay by degree level");
@@ -83,13 +84,14 @@ export default function CollegeDataPage() {
       const m = friendly(e);
       setError(/college_programs|study_fields|field_earnings/.test(m) && /exist|schema cache/i.test(m)
         ? "Run database update 33 in Supabase first, then tap Load again."
+        : /religious_affiliation/.test(m) ? "Run database update 48 in Supabase first, then tap Load again."
         : `Stopped: ${m}. Tap Load again; it picks up safely.`);
     }
   };
 
   return (
     <Page title="Load college data">
-      <p className="hint">Puts the latest federal College Scorecard data into the app: every college in the U.S. (four-year, two-year, technical and trade schools) and every major at each one. Safe to run again. Keep this page open until it finishes (a few minutes).</p>
+      <p className="hint">Puts the latest federal College Scorecard data into the app: every college in the U.S. (four-year, two-year, technical and trade schools), each one's religious affiliation (for the Christian colleges search) and every major at each one. Safe to run again. Keep this page open until it finishes (a few minutes).</p>
       <section className="panel">
         <h2>In the database now</h2>
         <p style={{ margin: 0 }}>
