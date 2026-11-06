@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkOpening, cleanUrl, openingReviewFlags, sortOpenings } from "../src";
+import { checkOpening, cleanUrl, openingReviewFlags, PART_TIME_POST_FEE, sortOpenings, TEEN_JOB_RULES } from "../src";
 
 const today = new Date("2026-11-06T12:00:00Z");
 const slugs = ["electrician", "welder"];
@@ -47,6 +47,17 @@ describe("company listings", () => {
     expect(cleanUrl("javascript:alert(1)")).toBeNull();
     expect(cleanUrl("localhost")).toBeNull();
     expect(cleanUrl("http://shop.example.com/jobs")).toBe("http://shop.example.com/jobs");
+  });
+});
+
+describe("weekend and holiday jobs", () => {
+  it("accepts the new kinds", () => {
+    expect(checkOpening({ ...good, kind: "weekend", min_age: "16" }, { tradeSlugs: slugs, today }).ok).toBe(true);
+    expect(checkOpening({ ...good, kind: "holiday", min_age: "14" }, { tradeSlugs: slugs, today }).ok).toBe(true);
+  });
+  it("keeps the fee a free placeholder while we launch", () => {
+    expect(PART_TIME_POST_FEE.freeWhileLaunching).toBe(true);
+    expect(TEEN_JOB_RULES[0]).toMatch(/parent/);
   });
 });
 

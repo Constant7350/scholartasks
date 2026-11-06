@@ -25,6 +25,7 @@ export default function ResumePage() {
   const [student, setStudent] = useState<Student | null | undefined>(undefined);
   const [items, setItems] = useState<Activity[]>([]);
   const [grades, setGrades] = useState<Row[]>([]);
+  const [refs, setRefs] = useState<{ id: string; company_name: string; writer_name: string; writer_role: string | null }[]>([]);
   const [head, setHead] = useState({ name: "", contact: "", showGpa: true });
 
   const load = useCallback(async () => {
@@ -45,10 +46,13 @@ export default function ResumePage() {
       const saved = JSON.parse(localStorage.getItem(contactKey(pick.id)) ?? "null");
       setHead(saved ?? { name: pick.first_name, contact: "", showGpa: true });
     } catch { setHead({ name: pick.first_name, contact: "", showGpa: true }); }
-    const [a, g] = await Promise.all([
+    const [a, g, r] = await Promise.all([
       sb.from("student_activities").select("*").eq("student_id", pick.id).order("sort_order").order("created_at"),
       sb.from("course_grades").select("course, grade, level, core, grade_level, term").eq("student_id", pick.id),
+      // Reference letters from employers the family chose to keep (missing table before the database update: just none).
+      sb.from("job_references").select("id, company_name, writer_name, writer_role").eq("student_id", pick.id).eq("family_status", "kept"),
     ]);
+    setRefs((r.data as typeof refs) ?? []);
     setItems((a.data as Activity[]) ?? []);
     setGrades((g.data as Row[]) ?? []);
   }, [sb]);
@@ -144,6 +148,11 @@ export default function ResumePage() {
           </section>
         )}
         {work.length > 0 && <section className="resume-section"><h3>Work experience</h3><ul className="resume-list">{work.map(entry)}</ul></section>}
+        {refs.length > 0 && (
+          <section className="resume-section"><h3>References</h3>
+            <ul className="resume-list">{refs.map((r) => <li key={r.id} className="resume-line"><b>{r.writer_name}{r.writer_role ? `, ${r.writer_role}` : ""}</b><span>{r.company_name} · letter available</span></li>)}</ul>
+          </section>
+        )}
         {other.length > 0 && <section className="resume-section"><h3>Activities and service</h3><ul className="resume-list">{other.map(entry)}</ul></section>}
         {total > 0 && <p className="resume-meta" style={{ marginTop: 12 }}>About {total.toLocaleString()} hours a year across all activities.</p>}
       </article>

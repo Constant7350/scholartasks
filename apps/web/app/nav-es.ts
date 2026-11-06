@@ -17,6 +17,7 @@ const ES: Record<string, [label: string, short?: string]> = {
   "Career quiz": ["¿Qué carrera me queda?", "Test de carreras"],
   "Trades and trade schools": ["Oficios y escuelas técnicas", "Oficios"],
   "Apprenticeships and local openings": ["Aprendizajes y empleos locales", "Empleos"],
+  "Weekend and holiday jobs": ["Trabajos de fin de semana y vacaciones", "Trabajos"],
   "Military paths": ["Carreras militares", "Militar"],
   "Grades and scholarships": ["Calificaciones y becas", "Notas"],
   "Four-year course plan": ["Plan de clases de 4 años", "Plan de clases"],

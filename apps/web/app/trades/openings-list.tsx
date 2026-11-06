@@ -13,7 +13,7 @@ import { useCurrentStudent } from "../../lib/current-student";
  * way; nothing about the student is sent anywhere.
  * `trade` limits the list to one trade (used on each trade page).
  */
-export function OpeningsList({ trade, compact = false }: { trade?: string; compact?: boolean }) {
+export function OpeningsList({ trade, compact = false, kinds }: { trade?: string; compact?: boolean; kinds?: readonly OpeningKind[] }) {
   const sb = supabase();
   const [rows, setRows] = useState<PublicOpening[] | null>(null);
   const [error, setError] = useState(false);
@@ -28,11 +28,17 @@ export function OpeningsList({ trade, compact = false }: { trade?: string; compa
     if (!sb) return setRows([]);
     let query = sb.from("public_openings").select("*").limit(500);
     if (trade) query = query.eq("trade_slug", trade);
+    if (kinds?.length) query = query.in("kind", [...kinds]);
     const { data, error: e } = await query;
     if (e) { setError(true); return setRows([]); }
     setRows((data as PublicOpening[]) ?? []);
-  }, [sb, trade]);
+  }, [sb, trade, kinds]);
   useEffect(() => { void load(); }, [load]);
+  // A ?kind= link (for example from the menu) starts on that kind.
+  useEffect(() => {
+    const k = new URLSearchParams(window.location.search).get("kind");
+    if (k && k in OPENING_KINDS) setKindF(k as OpeningKind);
+  }, []);
 
   // Signed in: start from the student's home state. Everyone can change it.
   useEffect(() => {
@@ -85,7 +91,7 @@ export function OpeningsList({ trade, compact = false }: { trade?: string; compa
             <label className="field"><span>Kind</span>
               <select className="input" value={kindF} onChange={(e) => setKindF(e.target.value as OpeningKind | "")}>
                 <option value="">All kinds</option>
-                {Object.entries(OPENING_KINDS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                {Object.entries(OPENING_KINDS).filter(([k]) => !kinds || kinds.includes(k as OpeningKind)).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </label>
             <label className="field"><span>Home state</span>
@@ -148,12 +154,13 @@ function OpeningCard({ o }: { o: PublicOpening }) {
         <p><b>How to apply</b></p>
         <p className="pre">{o.how_to_apply}</p>
         <p className="opening-actions" style={{ marginTop: 8 }}>
+          {o.apply_in_app && <a className="btn btn-inline btn-sm" href={`/jobs/apply?opening=${o.id}`} onClick={() => countOnce(o.id, "apply")}>Apply in ScholarTasks</a>}
           {o.apply_url && <a className="btn btn-inline btn-sm" href={o.apply_url} target="_blank" rel="noreferrer nofollow" onClick={() => countOnce(o.id, "apply")}>Apply on their site</a>}
           <ReportButton id={o.id} />
         </p>
         <p className="hint small">
           Shows until {new Date(`${o.show_until}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}. Checked by our review team. Never pay to apply.
-          {o.min_age < 18 ? " Under 18? Talk it over with a parent first." : ""}
+          {o.apply_in_app ? " A parent reads and agrees before the company sees an application." : o.min_age < 18 ? " Under 18? Talk it over with a parent first." : ""}
         </p>
       </details>
     </li>

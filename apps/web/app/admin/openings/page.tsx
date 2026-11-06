@@ -6,6 +6,7 @@ import { friendly, supabase } from "../../../lib/supabase";
 import { ageLabel, kindLabel, place, tradeName, type TeamOpening } from "../../../lib/openings";
 import { NotConfigured, Page } from "../../ui";
 import { ReviewNav } from "../review-kit";
+import type { Employer } from "../../../lib/jobs";
 import "../../trades/trades.css";
 
 interface Report { opening_id: string; reason: string; created_at: string }
@@ -20,7 +21,8 @@ export default function ReviewOpeningsPage() {
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [rows, setRows] = useState<TeamOpening[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
-  const [tab, setTab] = useState<"waiting" | "live" | "closed">("waiting");
+  const [tab, setTab] = useState<"waiting" | "live" | "closed" | "companies">("waiting");
+  const [companies, setCompanies] = useState<Employer[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -31,15 +33,26 @@ export default function ReviewOpeningsPage() {
     const isAdmin = await sb.rpc("is_app_admin");
     setAdmin(isAdmin.data === true);
     if (isAdmin.data !== true) return;
-    const [o, r] = await Promise.all([
+    const [o, r, c] = await Promise.all([
       sb.from("local_openings").select("*").order("created_at", { ascending: false }).limit(500),
       sb.from("opening_reports").select("opening_id, reason, created_at").order("created_at", { ascending: false }).limit(500),
+      sb.from("employers").select("*").order("created_at", { ascending: false }).limit(500),
     ]);
+    setCompanies((c.data as Employer[]) ?? []);
     if (o.error) setError(/exist|schema cache/i.test(o.error.message) ? "Run database update 50 in Supabase first." : friendly(o.error));
     setRows((o.data as TeamOpening[]) ?? []);
     setReports((r.data as Report[]) ?? []);
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
+
+  const setCompany = async (id: string, status: "approved" | "blocked", note: string) => {
+    if (!sb) return;
+    setError(null); setMsg(null);
+    const { error: e } = await sb.from("employers").update({ status, review_note: note || null }).eq("id", id);
+    if (e) return setError(friendly(e));
+    setMsg(status === "approved" ? "Company approved." : "Company account closed. Its jobs stay as they are; take them down on the Live tab if needed.");
+    void load();
+  };
 
   const feature = async (id: string, on: boolean) => {
     if (!sb) return;
@@ -102,9 +115,10 @@ export default function ReviewOpeningsPage() {
         <button className={`chip${tab === "waiting" ? " chip-on" : ""}`} onClick={() => setTab("waiting")}>To review ({waiting.length})</button>
         <button className={`chip${tab === "live" ? " chip-on" : ""}`} onClick={() => setTab("live")}>Live ({live.length})</button>
         <button className={`chip${tab === "closed" ? " chip-on" : ""}`} onClick={() => setTab("closed")}>Turned down or ended ({closed.length})</button>
+        <button className={`chip${tab === "companies" ? " chip-on" : ""}`} onClick={() => setTab("companies")}>Company accounts ({companies.filter((c) => c.status === "pending").length} new)</button>
       </div>
 
-      {shown.length === 0
+      {tab === "companies" ? <Companies list={companies} onSet={setCompany} /> : shown.length === 0
         ? <p className="hint">{tab === "waiting" ? "✓ Nothing to review." : "None yet."}</p>
         : <ul className="opening-list">{shown.map((o) => <TeamCard key={o.id} o={o} reports={reports.filter((r) => r.opening_id === o.id)} onDecide={decide} onFeature={feature} />)}</ul>}
     </Page>
@@ -131,6 +145,8 @@ function TeamCard({ o, reports, onDecide, onFeature }: {
         <span className="pill">{kindLabel(o.kind)}</span>
         {tradeName(o.trade_slug) && <span className="pill">{tradeName(o.trade_slug)}</span>}
         <span className="pill">{ageLabel(o.min_age)}</span>
+        {o.employer_id && <span className="pill">Company account</span>}
+        {o.apply_in_app && <span className="pill">Students apply in the app (parent agrees first)</span>}
         {o.registered_apprenticeship && <span className="pill">Says Registered{o.rapids_number ? `: ${o.rapids_number}` : ""}</span>}
       </p>
       <p className="hint">Contact (private): {o.contact_name} · <a href={`mailto:${o.contact_email}`}>{o.contact_email}</a>{o.contact_phone ? ` · ${o.contact_phone}` : ""}
@@ -166,5 +182,26 @@ function TeamCard({ o, reports, onDecide, onFeature }: {
         {o.status === "approved" && <button className="btn btn-inline btn-sm btn-ghost" disabled={busy} onClick={() => { setBusy(true); void onFeature(o.id, !featured).finally(() => setBusy(false)); }}>{featured ? "Stop featuring" : "Feature for 30 days"}</button>}
       </span>
     </li>
+  );
+}
+
+/** Companies with an account (weekend and holiday jobs). Approve once the company checks out; close an account that breaks the rules. */
+function Companies({ list, onSet }: { list: Employer[]; onSet: (id: string, s: "approved" | "blocked", note: string) => Promise<void> }) {
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  if (list.length === 0) return <p className="hint">No company accounts yet. Companies make one at <a href="/employers">/employers</a>.</p>;
+  return (
+    <ul className="opening-list">{list.map((c) => (
+      <li key={c.id} className="opening-card">
+        <h3>{c.company_name} <span className={`pill${c.status === "approved" ? " pill-ok" : ""}`}>{c.status === "pending" ? "New" : c.status === "approved" ? "Approved" : "Closed"}</span></h3>
+        <p className="hint">{c.contact_name} · <a href={`mailto:${c.contact_email}`}>{c.contact_email}</a>{c.phone ? ` · ${c.phone}` : ""} · {c.city}, {c.state}
+          {c.website && <> · <a href={c.website} target="_blank" rel="noreferrer nofollow">Website</a></>}</p>
+        <p className="hint small">Agreed to the teen job rules {new Date(c.agreed_rules_at).toLocaleDateString()}{c.review_note ? ` · Note: ${c.review_note}` : ""}</p>
+        <input className="input" value={notes[c.id] ?? ""} onChange={(e) => setNotes({ ...notes, [c.id]: e.target.value })} placeholder="Team note (private)" maxLength={2000} aria-label="Team note" />
+        <span className="opening-actions">
+          {c.status !== "approved" && <button className="btn btn-inline btn-sm" onClick={() => void onSet(c.id, "approved", notes[c.id] ?? "")}>Approve company</button>}
+          {c.status !== "blocked" && <button className="btn btn-inline btn-sm btn-ghost" onClick={() => void onSet(c.id, "blocked", notes[c.id] ?? "")}>Close account</button>}
+        </span>
+      </li>
+    ))}</ul>
   );
 }
