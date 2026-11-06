@@ -197,7 +197,7 @@ export default function FamilyPage() {
     <div className="panel">
       {step === 2 && <p className="eyebrow">Step 2 of 3</p>}
       <h2>{students.length ? "Add another student" : "Add your student"}</h2>
-      <p className="hint">Students must be 13 or older. Georgia only for now.</p>
+      <p className="hint">Students must be 13 or older. Full state aid help is ready for 11 Southeast states, and families in every state can join.</p>
       <div className="row">
         <div className="field">
           <label htmlFor="first">First name</label>
