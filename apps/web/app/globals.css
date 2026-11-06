@@ -174,8 +174,15 @@ details.menu[open] summary { background: #eef2f9; border-color: var(--navy); }
 .menu-list hr { border: 0; border-top: 1px solid var(--line); margin: 4px 0; }
 .menu-list { max-height: calc(100vh - 90px); overflow-y: auto; min-width: 290px; }
 .menu-group { display: grid; }
-.menu-group + .menu-group { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 2px; }
+.menu-group + .menu-group { border-top: 1px solid var(--line); }
 .menu-heading { margin: 8px 12px 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+/* Section headings are buttons that open one section at a time, so the menu stays short. */
+.menu-list button.menu-heading { margin: 0; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 12px; font-size: 16px; font-weight: 800; letter-spacing: 0; text-transform: none; color: var(--navy) !important; }
+.menu-heading svg { flex: none; transition: transform 0.15s; }
+.menu-heading[aria-expanded="true"] svg { transform: rotate(180deg); }
+.menu-group-open { background: var(--warm-tint); border-radius: 10px; }
+.menu-group-open > button.menu-heading { color: var(--ink) !important; }
+.menu-sec { display: grid; padding: 0 0 6px 8px; }
 .menu-list a.nav-on { background: #eef2f9; color: var(--navy) !important; font-weight: 700; box-shadow: inset 3px 0 0 var(--gold); }
 .menu-switch { padding: 8px 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
 
@@ -190,6 +197,13 @@ details.menu[open] summary { background: #eef2f9; border-color: var(--navy); }
 .student-switch-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .student-switch select { font: inherit; font-weight: 700; color: var(--navy); border: 1.5px solid var(--line); border-radius: 999px; padding: 5px 10px; background: #fff; cursor: pointer; }
 .pagestrip .student-switch { padding-right: 12px; border-right: 1px solid var(--line); }
+/* "Back to section" line under the top bar: tap it to open the menu on this page's section. */
+.crumb { border-top: 1px solid var(--line); background: var(--bg); }
+.crumb-inner { max-width: 960px; margin: 0 auto; padding: 6px 16px; display: flex; align-items: center; gap: 8px; font-size: 14px; min-width: 0; }
+.crumb button { font: inherit; font-weight: 700; color: var(--navy); background: none; border: 0; padding: 6px 4px 6px 0; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap; }
+.crumb button:hover { text-decoration: underline; }
+.crumb-here { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.crumb-here::before { content: "/"; margin-right: 8px; color: var(--line); }
 .tabbar { display: none; }
 @media (max-width: 720px) {
   .strip-links { display: none; }
