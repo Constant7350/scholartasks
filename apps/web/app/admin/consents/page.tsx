@@ -20,7 +20,7 @@ const ACTION: Record<string, string> = {
   consent_withdrawn: "Permission taken back",
 };
 const KIND: Record<string, string> = {
-  job_application: "Job application", school_link: "School connection", school_agreement: "School data agreement", video: "Video permission", identity: "Identity check",
+  job_application: "Job application", school_link: "School connection", school_agreement: "School data agreement", video: "Video permission", challenge: "Essay challenge", identity: "Identity check",
 };
 
 export default function Consents() {

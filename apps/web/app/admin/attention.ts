@@ -17,7 +17,7 @@ const head = { count: "exact" as const, head: true };
 
 export async function loadAttention(sb: SupabaseClient): Promise<Attention> {
   const weekAgo = Date.now() - 7 * 86400000;
-  const [answers, questions, lessons, schUpdates, schNew, trades, openPending, openReported, employers, schools, consents, social] = await Promise.all([
+  const [answers, questions, lessons, schUpdates, schNew, trades, openPending, openReported, employers, schools, consents, social, chEntries, chScores] = await Promise.all([
     sb.from("answer_bank").select("id", head).eq("status", "pending"),
     sb.from("practice_questions").select("id", head).eq("status", "pending"),
     sb.from("lesson_reviews").select("lesson_id, status"),
@@ -30,6 +30,8 @@ export async function loadAttention(sb: SupabaseClient): Promise<Attention> {
     sb.rpc("schools_for_review"),
     sb.rpc("consent_audit_trail", { p_limit: 500 }),
     sb.from("social_items").select("id", head).eq("week_of", mondayOf(new Date())).eq("status", "draft"),
+    sb.from("challenge_entries").select("id, challenges!inner(status)").eq("status", "submitted").eq("team_family", false).eq("challenges.status", "judging"),
+    sb.from("challenge_scores").select("entry_id"),
   ]);
 
   const approved = new Set(((lessons.data as { lesson_id: string; status: string }[] | null) ?? []).filter((r) => r.status === "approved").map((r) => r.lesson_id));
@@ -45,6 +47,10 @@ export async function loadAttention(sb: SupabaseClient): Promise<Attention> {
     "/admin/schools": rows<{ status: string }>(schools).filter((s) => s.status === "pending").length,
     "/admin/consents": rows<{ action: string; at: string }>(consents).filter((r) => r.action === "consent_identity_failed" && new Date(r.at).getTime() > weekAgo).length,
     "/admin/marketing": n(social),
+    "/admin/challenges": (() => {
+      const scored = new Set(rows<{ entry_id: string }>(chScores).map((r) => r.entry_id));
+      return rows<{ id: string }>(chEntries).filter((r) => !scored.has(r.id)).length;
+    })(),
   };
 }
 
@@ -53,6 +59,7 @@ export function attentionLabel(href: string, count: number): string {
   const what: Record<string, string> = {
     "/admin/consents": "failed identity checks this week",
     "/admin/marketing": "social media drafts this week to read",
+    "/admin/challenges": "challenge essays waiting for a score",
   };
   return `${count} ${what[href] ?? "waiting for review"}`;
 }

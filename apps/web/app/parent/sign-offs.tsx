@@ -17,6 +17,7 @@ const KIND: Record<string, string> = {
   school_link: "Connect to a school counselor",
   school_agreement: "School data agreement",
   video: "Appear in ScholarTasks videos",
+  challenge: "Enter an essay challenge",
 };
 const when = (iso: string) => new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 
@@ -33,13 +34,15 @@ export function SignOffs({ sb, me, kids, onChanged }: { sb: SupabaseClient; me: 
   const name = useCallback((id: string | null) => kids.find((k) => k.id === id)?.first_name ?? "Your student", [kids]);
 
   const load = useCallback(async () => {
-    const [jobs, links, tasks, colleges, sigs, settings] = await Promise.all([
+    const [jobs, links, tasks, colleges, sigs, settings, entries, perms] = await Promise.all([
       sb.rpc("my_job_applications"),
       sb.rpc("my_school_links"),
       sb.from("tasks").select("id, student_id, title").eq("status", "needs_parent_approval"),
       sb.from("student_colleges").select("id, student_id, name").eq("approved", false),
       sb.from("consent_signatures").select("id, user_id, kind, student_id, signed_name, wording, version, verified_by, signed_at, used_at").order("signed_at", { ascending: false }).limit(60),
       sb.from("user_settings").select("ai_consent_at").eq("user_id", me).maybeSingle(),
+      sb.from("challenge_entries").select("challenge_id, student_id, challenges(title, status)").eq("status", "draft"),
+      sb.from("challenge_permissions").select("challenge_id, student_id"),
     ]);
     const w: Waiting[] = [];
     for (const a of ((jobs.data as { id: string; student_id: string; title: string; company_name: string; kind: string; status: string }[]) ?? []).filter((x) => x.status === "needs_parent")) {
@@ -54,6 +57,12 @@ export function SignOffs({ sb, me, kids, onChanged }: { sb: SupabaseClient; me: 
     }
     for (const c of (colleges.data as { id: string; student_id: string; name: string }[]) ?? []) {
       w.push({ key: `college-${c.id}`, icon: "🗂️", text: `${name(c.student_id)} changed ${c.name} on the college list`, href: "/plan", action: "Check and approve" });
+    }
+    // Essay challenge entries still waiting for a parent's signed permission (database update 59).
+    const okd = new Set(((perms.data as { challenge_id: string; student_id: string }[] | null) ?? []).map((p) => `${p.challenge_id}:${p.student_id}`));
+    for (const e of (entries.data as unknown as { challenge_id: string; student_id: string; challenges: { title: string; status: string } | null }[] | null) ?? []) {
+      if (okd.has(`${e.challenge_id}:${e.student_id}`) || e.challenges?.status !== "open") continue;
+      w.push({ key: `challenge-${e.challenge_id}-${e.student_id}`, icon: "🏆", text: `${name(e.student_id)} is writing for the essay challenge "${e.challenges.title}"`, href: "/challenge", action: "Read the rules and sign" });
     }
     setWaiting(w);
     setSigned((sigs.data as Signature[]) ?? []);

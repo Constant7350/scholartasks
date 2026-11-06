@@ -946,3 +946,33 @@ html.tr-wait body { visibility: hidden; }
 .ps-answers h4 { margin: 12px 0 4px; font-size: 14px; }
 .ps-answers ul { margin: 0; padding-left: 20px; font-size: 14px; }
 .ps-card { border-color: var(--navy); }
+
+/* ---------- Essay challenge (/challenge) ---------- */
+.challenge-score { display: grid; gap: 12px; margin: 14px 0; padding: 14px; border-radius: 12px; background: var(--warm-tint); }
+.challenge-level { display: grid; gap: 4px; }
+.challenge-bar { height: 10px; border-radius: 999px; background: #fff; overflow: hidden; border: 1px solid var(--line); }
+.challenge-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--gold, #d9a520), var(--ok)); transition: width 0.4s ease; }
+.challenge-badges { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
+.challenge-badges li { display: grid; justify-items: center; gap: 2px; padding: 8px 4px; border-radius: 10px; background: #fff; border: 1px dashed var(--line); opacity: 0.45; filter: grayscale(1); text-align: center; }
+.challenge-badges li span { font-size: 24px; }
+.challenge-badges li small { font-size: 11px; font-weight: 600; color: var(--muted); }
+.challenge-badges li.is-earned { opacity: 1; filter: none; border-style: solid; border-color: var(--ok); }
+.challenge-step { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 14px; }
+.challenge-step h3 { margin: 0 0 8px; font-size: 16px; }
+.challenge-step textarea { width: 100%; resize: vertical; }
+.challenge-prompt { font-size: 17px; font-weight: 600; margin: 0 0 8px; white-space: pre-wrap; }
+.essay-box { font-size: 16px; line-height: 1.6; }
+.ok-text { color: var(--ok); }
+.challenge-rules h3 { margin-bottom: 4px; }
+.challenge-rules ul { margin-top: 4px; }
+.certificate { max-width: 760px; margin: 16px auto; padding: 40px 32px; text-align: center; background: #fffdf7; border: 10px double #c9a33a; border-radius: 6px; color: #14305a; }
+.certificate p { margin: 6px 0; }
+.certificate-seal { font-size: 56px; line-height: 1; }
+.certificate-kicker { text-transform: uppercase; letter-spacing: 3px; font-size: 13px; font-weight: 700; color: #8a6514; }
+.certificate-title { font-family: Georgia, "Times New Roman", serif; font-size: 34px; margin: 6px 0 12px; }
+.certificate-name { font-family: Georgia, "Times New Roman", serif; font-size: 40px; font-weight: 700; border-bottom: 2px solid #c9a33a; display: inline-block; padding: 0 24px 4px; }
+.certificate-award { font-size: 20px; font-weight: 700; color: #8a6514; margin-top: 12px !important; }
+.certificate-foot { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; font-size: 14px; border-top: 1px solid #e6d9b5; padding-top: 10px; flex-wrap: wrap; }
+.certificate-code { margin-top: 14px !important; }
+@media (max-width: 560px) { .certificate { padding: 24px 14px; } .certificate-title { font-size: 26px; } .certificate-name { font-size: 30px; } }
+@media print { .certificate { margin: 0 auto; border-width: 8px; } }
