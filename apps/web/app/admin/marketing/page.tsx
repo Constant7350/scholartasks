@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { StatusPill, whenOf } from "../review-kit";
+import { Outlook } from "./outlook-view";
 import { ALL_STEPS, AUDIENCE, BUSINESS, CALENDAR, CHANNELS, MESSAGES, PHASES, SOURCES, SUMMARY, type Step } from "./plan";
 
 /**
@@ -20,6 +21,7 @@ const TABS = [
   ["message", "What we say"],
   ["channels", "Where we market"],
   ["business", "Business plan"],
+  ["outlook", "Five-year outlook"],
 ] as const;
 type Tab = (typeof TABS)[number][0];
 
@@ -215,6 +217,7 @@ export default function MarketingPage() {
           </section>
         </>
       )}
+      {tab === "outlook" && <Outlook />}
     </Page>
   );
 }
