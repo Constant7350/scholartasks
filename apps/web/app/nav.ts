@@ -83,6 +83,7 @@ export const NAV: NavItem[] = [
   { href: "/invite", label: "Invite a friend", short: "Invite", icon: "💌", roles: ALL, group: "help" },
   { href: "/rate", label: "Rate ScholarTasks", short: "Rate", icon: "⭐", roles: ALL, group: "help" },
 
+  { href: "/admin", label: "Team admin home", icon: "🧭", roles: ALL, group: "team" },
   { href: "/admin/answers", label: "Review counselor answers", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/questions", label: "Review practice questions", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/lessons", label: "Review study lessons", icon: "✅", roles: ALL, group: "team" },

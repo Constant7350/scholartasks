@@ -1,4 +1,4 @@
-{"note":"Made by scripts/i18n/extract.mjs. Do not edit.","count":6852,"lines":[{"en":"About us","screens":["/","/about"]},
+{"note":"Made by scripts/i18n/extract.mjs. Do not edit.","count":6853,"lines":[{"en":"About us","screens":["/","/about"]},
 {"en":"AI counselor","screens":["/","/compare","/counselor","/features","/help","/home","Shared pieces"]},
 {"en":"Never sells student data","screens":["/","/compare"]},
 {"en":"Website","screens":["/","/colleges","/contact","/majors","/military","/trades/post"]},
@@ -5179,6 +5179,7 @@
 {"en":"Solicitudes","screens":["Shared pieces"]},
 {"en":"Spanish check page","screens":["Shared pieces"]},
 {"en":"Study","screens":["Shared pieces"]},
+{"en":"Team admin home","screens":["Shared pieces"]},
 {"en":"Team: review","screens":["Shared pieces"]},
 {"en":"Team: tools and plans","screens":["Shared pieces"]},
 {"en":"Testers and test links","screens":["Shared pieces"]},
