@@ -127,7 +127,15 @@ do $$ begin
   exception when raise_exception then
     if sqlerrm not like 'Please read the consent%' then raise; end if;
   end;
+  -- Ticking "I agree" is not enough: the parent must confirm it's them and sign first.
+  begin
+    perform decide_job_application((select v::uuid from r52 where k='app'), true, true);
+    raise exception 'FAIL: agreed without a signature';
+  exception when raise_exception then
+    if sqlerrm not like 'Please confirm it''s you and sign first%' then raise; end if;
+  end;
 end $$;
+select test_sign('job_application', (select student_id from job_applications where id = (select v::uuid from r52 where k='app')));
 select decide_job_application((select v::uuid from r52 where k='app'), true, true);
 do $$ begin
   assert (select status || '|' || parent_email || '|' || consent_version from job_applications) = 'sent|p52@example.com|job-consent-v1', 'sent with parent email and consent version';
@@ -217,6 +225,7 @@ do $$ begin
   exception when raise_exception then
     if sqlerrm not like 'Please read the consent%' then raise; end if;
   end;
+  perform test_sign('job_application', (select v::uuid from r52 where k='ben'));
   assert apply_for_job((select v::uuid from r52 where k='job2'), (select v::uuid from r52 where k='ben'), 'Ben is great with people.', null, null, '478-555-0101', true) = 'sent',
     'parent applies and agrees in one step';
   assert (select count(*) from audit_log where action = 'consent' and target = 'job_application') = 2, 'both consents logged';

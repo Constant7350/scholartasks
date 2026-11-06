@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { SignConsent } from "../sign-consent";
 
 interface Student { id: string; first_name: string; grade_level: number; birth_date: string }
 interface Link { id: string; student_id: string; school_id: string; school_name: string; city: string; state: string; share: "progress" | "progress_grades"; status: "pending_parent" | "active"; created_at: string }
@@ -20,6 +21,11 @@ const SHARE: Record<Link["share"], { label: string; detail: string }> = {
 };
 const NEVER = "Never shared: essays, notes, AI counselor chats, family income, aid answers, or anything about parents. (When you apply in the app for this school's own local scholarship, the school sees only what you chose to send for it.)";
 
+/** The words a parent (or an adult student) signs to connect to a school. */
+const linkWording = (first: string, school: string, share: Link["share"], self: boolean) => self
+  ? `I agree that ${school} may see my ScholarTasks information: ${SHARE[share].label}. ${SHARE[share].detail} ${NEVER} I can stop this at any time on the My school page.`
+  : `I am ${first}'s parent or guardian. I agree that ${school} may see ${first}'s ScholarTasks information: ${SHARE[share].label}. ${SHARE[share].detail} ${NEVER} I can stop this at any time on the My school page.`;
+
 const isAdult = (birth: string) => {
   const b = new Date(birth + "T12:00:00"), n = new Date();
   return n.getFullYear() - b.getFullYear() - (n < new Date(n.getFullYear(), b.getMonth(), b.getDate()) ? 1 : 0) >= 18;
@@ -34,6 +40,7 @@ export default function MySchool() {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [approving, setApproving] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -98,7 +105,7 @@ export default function MySchool() {
                 <p style={{ margin: "0 0 8px", fontSize: 14 }}>Sharing: {SHARE[l.share].label}. {SHARE[l.share].detail}</p>
                 <div className="share-row">
                   {l.status === "pending_parent" && role === "parent" && (
-                    <button className="btn btn-inline" onClick={() => run(() => sb.rpc("approve_school_link", { p_link: l.id }), `${s.first_name} is now connected to ${l.school_name}.`)}>Approve</button>
+                    <button className="btn btn-inline" onClick={() => setApproving(l.id)}>Approve</button>
                   )}
                   {(role === "parent" || adult || l.share === "progress_grades") && (
                     <button className="btn btn-ghost btn-inline" onClick={() => run(() => sb.rpc("set_school_link_share", { p_link: l.id, p_share: l.share === "progress" ? "progress_grades" : "progress" }), "Sharing updated.")}>
@@ -110,11 +117,19 @@ export default function MySchool() {
                     {l.status === "pending_parent" ? "Decline" : "Stop sharing"}
                   </button>
                 </div>
+                {approving === l.id && l.status === "pending_parent" && role === "parent" && (
+                  <SignConsent kind="school_link" student={s.id} version="school-link-v1" button="Sign and approve"
+                    wording={linkWording(s.first_name, l.school_name, l.share, false)}
+                    onSigned={() => run(() => sb.rpc("approve_school_link", { p_link: l.id }), `${s.first_name} is now connected to ${l.school_name}.`).then(() => setApproving(null))}
+                    onDecline={() => setApproving(null)} declineLabel="Cancel" />
+                )}
               </div>
             ))}
             <ConnectForm
               student={s}
               canShareGrades={role === "parent" || adult}
+              mustSign={role === "parent" || adult}
+              self={role !== "parent"}
               hasLinks={mine.length > 0}
               onConnect={(code, share) => run(() => sb.rpc("link_student_to_school", { p_student: s.id, p_code: code, p_share: share }))}
               lookup={async (code) => {
@@ -146,8 +161,8 @@ export default function MySchool() {
   );
 }
 
-function ConnectForm({ student, canShareGrades, hasLinks, onConnect, lookup, onResult }: {
-  student: Student; canShareGrades: boolean; hasLinks: boolean;
+function ConnectForm({ student, canShareGrades, mustSign, self, hasLinks, onConnect, lookup, onResult }: {
+  student: Student; canShareGrades: boolean; mustSign: boolean; self: boolean; hasLinks: boolean;
   onConnect: (code: string, share: Link["share"]) => Promise<unknown>;
   lookup: (code: string) => Promise<{ name: string; city: string; state: string } | null>;
   onResult: (status: string, name: string) => void;
@@ -156,6 +171,7 @@ function ConnectForm({ student, canShareGrades, hasLinks, onConnect, lookup, onR
   const [code, setCode] = useState("");
   const [found, setFound] = useState<{ name: string; city: string; state: string } | null | undefined>(undefined);
   const [share, setShare] = useState<Link["share"]>("progress");
+  const [signing, setSigning] = useState(false);
   useEffect(() => {
     const c = new URLSearchParams(window.location.search).get("code");
     if (c) { setCode(c.toUpperCase()); setOpen(true); }
@@ -188,10 +204,21 @@ function ConnectForm({ student, canShareGrades, hasLinks, onConnect, lookup, onR
               </label>
             ))}
           </fieldset>
-          <button className="btn btn-inline" onClick={async () => {
-            const status = await onConnect(code.trim(), share);
-            if (typeof status === "string") { onResult(status, found.name); setCode(""); setOpen(false); }
-          }}>Connect</button>
+          {signing ? (
+            <SignConsent kind="school_link" student={student.id} version="school-link-v1" title={self ? "Your consent" : "Parent consent"} button="Sign and connect"
+              wording={linkWording(student.first_name, found.name, share, self)}
+              onSigned={async () => {
+                const status = await onConnect(code.trim(), share);
+                if (typeof status === "string") { onResult(status, found.name); setCode(""); setOpen(false); setSigning(false); }
+              }}
+              onDecline={() => setSigning(false)} declineLabel="Cancel" />
+          ) : (
+            <button className="btn btn-inline" onClick={async () => {
+              if (mustSign) return setSigning(true);
+              const status = await onConnect(code.trim(), share);
+              if (typeof status === "string") { onResult(status, found.name); setCode(""); setOpen(false); }
+            }}>Connect</button>
+          )}
         </>
       )}
     </div>

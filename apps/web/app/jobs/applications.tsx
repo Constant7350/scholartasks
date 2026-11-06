@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { PART_TIME_KINDS, type JobApplicationStatus } from "@scholartasks/core";
 import { supabase } from "../../lib/supabase";
 import { kindLabel } from "../../lib/openings";
+import { SignConsent } from "../sign-consent";
 import { consentText, jobError, notifyJobs, statusLabel } from "../../lib/jobs";
 
 interface MyApp {
@@ -105,7 +106,7 @@ export function MyApplications({ part }: { part: "parttime" | "trades" }) {
               </details>
 
               {a.status === "needs_parent" && (isParent && w ? (
-                <ParentAgree wording={w.wording} button={a.applied_outside ? "Agree" : "Agree and send"}
+                <ParentAgree wording={w.wording} version={w.version} student={a.student_id} button={a.applied_outside ? "Agree" : "Agree and send"}
                   onAgree={() => run(() => sb!.rpc("decide_job_application", { p_id: a.id, p_ok: true, p_agree: true }),
                     a.applied_outside ? "Thank you. Your consent is saved." : "Thank you. It's on its way to the company, with your email so they include you.",
                     a.applied_outside ? undefined : () => void notifyJobs(a.id, "decided"))}
@@ -129,21 +130,9 @@ export function MyApplications({ part }: { part: "parttime" | "trades" }) {
   );
 }
 
-/** The parent's "I agree": the exact consent wording, a box to tick, then agree or decline. */
-export function ParentAgree({ wording, onAgree, onDecline, button = "Agree and send" }: { wording: string; onAgree: () => void; onDecline?: () => void; button?: string }) {
-  const [ticked, setTicked] = useState(false);
-  return (
-    <div className="note note-info" style={{ display: "grid", gap: 8 }}>
-      <b>Parent consent</b>
-      <span>{wording}</span>
-      <label className="check"><input type="checkbox" checked={ticked} onChange={(e) => setTicked(e.target.checked)} /> I agree</label>
-      <span className="opening-actions">
-        <button className="btn btn-inline btn-sm" disabled={!ticked} onClick={onAgree}>{button}</button>
-        {onDecline && <button className="btn btn-inline btn-sm btn-ghost" onClick={onDecline}>Decline</button>}
-      </span>
-      <span className="hint small">Your consent, the wording and the time are saved to a permanent record that can&apos;t be changed.</span>
-    </div>
-  );
+/** The parent's consent: the exact wording, then sign with a finger and confirm it's you (see ../sign-consent.tsx). */
+export function ParentAgree({ wording, version, student, onAgree, onDecline, button = "Agree and send" }: { wording: string; version?: string; student: string; onAgree: () => unknown; onDecline?: () => void; button?: string }) {
+  return <SignConsent kind="job_application" wording={wording} version={version} student={student} button={button} onSigned={onAgree} onDecline={onDecline} />;
 }
 
 /** Shows the saved consent record (who agreed, when, and the exact wording) from the permanent audit log. */

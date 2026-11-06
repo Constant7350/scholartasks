@@ -62,6 +62,8 @@ end $$;
 
 -- The parent agrees to both; the outside one is logged with its own wording.
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000053a1', false);
+select test_sign('job_application', (select v::uuid from r53 where k='ava'));
+select test_sign('job_application', (select v::uuid from r53 where k='ava'));
 select decide_job_application(id, true, true) from job_applications where student_id = (select v::uuid from r53 where k='ava');
 do $$ begin
   assert (select consent_version from job_applications where opening_id = '00000000-0000-0000-0000-0000000053d1') = 'job-outside-consent-v1', 'outside version saved';

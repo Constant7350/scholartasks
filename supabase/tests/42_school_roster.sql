@@ -24,6 +24,7 @@ do $$ declare s uuid := (select v::uuid from h42 where k='school'); begin
     perform upload_school_roster(s, '[{"student_ref":"1","first_name":"Mia","last_name":"Diaz","grade_level":12}]'::jsonb);
     raise exception 'FAIL: roster before agreement';
   exception when raise_exception then if sqlerrm not like 'Sign the student data agreement%' then raise; end if; end;
+  perform test_sign('school_agreement', null, s::text);
   perform sign_school_data_agreement(s, 'Ana Ruiz', 'Lead counselor', 'Clarke County');
   assert (select count(*) from school_data_agreements where school_id = s and ended_at is null) = 1, 'agreement signed';
   assert upload_school_roster(s, '[{"student_ref":"1","first_name":"Mia","last_name":"Diaz","grade_level":12,"email":"mom@example.com"},
@@ -39,6 +40,7 @@ end $$;
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000042b1', false);
 insert into h42 values ('fam', create_family('Diaz')::text);
 insert into h42 values ('mia', add_student((select v::uuid from h42 where k='fam'), 'Mia', (current_date - interval '17 years')::date, 12, 'GA')::text);
+select test_sign('school_link', (select v::uuid from h42 where k='mia'));
 select link_student_to_school((select v::uuid from h42 where k='mia'), (select v from h42 where k='join'), 'progress');
 do $$ begin
   assert (select count(*) from school_roster) = 0, 'families never see a roster';

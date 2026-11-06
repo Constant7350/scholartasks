@@ -437,13 +437,13 @@ export const TOPICS: Topic[] = [
     steps: [
       "Open Menu, then Weekend and holiday jobs. Pick a job and tap Apply in ScholarTasks.",
       "Write a short message, answer the company's questions if it asked any, say when you can work, and choose the email or phone to share.",
-      "A parent gets an email, reads the consent, ticks I agree and taps Agree and send. A parent applying for their student agrees in the same step.",
+      "A parent gets an email, reads the consent, types their full name, signs with a finger and confirms it's them with Face ID or a code sent to their email. A parent applying for their student signs in the same step.",
       "Follow it under My job applications: Sent, Seen, The company wants to meet, Hired or Not this time. You can take it back any time before you're hired.",
       "Hired? Tap Add to activities and resume (as work, or as leadership if you led others).",
     ],
     body: [
       "The company sees only the application: first name, grade, age, the message, when you can work, the contact you shared and a parent's email. Never grades, address or anything else in the account.",
-      "Every consent is saved with the exact wording, who agreed and when, in a permanent record that can't be changed. Tap See the consent record on any application.",
+      "Every consent is saved with the signature, the exact wording, who agreed and when, in a permanent record that can't be changed, and the parent gets an email copy. A student account can never sign for a parent. Tap See the consent record on any application.",
       "After a job, the company can write a reference letter about work ethic and character. A parent decides: Keep in records (it shows on the resume) or Hide (it never counts, and the company isn't told).",
       "Meet companies at their workplace, in public. Never pay to apply. If you're under 18, bring a parent to the first visit.",
     ],
