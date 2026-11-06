@@ -1056,6 +1056,43 @@ export const TOPICS: Topic[] = [
     keywords: ["contact", "support", "email", "bug", "problem", "broken", "feedback"],
     summary: "Email support@scholartasks.com and tell us what page you were on and what happened.",
   },
+  {
+    id: "invite-friend",
+    area: "Getting started",
+    title: "Invite a friend to ScholarTasks",
+    href: "/invite",
+    keywords: ["invite", "share", "friend", "tell a friend", "refer", "send", "another family", "other parents", "classmate", "recommend"],
+    summary: "Send ScholarTasks to another parent or a student by text or email in one tap, from Menu, Invite a friend (or the button at the bottom of Home).",
+    steps: [
+      "Open Menu, then Invite a friend.",
+      "Tap A parent or A student. The message changes to fit them. You can change the words if you like.",
+      "Tap Text it or Email it. Your texting or email app opens with the message ready.",
+      "Pick your friend and press send. On a phone, More ways lets you share by WhatsApp, Messenger and other apps.",
+    ],
+    body: [
+      "Your friend gets a link to scholartasks.com and starts their own family account. They don't join your family and can't see anything of yours.",
+      "ScholarTasks never sees your contacts.",
+      "To add your own student to your family, use the family code on the Family page instead.",
+    ],
+  },
+  {
+    id: "rate-app",
+    area: "Getting started",
+    title: "Rate ScholarTasks and send us a note",
+    href: "/rate",
+    keywords: ["rate", "rating", "review", "stars", "feedback", "app store", "google play", "suggestion", "idea", "complaint"],
+    summary: "Open Menu, then Rate ScholarTasks. Tap 1 to 5 stars, add a note if you like, and tap Send my rating.",
+    steps: [
+      "Open Menu, then Rate ScholarTasks (or tap Rate the app at the bottom of Home).",
+      "Tap the stars, from 1 (not good) to 5 (love it).",
+      "Optional: tell us what you like or what would make it better.",
+      "Tap Send my rating. Change it any time on the same page.",
+    ],
+    body: [
+      "In the iPhone or Android app you can also tap Rate in the App Store or Rate in Google Play. It helps other families find ScholarTasks.",
+      "Our team reads every note. Each person has one rating; rating again replaces your old one.",
+    ],
+  },
 ];
 
 /**
@@ -1104,6 +1141,12 @@ export const TIPS: Tip[] = [
   { routes: ["/family"], sel: ".code-box .code", body: "Your student types this code after signing in with their own email. It works for 7 days.", topic: "invite-student" },
   { routes: ["/family"], sel: "button", text: "Invite", body: "Makes an 8-character code so your student can use their own phone or computer.", topic: "invite-student" },
   { routes: ["/family"], sel: "details.perm summary", body: "Switches that control what this student can do on their own, like using AI or changing the college list.", topic: "permissions" },
+
+  // Invite a friend and rate the app
+  { routes: ["/invite"], sel: ".invite .tabs", body: "Pick who you're inviting. The message changes to fit a parent or a student.", topic: "invite-friend" },
+  { routes: ["/invite"], sel: ".invite .share-row", body: "Your texting or email app opens with the message ready. Pick your friend and press send.", topic: "invite-friend" },
+  { routes: ["/rate"], sel: ".stars", body: "Tap 1 to 5 stars. Add a note if you like, then tap Send my rating.", topic: "rate-app" },
+  { routes: ["/home"], sel: ".share-card b", body: "Send ScholarTasks to another family, or tell us how we're doing.", topic: "invite-friend" },
 
   // Join
   { routes: ["/join"], sel: "h2", text: "Enter your family code", body: "Type the 8-character code your parent sent you, then tap Join my family.", topic: "invite-student" },

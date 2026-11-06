@@ -77,6 +77,8 @@ export const NAV: NavItem[] = [
   { href: "/billing", label: "Plan and billing", short: "Billing", icon: "💳", roles: ["parent", "student"], group: "family", webOnly: true },
 
   { href: "/help", label: "Help and how-to", icon: "❓", roles: ALL, group: "help" },
+  { href: "/invite", label: "Invite a friend", short: "Invite", icon: "💌", roles: ALL, group: "help" },
+  { href: "/rate", label: "Rate ScholarTasks", short: "Rate", icon: "⭐", roles: ALL, group: "help" },
 
   { href: "/admin/answers", label: "Review counselor answers", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/questions", label: "Review practice questions", icon: "✅", roles: ALL, group: "team" },
@@ -84,6 +86,7 @@ export const NAV: NavItem[] = [
   { href: "/admin/scholarships", label: "Review scholarships", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/trades", label: "Review trade facts", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/schools", label: "Approve schools", icon: "🏫", roles: ALL, group: "team" },
+  { href: "/admin/ratings", label: "App ratings and notes", icon: "⭐", roles: ALL, group: "team" },
   { href: "/admin/college-data", label: "Load college data", icon: "🏫", roles: ALL, group: "teamTools" },
   { href: "/admin/presentation", label: "Presentation for parents and schools", icon: "🎤", roles: ALL, group: "teamTools" },
   { href: "/admin/marketing", label: "Marketing and business plan", icon: "📣", roles: ALL, group: "teamTools" },

@@ -809,3 +809,15 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
 .rank-2 { background: var(--gold-soft); color: #8a6514; }
 .compare-places { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
 .compare-places span { display: block; }
+
+/* Rate ScholarTasks (/rate) */
+.stars { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin: 4px 0 16px; }
+.star { font-size: 40px; line-height: 1; background: none; border: 0; padding: 4px; cursor: pointer; color: #d5d9e0; min-width: 48px; min-height: 48px; }
+.star.on { color: var(--gold); }
+.star:focus-visible { outline: 2px solid var(--navy); border-radius: 8px; }
+.stars-word { margin-left: 8px; font-weight: 600; color: var(--muted); }
+.note .linkish { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
+.share-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.share-card p { margin: 0; }
+.rating-row { border-top: 1px solid var(--line); padding: 12px 0; }
+.rating-row .star-text { color: var(--gold); letter-spacing: 2px; }

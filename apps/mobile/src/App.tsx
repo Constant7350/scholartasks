@@ -9,6 +9,7 @@ import { RELOCK_AFTER_MS, SITE_HOSTS, SITE_URL, WEB_SESSION_KEY } from "./config
 import { askedFaceId, faceIdOn, forget, friendly, markAskedFaceId, resume, saveToken, setFaceId, signIn } from "./session";
 import { unlock, unlockKind } from "./unlock";
 import { clearReminders, scheduleReminders, type Reminder } from "./reminders";
+import { rateApp, shareText } from "./share";
 
 // The library's class typing (Component<Props & undefined>) collapses to never under strict TypeScript.
 const WebView = RNWebView as unknown as ComponentType<WebViewProps>;
@@ -229,11 +230,14 @@ function Site({ session, onSignedOut }: { session: Session; onSignedOut: () => v
 
   const onMessage = async (e: WebViewMessageEvent) => {
     try {
-      const m = JSON.parse(e.nativeEvent.data) as { refresh_token?: string | null; reminders?: Reminder[]; print?: string };
+      const m = JSON.parse(e.nativeEvent.data) as { refresh_token?: string | null; reminders?: Reminder[]; print?: string; share?: { title?: unknown; text?: unknown }; rate?: boolean };
       if (m.refresh_token) await saveToken(m.refresh_token);
       if (Array.isArray(m.reminders)) await scheduleReminders(m.reminders);
       // "Print or save as PDF" on the website: the web view can't print, so the phone does.
       if (typeof m.print === "string") await Print.printAsync({ html: m.print }).catch(() => {});
+      // "Invite a friend" and "Rate in the App Store / Google Play" on the website.
+      if (m.share && typeof m.share === "object") await shareText(m.share);
+      if (m.rate === true) await rateApp();
     } catch {}
   };
 
@@ -259,7 +263,8 @@ function Site({ session, onSignedOut }: { session: Session; onSignedOut: () => v
         sharedCookiesEnabled
         allowsBackForwardNavigationGestures
         pullToRefreshEnabled
-        applicationNameForUserAgent="ScholarTasksApp/0.1"
+        // 0.2 and later: the website may ask for the share sheet and store rating box (see apps/web/lib/share.ts).
+        applicationNameForUserAgent="ScholarTasksApp/0.2"
         // Every link goes through onShouldStartLoadWithRequest below. The default list only lets
         // http(s) through and quietly drops mailto:/sms:/tel: links on iPhone.
         originWhitelist={["*"]}
