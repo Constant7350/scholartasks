@@ -71,4 +71,10 @@ describe("home state first, then nationwide", () => {
     expect(home.map((r) => r.id)).toEqual(["c", "b"]);
     expect(elsewhere.map((r) => r.id)).toEqual(["d", "a"]);
   });
+  it("puts Featured listings first in each group", () => {
+    const rows = [row("a", "GA", "2026-11-05"), { ...row("b", "GA", "2026-10-01"), featured: true }, row("c", "TN", "2026-11-04"), { ...row("d", "WY", "2026-09-01"), featured: true }];
+    const { home, elsewhere } = sortOpenings(rows, "GA");
+    expect(home.map((r) => r.id)).toEqual(["b", "a"]);
+    expect(elsewhere.map((r) => r.id)).toEqual(["d", "c"]);
+  });
 });

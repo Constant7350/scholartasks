@@ -193,17 +193,21 @@ export interface OpeningRow {
   min_age: number;
   registered_verified?: boolean;
   approved_at?: string | null;
+  /** Shown first in its group with a "Featured" label (set by our team). */
+  featured?: boolean;
 }
 
 /**
  * Sorts listings for one student: home state first, then the rest of the
- * country (nationwide options always show), newest first inside each group.
+ * country (nationwide options always show). Inside each group, Featured
+ * listings come first, then the newest.
  */
 export function sortOpenings<T extends OpeningRow>(rows: T[], homeState: string | null): { home: T[]; elsewhere: T[] } {
-  const newest = (a: T, b: T) => (b.approved_at ?? "").localeCompare(a.approved_at ?? "") || a.title.localeCompare(b.title);
+  const newest = (a: T, b: T) => Number(!!b.featured) - Number(!!a.featured)
+    || (b.approved_at ?? "").localeCompare(a.approved_at ?? "") || a.title.localeCompare(b.title);
   const st = homeState?.toUpperCase() ?? null;
   return {
     home: rows.filter((r) => st && r.state === st).sort(newest),
-    elsewhere: rows.filter((r) => !st || r.state !== st).sort((a, b) => a.state.localeCompare(b.state) || newest(a, b)),
+    elsewhere: rows.filter((r) => !st || r.state !== st).sort((a, b) => Number(!!b.featured) - Number(!!a.featured) || a.state.localeCompare(b.state) || newest(a, b)),
   };
 }

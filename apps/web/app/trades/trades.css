@@ -58,4 +58,7 @@ a.trade-callout:hover { border-color: var(--navy); }
 .opening-card .pre { white-space: pre-wrap; }
 .opening-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .opening-actions .btn { width: auto; }
+.opening-featured { border-color: var(--gold, #c9a227); box-shadow: 0 0 0 1px var(--gold-soft, #f6ecd0); }
+.opening-featured-tag { justify-self: start; margin-left: 0; }
+.opening-stats { display: flex; flex-wrap: wrap; gap: 12px; }
 .opening-flags { margin: 0; padding-left: 20px; color: #8a6514; }

@@ -32,6 +32,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
                 <li><a href="/signin">Start free</a></li>
                 <li><a href="/tools/hope">State scholarship checker</a></li>
                 <li><a href="/trades">Explore the trades</a></li>
+                <li><a href="/trades/post">For employers: post an apprenticeship</a></li>
                 <li><a href="/help">Help guide</a></li>
               </ul>
             </div>

@@ -795,7 +795,6 @@
   "3. Students contact you": "3. Los estudiantes te contactan",
   "About five minutes. Tell students what the work is and how to apply.": "Unos cinco minutos. Diles a los estudiantes en qué consiste el trabajo y cómo solicitar.",
   "Local companies: post apprenticeships, paid training and entry-level jobs for high school students and graduates. Free, no account needed, reviewed by our team.": "Empresas locales: publiquen aprendizajes, capacitación pagada y empleos de nivel inicial para estudiantes y graduados de secundaria. Gratis, sin cuenta y revisado por nuestro equipo.",
-  "Looking for people who want to learn a trade? Post your apprenticeship, paid training or entry-level job here and students and families planning their next step will see it. It's free, and you don't need an account.": "¿Buscas personas que quieran aprender un oficio? Publica aquí tu aprendizaje, capacitación pagada o empleo de nivel inicial y lo verán estudiantes y familias que planean su siguiente paso. Es gratis y no necesitas cuenta.",
   "Post an apprenticeship or opening": "Publicar un aprendizaje o una vacante",
   "Post an apprenticeship or opening for students · ScholarTasks": "Publicar un aprendizaje o una vacante para estudiantes · ScholarTasks",
   "They apply the way you choose: your website, email or phone. We never share students' details.": "Solicitan como tú elijas: tu sitio web, correo o teléfono. Nunca compartimos los datos de los estudiantes.",
@@ -843,5 +842,8 @@
   "Pick as many as you like. The more you pick, the better the match.": "Elige todos los que quieras. Mientras más elijas, mejor la coincidencia.",
   "This is a starting point, not a test. Talk it over with your family, try a shop class or job shadow, and ask the <1>AI counselor</1>.": "Esto es un punto de partida, no un examen. Háblalo con tu familia, prueba una clase de taller u observa un trabajo, y pregúntale al <1>consejero con IA</1>.",
   "Trades to look at": "Oficios para ver",
-  "Which trade fits me?": "¿Qué oficio me queda?"
+  "Which trade fits me?": "¿Qué oficio me queda?",
+  "Featured": "Destacado",
+  "Featured listings show first. Our team checks them the same way as every listing.": "Los anuncios destacados aparecen primero. Nuestro equipo los revisa igual que todos los anuncios.",
+  "Looking for people who want to learn a trade? Post your apprenticeship, paid training or entry-level job here and students and families near you will see it first. Companies anywhere in the U.S. can post. It's free, and you don't need an account.": "¿Buscas personas que quieran aprender un oficio? Publica aquí tu aprendizaje, capacitación pagada o empleo de nivel inicial y los estudiantes y familias cerca de ti lo verán primero. Pueden publicar empresas de cualquier parte de EE. UU. Es gratis y no necesitas una cuenta."
 }

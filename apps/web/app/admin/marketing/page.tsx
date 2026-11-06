@@ -5,6 +5,7 @@ import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { StatusPill, whenOf } from "../review-kit";
 import { Outlook } from "./outlook-view";
+import { ALL_EMPLOYER_STEPS, EMPLOYER_CHANNELS, EMPLOYER_MESSAGES, EMPLOYER_METRICS, EMPLOYER_PHASES, EMPLOYER_SOURCES, EMPLOYER_SUMMARY, HOW_IT_WORKS, LEGAL, PRICING, SAFETY } from "./employers";
 import { ALL_STEPS, AUDIENCE, BUSINESS, CALENDAR, CHANNELS, MESSAGES, PHASES, SOURCES, SUMMARY, type Step } from "./plan";
 
 /**
@@ -22,6 +23,7 @@ const TABS = [
   ["channels", "Where we market"],
   ["business", "Business plan"],
   ["outlook", "Five-year outlook"],
+  ["employers", "Employers and apprenticeships"],
 ] as const;
 type Tab = (typeof TABS)[number][0];
 
@@ -218,6 +220,71 @@ export default function MarketingPage() {
         </>
       )}
       {tab === "outlook" && <Outlook />}
+      {tab === "employers" && (() => {
+        const empDone = ALL_EMPLOYER_STEPS.filter((s) => ["done", "skip"].includes(statusOf(s.id))).length;
+        return (
+          <>
+            <section className="panel">
+              <h2>Local companies, apprenticeships and trade openings</h2>
+              <p>{EMPLOYER_SUMMARY.oneLine}</p>
+              <ul className="mk-list">{EMPLOYER_SUMMARY.why.map((w) => <li key={w}>{w}</li>)}</ul>
+              <p className="hint" style={{ marginBottom: 0 }}>{empDone} of {ALL_EMPLOYER_STEPS.length} employer steps finished · <a href="/admin/openings">Review local openings</a> · <a href="/trades/post">The posting form</a> · <a href="/trades/openings">What students see</a></p>
+            </section>
+            <section className="panel">
+              <h2>How it works today</h2>
+              <ul className="mk-list">{HOW_IT_WORKS.map((h) => <li key={h.title}><b>{h.title}:</b> {h.text}</li>)}</ul>
+            </section>
+            <section className="panel">
+              <h2>Keeping it safe and friendly</h2>
+              <ul className="mk-list">{SAFETY.map((x) => <li key={x}>{x}</li>)}</ul>
+            </section>
+            <section className="panel">
+              <h2>Can we charge companies?</h2>
+              <p>{PRICING.recommend}</p>
+              <div className="mk-table-wrap">
+                <table className="mk-table">
+                  <thead><tr><th>Plan</th><th>Price (not final)</th><th>What they get</th></tr></thead>
+                  <tbody>{PRICING.tiers.map((t) => <tr key={t.name}><td>{t.name}</td><td>{t.price}</td><td>{t.what}</td></tr>)}</tbody>
+                </table>
+              </div>
+              <ul className="mk-list">{PRICING.launch.map((x) => <li key={x}>{x}</li>)}</ul>
+              <p className="hint" style={{ marginBottom: 0 }}>{PRICING.example}</p>
+            </section>
+            <section className="panel">
+              <h2>Legal limits to respect</h2>
+              <p className="hint">A checklist for our lawyer, not legal advice.</p>
+              <ul className="mk-list">{LEGAL.map((l) => <li key={l.rule}><b>{l.rule}.</b> {l.text}</li>)}</ul>
+            </section>
+            <section className="panel">
+              <h2>Who to reach, best first</h2>
+              <ol className="mk-list">{EMPLOYER_CHANNELS.map((c) => <li key={c.name}><b>{c.name}.</b> {c.why}</li>)}</ol>
+              <h2 style={{ marginTop: 16 }}>What we tell companies</h2>
+              <ul className="mk-list">{EMPLOYER_MESSAGES.map((m) => <li key={m}>{m}</li>)}</ul>
+              <h2 style={{ marginTop: 16 }}>How we know it&apos;s working</h2>
+              <ul className="mk-list">{EMPLOYER_METRICS.map((m) => <li key={m}>{m}</li>)}</ul>
+            </section>
+            {EMPLOYER_PHASES.map((p) => {
+              const done = p.steps.filter((s) => ["done", "skip"].includes(statusOf(s.id))).length;
+              const shown = p.steps.filter((s) => showDone || !["done", "skip"].includes(statusOf(s.id)));
+              return (
+                <section key={p.id} className="panel">
+                  <h2>{p.name} <span className="hint" style={{ fontWeight: 400 }}>· {p.dates}</span></h2>
+                  <p className="hint" style={{ marginTop: -4 }}><b>Goal:</b> {p.goal} · {done} of {p.steps.length} done</p>
+                  {shown.length === 0 && <p className="hint">✓ Every step here is finished.</p>}
+                  {shown.map((s) => <StepRow key={s.id} step={s} saved={saved[s.id]} onSave={(st, note) => void save(s.id, st, note)} />)}
+                </section>
+              );
+            })}
+            <label className="hint" style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
+              <input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show finished steps
+            </label>
+            <section className="panel">
+              <h2>Sources</h2>
+              <ul className="mk-list">{EMPLOYER_SOURCES.map((s) => <li key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.label}</a></li>)}</ul>
+            </section>
+          </>
+        );
+      })()}
     </Page>
   );
 }

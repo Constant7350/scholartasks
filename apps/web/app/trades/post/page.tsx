@@ -13,7 +13,7 @@ export default function PostOpeningPage() {
     <Page title="Post an apprenticeship or opening">
       <p className="lead">
         Looking for people who want to learn a trade? Post your apprenticeship, paid training or entry-level job here and
-        students and families planning their next step will see it. It&apos;s free, and you don&apos;t need an account.
+        students and families near you will see it first. Companies anywhere in the U.S. can post. It&apos;s free, and you don&apos;t need an account.
       </p>
       <div className="trade-callouts">
         <div className="panel trade-callout"><b>1. Fill in the form</b><span>About five minutes. Tell students what the work is and how to apply.</span></div>

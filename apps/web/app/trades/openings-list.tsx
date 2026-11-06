@@ -120,10 +120,18 @@ export function OpeningsList({ trade, compact = false }: { trade?: string; compa
   );
 }
 
+/** Counts a details view or an Apply press, once per listing per visit. Numbers only, nothing about the student. */
+function countOnce(id: string, kind: "view" | "apply") {
+  const key = `st-opening-${kind}-${id}`;
+  try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, "1"); } catch { /* private mode: count anyway */ }
+  void supabase()?.rpc("count_opening", { p_id: id, p_kind: kind });
+}
+
 function OpeningCard({ o }: { o: PublicOpening }) {
   const tn = tradeName(o.trade_slug);
   return (
-    <li className="opening-card">
+    <li className={`opening-card${o.featured ? " opening-featured" : ""}`}>
+      {o.featured && <span className="pill pill-soon opening-featured-tag" title="Featured listings show first. Our team checks them the same way as every listing.">Featured</span>}
       <h3>{o.title}</h3>
       <p><b>{o.company_website ? <a href={o.company_website} target="_blank" rel="noreferrer nofollow">{o.company_name}</a> : o.company_name}</b> · {place(o)}</p>
       <p className="trade-tags">
@@ -133,14 +141,14 @@ function OpeningCard({ o }: { o: PublicOpening }) {
         {o.registered_verified && <span className="pill pill-ok" title="Our team found this program on apprenticeship.gov">Registered Apprenticeship ✓</span>}
       </p>
       {(o.pay || o.schedule) && <p className="hint">{[o.pay, o.schedule].filter(Boolean).join(" · ")}</p>}
-      <details>
+      <details onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) countOnce(o.id, "view"); }}>
         <summary>Details and how to apply</summary>
         <p className="pre">{o.description}</p>
         {o.requirements && <><p><b>What you need</b></p><p className="pre">{o.requirements}</p></>}
         <p><b>How to apply</b></p>
         <p className="pre">{o.how_to_apply}</p>
         <p className="opening-actions" style={{ marginTop: 8 }}>
-          {o.apply_url && <a className="btn btn-inline btn-sm" href={o.apply_url} target="_blank" rel="noreferrer nofollow">Apply on their site</a>}
+          {o.apply_url && <a className="btn btn-inline btn-sm" href={o.apply_url} target="_blank" rel="noreferrer nofollow" onClick={() => countOnce(o.id, "apply")}>Apply on their site</a>}
           <ReportButton id={o.id} />
         </p>
         <p className="hint small">
