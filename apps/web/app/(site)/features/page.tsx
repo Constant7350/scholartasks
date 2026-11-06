@@ -62,6 +62,7 @@ export default function Features() {
               <li>Application checklist and essay feedback, never written for you</li>
               <li>Essay bundles: one draft for awards that ask similar questions</li>
               <li>A copy-ready profile to paste into any application form</li>
+              <li>Apply step by step: form questions, letters, papers and a tracker for what you sent and won. Your school&apos;s own local awards are sent right in the app</li>
               <li>One tap adds the deadline to your plan</li>
             </ul>
           </div>

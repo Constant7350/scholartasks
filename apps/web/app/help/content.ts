@@ -164,6 +164,7 @@ export const TOPICS: Topic[] = [
       "Progress only: college list counts, applications sent, whether the FAFSA is filed, saved scholarships, overdue deadlines, SAT/ACT scores and when the student last used the app.",
       "Progress and grades adds course grades and the state scholarship GPA (like the HOPE GPA). Only a parent, or a student who is 18 or older, can turn this on.",
       "The school never sees essays, notes, AI counselor chats, family income, aid answers or anything about parents.",
+      "The one exception is your choice: when a student applies in the app for the school's own local scholarship, that school's counselors see what you chose to send for that one award.",
       "Tap Stop sharing at any time. Connections end on their own after the student's senior year.",
     ],
   },
@@ -173,13 +174,14 @@ export const TOPICS: Topic[] = [
     title: "For counselors: the free school portal",
     href: "/school",
     keywords: ["counselor", "school", "portal", "dashboard", "caseload", "staff code", "fafsa completion"],
-    summary: "School counselors see the students whose families connected to their school, send reminders and post local scholarships. It's free for every school.",
+    summary: "School counselors see the students whose families connected to their school, send reminders, post local scholarships and receive students' applications for them in the app. It's free for every school.",
     steps: [
       "Sign in with your school email, then open /school and fill in Set up your school.",
       "The ScholarTasks team checks your school, usually within a school day.",
       "Share your school code or link with families (newsletter, email, FAFSA night).",
       "Use the filters to find seniors without a FAFSA, students with no college list, or overdue deadlines. Download a CSV any time.",
       "Add other counselors: send them the staff link from Add counselors.",
+      "Post local scholarships. Students apply right in the app, and their applications show up under Applications for your scholarships. Open one, add a note if you like, and mark it Reviewing, Awarded or Not chosen. The family sees the result in their app.",
     ],
     faq: [
       { q: "Is it really free?", a: "Yes. The school portal is free for every school. Families use ScholarTasks free and can upgrade for the AI counselor and tutor." },
@@ -480,7 +482,7 @@ export const TOPICS: Topic[] = [
     keywords: ["bundle", "reuse essay", "same essay", "similar prompts", "scholarship essays", "career goals essay", "community service essay", "copy draft"],
     summary: "Saved scholarships and college essays that ask the same kind of question (career goals, a challenge, service, leadership, need) are grouped, so one strong draft can start the others.",
     steps: [
-      "Save scholarships and open Get ready to apply on each, so its essay question loads.",
+      "Save scholarships and open each one's application (Start my application), so its essay question loads.",
       "Open College essays and scroll to Essay bundles.",
       "Write one essay in a bundle (25 words or more), then tap Use it to start the empty drafts.",
       "Open each one and change it so it answers its own question and fits its word limit.",
@@ -858,6 +860,33 @@ export const TOPICS: Topic[] = [
     body: [
       "Tap Not for us to hide one. Hidden awards are listed at the bottom with Show again.",
       "Official site opens the page of the organization that gives the award, where you apply.",
+      "Start my application saves it to your deadlines and opens its application page in one tap.",
+    ],
+  },
+  {
+    id: "scholarship-apply",
+    area: "Scholarships",
+    title: "Apply to a scholarship in the app",
+    href: "/scholarships",
+    keywords: ["apply", "application", "start my application", "apply in the app", "submit", "sent", "won", "letters", "recommendation", "transcript", "confirmation", "thank you note", "track applications", "get ready to apply"],
+    summary: "Every saved scholarship has its own application page: the checklist, the questions on the form, papers and letters, sending it, and whether you won.",
+    steps: [
+      "On Scholarships, tap Start my application on any award (or Keep working on my application on a saved one).",
+      "The checklist and essay coach read the official page. Its essay questions show up under Questions on the form.",
+      "Answer each question. Short answers you wrote on the Essays page show up as a starting point: tap one, then change it to fit.",
+      "Under Papers and letters, check off each paper and add who will write your letters. Ask by email opens a polite request from your own email.",
+      "Send it. Most awards are sent on their own website: tap Open the application, paste your answers with the Copy buttons, then tap I sent it. For your school's own local scholarships, tap Send to your school and it goes to your counselors right here.",
+      "When you hear back, tap We won (with the amount) or Not this time. Wins come with a thank-you note to finish in your own words.",
+    ],
+    body: [
+      "The bar at the top shows how much is done and the next thing to do.",
+      "The Scholarships page shows a count of your applications: getting ready, sent and won, with the total won.",
+      "Sending to your school: you choose what goes in (answers always; GPA and scores, activities and the essay if you tick them). Only that school's counselors see it, and you can take it back until they start reviewing it.",
+      "Every answer stays in your own words. ScholarTasks never writes essays or answers for you.",
+    ],
+    faq: [
+      { q: "Why can't every scholarship be sent in the app?", a: "Most organizations only take applications on their own website. ScholarTasks gets everything ready and keeps track; your school's own local scholarships can be sent right here." },
+      { q: "Does marking it sent also check off my deadline?", a: "Yes. The deadline on your plan is checked off too (or waits for a parent's OK if your family set that up)." },
     ],
   },
 
@@ -1262,6 +1291,8 @@ export const TIPS: Tip[] = [
   { routes: ["/scholarships"], sel: ".sch-tabs", body: "Good matches fit now. Maybe needs a check. Coming up opens in a later grade.", topic: "scholarship-matches" },
   { routes: ["/scholarships"], sel: ".sch-card h2", body: "Each card shows who offers it, the amount, the deadline and why it fits or what to check.", topic: "scholarship-matches" },
   { routes: ["/scholarships"], sel: ".sch-card button", text: "Add to my deadlines", body: "Puts this award on your plan with email reminders.", topic: "scholarship-save" },
+  { routes: ["/scholarships"], sel: ".sch-card button", text: "Start my application", body: "Saves it and opens its own application page: questions, papers, letters and sending.", topic: "scholarship-apply" },
+  { routes: ["/scholarships/apply"], sel: ".bar-track", body: "How much is done, and the next thing to do.", topic: "scholarship-apply" },
   { routes: ["/scholarships"], sel: ".sch-card button", text: "Not for us", body: "Hides this award. Find it again under Hidden at the bottom.", topic: "scholarship-save" },
 
   // Financial aid
