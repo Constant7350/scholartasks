@@ -84,7 +84,7 @@ export const MESSAGES = [
   { title: "Real money, checked by people", text: "Scholarships are re-checked every week and reviewed by our team. No scams, no fees to apply." },
   { title: "An AI counselor that teaches, never cheats", text: "Answers any question at 11 pm, helps with essays by giving feedback, and never writes homework or essays." },
   { title: "Parents stay in charge", text: "The parent owns the account and decides what each student can see and do." },
-  { title: "College or a trade, both are wins", text: "Majors, pay, cost and 65 trades side by side, with ways to fund each one." },
+  { title: "College or a trade, both are wins", text: "Majors, pay, cost and 67 trades side by side, with ways to fund each one." },
 ];
 
 export const CHANNELS = [
@@ -214,7 +214,7 @@ export const BUSINESS = {
     "The only app that covers grades 8 to 12, seniors, parents and schools together (78% of 29 features, next best 59%).",
     "Parent-owned family account with student permissions.",
     "Georgia HOPE and Zell built in, with nationwide options always shown.",
-    "College majors and 65 trades side by side.",
+    "College majors and 67 trades side by side.",
     "Free school portal (competitors charge schools $3.50 to $8.50 per student).",
     "Scholarships checked by people, never sells data, honest AI that won't do homework.",
   ],

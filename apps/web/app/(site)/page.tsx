@@ -15,7 +15,7 @@ const FEATURES = [
   { icon: "🦉", color: "green", title: "Homework Helper", text: "A safe AI tutor for every subject, from math to essays. One hint at a time, checks their work, asks them to explain their thinking, and never gives answers or writes for them. Parents see what was practiced." },
   { icon: "📝", color: "purple", title: "SAT and ACT prep", text: "Over 600 original practice questions, timed practice tests, a score plan and a tutor that explains instead of giving answers." },
   { icon: "🏫", color: "", title: "Colleges and majors", text: "Search almost 2,000 colleges across the country by major, with reach, match and likely based on grades and scores, cost after state aid, aid offer compare and community college transfer savings." },
-  { icon: "🔧", color: "coral", title: "Trades and careers", text: "65 skilled trades with earnings, training, licensing and schools in every state, plus apply checklists and ways to fund the training." },
+  { icon: "🔧", color: "coral", title: "Trades and careers", text: "67 skilled trades with earnings, training, licensing and schools in every state, plus apply checklists and ways to fund the training." },
   { icon: "🧾", color: "gold", title: "FAFSA and Georgia aid", text: "The FAFSA and Georgia's aid form, broken into small steps that explain who does each part. We never ask for FSA IDs or Social Security numbers." },
   { icon: "✅", color: "green", title: "One to-do list", text: "Every date in one list, sorted into late, this week and coming up. Reminders by email, text, calendar and phone." },
   { icon: "🌟", color: "purple", title: "Beyond grades", text: "Activities, service hours, leadership and recommendation letters, with milestones for each school year and a resume that builds itself." },
