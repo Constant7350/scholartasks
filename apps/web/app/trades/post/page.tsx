@@ -20,6 +20,7 @@ export default function PostOpeningPage() {
         <div className="panel trade-callout"><b>2. Our team reviews it</b><span>Usually within two business days. We check every listing to keep students safe.</span></div>
         <div className="panel trade-callout"><b>3. Students contact you</b><span>They apply the way you choose: your website, email or phone. We never share students&apos; details.</span></div>
       </div>
+      <p className="hint">Hiring students for weekend, holiday or school-break work? Use a <a href="/employers">company account</a> instead.</p>
       <PostForm />
     </Page>
   );

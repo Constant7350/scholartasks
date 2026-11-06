@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import { OPENING_KINDS, OPENING_LAW_LINKS, OPENING_MAX_DAYS, OPENING_MIN_AGES, OPENING_RULES, OPENING_STATES } from "@scholartasks/core";
+import { OPENING_KINDS, TRADE_KINDS, OPENING_LAW_LINKS, OPENING_MAX_DAYS, OPENING_MIN_AGES, OPENING_RULES, OPENING_STATES } from "@scholartasks/core";
 import { STATE_NAMES, TRADES } from "../../../lib/trades";
 
 const SUPPORT_EMAIL = "support@scholartasks.com";
@@ -62,7 +62,7 @@ export function PostForm() {
         <div className="field">
           <label htmlFor="o-kind">What kind?</label>
           <select className="input" id="o-kind" name="kind" value={kind} onChange={(e) => setKind(e.target.value)}>
-            {Object.entries(OPENING_KINDS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+            {TRADE_KINDS.map((k) => <option key={k} value={k}>{OPENING_KINDS[k]}</option>)}
           </select>
         </div>
         <div className="field">

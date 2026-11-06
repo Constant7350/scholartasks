@@ -17,7 +17,7 @@ export interface PublicOpening {
 
 /** One listing as our team sees it on /admin/openings. */
 export interface TeamOpening extends Omit<PublicOpening, "featured" | "apply_in_app"> {
-  employer_id?: string | null; apply_in_app?: boolean; fee_status?: string;
+  employer_id?: string | null; apply_in_app?: boolean; fee_status?: string; extra_questions?: string[];
   featured_until: string | null; views: number; apply_clicks: number;
   contact_name: string; contact_email: string; contact_phone: string | null; rapids_number: string | null;
   status: "pending" | "approved" | "rejected" | "hidden"; review_note: string | null; reports: number; created_at: string;

@@ -148,7 +148,106 @@ export const EMPLOYER_PHASES: Phase[] = [
   },
 ];
 
-export const ALL_EMPLOYER_STEPS = EMPLOYER_PHASES.flatMap((p) => p.steps);
+/**
+ * Weekend and holiday jobs: how we bring in companies in many states at once (researched 2026-11-06).
+ * The idea: reach the groups that already talk to thousands of employers (one-to-many), time it to the
+ * two hiring seasons, and let families invite the places they already know.
+ */
+export const PART_TIME_SCALE = {
+  oneLine: "Win employers through the groups that already reach thousands of them (franchise owners, restaurant and retail associations, workforce boards, chambers, camps), time every push to the two hiring seasons, and let families invite the businesses they know. Free while we grow.",
+  why: [
+    "About 6.2 million teens ages 16 to 19 worked in summer 2026 (35.5%), and more than half work in food service (32%) or retail (21%). Those are the companies to reach first (Pew Research, Aug 2026).",
+    "Holiday hiring is shrinking: retailers expected 265,000 to 365,000 seasonal hires in 2025, down from 442,000 in 2024. Companies want reliable help without paying a staffing agency, and teens need places that still hire them (NRF via CNN, Dec 2025).",
+    "City and county summer youth job programs recruit employers every spring and already pitch 'train your future workers'. The research says what works: peer employer champions, short low-effort roles, and showing hosting is easy (MDRC).",
+    "Our edge for companies: free, students near them first, every application already has a parent's OK and the parent's email, and teen hour rules are built into the form.",
+  ],
+  seasons: [
+    { when: "January to April", what: "Summer jobs: pools, camps, parks, ice cream, restaurants, amusement and family entertainment. Most summer hiring is decided by April." },
+    { when: "September to early November", what: "Holiday and winter-break jobs: retail, gift wrapping, movie theaters, restaurants, shipping help, tree lots." },
+    { when: "All year", what: "Weekend jobs: grocery baggers, restaurants, garden centers, pet stores, youth sports referees, tutoring centers." },
+  ],
+  channels: [
+    { name: "Franchise and multi-location owners", why: "One owner of 10 to 50 restaurants, grocery stores, theaters or trampoline parks can post in several states at once. Start with franchisees in our first states, then regional chains. Needs the multi-location account." },
+    { name: "State restaurant and retail associations", why: "Every state has a restaurant (and lodging) association and a retail association with a newsletter and member events. Restaurant associations already link restaurants to high schools through ProStart (48 states). Ask for a member benefit mention and a 20-minute webinar each season." },
+    { name: "Workforce boards and summer youth job programs", why: "Local workforce boards and city summer youth employment programs recruit employers every spring. Offer ScholarTasks free as their application and parent-consent tool, with a partner code so they see their numbers." },
+    { name: "Chambers of commerce", why: "State and local chambers reach small businesses. A free 'teen hiring, parent-approved' tool is an easy member benefit and newsletter item." },
+    { name: "Camps, YMCAs, Boys & Girls Clubs, parks and recreation", why: "They hire 15 to 17 year olds as junior counselors and lifeguards every summer, often across many sites. The American Camp Association, state park and recreation associations and Y regional offices reach thousands of them." },
+    { name: "Families invite the businesses they know", why: "Every family knows a manager: a parent's own workplace, the pizza place, the church daycare. An 'Invite a company' button and share kit turns our families in every state into recruiters at no cost." },
+    { name: "Schools on our counselor portal", why: "Work-based learning and career coordinators already call local employers. Give them the link and a printable flyer for their employer lists." },
+    { name: "Google search (free)", why: "Mark each approved job with Google's JobPosting format so it can show in Google's job search for free. Indeed now charges for free XML feeds (March 2026), so we skip Indeed for now." },
+    { name: "Local news every May and October", why: "Teen job stories run every spring ('worst teen summer job market in decades'). Pitch: 'A free job board where parents approve every teen application.' Each story reaches families and local owners." },
+    { name: "Paid ads, last and small", why: "Short Meta and Google ad tests aimed at local business owners in the six weeks before each season, one state at a time. Keep only what brings posted jobs for under about $25 each." },
+  ],
+  messages: [
+    "Hire reliable local teens, with a parent already on board.",
+    "Free to post. Every applicant comes with a parent's OK and the parent's email.",
+    "Hours rules for 14 and 15 year olds are built in, so scheduling stays legal.",
+    "Students near you see your job first. You choose who to call.",
+    "Write a reference letter in two minutes and build a loyal summer crew year after year.",
+  ],
+  metrics: [
+    "Live weekend and holiday jobs by state (goal: 100 in Georgia by April 2027, 25 in each Southeast state by summer 2027).",
+    "Companies posting, and how many post again next season.",
+    "Applications per job, parent consent rate, and Hired rate.",
+    "Partners sending companies (associations, workforce boards, chambers, schools) and jobs from each partner code.",
+    "Cost per posted job for any paid push.",
+  ],
+};
+
+/** Steps for the weekend and holiday jobs push. Same rules: never change an id. */
+export const PART_TIME_PHASES: Phase[] = [
+  {
+    id: "emp-pt-prove",
+    name: "Weekend jobs A. Prove it in Georgia",
+    dates: "Nov 2026 to Feb 2027",
+    goal: "30 companies and 50 live weekend or holiday jobs in Georgia, and the first students hired",
+    steps: [
+      { id: "emp-pt-schema", title: "Show approved jobs in Google's job search", how: "Add Google's JobPosting format to each job page and list them in the sitemap. Free traffic, and companies see students found them.", who: "Claude", when: "Nov 2026", claude: true },
+      { id: "emp-pt-invite", title: "Add an Invite a company button for families", how: "On Weekend and holiday jobs: a short message and link families can send to a manager they know, with a referral count.", who: "Claude", when: "Dec 2026", claude: true },
+      { id: "emp-pt-kit", title: "Make the employer share kit", how: "One-page flyer with QR code, a short email, a social post and a 20-minute webinar slide set for associations and chambers.", who: "Claude", when: "Dec 2026", claude: true },
+      { id: "emp-pt-franchise-ga", title: "Talk to 5 franchise owners in Georgia", how: "Restaurants, grocery, theaters and family entertainment owners with several locations. Offer to set up their first posts with them.", who: "Constant", when: "Jan 2027" },
+      { id: "emp-pt-chamber-ga", title: "Present at 3 Georgia chambers of commerce", how: "Macon, Warner Robins and one Atlanta-area chamber. Five minutes, the flyer and the free offer before summer hiring.", who: "Constant", when: "Jan to Feb 2027" },
+      { id: "emp-pt-wb-ga", title: "Offer the tool to 2 Georgia workforce boards' summer youth programs", how: "Free application and parent consent for their employers, with a partner code and their own counts.", who: "Constant", when: "Feb 2027" },
+    ],
+  },
+  {
+    id: "emp-pt-southeast",
+    name: "Weekend jobs B. Partners across the Southeast",
+    dates: "Mar to Aug 2027",
+    goal: "25 live jobs in each Southeast state and 10 partner organizations sending companies",
+    steps: [
+      { id: "emp-pt-partner-codes", title: "Build partner codes and partner counts", how: "Associations, workforce boards, chambers and schools get a link; companies who join through it are counted on a simple partner page.", who: "Claude", when: "Mar 2027", claude: true },
+      { id: "emp-pt-state-rules", title: "Add each state's teen work rules", how: "Hours, permits and night limits from each state's labor office, shown on the post form for that state (the stricter rule wins).", who: "Claude", when: "Mar 2027", claude: true },
+      { id: "emp-pt-assoc", title: "Pitch 6 state restaurant and retail associations", how: "Georgia, Florida, South Carolina, North Carolina, Tennessee, Alabama: a member benefit note and one spring webinar each.", who: "Constant", when: "Mar to Apr 2027" },
+      { id: "emp-pt-camps", title: "Reach camps, YMCAs and parks and recreation", how: "The state camp and park and recreation associations and Y regional offices: junior counselor and lifeguard jobs for summer.", who: "Team", when: "Mar 2027" },
+      { id: "emp-pt-press-may", title: "Pitch local news before summer", how: "A short story idea and a parent and student to interview, in each state where we have families.", who: "Team", when: "May 2027" },
+      { id: "emp-pt-ads-test", title: "Test small ads to business owners in one state", how: "Six weeks before summer hiring, a small budget, measured by posted jobs. Stop if a posted job costs more than about $25.", who: "Team", when: "Apr 2027" },
+    ],
+  },
+  {
+    id: "emp-pt-national",
+    name: "Weekend jobs C. Many states at once",
+    dates: "Sep 2027 to 2028",
+    goal: "Jobs in every state where we have families; regional chains posting in several states",
+    steps: [
+      { id: "emp-pt-multi", title: "Build multi-location company accounts", how: "One company, many locations and managers, posting the same job to several places at once.", who: "Claude", when: "Aug 2027", claude: true },
+      { id: "emp-pt-chains", title: "Talk to 10 regional chains and franchise groups", how: "Use Georgia and Southeast results (applications, hires, parent consent) as proof. Start before holiday hiring.", who: "Constant", when: "Sep to Oct 2027" },
+      { id: "emp-pt-national-assoc", title: "Approach national groups", how: "Camp, park and recreation and youth sports associations, and the national restaurant group's school program, for a newsletter mention or a partner listing.", who: "Constant", when: "2028" },
+      { id: "emp-pt-fee-on", title: "Decide on the flat fee state by state", how: "Turn it on only where jobs get steady applications. Keep it free for camps, nonprofits, parks and schools.", who: "Constant", when: "2028" },
+    ],
+  },
+];
+
+export const PART_TIME_SOURCES = [
+  { label: "Teen summer employment 2026 (Pew Research Center)", url: "https://www.pewresearch.org/short-reads/2026/08/19/after-a-long-fade-is-teen-summer-employment-in-the-us-rebounding/" },
+  { label: "Holiday hiring 2025, NRF and Challenger (CNN, Dec 2025)", url: "https://kvia.com/news/business-technology/cnn-business-consumer/2025/12/02/economic-warning-sign-holiday-jobs-are-tougher-to-find/" },
+  { label: "Recruiting employer partners for summer youth programs (MDRC)", url: "https://www.mdrc.org/work/publications/recruiting-employer-partners-summer-youth-employment-programs" },
+  { label: "NYC Summer Youth Employment Program: employer partnerships 2026", url: "https://www.nyc.gov/assets/dycd/downloads/pdf/SYEP_Employer_Partnerships_2026.pdf" },
+  { label: "Indeed ends free visibility for some XML feeds (March 2026)", url: "https://www.pulse.bot/hrtech/news/visibility-ends-for-certain-free-single-source-xml-feeds-on-indeed-d0fd11a8-3b21-468c-8d83-d9a7a61c3d69" },
+  { label: "ProStart in 48 states (FSR Magazine)", url: "https://www.fsrmagazine.com/industry-news/nraef-school-program-grows-48-states/" },
+];
+
+export const ALL_EMPLOYER_STEPS = [...EMPLOYER_PHASES, ...PART_TIME_PHASES].flatMap((p) => p.steps);
 
 export const EMPLOYER_SOURCES = [
   { label: "Child labor rules for teens (U.S. Department of Labor, YouthRules)", url: "https://www.dol.gov/agencies/whd/youthrules" },

@@ -156,6 +156,7 @@ function OpeningCard({ o }: { o: PublicOpening }) {
         <p className="opening-actions" style={{ marginTop: 8 }}>
           {o.apply_in_app && <a className="btn btn-inline btn-sm" href={`/jobs/apply?opening=${o.id}`} onClick={() => countOnce(o.id, "apply")}>Apply in ScholarTasks</a>}
           {o.apply_url && <a className="btn btn-inline btn-sm" href={o.apply_url} target="_blank" rel="noreferrer nofollow" onClick={() => countOnce(o.id, "apply")}>Apply on their site</a>}
+          {!o.apply_in_app && <a className="btn btn-inline btn-sm btn-ghost" href={`/jobs/apply?opening=${o.id}&outside=1`} title="Keep track of it in ScholarTasks. A parent agrees, and if you're hired it goes on your resume.">I applied: keep track</a>}
           <ReportButton id={o.id} />
         </p>
         <p className="hint small">

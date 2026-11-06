@@ -5,7 +5,7 @@ import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { StatusPill, whenOf } from "../review-kit";
 import { Outlook } from "./outlook-view";
-import { ALL_EMPLOYER_STEPS, EMPLOYER_CHANNELS, EMPLOYER_MESSAGES, EMPLOYER_METRICS, EMPLOYER_PHASES, EMPLOYER_SOURCES, EMPLOYER_SUMMARY, HOW_IT_WORKS, LEGAL, PRICING, SAFETY } from "./employers";
+import { ALL_EMPLOYER_STEPS, EMPLOYER_CHANNELS, EMPLOYER_MESSAGES, EMPLOYER_METRICS, EMPLOYER_PHASES, EMPLOYER_SOURCES, EMPLOYER_SUMMARY, HOW_IT_WORKS, LEGAL, PART_TIME_PHASES, PART_TIME_SCALE, PART_TIME_SOURCES, PRICING, SAFETY } from "./employers";
 import { ALL_STEPS, AUDIENCE, BUSINESS, CALENDAR, CHANNELS, MESSAGES, PHASES, SOURCES, SUMMARY, type Step } from "./plan";
 
 /**
@@ -263,7 +263,21 @@ export default function MarketingPage() {
               <h2 style={{ marginTop: 16 }}>How we know it&apos;s working</h2>
               <ul className="mk-list">{EMPLOYER_METRICS.map((m) => <li key={m}>{m}</li>)}</ul>
             </section>
-            {EMPLOYER_PHASES.map((p) => {
+            <section className="panel">
+              <h2>Weekend and holiday jobs: reaching companies in many states</h2>
+              <p>{PART_TIME_SCALE.oneLine}</p>
+              <ul className="mk-list">{PART_TIME_SCALE.why.map((w) => <li key={w}>{w}</li>)}</ul>
+              <h2 style={{ marginTop: 16 }}>When to push</h2>
+              <ul className="mk-list">{PART_TIME_SCALE.seasons.map((x) => <li key={x.when}><b>{x.when}:</b> {x.what}</li>)}</ul>
+              <h2 style={{ marginTop: 16 }}>Who to reach, best first</h2>
+              <ol className="mk-list">{PART_TIME_SCALE.channels.map((c) => <li key={c.name}><b>{c.name}.</b> {c.why}</li>)}</ol>
+              <h2 style={{ marginTop: 16 }}>What we tell companies</h2>
+              <ul className="mk-list">{PART_TIME_SCALE.messages.map((m) => <li key={m}>{m}</li>)}</ul>
+              <h2 style={{ marginTop: 16 }}>How we know it&apos;s working</h2>
+              <ul className="mk-list">{PART_TIME_SCALE.metrics.map((m) => <li key={m}>{m}</li>)}</ul>
+              <p className="hint" style={{ marginBottom: 0 }}>Sources: {PART_TIME_SOURCES.map((x, i) => <span key={x.url}>{i ? " · " : ""}<a href={x.url} target="_blank" rel="noreferrer">{x.label}</a></span>)}</p>
+            </section>
+            {[...EMPLOYER_PHASES, ...PART_TIME_PHASES].map((p) => {
               const done = p.steps.filter((s) => ["done", "skip"].includes(statusOf(s.id))).length;
               const shown = p.steps.filter((s) => showDone || !["done", "skip"].includes(statusOf(s.id)));
               return (
