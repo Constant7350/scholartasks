@@ -190,7 +190,7 @@ export default function PlanPage() {
 
       <section className="panel">
         <h2>Colleges</h2>
-        <p className="hint" style={{ marginTop: 0 }}>Not sure where to apply? <a href="/colleges">Find colleges that fit</a> with five quick questions.</p>
+        <p className="hint" style={{ marginTop: 0 }}>Not sure where to apply? <a href="/colleges">Find colleges that fit</a> with five quick questions. Applying? Track your <a href="/plan/papers">transcripts and letters</a>.</p>
         {!mayChangePlan && <p className="note note-info" style={{ marginTop: 0 }}>Colleges you add will wait for your parent's OK.</p>}
         <form
           className="row"

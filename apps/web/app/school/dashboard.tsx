@@ -6,6 +6,7 @@ import { gpaLabel, packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { Roster } from "./roster";
 import { SchoolApplications } from "./applications";
+import { SchoolTranscripts } from "./transcripts";
 
 
 export interface School {
@@ -183,6 +184,7 @@ export function Dashboard({ school, role, onChanged }: { school: School; role: "
       <Roster school={school} role={role} />
       <SendMessage schoolId={school.id} sent={msgs} onSent={load} />
       <LocalScholarships schoolId={school.id} list={local} onPosted={load} />
+      <SchoolTranscripts schoolId={school.id} />
       <SchoolApplications schoolId={school.id} />
       <StaffList school={school} role={role} staff={staff} onChanged={load} />
     </>

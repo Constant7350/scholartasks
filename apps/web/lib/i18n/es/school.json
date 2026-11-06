@@ -209,5 +209,18 @@
   "Watch the tour": "Ver el recorrido",
   "What can counselors see?": "¿Qué pueden ver los consejeros?",
   "What does the school portal cost?": "¿Cuánto cuesta el portal escolar?",
-  "Yes, if you want to. You can start with just your school code, no data agreement needed. To upload a class list, your school admin signs our student data agreement in the portal, then uploads a CSV with names, grade, school ID and an optional email. You see who has joined and can email your code to families who haven't. No grades are uploaded, and the roster is deleted within 45 days if the agreement ends. We will also sign your district's own agreement.": "Sí, si quieren. Pueden empezar solo con el código de la escuela, sin necesidad de un acuerdo de datos. Para subir una lista de clase, el administrador de la escuela firma nuestro acuerdo de datos estudiantiles en el portal y luego sube un CSV con nombres, grado, ID escolar y un correo opcional. Ves quién se ha unido y puedes enviar tu código por correo a las familias que no lo han hecho. No se suben notas, y la lista se borra en un plazo de 45 días si el acuerdo termina. También firmamos el acuerdo propio de tu distrito."
+  "Yes, if you want to. You can start with just your school code, no data agreement needed. To upload a class list, your school admin signs our student data agreement in the portal, then uploads a CSV with names, grade, school ID and an optional email. You see who has joined and can email your code to families who haven't. No grades are uploaded, and the roster is deleted within 45 days if the agreement ends. We will also sign your district's own agreement.": "Sí, si quieren. Pueden empezar solo con el código de la escuela, sin necesidad de un acuerdo de datos. Para subir una lista de clase, el administrador de la escuela firma nuestro acuerdo de datos estudiantiles en el portal y luego sube un CSV con nombres, grado, ID escolar y un correo opcional. Ves quién se ha unido y puedes enviar tu código por correo a las familias que no lo han hecho. No se suben notas, y la lista se borra en un plazo de 45 días si el acuerdo termina. También firmamos el acuerdo propio de tu distrito.",
+  "· asked {n}": "· pedido el {n}",
+  "· grade": "· grado",
+  "({length} to send)": "({length} por enviar)",
+  "{x}{x2} · by {x3}": "{x}{x2} · por {x3}",
+  "e.g. Sent through Common App. Pay the $5 fee at the front office.": "p. ej. Enviado por la Common App. Paga la tarifa de $5 en la oficina.",
+  "Needed by {n}": "Se necesita para el {n}",
+  "No deadline given": "Sin fecha límite",
+  "Not sent yet": "Aún no enviado",
+  "Sent ({length})": "Enviados ({length})",
+  "Students ask here for what each college needs from the school. Send it the way you always do (Common App, GAfutures, Parchment), then tap <1>Sent</1>. The family sees it, with your note.": "Aquí los estudiantes piden lo que cada universidad necesita de la escuela. Envíalo como siempre (Common App, GAfutures, Parchment) y luego toca <1>Enviado</1>. La familia lo ve, con tu nota.",
+  "To send": "Por enviar",
+  "Transcript and letter requests{x}": "Pedidos de certificados y cartas{x}",
+  "Transcript requests need database update 62. Ask the ScholarTasks team.": "Los pedidos de certificados necesitan la actualización 62 de la base de datos. Pregunta al equipo de ScholarTasks."
 }

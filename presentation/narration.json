@@ -71,7 +71,7 @@
     {
       "id": "colleges",
       "title": "Colleges",
-      "narration": "Students can search more than five thousand colleges, choose public, private or Christian colleges, even by church family, take a quick match quiz, and add a school with one tap. Each college is marked reach, match or likely, based on grades, harder classes and test scores, and shows an estimated cost after state aid and saved scholarships. The essay coach gives feedback on a draft typed in, uploaded from Word, or photographed from paper, and the draft downloads back as a Word file. It never writes for the student. And the Common App ready page checks every activity, honor and essay against Common App's limits, so applying is just copy, paste and submit."
+      "narration": "Students can search more than five thousand colleges, choose public, private or Christian colleges, even by church family, take a quick match quiz, and add a school with one tap. Each college is marked reach, match or likely, based on grades, harder classes and test scores, and shows an estimated cost after state aid and saved scholarships. The essay coach gives feedback on a draft typed in, uploaded from Word, or photographed from paper, and the draft downloads back as a Word file. It never writes for the student. And the Common App ready page checks every activity, honor and essay against Common App's limits, so applying is just copy, paste and submit. Then, for each college, students track their transcript, counselor letter and teacher letters, and can ask their counselor for them right in the app."
     },
     {
       "id": "majors",
@@ -136,7 +136,7 @@
     {
       "id": "schools",
       "title": "For schools",
-      "narration": "For school leaders and counselors: ScholarTasks supports your counselors. It doesn't replace them. Our school portal is free for every school. Counselors can see who filed the FAFSA, who has a college list, and who's behind on deadlines. They can upload a class roster to see who has joined, email a whole grade at once, and post local scholarships just for their families. Students apply for those right in the app, and counselors mark each one awarded or not. Families choose what to share with a school code, and can stop any time. Essays, AI chats and income are never shared, unless a student chooses to send an essay with an application for the school's own scholarship."
+      "narration": "For school leaders and counselors: ScholarTasks supports your counselors. It doesn't replace them. Our school portal is free for every school. Counselors can see who filed the FAFSA, who has a college list, and who's behind on deadlines. They can upload a class roster to see who has joined, email a whole grade at once, and post local scholarships just for their families. Students apply for those right in the app, and counselors mark each one awarded or not. Students can also ask for transcripts and counselor letters in the app. Counselors send them the usual way, tap sent, and the family sees it. Families choose what to share with a school code, and can stop any time. Essays, AI chats and income are never shared, unless a student chooses to send an essay with an application for the school's own scholarship."
     },
     {
       "id": "cost",
