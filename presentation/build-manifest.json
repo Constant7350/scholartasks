@@ -33,39 +33,39 @@
   ],
   "slides": {
     "cover": {
-      "slideHash": "424e899d8b1b0f30",
-      "narrationHash": "f695f2b7f5f2fd43",
-      "seconds": 23.4
+      "slideHash": "b5d59cfa28044491",
+      "narrationHash": "46dc22ba053339f0",
+      "seconds": 20.7
     },
     "challenge": {
-      "slideHash": "5c1ec3e5ac268aac",
-      "narrationHash": "f13a10e1167d1586",
-      "seconds": 20.2
+      "slideHash": "0749994c7043c82d",
+      "narrationHash": "5fc9b909a03b231e",
+      "seconds": 21.8
     },
     "what": {
-      "slideHash": "fd2cc467c29aa21c",
-      "narrationHash": "c79577410b18ed96",
-      "seconds": 20.2
+      "slideHash": "2589c03c674e1300",
+      "narrationHash": "99a043de6fb735bf",
+      "seconds": 20.5
     },
     "howitworks": {
-      "slideHash": "408d8f8c0ee2453d",
+      "slideHash": "907388798f7d9cac",
       "narrationHash": "656a0a44fb9577ed",
       "seconds": 19.6
     },
     "parent": {
-      "slideHash": "fb66c5b198ab5271",
+      "slideHash": "6ac4ff177bbe7240",
       "narrationHash": "a1779223d20011c9",
       "seconds": 45.4
     },
     "counselor": {
-      "slideHash": "1a1c21dad2afbca9",
+      "slideHash": "7f7da1973cdb2cfa",
       "narrationHash": "c644db99aff5bb6f",
       "seconds": 23.1
     },
     "scholarships": {
-      "slideHash": "5130e006fab2b33b",
-      "narrationHash": "fc257f27dbcf5e04",
-      "seconds": 58.3
+      "slideHash": "bb3c08c77537701a",
+      "narrationHash": "26707fdff61d856d",
+      "seconds": 65.4
     },
     "contest": {
       "slideHash": "e632b2b28cb31c4a",
@@ -73,12 +73,12 @@
       "seconds": 47.8
     },
     "grades": {
-      "slideHash": "5baec588def17bef",
-      "narrationHash": "19f56184bdea3460",
-      "seconds": 27.2
+      "slideHash": "26ba88d28a4f0554",
+      "narrationHash": "81b359cc9a83b037",
+      "seconds": 32.4
     },
     "habits": {
-      "slideHash": "66ac7bd62a3120ce",
+      "slideHash": "bb9993a9ad3a118c",
       "narrationHash": "853afcfe114ed0af",
       "seconds": 25
     },
@@ -93,72 +93,72 @@
       "seconds": 31.2
     },
     "prep": {
-      "slideHash": "1739c4f4e508c067",
+      "slideHash": "93a83d37d8bc4694",
       "narrationHash": "28b2a8913a51286b",
       "seconds": 21.1
     },
     "colleges": {
-      "slideHash": "72db9bb5b04db209",
+      "slideHash": "50a9a43d9282e0d2",
       "narrationHash": "679a03128f2ed23c",
       "seconds": 60.9
     },
     "majors": {
-      "slideHash": "b064c116f6386f10",
+      "slideHash": "f427d663e4bae8ec",
       "narrationHash": "a070b4e5c8a6b882",
       "seconds": 79.6
     },
     "trades": {
-      "slideHash": "10db2ae33f9b189c",
-      "narrationHash": "bfe07de5034a060a",
-      "seconds": 97.4
+      "slideHash": "c0dab23b7be24751",
+      "narrationHash": "f1fa5d024fa12b52",
+      "seconds": 98.4
     },
     "military": {
-      "slideHash": "75456a90b93227aa",
-      "narrationHash": "b200fd09a6c1e6b5",
-      "seconds": 41.7
+      "slideHash": "35155daf76dbecb0",
+      "narrationHash": "d09964ffe3386801",
+      "seconds": 37.7
     },
     "aid": {
-      "slideHash": "5c3ef7be28b5819f",
-      "narrationHash": "d5ca9ac9474721ad",
-      "seconds": 40.6
+      "slideHash": "9ff5dca9c337eead",
+      "narrationHash": "14fdebc20b7a174e",
+      "seconds": 35
     },
     "todo": {
-      "slideHash": "e5c1cdd081468069",
+      "slideHash": "51629c9e738264fe",
       "narrationHash": "0917e6ff204a427a",
       "seconds": 27.8
     },
     "phone": {
-      "slideHash": "30a8e2b78aa6303c",
-      "narrationHash": "c01a511f6f25e001",
-      "seconds": 36.6
+      "slideHash": "a0918b70dfb04481",
+      "narrationHash": "b10b9fc78057588b",
+      "seconds": 37.3
     },
     "journey": {
-      "slideHash": "c79f16d66d7470c7",
-      "narrationHash": "0d3716efb9f7b032",
-      "seconds": 34.3
+      "slideHash": "c837ece1cb0fc67f",
+      "narrationHash": "9709e1614bcfc7d1",
+      "seconds": 36.3
     },
     "compare1": {
-      "slideHash": "c31c56ae2a90f876",
-      "narrationHash": "676f45190fefb637",
-      "seconds": 20.5
+      "slideHash": "befd6b43da1ee2ba",
+      "narrationHash": "78aa12bb08291c9e",
+      "seconds": 20.4
     },
     "compare2": {
-      "slideHash": "a4d44eaa9c0dc11c",
-      "narrationHash": "8ec44c44c0ad6928",
-      "seconds": 22.3
+      "slideHash": "decc3993eba01dd6",
+      "narrationHash": "752121f0d8b26639",
+      "seconds": 17.9
     },
     "compare3": {
-      "slideHash": "23f686b98fd7d7c0",
-      "narrationHash": "66cbd45bf08a6ac2",
-      "seconds": 41.5
+      "slideHash": "bacbb5adff8c3793",
+      "narrationHash": "651d9f6ab974cc4b",
+      "seconds": 45.1
     },
     "better": {
-      "slideHash": "affee233c4ec186b",
-      "narrationHash": "e3f912b43e2ab235",
-      "seconds": 30.2
+      "slideHash": "52145d250b639645",
+      "narrationHash": "114385fdd4fce226",
+      "seconds": 25.9
     },
     "privacy": {
-      "slideHash": "b550461a31621be5",
+      "slideHash": "584970655c16b689",
       "narrationHash": "ff2f4804eb6c73ac",
       "seconds": 35.5
     },
@@ -168,14 +168,14 @@
       "seconds": 60.6
     },
     "cost": {
-      "slideHash": "b6dd830b26f99b84",
+      "slideHash": "f9e194e8f850191f",
       "narrationHash": "b4226291f86486dc",
       "seconds": 19.2
     },
     "start": {
-      "slideHash": "17db051dda921399",
-      "narrationHash": "cc55cc43aaa7297a",
-      "seconds": 39.2
+      "slideHash": "84a72cc1662d3157",
+      "narrationHash": "97cee8830f258d11",
+      "seconds": 36.5
     }
   }
 }

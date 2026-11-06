@@ -104,7 +104,7 @@ export function ImportCard({ sb, studentId, onSaved, file }: {
       {found && found.length > 0 && (
         <div className="import-review">
           <p className="hint" style={{ margin: "14px 0 8px" }}>
-            Found {found.length} {found.length === 1 ? "course" : "courses"}. Fix anything that's wrong and untick any you don't want.{note ? ` ${note}` : ""}
+            Found {found.length} {found.length === 1 ? "course" : "courses"}. Fix anything that's wrong and uncheck any you don't want.{note ? ` ${note}` : ""}
           </p>
           <div className="import-table">
             {found.map((f, i) => (

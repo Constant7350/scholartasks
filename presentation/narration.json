@@ -6,17 +6,17 @@
     {
       "id": "cover",
       "title": "ScholarTasks",
-      "narration": "Hi everyone. I want to show you ScholarTasks, an app built to make the college years less stressful. It helps with college plans, scholarships, state money like Georgia's HOPE and Florida's Bright Futures, grades and test prep. It's all in one place, on the phone and on the web, in English or Spanish."
+      "narration": "Hi everyone. I want to show you ScholarTasks, an app built to make the college years less stressful. It helps with college plans, scholarships, your own state's college money, grades and test prep. It's all in one place, on the phone and on the web, in English or Spanish."
     },
     {
       "id": "challenge",
       "title": "The problem",
-      "narration": "Most of us have felt this. Deadlines are spread across a dozen websites. Georgia's HOPE grade point average is counted differently from the one on the report card. Scholarships are all over the internet. And our school counselors have a lot of students. ScholarTasks pulls all of this into one place."
+      "narration": "Most of us have felt this. Deadlines are spread across a dozen websites. State scholarships often count the grade point average differently from the report card. Scholarships are all over the internet. And our school counselors have a lot of students. ScholarTasks pulls all of this into one place."
     },
     {
       "id": "what",
       "title": "What it is",
-      "narration": "Think of it in three parts. Plan: what to do, and when. Fund: how to find and keep the money, from HOPE to private scholarships. Prepare: grades, study habits and test scores, starting as early as eighth grade."
+      "narration": "Think of it in three parts. Plan: what to do, and when. Fund: how to find and keep the money, from your state's programs to private scholarships. Prepare: grades, study habits and test scores, starting as early as eighth grade."
     },
     {
       "id": "howitworks",
@@ -36,7 +36,7 @@
     {
       "id": "scholarships",
       "title": "Scholarships",
-      "narration": "Instead of searching a dozen websites, students answer a few questions. Then they see awards sorted into You qualify, Maybe, and Not a fit. There are hundreds of Georgia and national awards, and the list grows every week. Each new award is checked on its official page before families see it, and re-checked twice a week in scholarship season. Then students apply step by step, right in the app. Each award gets its own page with the questions on the form, the papers and recommendation letters it needs, and a bar that shows what to do next. Short answers they already wrote show up as a starting point, and a copy-ready profile fills in the rest. For your school's own local scholarships, students send the application to the counselor right inside the app. And the app keeps track of what was sent and what was won."
+      "narration": "Instead of searching a dozen websites, students answer a few questions. Then they see awards sorted into You qualify, Maybe, and Not a fit. There are hundreds of state, local and national awards, and the list grows every week. Each new award is checked on its official page before families see it, and re-checked twice a week in scholarship season. Then students get each application ready step by step, right in the app. Each award gets its own page with the questions on the form, the papers and recommendation letters it needs, and a bar that shows what to do next. Short answers they already wrote show up as a starting point, and a copy-ready profile fills in the rest. For your school's own local scholarships, students send the application to the counselor right inside the app. Other awards are sent on the award's own website, and the app keeps track of what was sent and what was won."
     },
     {
       "id": "contest",
@@ -46,7 +46,7 @@
     {
       "id": "grades",
       "title": "Grades 8 to 12",
-      "narration": "HOPE is earned in high school, so starting early matters. From eighth grade on, the scorecard shows the HOPE grade point average next to the school one, so there are no surprises later. If a grade slips, Grade Rescue asks a few questions and builds a simple plan. A four-year course plan adds up graduation credits and the rigor courses HOPE needs, and the AI suggests where to stretch."
+      "narration": "State scholarships are often earned in high school, so starting early matters. From eighth grade on, the scorecard shows the grade point average your state's scholarship uses next to the school one, so there are no surprises later. If a grade slips, Grade Rescue asks a few questions and builds a simple plan. A four-year course plan adds up graduation credits and the harder classes your state and colleges look for, and the AI suggests where to stretch."
     },
     {
       "id": "habits",
@@ -81,17 +81,17 @@
     {
       "id": "trades",
       "title": "Trades and careers",
-      "narration": "Not every student wants a four-year degree, and many great careers start with a trade. ScholarTasks covers sixty-seven skilled trades, with what each one earns, how long training takes, and what license is needed. That includes well-paid careers many families have never heard of, like CNC machining, power plant operator, ultrasound technician and air traffic controller. Students can find training near home or anywhere in the country, follow step by step apply checklists, and see ways to fund it, like Georgia's HOPE Grant. And companies anywhere in the country can post apprenticeships, paid training and trade internships for free. Students see openings near home first. Our team checks every listing, nothing about the student is shared, and students choose who to contact, then keep track of each application in the app with a parent's OK, so it opens doors for small businesses and for students who want to start working and learning right away. Weekend and holiday jobs have their own place, with their own teen job rules. Students apply right in the app, and nothing reaches the company until a parent reads it and taps I agree, with every consent kept in a permanent record. A job they get goes on their activities and resume in one tap, and if the company writes a reference letter, the parent decides whether it goes in the student's records."
+      "narration": "Not every student wants a four-year degree, and many great careers start with a trade. ScholarTasks covers sixty-seven skilled trades, with what each one earns, how long training takes, and what license is needed. That includes well-paid careers many families have never heard of, like CNC machining, power plant operator, ultrasound technician and air traffic controller. Students can find training near home or anywhere in the country, follow step by step apply checklists, and see ways to fund it, like state grants for technical college. And companies anywhere in the country can post apprenticeships, paid training and trade internships for free. Students see openings near home first. Our team checks every listing, nothing about the student is shared, and students choose who to contact, then keep track of each application in the app with a parent's OK, so it opens doors for small businesses and for students who want to start working and learning right away. Weekend and holiday jobs have their own place, with their own teen job rules. Students apply right in the app, and nothing reaches the company until a parent reads it and taps I agree, with every consent kept in a permanent record. A job they get goes on their activities and resume in one tap, and if the company writes a reference letter, the parent decides whether it goes in the student's records."
     },
     {
       "id": "military",
       "title": "Military paths",
-      "narration": "Some students want to serve their country, and the military can pay for college too. ScholarTasks compares the four ways in: a service academy like West Point or the Naval Academy, an ROTC scholarship at a regular college, a military college like the University of North Georgia, or enlisting with paid job training. It explains how to get a nomination from your senators and representative, puts every step from junior year on the to-do list, and shows the GI Bill and other ways service helps fund school. Families can also pick military academies and colleges in the college search."
+      "narration": "Some students want to serve their country, and the military can pay for college too. ScholarTasks compares the four ways in: a service academy like West Point or the Naval Academy, an ROTC scholarship at a regular college, a senior military college, or enlisting with paid job training. It explains how to get a nomination from your senators and representative, puts every step from junior year on the to-do list, and shows the GI Bill and other ways service helps fund school. Families can also pick military academies and colleges in the college search."
     },
     {
       "id": "aid",
       "title": "FAFSA and state aid",
-      "narration": "Aid forms scare a lot of families. ScholarTasks breaks the FAFSA and your own state's forms into small steps, and explains who does each part. It covers Georgia and ten more Southeast states, from Florida's Bright Futures to Louisiana's TOPS, and links every other state to its aid office. You still file on the official government sites. We never ask for or keep FSA IDs, Social Security numbers or tax returns. When award letters arrive, type them in, and compare free money, loans and the real price, side by side."
+      "narration": "Aid forms scare a lot of families. ScholarTasks breaks the FAFSA and your own state's forms into small steps, and explains who does each part. It covers your own state's aid programs, and links every other state to its aid office. You still file on the official government sites. We never ask for or keep FSA IDs, Social Security numbers or tax returns. When award letters arrive, type them in, and compare free money, loans and the real price, side by side."
     },
     {
       "id": "todo",
@@ -101,32 +101,32 @@
     {
       "id": "phone",
       "title": "Phone app",
-      "narration": "Families live on their phones, so ScholarTasks does too. The iPhone and Android apps are in testing now, and the website works on any device. Sign-in is quick with Face ID or a fingerprint, which helps, because teenagers forget passwords. Remember me keeps you signed in at home, and on a shared computer you just untick it. What you add on the phone shows up on the computer too. The menu stays short: only the headings show until you tap one, and every page links back to its section."
+      "narration": "Families live on their phones, so ScholarTasks does too. The iPhone and Android apps are in testing now, and the website works on any device. Sign-in is quick with Face ID or a fingerprint, which helps, because teenagers forget passwords. Remember me keeps you signed in at home, and on a shared computer you just uncheck it. What you add on the phone shows up on the computer too. The menu stays short: only the headings show until you tap one, and every page links back to its section."
     },
     {
       "id": "journey",
       "title": "Grade 8 to graduation",
-      "narration": "Here's how a family uses it over the years. In sixth and seventh grade, a parent and student start with study habits and the career quiz. In eighth and ninth grade, it's the scorecard, study skills and choosing courses. Tenth grade adds HOPE tracking, harder classes, and exploring majors and trades. Eleventh grade is test prep and the college list. Senior year is applications, scholarships and aid forms. Week to week, it takes a few minutes."
+      "narration": "Here's how a family uses it over the years. In sixth and seventh grade, a parent and student start with study habits and the career quiz. In eighth and ninth grade, it's the scorecard, study skills and choosing courses. Tenth grade adds state scholarship tracking, harder classes, and exploring majors and trades. Eleventh grade is test prep and the college list. Senior year is applications, scholarships and aid forms. Week to week, it takes a few minutes."
     },
     {
       "id": "compare1",
       "title": "How we compare 1",
-      "narration": "Here's how we compare on planning and funding college. Other apps do one or two of these things well. ScholarTasks is the only one we found that links parent and student, has an AI counselor that knows your state, tracks HOPE and Zell Miller, and walks you through the FAFSA, all in one place."
+      "narration": "Here's how we compare on planning and funding college. Other apps do one or two of these things well. ScholarTasks is the only one we found that links parent and student, has an AI counselor that knows your state, tracks your state's scholarship rules, and walks you through the FAFSA, all in one place."
     },
     {
       "id": "compare2",
       "title": "How we compare 2",
-      "narration": "On grades, test prep and trust, the picture is the same. No other app we found coaches grades and course choices from eighth grade. Reminders come by email, text, calendar and phone. Our school portal is free for every school. And we will never sell student data."
+      "narration": "On grades, test prep and trust, the picture is the same. No other app we found coaches grades and course choices from eighth grade. Reminders come by email, text, calendar and phone. Our school portal is free for every school."
     },
     {
       "id": "compare3",
       "title": "How we compare 3",
-      "narration": "This fall we added the things other apps still did better. A four-year course plan that checks HOPE's harder-class rule. Reach, match and likely based on grades and harder classes, not just test scores. A homework helper that never gives answers. Side-by-side aid offers. The whole app in Spanish, reminders and AI answers too. Parent-managed accounts from sixth grade. Roster upload for schools. And now, applying to scholarships right inside the app. In our latest check, ScholarTasks covers more of the list than any other app."
+      "narration": "This fall we added the things other apps still did better. A four-year course plan that checks your state's harder-class rules. Reach, match and likely based on grades and harder classes, not just test scores. A homework helper that never gives answers. Side-by-side aid offers. The whole app in Spanish, reminders and AI answers too. Parent-managed accounts from sixth grade. Roster upload for schools. And now, scholarship applications are made ready right inside the app, and a school's own awards are sent there too. In our latest check, ScholarTasks covers more of the list than any other app."
     },
     {
       "id": "better",
       "title": "Why we are better",
-      "narration": "If you remember one slide, make it this one. ScholarTasks puts your state first, but shows options in every state. It's built for families, and it covers every path, from a four-year degree to a skilled trade. It keeps everything in one place, uses AI honestly, and never sells your child's data. It's built in Georgia, and our review team checks every lesson and question before families see it."
+      "narration": "If you remember one slide, make it this one. ScholarTasks puts your state first, but shows options in every state. It's built for families, and it covers every path, from a four-year degree to a skilled trade. It keeps everything in one place and uses AI honestly. Our review team checks every lesson and question before families see it."
     },
     {
       "id": "privacy",
@@ -146,7 +146,7 @@
     {
       "id": "start",
       "title": "Questions?",
-      "narration": "Thank you. Everything you saw today is on our website, scholartasks dot com, with a page for schools, a comparison with other apps, this tour, and a contact form. Start as a parent, add your student, and send them the join code. If you get stuck, the help guide walks through every page, or email us at support at scholartasks dot com. And if you like it, tap Invite a friend in the menu to text it to another family in one tap, or tap Rate ScholarTasks to tell us how we're doing. I'm happy to take questions."
+      "narration": "Thank you. Everything you saw today is on our website, scholartasks dot com, with a page for schools, a comparison with other apps, this tour, and a contact form. Start as a parent, add your student, and send them the join code. If you get stuck, the help guide walks through every page, or email us at support at scholartasks dot com. And if you like it, tap Invite a friend in the menu to text it to another family in one tap, or tap Rate ScholarTasks to tell us how we're doing."
     }
   ]
 }

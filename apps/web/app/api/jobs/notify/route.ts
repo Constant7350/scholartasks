@@ -86,7 +86,7 @@ export async function POST(req: Request) {
         to: u.user.email,
         subject: `${s.first_name} applied for a job: please review`,
         html: emailShell("Your OK is needed", `<p>${esc(s.first_name)} applied for <b>${esc(o.title)}</b> in ScholarTasks.</p>
-          <p>${a.applied_outside ? "They applied on the company's own site and logged it here. Please read the consent and tick <b>I agree</b> or decline." : "Nothing goes to the company until you read the application and tick <b>I agree</b>."}</p>
+          <p>${a.applied_outside ? "They applied on the company's own site and logged it here. Please read the consent and check <b>I agree</b> or decline." : "Nothing goes to the company until you read the application and check <b>I agree</b>."}</p>
           <p><a href="${SITE}/jobs">Review the application</a></p>`),
       })) || emailed;
     }

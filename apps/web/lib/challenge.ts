@@ -33,7 +33,7 @@ export function prizeText(p: Prize): string {
   return `${p.label}: ${money(p.amount)} digital gift card`;
 }
 
-/** The proofread list a student ticks before sending the essay in. */
+/** The proofread list a student checks before sending the essay in. */
 export const POLISH = [
   { key: "answers", label: "My essay answers the topic." },
   { key: "own", label: "Every word is my own (no copying, no AI writing)." },
@@ -50,13 +50,13 @@ export function steps(c: Challenge, e: Entry | null, permission: boolean): Step[
   const outlineWords = countWords(e?.outline ?? "");
   const polished = POLISH.every((p) => e?.checklist?.[p.key]);
   return [
-    { key: "read", badge: "Ready", icon: "📖", label: "Read the topic and the rules", hint: "Tick the box under the topic.", points: 10, done: !!e?.checklist?.read },
+    { key: "read", badge: "Ready", icon: "📖", label: "Read the topic and the rules", hint: "Check the box under the topic.", points: 10, done: !!e?.checklist?.read },
     { key: "ideas", badge: "Idea finder", icon: "💡", label: "Write down 3 ideas", hint: "One idea on each line. Short is fine.", points: 20, done: ideas >= 3 },
     { key: "plan", badge: "Planner", icon: "🗺️", label: "Plan it: beginning, middle, end", hint: "A few words for each part.", points: 20, done: outlineWords >= 15 },
     { key: "draft", badge: "Writer", icon: "✍️", label: `Write a first draft (${c.min_words}+ words)`, hint: "Don't worry about perfect. Just get it down.", points: 40, done: (e?.words ?? 0) >= c.min_words },
     { key: "comeback", badge: "Comeback", icon: "🔁", label: "Come back on another day and improve it", hint: "Fresh eyes find the best fixes.", points: 20, done: (e?.writing_days ?? 0) >= 2 },
     { key: "coach", badge: "Coached", icon: "🧑‍🏫", label: "Ask the coach for feedback", hint: "The coach gives tips. It never writes for you.", points: 20, done: (e?.coach_checks ?? 0) >= 1 },
-    { key: "polish", badge: "Polisher", icon: "✨", label: "Polish it with the checklist", hint: "Tick every line when it's true.", points: 20, done: polished },
+    { key: "polish", badge: "Polisher", icon: "✨", label: "Polish it with the checklist", hint: "Check every line when it's true.", points: 20, done: polished },
     { key: "permission", badge: "Family OK", icon: "✍️", label: "A parent signs permission", hint: "Your parent signs in their own ScholarTasks login.", points: 10, done: permission },
     { key: "submit", badge: "Finisher", icon: "🏁", label: "Send it in", hint: "Then claim your certificate.", points: 50, done: e?.status === "submitted" },
   ];

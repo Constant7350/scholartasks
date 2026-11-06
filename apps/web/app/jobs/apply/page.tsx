@@ -103,7 +103,7 @@ export default function ApplyPage() {
       <Page title="Application saved">
         <section className="panel" role="status">
           {done === "needs_parent"
-            ? <><h2>✓ Sent to your parent</h2><p>We emailed your parent. Once they read it and tick I agree{outside ? ", it's saved in your applications" : `, it goes to ${o.company_name}`}. You can follow it on <a href={home}>{partTime ? "Weekend and holiday jobs" : "Apprenticeships and local openings"}</a>.</p></>
+            ? <><h2>✓ Sent to your parent</h2><p>We emailed your parent. Once they read it and check I agree{outside ? ", it's saved in your applications" : `, it goes to ${o.company_name}`}. You can follow it on <a href={home}>{partTime ? "Weekend and holiday jobs" : "Apprenticeships and local openings"}</a>.</p></>
             : outside
               ? <><h2>✓ Saved</h2><p>Your consent was saved. You can follow it on <a href={home}>Apprenticeships and local openings</a>, and add it to the resume if hired.</p></>
               : <><h2>✓ Sent to {o.company_name}</h2><p>Your consent was saved. The company gets the application with your email, and you can follow it on <a href={home}>Weekend and holiday jobs</a>.</p></>}

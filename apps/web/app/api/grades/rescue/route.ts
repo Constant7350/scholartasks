@@ -9,7 +9,7 @@ import { aiOffMessage } from "../../../../lib/ai-off";
 
 // Grade rescue: the student answers a short check-in about one class, and the
 // AI drafts a step-by-step plan to bring the grade back up. The plan is saved
-// so the family can tick steps off. It coaches; it never does the work.
+// so the family can check steps off. It coaches; it never does the work.
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 

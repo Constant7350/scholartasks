@@ -76,7 +76,6 @@
   "your student's": "de tu estudiante",
   "Print": "Imprimir",
   "We looked at the apps families use most for college planning, scholarships and test prep. Here is an honest side by side.": "Revisamos las aplicaciones que más usan las familias para planear la universidad, buscar becas y prepararse para exámenes. Esta es una comparación honesta.",
-  "Yes, step by step; school awards sent here": "Sí, paso a paso; las becas de la escuela se envían aquí",
   "Apply step by step: form questions, letters, papers and a tracker for what you sent and won. Your school's own local awards are sent right in the app": "Solicita paso a paso: preguntas del formulario, cartas, papeles y un registro de lo que enviaste y ganaste. Las becas locales de tu escuela se envían directo en la aplicación",
   "Compare aid offers side by side, and a deep career interest quiz with a new mix of questions every time": "Compara ofertas de ayuda lado a lado, y un test profundo de intereses de carreras con preguntas nuevas cada vez",
   "🧩 Start here: what careers fit {who}?": "🧩 Empieza aquí: ¿qué carreras le quedan a {who}?",
@@ -204,5 +203,6 @@
   "See which connected students haven't filed the FAFSA, have no college list or have overdue deadlines. Send a reminder to a whole grade in one step, and post local scholarships only your families see. Students apply for them right in the app, and you mark each one awarded or not.": "Ve qué estudiantes conectados no han presentado la FAFSA, no tienen lista de universidades o tienen fechas límite atrasadas. Envía un recordatorio a todo un grado en un solo paso y publica becas locales que solo ven tus familias. Los estudiantes las solicitan directo en la aplicación, y tú marcas cada una como otorgada o no.",
   "<1>Remember me</1> on this device<2>{x}</2>": "<1>Recordarme</1> en este dispositivo<2>{x}</2>",
   "Stay signed in and keep your email filled in.": "Mantener la sesión iniciada y recordar mi correo.",
-  "You'll be signed out when you close this browser. Good for shared or school computers.": "Se cerrará tu sesión cuando cierres este navegador. Bueno para computadoras compartidas o de la escuela."
+  "You'll be signed out when you close this browser. Good for shared or school computers.": "Se cerrará tu sesión cuando cierres este navegador. Bueno para computadoras compartidas o de la escuela.",
+  "Made ready step by step; school awards sent here": "Se preparan paso a paso; las becas de la escuela se envían aquí"
 }

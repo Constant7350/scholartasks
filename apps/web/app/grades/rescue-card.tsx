@@ -11,7 +11,7 @@ export interface RescueTarget { course: string; grade: string }
 
 /**
  * Grade rescue: a short check-in about one class, then an AI plan the student
- * and parent can tick off. Saved plans stay here until marked done.
+ * and parent can check off. Saved plans stay here until marked done.
  */
 export function RescueCard({ sb, studentId, name, isParent, aiAllowed, courses, target, onTargetUsed }: {
   sb: SupabaseClient; studentId: string; name: string; isParent: boolean; aiAllowed: boolean;

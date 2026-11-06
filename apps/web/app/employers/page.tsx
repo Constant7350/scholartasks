@@ -21,7 +21,7 @@ export default function EmployersPage() {
       <div className="trade-callouts">
         <div className="panel trade-callout"><b>1. Make your company account</b><span>Sign up with your work email and agree to the teen job rules. Our review team checks your company.</span></div>
         <div className="panel trade-callout"><b>2. Post a job</b><span>Weekend, holiday or school-break work, with pay, hours and the youngest age you can take. We check each post before students see it.</span></div>
-        <div className="panel trade-callout"><b>3. Get applications with a parent&apos;s OK</b><span>A student applies in the app, a parent reads it and ticks I agree, then it reaches you with the parent&apos;s email.</span></div>
+        <div className="panel trade-callout"><b>3. Get applications with a parent&apos;s OK</b><span>A student applies in the app, a parent reads it and checks I agree, then it reaches you with the parent&apos;s email.</span></div>
       </div>
 
       <section className="panel">

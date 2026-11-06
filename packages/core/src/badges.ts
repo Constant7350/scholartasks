@@ -67,7 +67,7 @@ export function badges(f: ProgressFacts, today: string): Badge[] {
   add("practice", "✏️", "Practice pays off", "Answer 50 practice questions.", f.practiceAnswered >= 50, step(f.practiceAnswered, 50));
   add("learner", "📚", "Study skills", "Finish 3 study lessons.", f.lessonsDone >= 3, step(f.lessonsDone, 3));
   add("essay", "✍️", "Essay done", "Finish a college essay.", f.essaysFinished >= 1);
-  add("aid", "🧾", "Aid on track", "Tick off 5 FAFSA and aid steps.", f.aidStepsDone >= 5, step(f.aidStepsDone, 5));
+  add("aid", "🧾", "Aid on track", "Check off 5 FAFSA and aid steps.", f.aidStepsDone >= 5, step(f.aidStepsDone, 5));
   add("applied", "📬", "Applied!", "Submit your first college application.", f.collegesSubmitted >= 1);
   return list;
 }

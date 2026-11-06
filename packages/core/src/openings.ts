@@ -197,7 +197,7 @@ export function checkOpening(
   if (rawApplyUrl && !applyUrl) return { ok: false, error: "Please check the link for applying. It should look like www.yourcompany.com/jobs." };
   if (rawSite && !site) return { ok: false, error: "Please check your website address." };
   if (links(description) + links(requirements) + links(howToApply) > 3) return { ok: false, error: "Please take out some of the links and try again." };
-  if (!agreed) return { ok: false, error: "Please read the listing rules and tick the box to agree." };
+  if (!agreed) return { ok: false, error: "Please read the listing rules and check the box to agree." };
 
   const latest = new Date(today.getTime() + OPENING_MAX_DAYS * 86_400_000);
   const fallback = new Date(today.getTime() + 90 * 86_400_000);
@@ -227,7 +227,7 @@ export function openingReviewFlags(o: Pick<OpeningInput, "min_age" | "kind" | "r
   if (o.min_age < 18) flags.push(`Open to ${o.min_age}-year-olds: check the duties against the hazardous jobs list and the hours rules for teens.`);
   if (o.min_age < 16) flags.push("Under 16: hours are limited (no work during school hours, short days on school days), and Georgia and many states need a work permit.");
   if (o.registered_apprenticeship) flags.push(o.rapids_number
-    ? `Says it is a Registered Apprenticeship (number ${o.rapids_number}): look it up on apprenticeship.gov before ticking Verified.`
+    ? `Says it is a Registered Apprenticeship (number ${o.rapids_number}): look it up on apprenticeship.gov before checking Verified.`
     : "Says it is a Registered Apprenticeship but gave no program number: look the company up on apprenticeship.gov.");
   const text = `${o.description} ${o.how_to_apply}`.toLowerCase();
   if (/\b(fee|deposit|pay (us|for)|buy your own|starter kit|cash app|venmo|zelle|wire)\b/.test(text)) flags.push("Mentions money or fees: make sure students are never asked to pay.");
