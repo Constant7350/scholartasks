@@ -5,6 +5,7 @@ import { CHURCH_FAMILIES, INTERESTS, MILITARY_COLLEGE_IDS, SERVICE_ACADEMIES, mi
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
+import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../lib/colleges";
 import { STATE_NAMES } from "../../lib/trades";
 
@@ -32,6 +33,8 @@ export default function CollegesPage() {
   const [answers, setAnswers] = useState<MatchAnswers>({ where: "region", size: "any", type: "any", interests: [], budget: null });
   const [results, setResults] = useState<CollegeRow[] | null>(null);
   const [onList, setOnList] = useState<Set<number>>(new Set());
+  const [onMine, setOnMine] = useState<Set<number>>(new Set());
+  const [space, setSpace] = useSpace();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
@@ -59,6 +62,8 @@ export default function CollegesPage() {
 
   const student = students.find((s) => s.id === current);
   const mayUseIncome = isParent || !!student?.permissions?.see_income_and_costs;
+  // A parent in their own space: saves go to the parent's list and the student's answers are left alone.
+  const mine = isParent && space === "parent";
 
   useEffect(() => {
     if (!sb || !student) return;
@@ -70,8 +75,9 @@ export default function CollegesPage() {
         .map((g) => ({ term: g.term, course: g.course, grade: g.grade, level: g.level, core: g.core, gradeLevel: g.grade_level })))));
     void sb.from("student_colleges").select("college_id").eq("student_id", student.id).then(({ data }) =>
       setOnList(new Set(((data as { college_id: number | null }[]) ?? []).map((r) => r.college_id).filter((x): x is number => x != null))));
+    if (isParent) void myPicks(sb, student.id, "college").then((rows) => setOnMine(new Set(rows.map((r) => Number(r.item_key)))));
     setResults(null);
-  }, [sb, student, mayUseIncome]);
+  }, [sb, student, mayUseIncome, isParent]);
 
   const ranked = useMemo(() => {
     if (!results || !student || !ctx) return [];
@@ -107,6 +113,8 @@ export default function CollegesPage() {
     if (e) return setError(friendly(e));
     setResults((data as CollegeRow[]) ?? []);
     // Remember the kind of college (public, private, Christian) for this student's other searches and the AI counselor.
+    // Not from a parent's own space: a parent looking around shouldn't change the student's answers.
+    if (mine) return;
     const mp = student.match_profile ?? {};
     const church = answers.type === "christian" ? answers.church ?? null : null;
     if ((mp.college_type ?? "any") !== answers.type || (mp.church ?? null) !== church) {
@@ -124,6 +132,12 @@ export default function CollegesPage() {
     if (e) return setError(friendly(e));
     setOnList(new Set([...onList, c.id]));
   };
+  const saveMine = async (c: CollegeRow) => {
+    setError(null);
+    const { error: e } = await savePick(sb, { student_id: student.id, kind: "college", item_key: String(c.id), name: c.name });
+    if (e) return setError(friendly(e));
+    setOnMine(new Set([...onMine, c.id]));
+  };
 
   const set = <K extends keyof MatchAnswers>(k: K, v: MatchAnswers[K]) => { setAnswers({ ...answers, [k]: v }); };
   const pick = (name: string, opts: [string, string][], k: "where" | "size" | "type") => (
@@ -138,13 +152,16 @@ export default function CollegesPage() {
   );
 
   return (
-    <Page title={isParent ? `Find colleges for ${student.first_name}` : "Find colleges"}>
+    <Page title={mine ? "Find colleges (my parent space)" : isParent ? `Find colleges for ${student.first_name}` : "Find colleges"}>
+      {isParent && <SpaceSwitch space={space} onChange={setSpace} name={student.first_name} />}
       {isParent && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
         </div>
       )}
-      <p className="hint">Answer five quick questions. We look through every four-year college in the federal College Scorecard and show a yearly price for your family. Tap Add to put a college on your list. Know what you want to study? <a href="/majors">Search colleges by major</a>.</p>
+      {mine
+        ? <p className="hint">Answer five quick questions. Prices and Reach, Match or Likely use {student.first_name}&apos;s grades and scores. Tap Save to keep a college on your own list, where you can add a note and share it with {student.first_name} later.</p>
+        : <p className="hint">Answer five quick questions. We look through every four-year college in the federal College Scorecard and show a yearly price for your family. Tap Add to put a college on your list. Know what you want to study? <a href="/majors">Search colleges by major</a>.</p>}
 
       <section className="panel quiz">
         {pick("1. Where?", [["home", STATE_NAMES[student.state] ?? "My state"], ["region", "The Southeast"], ["anywhere", "Anywhere in the U.S."]], "where")}
@@ -202,7 +219,14 @@ export default function CollegesPage() {
                 </div>
                 <div className="item-actions">
                   <span className={`pill ${FIT[fit].cls}`} title={FIT[fit].hint}>{FIT[fit].label}</span>
-                  {onList.has(r.id)
+                  {mine ? (
+                    <>
+                      {onList.has(r.id) && <span className="pill">On {student.first_name}&apos;s plan</span>}
+                      {onMine.has(r.id)
+                        ? <a className="pill pill-ok" href="/parent">In my list ✓</a>
+                        : <button className="btn btn-inline btn-sm" onClick={() => void saveMine(r)}>☆ Save to my list</button>}
+                    </>
+                  ) : onList.has(r.id)
                     ? <span className="pill pill-ok">On your list ✓</span>
                     : <button className="btn btn-inline btn-sm" onClick={() => void add(r)}>+ Add</button>}
                   {r.url && <a className="btn btn-ghost btn-inline btn-sm" href={r.url} target="_blank" rel="noreferrer noopener">Website</a>}

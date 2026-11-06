@@ -9,6 +9,7 @@ const ES: Record<string, [label: string, short?: string]> = {
   "Spanish check page": ["Revisión del español"],
   "Testers and test links": ["Personas que prueban y enlaces"],
   "Home": ["Inicio"],
+  "My parent space": ["Mi espacio de padres", "Mi espacio"],
   "To-do list": ["Lista de tareas", "Tareas"],
   "College list and deadlines": ["Universidades y fechas límite", "Plan"],
   "Find colleges": ["Buscar universidades", "Universidades"],

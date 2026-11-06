@@ -81,12 +81,35 @@ export const TOPICS: Topic[] = [
       "Every page has a back link at the top with its section's name (for example \"‹ Grades and courses\"). Tap it to open the menu on that section and jump to a page next to it.",
       "On a computer, the main pages sit in a row under the top bar, and the page you are on is underlined. On a phone, they sit along the bottom of the screen, and More opens the full menu.",
       "Parents: the Viewing box shows which student you are looking at. Pick another name and every page switches to that student, and stays on them as you move around.",
+      "Parents also have My parent space, right under Home in the menu: your own college, scholarship and career lists, kept separate from your student's plan.",
       "Home is always one tap away, in the page row on a computer or the bottom bar on a phone.",
       "Pick the app's colors near the bottom of the Menu, under Colors and language: Campus (navy and bright colors), Sunrise (cream and peach) or Garden (sage and teal). The choice is saved on that phone or computer, so each person in the family can pick their own.",
     ],
   },
 
   // ---------- Family ----------
+  {
+    id: "parent-space",
+    area: "Family",
+    title: "My parent space: your own lists, separate from your student's",
+    href: "/parent",
+    keywords: ["parent space", "my space", "parent home", "my own list", "as my child", "as the student", "separate", "parent view", "save for myself", "share with student", "suggest", "review quiz", "quiz answers", "other parent", "co-parent"],
+    summary: "Parents have their own space. Search colleges and scholarships, save them to your own list with a note, and look over your student's career quiz. Nothing you save there goes on your student's plan or shows as their work.",
+    steps: [
+      "Open Menu, then My parent space (or tap Open my space on the Home page).",
+      "Tap Find colleges, Search by major or Scholarships. At the top of those pages, My parent space is picked. Tap Save to my list on anything you like.",
+      "Back in My parent space, mark each one Like, Maybe or Not for us, and add a note if you want.",
+      "Tick Share with (your student's name) on anything you want your student to see. It shows on their Home page under Ideas from your parents. They never see a Not for us.",
+      "Ready to make it official? Tap Add to (name)'s college list or Add to (name)'s deadlines.",
+      "Want to add straight to your student's plan from a search? Switch the top of the page to (name)'s plan. Those show on the plan as Added by your parent.",
+    ],
+    body: [
+      "Career quiz: once your student saves the quiz on their own sign-in, My parent space shows their strongest interests, the careers and trades that fit, and every answer they gave. Mark the careers and trades you like; your marks go on your own list, not on their results.",
+      "If you take the career quiz yourself to try it out, it stays on your device and is not saved as your student's. If your student took it on your phone or computer, tap the button at the bottom of the results to save it as theirs.",
+      "Searching in your own space never changes your student's search answers. Grades and scores are still used for prices and Reach, Match or Likely.",
+      "Two parents in the family each get their own lists, and each can see the other's picks (but only change their own).",
+    ],
+  },
   {
     id: "family-setup",
     area: "Family",
@@ -351,7 +374,7 @@ export const TOPICS: Topic[] = [
       "Tap Back to change the last answer, or Review my answers to see and change any of them. Cancel quiz erases your answers; Start a new quiz gives you a fresh set of questions.",
       "Tap See my results at the end.",
       "Tap Colleges for this or How to start. Majors and trades show your home state first, then the whole country.",
-      "Signed in? Tap Save to the student's profile so the AI counselor can use the results. Tap Go deeper for 48 more questions.",
+      "Signed in? Tap Save to the student's profile so the AI counselor can use the results. Saving also lets parents look over the answers in My parent space. Tap Go deeper for 48 more questions.",
     ],
     body: [
       "Each quiz draws a new mix from a bank of about 660 questions (600 activities and 60 about what matters to you), so friends get different quizzes and can't copy each other's results. Retakes get new questions too.",
@@ -1270,7 +1293,7 @@ export const TIPS: Tip[] = [
   { routes: ["*"], sel: ".strip-links", body: "The main pages. The underlined one is where you are now. Tap Home to go back to the start.", topic: "home" },
   { routes: ["*"], sel: ".tabbar", body: "Main pages along the bottom. More opens the full menu.", topic: "home" },
   { routes: ["*"], sel: ".pagestrip .student-switch", body: "Which student you are looking at. Pick another name and every page switches to that student.", topic: "home" },
-  { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/homework", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
+  { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/homework", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs):not(.space-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
 
   // Activities
   { routes: ["/activities"], sel: "#checkup h2", body: "What colleges read besides grades, and the next step for each. It changes with your grade.", topic: "beyond-grades" },
@@ -1278,7 +1301,10 @@ export const TIPS: Tip[] = [
 
   // Home
   { routes: ["/home"], sel: ".hero h1", body: "This is your home base. Try any tool below. You can add your student whenever you're ready.", topic: "welcome" },
-  { routes: ["/home"], sel: ".family-card h2", body: "Your students and whether each one has connected their own phone or computer.", topic: "invite-student" },
+  { routes: ["/home"], sel: ".ps-card h2", body: "Your own space: search and save colleges, scholarships and careers without it showing as your student's work.", topic: "parent-space" },
+  { routes: ["/colleges", "/majors", "/scholarships"], sel: ".space-switch .tabs", body: "My parent space saves to your own list. Switch to your student's plan to add straight to their plan.", topic: "parent-space" },
+  { routes: ["/parent"], sel: ".ps-share", body: "Tick this to show the pick to your student on their Home page. Untick it any time.", topic: "parent-space" },
+  { routes: ["/home"], sel: ".family-card:not(.ps-card) h2", body: "Your students and whether each one has connected their own phone or computer.", topic: "invite-student" },
   { routes: ["/home", "/grades"], sel: ".scorecard .eyebrow", body: "The GPA scorecard: your state scholarship GPA against the goal, whether things are on track, and classes that need attention.", topic: "scorecard" },
   { routes: ["/home"], sel: ".tile[href='/plan'] b", body: "Colleges, scholarships and forms in one list, with email reminders before each deadline.", topic: "plan-deadlines" },
   { routes: ["/home"], sel: ".tile[href='/counselor'] b", body: "Ask questions about colleges and aid. Each message uses 1 of today's 10 AI uses.", topic: "counselor" },

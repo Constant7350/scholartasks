@@ -45,6 +45,7 @@ const ALL: NavRole[] = ["parent", "student", "none"];
 
 export const NAV: NavItem[] = [
   { href: "/home", label: "Home", icon: "🏠", roles: ALL, group: "daily", strip: true, tab: 1 },
+  { href: "/parent", label: "My parent space", short: "My space", icon: "👤", roles: ["parent"], group: "daily", strip: true },
   { href: "/todo", label: "To-do list", short: "To do", icon: "✅", roles: ALL, group: "daily", strip: true },
   { href: "/career-quiz", label: "Career quiz", short: "Career quiz", icon: "🧩", roles: ALL, group: "colleges" },
   { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "colleges", strip: true, tab: 2 },

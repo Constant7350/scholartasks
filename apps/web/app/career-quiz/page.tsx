@@ -425,6 +425,9 @@ function SaveCard({ sitting }: { sitting: Sitting }) {
   const [current, setCurrent] = useCurrentStudent();
   const [state, setState] = useState<"idle" | "saving" | "saved">("idle");
   const [err, setErr] = useState<string | null>(null);
+  const [isParent, setIsParent] = useState(false);
+  // A parent taking the quiz (to try it out) doesn't save it as their student's, unless they say so.
+  const [forStudent, setForStudent] = useState(false);
 
   useEffect(() => {
     if (!sb) return setStudents([]);
@@ -435,7 +438,9 @@ function SaveCard({ sitting }: { sitting: Sitting }) {
         sb.from("family_members").select("role, student_id").eq("user_id", s.session.user.id),
         sb.from("students").select("id, first_name, state, match_profile").order("first_name"),
       ]);
-      const own = ((mem.data as { role: string; student_id: string | null }[]) ?? []).find((r) => r.role === "student")?.student_id;
+      const rows = (mem.data as { role: string; student_id: string | null }[]) ?? [];
+      const own = rows.find((r) => r.role === "student")?.student_id;
+      setIsParent(rows.some((r) => r.role === "parent"));
       const list = (st.data as Student[]) ?? [];
       setStudents(own ? list.filter((x) => x.id === own) : list);
       setCurrent((c) => c ?? (own ?? pickStudent(list, list[0]?.id)));
@@ -458,9 +463,21 @@ function SaveCard({ sitting }: { sitting: Sitting }) {
     const profile = { ...(student.match_profile ?? {}), career_quiz: summary };
     const { error } = await sb.rpc("set_match_profile", { p_student: student.id, p_profile: profile });
     if (error) { setErr(friendly(error)); setState("idle"); return; }
+    // The answers too, so a parent can look them over and mark careers they like (My parent space).
+    // Best effort: the result above is what matters for the counselor.
+    await sb.from("career_quiz_answers").upsert({ student_id: student.id, answers: sitting.answers, seconds: Math.round(sitting.seconds) }, { onConflict: "student_id" });
     student.match_profile = profile;
     setState("saved");
   };
+  if (isParent && !forStudent) {
+    return (
+      <section className="panel">
+        <h2>You took this as a parent</h2>
+        <p className="hint">These results stay on this device only. They are not saved as {student.first_name}&apos;s, so trying the quiz yourself never changes {student.first_name}&apos;s profile. To see {student.first_name}&apos;s own answers and mark careers you like, open <a href="/parent">My parent space</a>.</p>
+        <button className="btn btn-ghost btn-inline" onClick={() => setForStudent(true)}>{student.first_name} took it on my device: save it as {student.first_name}&apos;s</button>
+      </section>
+    );
+  }
   return (
     <section className="panel">
       <h2>Save to a profile</h2>
@@ -471,7 +488,7 @@ function SaveCard({ sitting }: { sitting: Sitting }) {
           </select>
         </p>
       )}
-      <p className="hint">Saving lets the AI counselor use {student.first_name}&apos;s interests when suggesting classes, colleges, trades and scholarships. Only your family can see it.</p>
+      <p className="hint">Saving lets the AI counselor use {student.first_name}&apos;s interests when suggesting classes, colleges, trades and scholarships. Only your family can see it. {isParent ? "" : "Your parents can look over your saved answers and results."}</p>
       <button className="btn btn-inline" disabled={state !== "idle"} onClick={save}>{state === "saved" ? "Saved ✓" : state === "saving" ? "Saving…" : `Save to ${student.first_name}'s profile`}</button>
       {err && <p className="note note-err" role="alert">{err}</p>}
     </section>

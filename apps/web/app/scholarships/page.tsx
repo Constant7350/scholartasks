@@ -10,6 +10,7 @@ import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import type { Choice, Row } from "./types";
+import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
 
 
 interface Student {
@@ -41,6 +42,8 @@ export default function ScholarshipsPage() {
   const [colleges, setColleges] = useState<{ student_id: string; name: string }[]>([]);
   const [apps, setApps] = useState<AppRow[]>([]);
   const [tab, setTab] = useState<Tab | null>(null);
+  const [space, setSpace] = useSpace();
+  const [onMine, setOnMine] = useState<Set<string>>(new Set());
   useEffect(() => setTab(null), [current]);
   const [error, setError] = useState<string | null>(null);
 
@@ -74,6 +77,19 @@ export default function ScholarshipsPage() {
 
   const student = students.find((s) => s.id === current) ?? null;
   const seesIncome = role === "parent" || !!student?.permissions?.see_income_and_costs;
+  // A parent in their own space saves to their own list, not the student's deadlines.
+  const inMySpace = role === "parent" && space === "parent";
+  useEffect(() => {
+    if (!sb || !student || role !== "parent") return;
+    void myPicks(sb, student.id, "scholarship").then((rows) => setOnMine(new Set(rows.map((r) => r.item_key))));
+  }, [sb, student, role]);
+  const saveMine = async (s: Row) => {
+    if (!sb || !student) return;
+    setError(null);
+    const { error: e } = await savePick(sb, { student_id: student.id, kind: "scholarship", item_key: s.id, name: s.name });
+    if (e) return setError(friendly(e));
+    setOnMine(new Set([...onMine, s.id]));
+  };
 
   const results = useMemo(() => {
     if (!student || !list) return [];
@@ -144,7 +160,8 @@ export default function ScholarshipsPage() {
   if (!list) return <Page title={title}><p className="hint">Loading…</p></Page>;
 
   return (
-    <Page title={title}>
+    <Page title={inMySpace ? `${title} (my parent space)` : title}>
+      {role === "parent" && student && <SpaceSwitch space={space} onChange={setSpace} name={student.first_name} />}
       <p className="hint" style={{ marginTop: -8 }}>
         {student && student.state !== "GA" ? `National scholarships and grants (${stateName(student.state)} state awards like ${meritNames(packFor(student.state))} are on the Grades and Financial aid pages)` : "Georgia and national scholarships and grants"}, checked against {student ? `${student.first_name}'s` : "your student's"} grades, test scores and answers below. A &ldquo;Maybe&rdquo; tells you what to check. Always confirm the details on the official site before applying.
       </p>
@@ -176,7 +193,8 @@ export default function ScholarshipsPage() {
           {shownTab === "no" && <p className="hint">Something on these doesn&apos;t fit right now. If an answer above changes, they may move up.</p>}
           {groups[shownTab].length === 0 && <p className="hint">Nothing here right now.</p>}
           {groups[shownTab].map(({ s, r }) => (
-            <ScholarshipCard key={s.id} s={s} r={r} choice={choiceOf(s.id)} app={appOf(s.id)} applyHref={applyLink(s.id)} onAdd={addToDeadlines} onHide={hide} />
+            <ScholarshipCard key={s.id} s={s} r={r} choice={choiceOf(s.id)} app={appOf(s.id)} applyHref={applyLink(s.id)} onAdd={addToDeadlines} onHide={hide}
+              mine={inMySpace ? { saved: onMine.has(s.id), name: student.first_name, onSave: saveMine } : undefined} />
           ))}
           {hidden.length > 0 && (
             <details className="rescue-more" style={{ marginTop: 16 }}>
@@ -195,8 +213,10 @@ export default function ScholarshipsPage() {
   );
 }
 
-function ScholarshipCard({ s, r, choice, app, applyHref, onAdd, onHide }: {
+function ScholarshipCard({ s, r, choice, app, applyHref, onAdd, onHide, mine }: {
   s: Row; r: MatchResult; choice?: Choice; app?: AppRow; applyHref: string; onAdd: (s: Row, due: string, thenApply?: boolean) => Promise<void>; onHide: (s: Row) => Promise<void>;
+  /** Set when a parent is in their own space: saving goes to the parent's own list. */
+  mine?: { saved: boolean; name: string; onSave: (s: Row) => Promise<void> };
 }) {
   const [due, setDue] = useState(s.deadline ?? "");
   const [adding, setAdding] = useState(false);
@@ -228,7 +248,14 @@ function ScholarshipCard({ s, r, choice, app, applyHref, onAdd, onHide }: {
       {s.how_to_apply && <p className="hint" style={{ margin: "8px 0" }}><b>How to apply:</b> {s.how_to_apply}</p>}
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginTop: 10 }}>
         <a className="btn btn-ghost btn-inline btn-sm" href={s.url} target="_blank" rel="noopener noreferrer">Official site ↗</a>
-        {choice?.choice === "added" ? (
+        {mine ? (
+          <>
+            {choice?.choice === "added" && <span className="pill">On {mine.name}&apos;s deadlines</span>}
+            {mine.saved
+              ? <a className="pill pill-ok" href="/parent">In my list ✓</a>
+              : <button className="btn btn-inline btn-sm" onClick={() => void mine.onSave(s)}>☆ Save to my list</button>}
+          </>
+        ) : choice?.choice === "added" ? (
           <span className="pill pill-ok">On your deadlines ✓ <a href="/plan">See plan</a></span>
         ) : s.automatic ? null : adding ? (
           <>
@@ -242,9 +269,9 @@ function ScholarshipCard({ s, r, choice, app, applyHref, onAdd, onHide }: {
             <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setAdding(true)}>Add to my deadlines</button>
           </>
         )}
-        {!choice && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => void onHide(s)}>Not for us</button>}
+        {!choice && !mine && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => void onHide(s)}>Not for us</button>}
       </div>
-      {choice?.choice === "added" && (
+      {choice?.choice === "added" && !mine && (
         <a className="btn btn-inline btn-sm link-btn" style={{ marginTop: 10 }} href={applyHref}>
           📝 {!app ? (s.school_id ? "Apply in the app" : "Start my application") : app.status === "getting_ready" ? "Keep working on my application" : "Open my application"}
         </a>

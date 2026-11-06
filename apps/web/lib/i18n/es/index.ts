@@ -18,5 +18,6 @@ import school from "./school.json";
 import careers from "./careers.json";
 import jobs from "./jobs.json";
 import consent from "./consent.json";
+import parent from "./parent.json";
 
-export const ES: Dict = { ...consent, ...jobs, ...careers, ...help, ...site, ...more, ...school, ...study, ...activities, ...colleges, ...grades, ...plan, ...scholarships, ...aid, ...start, ...shared };
+export const ES: Dict = { ...parent, ...consent, ...jobs, ...careers, ...help, ...site, ...more, ...school, ...study, ...activities, ...colleges, ...grades, ...plan, ...scholarships, ...aid, ...start, ...shared };

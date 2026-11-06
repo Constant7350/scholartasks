@@ -14,7 +14,7 @@ import { TextReminders } from "./text-reminders";
 interface Student extends CostStudent { first_name: string; permissions: Record<string, boolean> }
 interface College {
   id: string; student_id: string; name: string; plan: string; deadline: string | null; status: string; approved: boolean; notes: string | null;
-  college_id: number | null; aid_offer: number | null;
+  college_id: number | null; aid_offer: number | null; created_by: string | null;
 }
 interface Task {
   id: string; student_id: string; title: string; kind: string; due_on: string | null; status: string;
@@ -223,6 +223,7 @@ export default function PlanPage() {
                   <b>{c.name}</b>
                   <span className="hint">{PLANS[c.plan] ?? c.plan}{c.deadline ? ` · due ${nice(c.deadline)}` : ""}</span>
                   {!c.approved && <span className="pill pill-soon">Waiting for parent's OK</span>}
+                  {c.created_by && (c.created_by === me.id ? isParent && <span className="pill">Added by you</span> : !isParent && <span className="pill">Added by your parent</span>)}
                 </div>
                 <div className="item-actions">
                   {["considering", "applying"].includes(c.status) && c.deadline && <DueBadge iso={c.deadline} />}
