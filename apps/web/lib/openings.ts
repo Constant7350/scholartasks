@@ -10,10 +10,12 @@ export interface PublicOpening {
   city: string; state: string; zip: string | null; min_age: number; pay: string | null; schedule: string | null;
   description: string; requirements: string | null; how_to_apply: string; apply_url: string | null;
   registered_apprenticeship: boolean; registered_verified: boolean; show_until: string; approved_at: string | null;
+  featured: boolean;
 }
 
 /** One listing as our team sees it on /admin/openings. */
-export interface TeamOpening extends PublicOpening {
+export interface TeamOpening extends Omit<PublicOpening, "featured"> {
+  featured_until: string | null; views: number; apply_clicks: number;
   contact_name: string; contact_email: string; contact_phone: string | null; rapids_number: string | null;
   status: "pending" | "approved" | "rejected" | "hidden"; review_note: string | null; reports: number; created_at: string;
 }

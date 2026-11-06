@@ -402,6 +402,7 @@ export const TOPICS: Topic[] = [
     body: [
       "Anyone can look without signing in. You decide who to contact: ScholarTasks never sends your name or details to companies, and companies can't message students in the app.",
       "A Registered Apprenticeship badge means our team found the program on the U.S. Department of Labor's apprenticeship.gov.",
+      "A Featured label means the listing shows first in its state. Some companies may pay for this; our team checks Featured listings the same way as every other listing.",
       "Stay safe: a real employer never asks you to pay to apply or train. Don't share your Social Security number or bank details until you have a written job offer. If you're under 18, talk it over with a parent first.",
       "Each company agrees to follow child labor laws for anyone under 18 and to consider every qualified applicant fairly (equal opportunity).",
     ],
@@ -414,13 +415,14 @@ export const TOPICS: Topic[] = [
     keywords: ["employer", "company", "business", "post a job", "hire", "hiring", "apprenticeship", "listing", "free", "small business"],
     summary: "Local companies can post apprenticeships, paid training and entry-level jobs for students, free and without an account.",
     steps: [
-      "Open scholartasks.com/trades/post (there's a link at the bottom of the Trades page).",
+      "Open scholartasks.com/trades/post (there's a link at the bottom of the Trades page and For employers at the bottom of the website). Companies anywhere in the U.S. can post.",
       "Fill in your company, the opening, the youngest age you can take and how students should apply.",
       "Read the listing rules, tick the box and tap Send for review.",
       "Our review team checks it, usually within two business days, and emails you when it's live. To change it or take it down, reply to that email.",
     ],
     body: [
       "Listings show for up to 180 days. Only our team sees your name, email and phone; students see the way to apply you give.",
+      "Posting is free. Students near you see your listing first, and our team can tell you how many students opened it and pressed Apply.",
       "Rules: real openings only, no fees for students, follow federal and state child labor laws for anyone under 18, and equal opportunity for every qualified applicant.",
     ],
   },

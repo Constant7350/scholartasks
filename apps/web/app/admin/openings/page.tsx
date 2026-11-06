@@ -41,6 +41,16 @@ export default function ReviewOpeningsPage() {
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
 
+  const feature = async (id: string, on: boolean) => {
+    if (!sb) return;
+    setError(null); setMsg(null);
+    const until = on ? new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10) : null;
+    const { error: e } = await sb.from("local_openings").update({ featured_until: until }).eq("id", id);
+    if (e) return setError(/featured_until/.test(e.message) ? "Run database update 53 in Supabase first." : friendly(e));
+    setMsg(on ? "Featured for 30 days: it shows first in its state with a Featured label." : "No longer featured.");
+    void load();
+  };
+
   const decide = async (id: string, action: "approve" | "reject" | "hide", note: string, verified: boolean) => {
     if (!sb) return;
     setError(null); setMsg(null);
@@ -72,6 +82,7 @@ export default function ReviewOpeningsPage() {
       <p className="hint">
         Companies post apprenticeships, training and jobs on <a href="/trades/post">/trades/post</a> without an account. Nothing shows to students until you approve it here,
         and the company gets an email either way. Three reports from students or parents take a listing down until you look again.
+        Feature a listing to show it first in its state for 30 days (free for now; this is what companies may pay for later, see the Employers tab on the marketing plan).
       </p>
       <details className="panel">
         <summary><b>What to check before approving</b></summary>
@@ -95,12 +106,18 @@ export default function ReviewOpeningsPage() {
 
       {shown.length === 0
         ? <p className="hint">{tab === "waiting" ? "✓ Nothing to review." : "None yet."}</p>
-        : <ul className="opening-list">{shown.map((o) => <TeamCard key={o.id} o={o} reports={reports.filter((r) => r.opening_id === o.id)} onDecide={decide} />)}</ul>}
+        : <ul className="opening-list">{shown.map((o) => <TeamCard key={o.id} o={o} reports={reports.filter((r) => r.opening_id === o.id)} onDecide={decide} onFeature={feature} />)}</ul>}
     </Page>
   );
 }
 
-function TeamCard({ o, reports, onDecide }: { o: TeamOpening; reports: Report[]; onDecide: (id: string, a: "approve" | "reject" | "hide", note: string, verified: boolean) => Promise<void> }) {
+function TeamCard({ o, reports, onDecide, onFeature }: {
+  o: TeamOpening; reports: Report[];
+  onDecide: (id: string, a: "approve" | "reject" | "hide", note: string, verified: boolean) => Promise<void>;
+  onFeature: (id: string, on: boolean) => Promise<void>;
+}) {
+  const today = new Date().toISOString().slice(0, 10);
+  const featured = !!o.featured_until && o.featured_until >= today;
   const [note, setNote] = useState("");
   const [verified, setVerified] = useState(o.registered_verified);
   const [busy, setBusy] = useState(false);
@@ -118,6 +135,12 @@ function TeamCard({ o, reports, onDecide }: { o: TeamOpening; reports: Report[];
       </p>
       <p className="hint">Contact (private): {o.contact_name} · <a href={`mailto:${o.contact_email}`}>{o.contact_email}</a>{o.contact_phone ? ` · ${o.contact_phone}` : ""}
         {o.company_website && <> · <a href={o.company_website} target="_blank" rel="noreferrer nofollow">Website</a></>}</p>
+      {o.status === "approved" && (
+        <p className="opening-stats hint">
+          <span>👀 {o.views ?? 0} opened the details</span><span>👉 {o.apply_clicks ?? 0} pressed Apply</span>
+          {featured && <span className="pill pill-soon">Featured until {o.featured_until}</span>}
+        </p>
+      )}
       {flags.length > 0 && <ul className="opening-flags">{flags.map((f) => <li key={f}>{f}</li>)}</ul>}
       {reports.length > 0 && (
         <div className="note note-err"><b>{reports.length} report{reports.length > 1 ? "s" : ""}:</b>
@@ -140,6 +163,7 @@ function TeamCard({ o, reports, onDecide }: { o: TeamOpening; reports: Report[];
         {o.status !== "approved" && <button className="btn btn-inline btn-sm" disabled={busy} onClick={() => void go("approve")}>{o.status === "hidden" ? "Put back up" : "Approve"}</button>}
         {o.status === "pending" && <button className="btn btn-inline btn-sm btn-ghost" disabled={busy || note.trim().length < 5} onClick={() => void go("reject")}>Turn down</button>}
         {o.status === "approved" && <button className="btn btn-inline btn-sm btn-ghost" disabled={busy} onClick={() => void go("hide")}>Take down</button>}
+        {o.status === "approved" && <button className="btn btn-inline btn-sm btn-ghost" disabled={busy} onClick={() => { setBusy(true); void onFeature(o.id, !featured).finally(() => setBusy(false)); }}>{featured ? "Stop featuring" : "Feature for 30 days"}</button>}
       </span>
     </li>
   );
