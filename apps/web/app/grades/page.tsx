@@ -178,6 +178,7 @@ export default function GradesPage() {
       {(
         <NextYearCard sb={sb} studentId={student.id} name={student.first_name} gradeLevel={student.grade_level} aiAllowed={aiAllowed} />
       )}
+      <p className="hint"><a className="btn btn-ghost btn-inline btn-sm link-btn" href="/grades/plan">🗓️ Plan all four years of classes</a> Lay out grade 9 to 12 and check graduation credits and rigor courses.</p>
 
       {canEdit && <ImportCard sb={sb} studentId={student.id} file={importFile} onSaved={() => void load()} />}
 

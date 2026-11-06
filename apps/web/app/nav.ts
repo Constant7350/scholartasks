@@ -38,6 +38,7 @@ export const NAV: NavItem[] = [
   { href: "/majors/quiz", label: "Career quiz", short: "Career quiz", icon: "🧩", roles: ALL, group: "student" },
   { href: "/trades", label: "Trades and trade schools", short: "Trades", icon: "🔧", roles: ALL, group: "student" },
   { href: "/grades", label: "Grades and scholarships", short: "Grades", icon: "🎓", roles: ALL, group: "student", strip: true, tab: 3 },
+  { href: "/grades/plan", label: "Four-year course plan", short: "Course plan", icon: "🗓️", roles: ALL, group: "student" },
   { href: "/grades/record", label: "Academic record (print)", short: "Record", icon: "📄", roles: ALL, group: "student" },
   { href: "/essays", label: "College essays", short: "Essays", icon: "✍️", roles: ALL, group: "student" },
   { href: "/activities", label: "Activities and resume", short: "Activities", icon: "🏅", roles: ALL, group: "student" },

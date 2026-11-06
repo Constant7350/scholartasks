@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { INTERESTS, INTEREST_PROGRAMS, SOUTHEAST, collegeFit, estimateCost, matchScore, sizeOf, type CostInput, type Fit, type MatchAnswers } from "@scholartasks/core";
+import { INTERESTS, INTEREST_PROGRAMS, SOUTHEAST, collegeFit, estimateCost, fitRecord, type CourseGrade, matchScore, sizeOf, type CostInput, type Fit, type MatchAnswers } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
@@ -11,9 +11,9 @@ import { STATE_NAMES } from "../../lib/trades";
 interface Student extends CostStudent { first_name: string; match_profile: { interests?: string[] } | null }
 
 const FIT: Record<Fit, { label: string; cls: string; hint: string }> = {
-  likely: { label: "Likely", cls: "pill-ok", hint: "Your scores are above most admitted students'." },
-  match: { label: "Match", cls: "", hint: "Your scores are close to most admitted students'." },
-  reach: { label: "Reach", cls: "pill-soon", hint: "Very selective, or your scores are below most admitted students'." },
+  likely: { label: "Likely", cls: "pill-ok", hint: "Your grades, rigor and scores are above most admitted students'." },
+  match: { label: "Match", cls: "", hint: "Your grades, rigor and scores are close to most admitted students'." },
+  reach: { label: "Reach", cls: "pill-soon", hint: "Very selective, or your grades or scores are below most admitted students'." },
   unknown: { label: "Open", cls: "", hint: "Not enough data to say." },
 };
 const BUDGETS = [
@@ -28,6 +28,7 @@ export default function CollegesPage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [current, setCurrent] = useCurrentStudent();
   const [ctx, setCtx] = useState<CostInput | null>(null);
+  const [record, setRecord] = useState<{ gpa: number | null; rigor: number }>({ gpa: null, rigor: 0 });
   const [answers, setAnswers] = useState<MatchAnswers>({ where: "region", size: "any", type: "any", interests: [], budget: null });
   const [results, setResults] = useState<CollegeRow[] | null>(null);
   const [onList, setOnList] = useState<Set<number>>(new Set());
@@ -63,6 +64,9 @@ export default function CollegesPage() {
     if (!sb || !student) return;
     setAnswers((a) => ({ ...a, interests: (student.match_profile?.interests ?? []).filter((i) => INTEREST_PROGRAMS[i]) }));
     void costInput(sb, student, mayUseIncome).then(setCtx);
+    void sb.from("course_grades").select("course, grade, level, core, grade_level, term").eq("student_id", student.id).then(({ data }) =>
+      setRecord(fitRecord(((data as { course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }[]) ?? [])
+        .map((g) => ({ term: g.term, course: g.course, grade: g.grade, level: g.level, core: g.core, gradeLevel: g.grade_level })))));
     void sb.from("student_colleges").select("college_id").eq("student_id", student.id).then(({ data }) =>
       setOnList(new Set(((data as { college_id: number | null }[]) ?? []).map((r) => r.college_id).filter((x): x is number => x != null))));
     setResults(null);
@@ -74,9 +78,9 @@ export default function CollegesPage() {
       const facts = toFacts(r);
       const cost = estimateCost(facts, ctx);
       const score = matchScore(facts, answers, student.state, cost.estimate);
-      return { r, cost, score, fit: collegeFit(facts, { sat: student.sat, act: student.act }) };
+      return { r, cost, score, fit: collegeFit(facts, { sat: student.sat, act: student.act, gpa: record.gpa, rigor: record.rigor }) };
     }).filter((x) => x.score != null).sort((a, b) => b.score! - a.score!).slice(0, 40);
-  }, [results, student, ctx, answers]);
+  }, [results, student, ctx, answers, record]);
 
   if (!sb) return <Page title="Find colleges"><NotConfigured /></Page>;
   if (!ready) return <Page title="Find colleges"><p className="hint">Loading…</p></Page>;
@@ -153,7 +157,7 @@ export default function CollegesPage() {
         <section className="panel">
           <h2>{ranked.length ? `${ranked.length} colleges that fit` : "No colleges fit every answer"}</h2>
           {!ranked.length && <p className="hint">Try a bigger area, a higher price, or fewer subjects.</p>}
-          <p className="hint" style={{ marginTop: 0 }}>Reach, Match and Likely compare your SAT/ACT with admitted students and the admit rate. They&apos;re a rough guide, not a prediction.</p>
+          <p className="hint" style={{ marginTop: 0 }}>Reach, Match and Likely weigh your grades (unweighted GPA{record.gpa != null ? ` ${record.gpa.toFixed(2)}` : ""}), your AP, IB and dual enrollment classes ({record.rigor}), your SAT or ACT, and each college&apos;s admit rate. They&apos;re a rough guide, not a prediction.</p>
           <ul className="items college-results">
             {ranked.map(({ r, cost, fit }) => (
               <li key={r.id}>

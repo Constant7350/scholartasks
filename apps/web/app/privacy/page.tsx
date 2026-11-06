@@ -20,7 +20,7 @@ export default function Privacy() {
 
       <h2>What we collect</h2>
       <ul>
-        <li><strong>Account details:</strong> your email address and, if you use Google sign-in, the name and email Google shares with us. If you choose a password, it is stored only in encrypted, one-way form.</li>
+        <li><strong>Account details:</strong> your email address and, if you use Google sign-in, the name and email Google shares with us. If you choose a password, it is stored only in encrypted, one-way form. If you turn on text reminders, your cell phone number, used only to text you deadline reminders.</li>
         <li><strong>Family details:</strong> your family name, and for each student their first name, birth date, grade, state and the permissions you choose.</li>
         <li><strong>Planning details you add:</strong> such as courses, grades, test scores, colleges and scholarships you are interested in, and deadlines.</li>
         <li><strong>Basic technical data:</strong> sign-in times, device and browser type, and error logs, used to keep the service secure and working.</li>
@@ -42,7 +42,7 @@ export default function Privacy() {
       <h2>Who can see it</h2>
       <ul>
         <li><strong>Inside your family:</strong> the parent who owns the account sees everything in it. A student sees and does only what their parent allows.</li>
-        <li><strong>Service providers</strong> who host and run ScholarTasks for us under contract: Supabase (database and sign-in), Vercel (website hosting), Resend (email delivery), Anthropic (the Claude AI behind AI help, only when you use an AI feature and have allowed AI help) and Google (only if you choose Google sign-in).</li>
+        <li><strong>Service providers</strong> who host and run ScholarTasks for us under contract: Supabase (database and sign-in), Vercel (website hosting), Resend (email delivery), Twilio (text reminders, only if you turn them on), Anthropic (the Claude AI behind AI help, only when you use an AI feature and have allowed AI help) and Google (only if you choose Google sign-in).</li>
         <li><strong>When required by law,</strong> or to protect someone&apos;s safety.</li>
       </ul>
       <p>We never share student information with colleges, scholarship providers or anyone else unless you choose to send it.</p>

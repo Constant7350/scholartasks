@@ -9,6 +9,7 @@ import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { costInput, type CollegeRow, type CostStudent } from "../../lib/colleges";
 import { CollegePicker } from "../colleges/college-picker";
 import { CostPanel } from "./cost-panel";
+import { TextReminders } from "./text-reminders";
 
 interface Student extends CostStudent { first_name: string; permissions: Record<string, boolean> }
 interface College {
@@ -179,6 +180,7 @@ export default function PlanPage() {
           <input type="checkbox" checked={reminders} onChange={(e) => run(() => sb.from("user_settings").upsert({ user_id: me.id, email_reminders: e.target.checked, updated_at: new Date().toISOString() }))} />
           Email me reminders 30, 14, 7, 2 and 1 days before, and on the day
         </label>
+        <TextReminders sb={sb} />
       </section>
 
       {ctx && (

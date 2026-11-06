@@ -1,6 +1,7 @@
 import type { StatePack } from "./schema";
 import type { ProgramResult } from "./eligibility";
 import type { IncomeBand } from "./scholarships";
+import { computeGpa, type CourseGrade } from "./gpa";
 
 /** One college from the federal College Scorecard (see supabase/seed/colleges.json). */
 export interface CollegeFacts {
@@ -145,25 +146,54 @@ export function estimateCost(c: CollegeFacts, input: CostInput): CostEstimate {
 
 export type Fit = "likely" | "match" | "reach" | "unknown";
 
+/** What the fit label is based on, so the page can say why. */
+export interface FitInput { sat?: number | null; act?: number | null; gpa?: number | null; rigor?: number | null }
+
+const STEPS: Fit[] = ["reach", "match", "likely"];
+
+/** The high school record colleges look at: unweighted GPA (grades 9 to 12) and rigor courses. */
+export function fitRecord(grades: CourseGrade[]): { gpa: number | null; rigor: number } {
+  const hs = grades.filter((g) => (g.gradeLevel ?? 9) >= 9);
+  const gpa = hs.length ? computeGpa(hs, { description: "Unweighted", courses: "all", grade_levels: [9, 10, 11, 12], scale: { A: 4, B: 3, C: 2, D: 1, F: 0 }, weights: [], rounding: "none" }).gpa : null;
+  const rigor = new Set(hs.filter((g) => g.level === "AP" || g.level === "IB" || g.level === "DE").map((g) => g.course.toLowerCase())).size;
+  return { gpa, rigor };
+}
+
 /**
- * Reach / match / likely from the college's admit rate and the student's test
- * scores against the college's average. A rough guide, never a percentage.
+ * Reach / match / likely from the college's admit rate, the student's test
+ * scores against the college's average, and their unweighted GPA and number
+ * of rigor courses (AP, IB, dual enrollment). A rough guide, never a percentage.
  */
-export function collegeFit(c: Pick<CollegeFacts, "admitRate" | "satAvg" | "actMid">, scores: { sat?: number | null; act?: number | null }): Fit {
+export function collegeFit(c: Pick<CollegeFacts, "admitRate" | "satAvg" | "actMid">, scores: FitInput): Fit {
   const rate = c.admitRate;
   if (rate != null && rate < 0.15) return "reach";
+  const gpa = typeof scores.gpa === "number" && scores.gpa > 0 ? scores.gpa : null;
+  const rigor = scores.rigor ?? 0;
   // Compare on the SAT scale (rough ACT to SAT conversion).
   const actToSat = (a: number) => Math.round(400 + (a - 1) * (1200 / 35));
   const mine = scores.sat ?? (scores.act ? actToSat(scores.act) : null);
   const theirs = c.satAvg ?? (c.actMid ? actToSat(c.actMid) : null);
+  let fit: Fit;
   if (mine != null && theirs != null) {
     const diff = mine - theirs;
-    if (diff >= 60 && (rate == null || rate >= 0.5)) return "likely";
-    if (diff <= -80) return "reach";
-    if (rate != null && rate < 0.3) return "reach";
-    return "match";
+    if (diff >= 60 && (rate == null || rate >= 0.5)) fit = "likely";
+    else if (diff <= -80) fit = "reach";
+    else if (rate != null && rate < 0.3) fit = "reach";
+    else fit = "match";
+    if (gpa == null) return fit;
+    // Grades and rigor matter as much as scores: a strong record moves it up a step, a weak one down.
+    const i = STEPS.indexOf(fit);
+    if (gpa >= 3.8 && rigor >= 4 && i < 2 && (fit === "match" ? rate == null || rate >= 0.5 : rate == null || rate >= 0.3)) return STEPS[i + 1]!;
+    if (gpa < 3.0 && i > 0) return STEPS[i - 1]!;
+    return fit;
   }
   if (rate == null) return "unknown";
+  if (gpa != null) {
+    // No test scores (many colleges are test-optional): use grades and rigor.
+    if (rate >= 0.75) return gpa >= 3.0 ? "likely" : gpa >= 2.5 ? "match" : "reach";
+    if (rate >= 0.4) return gpa >= 3.7 && rigor >= 4 ? "likely" : gpa >= 3.2 ? "match" : "reach";
+    return gpa >= 3.8 && rigor >= 5 ? "match" : "reach";
+  }
   return rate >= 0.75 ? "likely" : rate >= 0.4 ? "match" : "reach";
 }
 

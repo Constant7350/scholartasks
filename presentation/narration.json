@@ -41,7 +41,7 @@
     {
       "id": "grades",
       "title": "Grades 8 to 12",
-      "narration": "HOPE is earned in high school, so starting early matters. From eighth grade on, the scorecard shows the HOPE grade point average next to the school one, so there are no surprises later. If a grade slips, Grade Rescue asks a few questions and builds a simple plan. Course advice helps pick the right classes."
+      "narration": "HOPE is earned in high school, so starting early matters. From eighth grade on, the scorecard shows the HOPE grade point average next to the school one, so there are no surprises later. If a grade slips, Grade Rescue asks a few questions and builds a simple plan. A four-year course plan adds up graduation credits and the rigor courses HOPE needs, and the AI suggests where to stretch."
     },
     {
       "id": "habits",
@@ -66,7 +66,7 @@
     {
       "id": "colleges",
       "title": "Colleges",
-      "narration": "Students can search almost two thousand colleges, take a quick match quiz, and add a school with one tap. Each college shows an estimated cost after Georgia aid and saved scholarships. The essay coach gives feedback, but never writes for the student. And activities and service hours turn into a resume."
+      "narration": "Students can search almost two thousand colleges, take a quick match quiz, and add a school with one tap. Each college is marked reach, match or likely, based on grades, harder classes and test scores. Each college shows an estimated cost after Georgia aid and saved scholarships. The essay coach gives feedback, but never writes for the student. And activities and service hours turn into a resume."
     },
     {
       "id": "majors",
@@ -106,7 +106,7 @@
     {
       "id": "compare2",
       "title": "How we compare 2",
-      "narration": "On grades, test prep and trust, the picture is the same. No other app we found coaches grades and course choices from eighth grade. Our school portal is free for every school. And we will never sell student data."
+      "narration": "On grades, test prep and trust, the picture is the same. No other app we found coaches grades and course choices from eighth grade. Reminders come by email, text, calendar and phone. Our school portal is free for every school. And we will never sell student data."
     },
     {
       "id": "better",
