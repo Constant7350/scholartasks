@@ -125,7 +125,7 @@ export default function ApplyPage() {
       </section>
       {form && consent ? (
         <section className="panel">
-          <ParentAgree wording={consent.wording} button={outside ? "Agree" : "Agree and send"} onAgree={() => void send(form, true)} />
+          <ParentAgree wording={consent.wording} version={consent.version} student={studentId ?? ""} button={outside ? "Agree" : "Agree and send"} onAgree={() => void send(form, true)} />
           <button className="btn btn-inline btn-sm btn-ghost" onClick={() => setForm(null)} disabled={busy}>Back</button>
           {error && <p className="note note-err" role="alert">{error}</p>}
         </section>

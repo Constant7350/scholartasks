@@ -3,6 +3,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import type { School } from "./dashboard";
+import { SignConsent } from "../sign-consent";
+
+/** The agreement a school admin signs (kept word for word with the signature). */
+const DPA_WORDING = (school: string) => [
+  `I am allowed to agree to this for ${school}, and I agree to the ScholarTasks student data agreement:`,
+  "- ScholarTasks uses roster data only to show our staff who has connected and to send our school's invite. It is never sold, shared or used for ads.",
+  "- Only our school's staff can see the roster. Every upload, view and invite is logged.",
+  "- We can delete the roster any time. If this agreement ends, the roster is deleted within 45 days.",
+  "- Families decide what they share with our school. The roster does not give access to any student's account.",
+  "- Data is stored in the United States and protected as described in the ScholarTasks privacy policy, in line with Georgia's Student Data Privacy law (O.C.G.A. 20-2-660 to 668) and FERPA.",
+].join("\n");
 
 interface Agreement { id: string; signer_name: string; signer_title: string; district: string | null; signed_at: string; ended_at: string | null }
 interface RosterRow { student_ref: string; first_name: string; last_name: string; grade_level: number; email: string | null; connected: boolean; invited_at: string | null }
@@ -68,6 +79,7 @@ export function Roster({ school, role }: { school: School; role: "admin" | "coun
   const [filter, setFilter] = useState<"all" | "not">("not");
   const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [signing, setSigning] = useState(false);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -110,7 +122,7 @@ export function Roster({ school, role }: { school: School; role: "admin" | "coun
 
       {!dpa ? (
         role === "admin" ? (
-          <form onSubmit={(e) => { e.preventDefault(); void run(() => sb.rpc("sign_school_data_agreement", { p_school: school.id, p_name: form.name, p_title: form.title, p_district: form.district }), "Agreement signed. You can upload a roster now."); }}>
+          <form onSubmit={(e) => { e.preventDefault(); setSigning(true); }}>
             <h3>Student data agreement</h3>
             <ul className="gaps">
               <li>ScholarTasks uses roster data only to show your staff who has connected and to send your school&apos;s invite. It is never sold, shared or used for ads.</li>
@@ -126,7 +138,14 @@ export function Roster({ school, role }: { school: School; role: "admin" | "coun
               <div className="field"><label htmlFor="dpa-district">School district</label><input id="dpa-district" className="input" value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} /></div>
             </div>
             <label className="toggle"><input type="checkbox" checked={form.agree} onChange={(e) => setForm({ ...form, agree: e.target.checked })} /> I am allowed to agree to this for {school.name}, and I agree.</label>
-            <button className="btn btn-inline" disabled={busy || !form.agree || form.name.trim().length < 2 || form.title.trim().length < 2}>Sign the agreement</button>
+            {signing ? (
+              <SignConsent kind="school_agreement" target={school.id} version="school-dpa-v1" title="Sign the student data agreement" button="Sign the agreement"
+                wording={DPA_WORDING(school.name)}
+                onSigned={() => run(() => sb.rpc("sign_school_data_agreement", { p_school: school.id, p_name: form.name, p_title: form.title, p_district: form.district }), "Agreement signed. You can upload a roster now.")}
+                onDecline={() => setSigning(false)} declineLabel="Cancel" />
+            ) : (
+              <button className="btn btn-inline" disabled={busy || !form.agree || form.name.trim().length < 2 || form.title.trim().length < 2}>Next: sign</button>
+            )}
           </form>
         ) : <p className="hint">Your school admin signs the student data agreement and uploads the roster.</p>
       ) : (

@@ -70,6 +70,7 @@ end $$;
 
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000035a1', false);
 insert into r select 'link', id::text from my_school_links();
+select test_sign('school_link', (select v::uuid from r where k='ben'));
 select approve_school_link((select v::uuid from r where k='link'));
 
 -- Ben has some progress to show.

@@ -19,7 +19,8 @@ interface Item {
   status: Status; person_id: string | null; video_path: string | null; video_link: string | null; post_on: string | null;
   post_url: string | null; posted_at: string | null; note: string | null; ai_written: boolean; updated_at: string;
 }
-interface Person { id: string; name: string; is_minor: boolean; parent_name: string | null; consent_on: string | null; consent_note: string | null; active: boolean }
+interface Person { id: string; name: string; is_minor: boolean; parent_name: string | null; consent_on: string | null; consent_note: string | null; active: boolean;
+  sign_token?: string | null; signed_name?: string | null; signature?: string | null; signed_at?: string | null; withdrawn_at?: string | null }
 interface Settings { auto_weekly: boolean; videos_per_week: number; networks: Network[]; host_note: string; focus_note: string | null }
 
 const LABEL: Record<Status, string> = { draft: "Draft", approved: "Approved", filmed: "Filmed", scheduled: "Scheduled", posted: "Posted", skip: "Skipped" };
@@ -339,6 +340,7 @@ function PeoplePanel({ sb, people, setPeople, setError }: { sb: SupabaseClient; 
   const [parent, setParent] = useState("");
   const [date, setDate] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [parentDraft, setParentDraft] = useState<Record<string, string>>({});
 
   const add = async () => {
     setError(null);
@@ -346,7 +348,7 @@ function PeoplePanel({ sb, people, setPeople, setError }: { sb: SupabaseClient; 
     if (minor && date && !parent.trim()) { setError("Add the parent's name with the permission date."); return; }
     const { data, error } = await sb.from("social_people").insert({ name: name.trim(), is_minor: minor, parent_name: parent.trim() || null, consent_on: date || null }).select("*").single();
     if (error) setError(friendly(error));
-    else { setPeople((p) => [...p, data as Person]); setName(""); setParent(""); setDate(""); }
+    else { setPeople((p) => [...p, data as Person]); setName(""); setParent(""); setDate(""); setShowForm(false); }
   };
   const update = async (id: string, f: Partial<Person>) => {
     setError(null);
@@ -366,13 +368,25 @@ function PeoplePanel({ sb, people, setPeople, setError }: { sb: SupabaseClient; 
             <b>{p.name}</b>
             <StatusPill status={consentOk(p) ? "ok" : "wait"} label={!p.is_minor ? "Adult" : p.consent_on ? `Parent agreed ${new Date(`${p.consent_on}T12:00:00`).toLocaleDateString()}` : "Needs parent permission"} />
           </div>
-          {p.is_minor && (
-            <div className="share-row" style={{ alignItems: "center", marginTop: 6 }}>
-              <input className="input input-sm" placeholder="Parent's name" defaultValue={p.parent_name ?? ""} aria-label={`Parent of ${p.name}`}
-                onBlur={(e) => { if (e.target.value.trim() !== (p.parent_name ?? "")) void update(p.id, { parent_name: e.target.value.trim() || null }); }} />
-              <label className="hint" htmlFor={`c-${p.id}`}>Permission date</label>
-              <input id={`c-${p.id}`} type="date" className="input input-sm" value={p.consent_on ?? ""} onChange={(e) => void update(p.id, { consent_on: e.target.value || null })} />
+          {p.withdrawn_at && !p.consent_on && <p className="note note-err" style={{ margin: "6px 0" }}>The parent took back permission on {new Date(p.withdrawn_at).toLocaleDateString()}. Remove posted videos with {p.name} within 7 days.</p>}
+          {p.is_minor && p.signed_at && p.consent_on && (
+            <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginTop: 6 }}>
+              {p.signature && <img src={p.signature} alt={`Signature of ${p.signed_name ?? "the parent"}`} style={{ height: 44, background: "#fff", border: "1px solid #ece6db", borderRadius: 6 }} />}
+              <span className="hint">Signed online by {p.signed_name} on {new Date(p.signed_at).toLocaleString()}, identity checked. Kept here, no paper needed.</span>
             </div>
+          )}
+          {p.is_minor && !p.consent_on && <SignLink sb={sb} person={p} onToken={(t) => setPeople((xs) => xs.map((x) => (x.id === p.id ? { ...x, sign_token: t } : x)))} setError={setError} />}
+          {p.is_minor && !p.signed_at && (
+            <details style={{ marginTop: 6 }}><summary className="hint">Or record a paper form by hand</summary>
+            <div className="share-row" style={{ alignItems: "center", marginTop: 6 }}>
+              <label className="hint" htmlFor={`pn-${p.id}`}>1. Parent&apos;s name</label>
+              <input id={`pn-${p.id}`} className="input input-sm" placeholder="Type the parent's name" value={parentDraft[p.id] ?? p.parent_name ?? ""}
+                onChange={(e) => setParentDraft({ ...parentDraft, [p.id]: e.target.value })}
+                onBlur={(e) => { if (e.target.value.trim() !== (p.parent_name ?? "")) void update(p.id, { parent_name: e.target.value.trim() || null }); }} />
+              <label className="hint" htmlFor={`c-${p.id}`}>2. Date they agreed</label>
+              <input id={`c-${p.id}`} type="date" className="input input-sm" value={p.consent_on ?? ""} onChange={(e) => void update(p.id, { consent_on: e.target.value || null })} />
+              {!p.consent_on && <button className="btn btn-inline btn-sm" onClick={() => { const n = (parentDraft[p.id] ?? p.parent_name ?? "").trim(); if (!n) { setError(`Type ${p.name}'s parent's name first.`); return; } const d = new Date(); void update(p.id, { parent_name: n, consent_on: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` }); }}>Parent agreed today</button>}
+            </div></details>
           )}
           <div className="share-row" style={{ alignItems: "center", marginTop: 6 }}>
             <input className="input input-sm" style={{ flex: "1 1 220px", minWidth: 0 }} placeholder="Note (where the signed form is kept)" maxLength={1000} defaultValue={p.consent_note ?? ""} aria-label={`Note for ${p.name}`}
@@ -439,5 +453,29 @@ function SettingsPanel({ sb, settings, setSettings, setError }: { sb: SupabaseCl
       </div>
       <button className="btn btn-inline btn-sm" onClick={() => void save()}>{saved ? "✓ Saved" : "Save settings"}</button>
     </section>
+  );
+}
+
+/** "Get the signing link": the parent opens it, signs with a finger and confirms it's them. */
+function SignLink({ sb, person, onToken, setError }: { sb: SupabaseClient; person: Person; onToken: (t: string) => void; setError: (e: string | null) => void }) {
+  const make = async () => {
+    setError(null);
+    const t = crypto.randomUUID();
+    const { error } = await sb.from("social_people").update({ sign_token: t }).eq("id", person.id);
+    if (error) setError(/sign_token/.test(error.message) ? "Run database update 57 in Supabase first." : friendly(error)); else onToken(t);
+  };
+  if (!person.sign_token) return <button className="btn btn-inline btn-sm" style={{ marginTop: 6 }} onClick={() => void make()}>Get a signing link for {person.name}&apos;s parent</button>;
+  const url = `${window.location.origin}/video-permission?t=${person.sign_token}`;
+  const text = `Hi! Could you give permission for ${person.name} to be in our ScholarTasks videos? It takes a minute: sign in, read it, and sign with your finger. ${url}`;
+  return (
+    <div style={{ display: "grid", gap: 6, marginTop: 6 }}>
+      <span className="hint">Send this link to {person.name}&apos;s parent. They sign in, sign with a finger and confirm it&apos;s them with Face ID or an email code. Come back here after they sign to see it.</span>
+      <div className="share-row">
+        <a className="btn btn-inline btn-sm" href={`sms:?&body=${encodeURIComponent(text)}`}>Text it</a>
+        <a className="btn btn-inline btn-sm btn-ghost" href={`mailto:?subject=${encodeURIComponent(`Permission for ${person.name} to be in ScholarTasks videos`)}&body=${encodeURIComponent(text)}`}>Email it</a>
+        <CopyBtn text={url} label="Copy the link" />
+        <a className="btn btn-inline btn-sm btn-ghost" href={url} target="_blank" rel="noreferrer">Open it</a>
+      </div>
+    </div>
   );
 }

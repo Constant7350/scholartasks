@@ -91,6 +91,7 @@ end $$;
 -- Mia is 17: she asks to connect and her parent approves.
 select link_student_to_school((select v::uuid from r where k='mia'), (select v from r where k='join'), 'progress');
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000049a1', false);
+select test_sign('school_link', (select v::uuid from r where k='mia'));
 select approve_school_link((select id from my_school_links() limit 1));
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000049b1', false);
 do $$ begin

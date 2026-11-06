@@ -35,6 +35,7 @@ insert into h45 values ('school', create_school('Opt Out High', 'Macon', 'GA', n
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000045f1', false);
 select review_school((select v::uuid from h45 where k='school'), 'approved');
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000045a1', false);
+select test_sign('school_agreement', null, (select v from h45 where k='school'));
 select sign_school_data_agreement((select v::uuid from h45 where k='school'), 'Lee Fox', 'Counselor', 'Bibb County');
 select upload_school_roster((select v::uuid from h45 where k='school'),
   '[{"student_ref":"1","first_name":"Zoe","last_name":"Lane","grade_level":11,"email":"zoe.family@example.com"},
