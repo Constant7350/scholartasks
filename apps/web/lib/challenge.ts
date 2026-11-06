@@ -30,8 +30,7 @@ export const money = (n: number) => `$${Number(n).toLocaleString("en-US", { maxi
 export function prizeText(p: Prize): string {
   if (p.kind === "certificate" || !p.amount) return `${p.label}: winner's certificate`;
   if (p.kind === "scholarship") return `${p.label}: ${money(p.amount)} scholarship, paid to the college`;
-  if (p.kind === "gift_card") return `${p.label}: ${money(p.amount)} gift card`;
-  return `${p.label}: ${money(p.amount)} cash prize`;
+  return `${p.label}: ${money(p.amount)} digital gift card`;
 }
 
 /** The proofread list a student ticks before sending the essay in. */
@@ -85,12 +84,12 @@ export const RUBRIC = [
   { key: "mechanics", label: "Spelling, grammar and word choice", weight: 15 },
 ] as const;
 
-export const RULES_VERSION = "challenge-rules-2026-11-06";
+export const RULES_VERSION = "challenge-rules-2026-11-06b";
 
 /** The words a parent signs. */
 export const permissionWording = (student: string, c: Challenge, publicOk: boolean) =>
   `I am ${student}'s parent or legal guardian. I give permission for ${student} to enter the ScholarTasks "${c.title}" essay challenge, and I have read the official rules (scholartasks.com/challenge/rules?id=${c.id}).\n` +
-  `I understand: ${student} must write the essay in the ScholarTasks app in their own words; the essay is read only by our review team; if ${student} wins, a cash prize is paid to me as parent or guardian and may count as taxable income; and I may be asked for a tax form before a larger prize is paid.\n` +
+  `I understand: ${student} must write the essay in the ScholarTasks app in their own words; the essay is read only by our review team; if ${student} wins, the prize (a digital gift card) is given to me as parent or guardian inside the app, may count as taxable income, and I may be asked for a tax form before a larger prize is given.\n` +
   (publicOk
     ? `If ${student} wins, ScholarTasks may share ${student}'s first name, grade and state with the result. Never the essay, last name, school or photo without asking me again.`
     : `If ${student} wins, ScholarTasks will not share ${student}'s name in public.`);
@@ -123,7 +122,7 @@ export function rulesFor(c: Challenge): { title: string; lines: string[] }[] {
       ...(c.prizes.length ? c.prizes.map(prizeText) : ["Winners get a winner's certificate."]),
       "Every student who sends in a finished essay gets a certificate to claim and print.",
       ...(cash.length ? [
-        "Cash prizes are paid to the parent or guardian (or to a student who is 18 or older) within 30 days after we confirm the winner, by check or bank transfer. Prize money is separate from any scholarship.",
+        "Prizes are digital gift cards (for example Amazon, Walmart or Target), ready within 30 days after results are published. To keep prizes safe from fraud, they are never sent by email, text or mail: the parent or guardian (or a winner who is 18 or older) picks the gift card up inside their own ScholarTasks login, after confirming it's them and signing a receipt. Prizes are separate from any scholarship.",
         "Prizes may count as taxable income. If the law requires a tax form for the amount won, we will ask for one (Form W-9) before paying.",
       ] : []),
       "Prizes can't be traded or swapped. If a winner can't be reached within 30 days, the prize may go to the next-highest essay.",

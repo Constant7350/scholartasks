@@ -7,7 +7,7 @@ import { NotConfigured, Page } from "../../ui";
 import { type Challenge, type Prize, RUBRIC, day, grades, money, prizeText } from "../../../lib/challenge";
 
 /**
- * Team page for the Essay Challenge: start a round (topic, subject, grades, cash prizes),
+ * Team page for the Essay Challenge: start a round (topic, subject, grades, gift card prizes),
  * judge with names hidden, pick winners, and record how each prize was paid.
  * Database update 59 (migration 0057).
  */
@@ -23,9 +23,9 @@ const TOPIC_IDEAS = [
 ];
 const GROUPS = [{ min: 6, max: 8, name: "Middle school" }, { min: 9, max: 10, name: "Grades 9 and 10" }, { min: 11, max: 12, name: "Grades 11 and 12" }];
 const DEFAULT_PRIZES: Prize[] = [
-  { place: 1, label: "1st place", kind: "cash", amount: 250 },
-  { place: 2, label: "2nd place", kind: "cash", amount: 100 },
-  { place: 3, label: "3rd place", kind: "cash", amount: 50 },
+  { place: 1, label: "1st place", kind: "gift_card", amount: 250 },
+  { place: 2, label: "2nd place", kind: "gift_card", amount: 100 },
+  { place: 3, label: "3rd place", kind: "gift_card", amount: 50 },
 ];
 const STATUS: Record<Challenge["status"], string> = { draft: "Draft (hidden)", open: "Open for entries", judging: "Closed: judging", done: "Results published" };
 
@@ -39,7 +39,7 @@ interface Result {
   entry_id: string; number: number; first_name: string; grade_level: number; state: string; parent_emails: string | null; public_name_ok: boolean;
   team_family: boolean; average: number | null; judges: number; result: string | null; place: number | null; certificate_code: string | null;
 }
-interface Payout { entry_id: string; kind: string; amount: number; paid_to: string | null; method: string | null; reference: string | null; status: string; paid_on: string | null; tax_form: boolean; note: string | null }
+interface Payout { entry_id: string; kind: string; amount: number; paid_to: string | null; method: string | null; reference: string | null; status: string; paid_on: string | null; tax_form: boolean; note: string | null; gift_brand: string | null; gift_code: string | null; gift_link: string | null; picked_up_at: string | null }
 
 interface Idea { subject: string; title: string; prompt: string; tips: string }
 
@@ -153,19 +153,19 @@ function Form({ sb, start, onDone }: { sb: SupabaseClient; start: Partial<Challe
         <div className="field"><label htmlFor="c-close">Closes</label><input id="c-close" type="datetime-local" className="input" value={f.closes_at} onChange={(e) => set("closes_at", e.target.value)} /></div>
         <div className="field"><label htmlFor="c-res">Results by</label><input id="c-res" type="date" className="input" value={f.results_on} onChange={(e) => set("results_on", e.target.value)} /></div>
       </div>
-      <h3>Prizes (cash prize money is separate from scholarships)</h3>
+      <h3>Prizes (digital gift cards, separate from scholarships)</h3>
       {f.prizes.map((p, i) => (
         <div className="row" key={i} style={{ marginBottom: 8 }}>
           <div className="field"><label htmlFor={`p-l${i}`}>Name</label><input id={`p-l${i}`} className="input" value={p.label} onChange={(e) => setPrize(i, "label", e.target.value)} /></div>
           <div className="field"><label htmlFor={`p-k${i}`}>Kind</label>
             <select id={`p-k${i}`} className="input" value={p.kind} onChange={(e) => setPrize(i, "kind", e.target.value)}>
-              <option value="cash">Cash prize</option><option value="gift_card">Gift card</option><option value="scholarship">Scholarship (paid to college)</option><option value="certificate">Certificate only</option>
+              <option value="gift_card">Digital gift card</option><option value="scholarship">Scholarship (paid to college)</option><option value="certificate">Certificate only</option>
             </select></div>
           <div className="field"><label htmlFor={`p-a${i}`}>Amount ($)</label><input id={`p-a${i}`} type="number" min={0} className="input" value={p.amount} onChange={(e) => setPrize(i, "amount", e.target.value)} /></div>
           <button className="btn btn-ghost btn-inline btn-sm" onClick={() => set("prizes", f.prizes.filter((_, n) => n !== i))}>Remove</button>
         </div>
       ))}
-      <button className="btn-link" onClick={() => set("prizes", [...f.prizes, { place: f.prizes.length + 1, label: `${f.prizes.length + 1}th place`, kind: "cash", amount: 50 }])}>+ Add a prize</button>
+      <button className="btn-link" onClick={() => set("prizes", [...f.prizes, { place: f.prizes.length + 1, label: `${f.prizes.length + 1}th place`, kind: "gift_card", amount: 50 }])}>+ Add a prize</button>
       <p className="hint small">Total per grade group: {money(f.prizes.reduce((a, p) => a + (p.kind === "certificate" ? 0 : p.amount), 0))}. Saved as a hidden draft; press Open when ready.</p>
       {error && <p className="note note-err" role="alert">{error}</p>}
       <div className="row"><button className="btn btn-inline" onClick={() => void save()}>Save</button><button className="btn btn-ghost btn-inline" onClick={onDone}>Cancel</button></div>
@@ -262,7 +262,9 @@ function ResultsTab({ sb, c }: { sb: SupabaseClient; c: Challenge }) {
   };
   const savePay = async () => {
     if (!edit) return;
-    const { error: e } = await sb.from("challenge_payouts").upsert({ ...edit, paid_on: edit.paid_on || null });
+    if (edit.gift_link && !/^https:\/\//.test(edit.gift_link)) return setError("The claim link must start with https://");
+    const { picked_up_at: _skip, ...row } = edit;
+    const { error: e } = await sb.from("challenge_payouts").upsert({ ...row, kind: "gift_card", method: "Gift card in app", paid_on: edit.paid_on || null });
     if (e) return setError(friendly(e));
     setEdit(null); await load();
   };
@@ -272,7 +274,7 @@ function ResultsTab({ sb, c }: { sb: SupabaseClient; c: Challenge }) {
   return (
     <>
       {error && <p className="note note-err">{error}</p>}
-      <p className="hint">Highest average first. Pick winners and finalists, then press <b>Publish results</b> above so families see them. Cash prizes go to the parent or guardian. Ask for a W-9 before paying when a family&apos;s prizes in a year reach the amount the IRS requires a form for (check with the CPA).</p>
+      <p className="hint">Highest average first. Pick winners and finalists, then press <b>Publish results</b> above so families see them. Prizes are digital gift cards: add the code, and the parent picks it up in their own login (Face ID or email code, plus a signed receipt). Nothing is emailed or mailed, so it can&apos;t be stolen or faked. Ask for a W-9 only when a family&apos;s prizes in a year reach the amount the IRS requires a form for (check with the CPA).</p>
       <div className="table-wrap"><table className="table">
         <thead><tr><th>#</th><th>Student</th><th>Average</th><th>Result</th><th>Prize</th></tr></thead>
         <tbody>
@@ -293,8 +295,8 @@ function ResultsTab({ sb, c }: { sb: SupabaseClient; c: Challenge }) {
                 <td>
                   {r.result === "winner" ? (
                     <>
-                      {p ? <span className={`pill ${p.status === "paid" ? "pill-ok" : "pill-soon"}`}>{money(p.amount)} {p.status === "paid" ? "paid" : p.status === "waiting_on_family" ? "waiting on family" : "to pay"}</span> : <span className="hint small">{prizeFor(r) ? prizeText(prizeFor(r)!) : "No prize set"}</span>}
-                      <button className="btn-link" onClick={() => setEdit(p ?? { entry_id: r.entry_id, kind: prizeFor(r)?.kind === "scholarship" ? "scholarship" : prizeFor(r)?.kind === "gift_card" ? "gift_card" : "cash", amount: prizeFor(r)?.amount ?? 0, paid_to: null, method: "Check", reference: null, status: "to_pay", paid_on: null, tax_form: false, note: null })}> Record payment</button>
+                      {p ? <span className={`pill ${p.status === "paid" ? "pill-ok" : "pill-soon"}`}>{money(p.amount)} {p.picked_up_at ? "picked up" : p.gift_code || p.gift_link ? "ready for pick-up" : "add the code"}</span> : <span className="hint small">{prizeFor(r) ? prizeText(prizeFor(r)!) : "No prize set"}</span>}
+                      <button className="btn-link" onClick={() => setEdit(p ?? { entry_id: r.entry_id, kind: "gift_card", amount: prizeFor(r)?.amount ?? 0, paid_to: null, method: "Gift card in app", reference: null, status: "to_pay", paid_on: null, tax_form: false, note: null, gift_brand: "Amazon", gift_code: null, gift_link: null, picked_up_at: null })}> {p ? "Change prize" : "Add gift card"}</button>
                     </>
                   ) : "–"}
                 </td>
@@ -306,20 +308,20 @@ function ResultsTab({ sb, c }: { sb: SupabaseClient; c: Challenge }) {
       {rows.length === 0 && <p className="hint">No essays sent in yet.</p>}
       {edit && (
         <div className="panel">
-          <h3 style={{ marginTop: 0 }}>Prize payment</h3>
+          <h3 style={{ marginTop: 0 }}>Prize: digital gift card</h3>
+          <p className="hint">Buy the eGift card yourself at face value (for example on Amazon, Walmart or Target), then paste its code or claim link here. Never email, text or mail it: the parent picks it up in their own login after Face ID or an email code and a signed receipt.</p>
+          {edit.picked_up_at ? <p className="note note-ok">Picked up by the family on {day(edit.picked_up_at)}. The code is locked.</p> : null}
           <div className="row">
-            <div className="field"><label htmlFor="pay-kind">Kind</label><select id="pay-kind" className="input" value={edit.kind} onChange={(e) => setEdit({ ...edit, kind: e.target.value })}><option value="cash">Cash</option><option value="gift_card">Gift card</option><option value="scholarship">Scholarship</option></select></div>
             <div className="field"><label htmlFor="pay-amt">Amount ($)</label><input id="pay-amt" type="number" className="input" value={edit.amount} onChange={(e) => setEdit({ ...edit, amount: Number(e.target.value) })} /></div>
-            <div className="field"><label htmlFor="pay-to">Paid to (parent name or college)</label><input id="pay-to" className="input" value={edit.paid_to ?? ""} onChange={(e) => setEdit({ ...edit, paid_to: e.target.value })} /></div>
+            <div className="field"><label htmlFor="pay-brand">Store</label><input id="pay-brand" className="input" list="pay-brands" maxLength={60} value={edit.gift_brand ?? ""} onChange={(e) => setEdit({ ...edit, gift_brand: e.target.value })} />
+              <datalist id="pay-brands"><option value="Amazon" /><option value="Walmart" /><option value="Target" /><option value="Apple" /></datalist></div>
           </div>
           <div className="row">
-            <div className="field"><label htmlFor="pay-m">How</label><input id="pay-m" className="input" list="pay-methods" value={edit.method ?? ""} onChange={(e) => setEdit({ ...edit, method: e.target.value })} />
-              <datalist id="pay-methods"><option value="Check" /><option value="Bank transfer" /><option value="Zelle" /><option value="Visa gift card" /></datalist></div>
-            <div className="field"><label htmlFor="pay-ref">Check number or reference</label><input id="pay-ref" className="input" value={edit.reference ?? ""} onChange={(e) => setEdit({ ...edit, reference: e.target.value })} /></div>
-            <div className="field"><label htmlFor="pay-st">Status</label><select id="pay-st" className="input" value={edit.status} onChange={(e) => setEdit({ ...edit, status: e.target.value })}><option value="to_pay">To pay</option><option value="waiting_on_family">Waiting on family (form)</option><option value="paid">Paid</option></select></div>
-            <div className="field"><label htmlFor="pay-on">Paid on</label><input id="pay-on" type="date" className="input" value={edit.paid_on ?? ""} onChange={(e) => setEdit({ ...edit, paid_on: e.target.value })} /></div>
+            <div className="field"><label htmlFor="pay-code">Gift card code</label><input id="pay-code" className="input" autoComplete="off" maxLength={200} disabled={!!edit.picked_up_at} value={edit.gift_code ?? ""} onChange={(e) => setEdit({ ...edit, gift_code: e.target.value.trim() || null })} /></div>
+            <div className="field"><label htmlFor="pay-link">Or claim link (https://…)</label><input id="pay-link" className="input" autoComplete="off" maxLength={500} disabled={!!edit.picked_up_at} value={edit.gift_link ?? ""} onChange={(e) => setEdit({ ...edit, gift_link: e.target.value.trim() || null })} /></div>
+            <div className="field"><label htmlFor="pay-ref">Order number (for your records)</label><input id="pay-ref" className="input" value={edit.reference ?? ""} onChange={(e) => setEdit({ ...edit, reference: e.target.value })} /></div>
           </div>
-          <label className="item-check" style={{ display: "flex" }}><input type="checkbox" checked={edit.tax_form} onChange={(e) => setEdit({ ...edit, tax_form: e.target.checked })} /><span>W-9 tax form on file</span></label>
+          <label className="item-check" style={{ display: "flex" }}><input type="checkbox" checked={edit.tax_form} onChange={(e) => setEdit({ ...edit, tax_form: e.target.checked })} /><span>W-9 tax form on file (only needed for large yearly totals; ask the CPA)</span></label>
           <div className="field"><label htmlFor="pay-note">Note (team only)</label><input id="pay-note" className="input" value={edit.note ?? ""} onChange={(e) => setEdit({ ...edit, note: e.target.value })} /></div>
           <div className="row"><button className="btn btn-inline" onClick={() => void savePay()}>Save</button><button className="btn btn-ghost btn-inline" onClick={() => setEdit(null)}>Cancel</button></div>
         </div>
@@ -376,7 +378,7 @@ export default function AdminChallenges() {
 
   return (
     <Page title="Essay challenges">
-      <p className="hint">Start a round with its own topic and subject for each grade group. Students write in the app, earn badges and a certificate; winners get cash prizes ($50 to $250 suggested). Prize money is separate from scholarships. <a href="/challenge/rules">Official rules</a> are built from each challenge&apos;s settings.</p>
+      <p className="hint">Start a round with its own topic and subject for each grade group. Students write in the app, earn badges and a certificate; winners get digital gift cards ($50 to $250 suggested), picked up safely in the app. Prizes are separate from scholarships. <a href="/challenge/rules">Official rules</a> are built from each challenge&apos;s settings.</p>
       {error && <p className="note note-err" role="alert">{error}</p>}
       {form ? <Form sb={sb} start={form} onDone={() => { setForm(null); void load(); }} /> : <button className="btn btn-inline" onClick={() => setForm({})}>+ New challenge</button>}
 

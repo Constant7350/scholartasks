@@ -12,7 +12,7 @@ import { hasBuiltInUnlock, unlockName } from "../lib/passkeys-client";
  * The server saves the signature (with the exact wording) and the database only
  * lets the consent through for that same person, once. Then `onSigned` runs the action.
  */
-export type ConsentKind = "job_application" | "school_link" | "school_agreement" | "video" | "challenge";
+export type ConsentKind = "job_application" | "school_link" | "school_agreement" | "video" | "challenge" | "prize";
 
 export function SignConsent({ kind, wording, version, student, target, title = "Parent consent", button = "Sign and agree", onSigned, onDecline, declineLabel = "Decline" }: {
   kind: ConsentKind; wording: string; version?: string; student?: string; target?: string; title?: string; button?: string;

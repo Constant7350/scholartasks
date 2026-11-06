@@ -976,3 +976,4 @@ html.tr-wait body { visibility: hidden; }
 .certificate-code { margin-top: 14px !important; }
 @media (max-width: 560px) { .certificate { padding: 24px 14px; } .certificate-title { font-size: 26px; } .certificate-name { font-size: 30px; } }
 @media print { .certificate { margin: 0 auto; border-width: 8px; } }
+.gift-code { font-family: ui-monospace, Menlo, monospace; font-size: 18px; letter-spacing: 1px; user-select: all; }

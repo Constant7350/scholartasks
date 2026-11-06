@@ -559,8 +559,8 @@ export const TOPICS: Topic[] = [
     area: "Scholarships",
     title: "The essay challenge: write, earn badges, win prizes",
     href: "/challenge",
-    keywords: ["challenge", "contest", "competition", "prize", "cash", "win", "certificate", "badge", "points", "level", "game", "essay contest", "writing contest", "rules"],
-    summary: "From time to time our team opens an essay challenge for each grade group, with its own topic and subject. Students write the essay right in the app, earn badges step by step, and every finished essay earns a certificate. Winners get cash prizes.",
+    keywords: ["challenge", "contest", "competition", "prize", "gift card", "win", "certificate", "badge", "points", "level", "game", "essay contest", "writing contest", "rules"],
+    summary: "From time to time our team opens an essay challenge for each grade group, with its own topic and subject. Students write the essay right in the app, earn badges step by step, and every finished essay earns a certificate. Winners get gift card prizes.",
     steps: [
       "Open Menu, then Essay challenge (win prizes). You see the challenges open for your grade.",
       "Tap Take the challenge, read the topic and the official rules, and tick the box.",
@@ -576,7 +576,7 @@ export const TOPICS: Topic[] = [
       "Free and paid accounts have exactly the same chance. Nothing to buy.",
       "Our review team reads every essay with names hidden and scores it for answering the topic, your own voice, ideas, a clear beginning, middle and end, and spelling.",
       "The coach gives tips but never writes for you. An essay written by someone else or by AI is disqualified.",
-      "Cash prizes are paid to the parent or guardian. Prize money is separate from scholarships.",
+      "Prizes are digital gift cards. For safety they are never emailed or mailed: the parent picks the prize up in their own login after Face ID or an email code and a signed receipt. Prizes are separate from scholarships.",
       "Anyone can check a certificate is real with the code printed on it.",
     ],
     faq: [

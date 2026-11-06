@@ -18,6 +18,7 @@ const KIND: Record<string, string> = {
   school_agreement: "School data agreement",
   video: "Appear in ScholarTasks videos",
   challenge: "Enter an essay challenge",
+  prize: "Prize pick-up receipt",
 };
 const when = (iso: string) => new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 
