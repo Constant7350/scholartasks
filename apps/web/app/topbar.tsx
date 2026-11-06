@@ -14,7 +14,7 @@ import { UI, navLabel, navShort } from "./nav-es";
 import { useLang } from "../lib/lang-client";
 import { NAV, NAV_GROUPS, bestMatch, isActive, type NavItem, type NavRole } from "./nav";
 
-interface Who { role: NavRole; students: { id: string; first_name: string }[]; own: string | null; admin: boolean }
+interface Who { role: NavRole; students: { id: string; first_name: string }[]; own: string | null; admin: boolean; tester: boolean }
 
 /**
  * Top navigation for signed-in people:
@@ -45,16 +45,17 @@ export function TopBar() {
     (async () => {
       const { data: s } = await sb.auth.getSession();
       if (!s.session) return;
-      const [mem, st, adm] = await Promise.all([
+      const [mem, st, adm, tst] = await Promise.all([
         sb.from("family_members").select("role, student_id").eq("user_id", s.session.user.id),
         sb.from("students").select("id, first_name").order("first_name"),
         sb.rpc("is_app_admin"),
+        sb.rpc("is_tester"),
       ]);
       const rows = (mem.data as { role: "parent" | "student"; student_id: string | null }[]) ?? [];
       const own = rows.find((r) => r.role === "student")?.student_id ?? null;
       const role: NavRole = rows.some((r) => r.role === "parent") ? "parent" : own ? "student" : "none";
       const students = (st.data as Who["students"]) ?? [];
-      setWho({ role, students, own, admin: adm.data === true });
+      setWho({ role, students, own, admin: adm.data === true, tester: tst.data === true });
       setCurrent((c) => (c && students.some((x) => x.id === c) ? c : role === "parent" ? pickStudent(students, students[0]?.id) : own));
     })();
   }, [sb, signedIn, setCurrent]);
@@ -86,7 +87,7 @@ export function TopBar() {
   const lang = useLang();
   const t = UI[lang];
   const role: NavRole = who?.role ?? "none";
-  const items = NAV.filter((i) => i.roles.includes(role) && (!i.group.startsWith("team") || who?.admin) && !(i.webOnly && inApp));
+  const items = NAV.filter((i) => i.roles.includes(role) && (!i.group.startsWith("team") || who?.admin || (i.href === "/check" && who?.tester)) && !(i.webOnly && inApp));
   const here = bestMatch(items, path);
   const isParent = role === "parent";
   const kids = who?.students ?? [];

@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { hashCode, newCode, sendText, showPhone, smsConfigured, usPhone } from "../../../lib/sms";
+import { langsFor, wordsFor } from "../../../lib/reminder-words";
 
 // Turn text reminders on or off. "start" texts a 6-digit code to the number,
 // "confirm" checks it and switches texts on, "off" switches them off.
@@ -28,6 +29,9 @@ export async function POST(req: Request) {
   const cur = row as { pending_phone: string | null; code_hash: string | null; code_expires: string | null; code_tries: number; codes_sent_on: string | null; codes_sent: number } | null;
   const now = new Date();
   const today = now.toISOString().slice(0, 10);
+  const lang = (await langsFor(sb, [userId])).get(userId) ?? "en";
+  const words = await wordsFor(sb, lang === "es");
+  const T = (en: string) => words(lang, en);
 
   if (body.action === "off") {
     await sb.from("sms_settings").upsert({ user_id: userId, sms_on: false, updated_at: now.toISOString() });
@@ -40,7 +44,7 @@ export async function POST(req: Request) {
     const sentToday = cur?.codes_sent_on === today ? cur.codes_sent : 0;
     if (sentToday >= MAX_CODES_A_DAY) return json(429, { error: "Too many codes today. Please try again tomorrow." });
     const code = newCode();
-    const r = await sendText(phone, `ScholarTasks code: ${code}. It expires in 10 minutes. If you didn't ask for this, ignore it.`);
+    const r = await sendText(phone, T(`ScholarTasks code: ${code}. It expires in 10 minutes. If you didn't ask for this, ignore it.`));
     if (!r.ok) return json(502, { error: r.code === 21610 ? "This number has texts blocked. Text START to our number first, then try again." : "The text couldn't be sent. Check the number and try again." });
     await sb.from("sms_settings").upsert({
       user_id: userId, pending_phone: phone, code_hash: hashCode(code, userId), code_expires: new Date(now.getTime() + 10 * 60000).toISOString(),
@@ -60,7 +64,7 @@ export async function POST(req: Request) {
     await sb.from("sms_settings").update({
       phone: cur.pending_phone, sms_on: true, verified_at: now.toISOString(), pending_phone: null, code_hash: null, code_expires: null, code_tries: 0, updated_at: now.toISOString(),
     }).eq("user_id", userId);
-    await sendText(cur.pending_phone, "ScholarTasks: text reminders are on. We text 7 days before, the day before and the day of each deadline, up to 20 texts a month. Msg & data rates may apply. Reply HELP for help, STOP to stop.");
+    await sendText(cur.pending_phone, T("ScholarTasks: text reminders are on. We text 7 days before, the day before and the day of each deadline, up to 20 texts a month. Msg & data rates may apply. Reply HELP for help, STOP to stop."));
     return json(200, { ok: true, message: `Text reminders are on for ${showPhone(cur.pending_phone)}.` });
   }
   return json(400, { error: "Something went wrong. Please try again." });

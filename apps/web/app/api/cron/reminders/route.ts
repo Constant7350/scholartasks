@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { sendTextReminders } from "../../../../lib/sms";
+import { itemTitle, langsFor, whenDue, wordsFor, type MailLang } from "../../../../lib/reminder-words";
 
 // Daily reminder emails. Vercel Cron calls this once a day (see vercel.json) with
 // "Authorization: Bearer $CRON_SECRET". Runs on the server only; the secret keys
@@ -19,30 +20,29 @@ interface Due {
 }
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
-const when = (n: number) => (n === 0 ? "today" : n === 1 ? "tomorrow" : `in ${n} days`);
 
 /** Today's date in Georgia (Eastern time), as YYYY-MM-DD. */
 function todayEastern(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 }
 
-function emailHtml(items: Due[], appUrl: string): string {
+function emailHtml(items: Due[], appUrl: string, lang: MailLang, T: (en: string) => string): string {
   const rows = items
     .sort((a, b) => a.days_before - b.days_before)
     .map(
       (i) => `<tr><td style="padding:10px 0;border-bottom:1px solid #e3e7ee">
-        <div style="font-weight:700;color:#14305a">${esc(i.title)}</div>
-        <div style="color:#5d6878;font-size:14px">${esc(i.student_first_name)} · due ${when(i.days_before)} (${esc(i.due_on)})</div>
-        ${i.url ? `<div style="font-size:14px"><a href="${esc(i.url)}">Open the application</a></div>` : ""}
+        <div style="font-weight:700;color:#14305a">${esc(itemTitle(i.title, lang))}</div>
+        <div style="color:#5d6878;font-size:14px">${esc(i.student_first_name)} · ${T(`due ${whenDue(i.days_before, lang)} (${esc(i.due_on)})`)}</div>
+        ${i.url ? `<div style="font-size:14px"><a href="${esc(i.url)}">${T("Open the application")}</a></div>` : ""}
       </td></tr>`,
     )
     .join("");
-  return `<div style="font-family:Segoe UI,Arial,sans-serif;max-width:560px;margin:0 auto;color:#1b2433">
-    <h2 style="color:#14305a;margin:0 0 6px">Coming up on your college plan</h2>
-    <p style="color:#5d6878;margin:0 0 12px">Here's what's due soon.</p>
+  return `<div lang="${lang}" style="font-family:Segoe UI,Arial,sans-serif;max-width:560px;margin:0 auto;color:#1b2433">
+    <h2 style="color:#14305a;margin:0 0 6px">${T("Coming up on your college plan")}</h2>
+    <p style="color:#5d6878;margin:0 0 12px">${T("Here's what's due soon.")}</p>
     <table style="width:100%;border-collapse:collapse">${rows}</table>
-    <p style="margin:20px 0"><a href="${appUrl}/plan" style="background:#14305a;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600">Open your plan</a></p>
-    <p style="color:#5d6878;font-size:12px">You get these because reminders are on in ScholarTasks. Turn them off any time on your <a href="${appUrl}/plan">plan page</a>.</p>
+    <p style="margin:20px 0"><a href="${appUrl}/plan" style="background:#14305a;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600">${T("Open your plan")}</a></p>
+    <p style="color:#5d6878;font-size:12px">${T("You get these because reminders are on in ScholarTasks. Turn them off any time on your plan page.").replace(/(plan page|página del plan)/, `<a href="${appUrl}/plan">$1</a>`)}</p>
   </div>`;
 }
 
@@ -66,15 +66,21 @@ export async function GET(req: Request) {
 
   let sent = 0;
   const failed: string[] = [];
+  const langs = await langsFor(sb, [...byUser.keys()]);
+  const words = await wordsFor(sb, [...langs.values()].includes("es"));
   for (const [userId, items] of byUser) {
     const first = items[0]!;
+    const lang = langs.get(userId) ?? "en";
+    const T = (en: string) => words(lang, en);
     const soonest = Math.min(...items.map((i) => i.days_before));
     const subject =
-      items.length === 1 ? `${first.title} is due ${when(first.days_before)}` : `${items.length} college deadlines coming up (first one ${when(soonest)})`;
+      items.length === 1
+        ? T(`${itemTitle(first.title, lang)} is due ${whenDue(first.days_before, lang)}`)
+        : T(`${items.length} college deadlines coming up (first one ${whenDue(soonest, lang)})`);
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: "ScholarTasks <noreply@scholartasks.com>", to: [first.email], subject, html: emailHtml(items, appUrl) }),
+      body: JSON.stringify({ from: "ScholarTasks <noreply@scholartasks.com>", to: [first.email], subject, html: emailHtml(items, appUrl, lang, T) }),
     });
     if (!res.ok) {
       failed.push(userId);

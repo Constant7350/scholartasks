@@ -13,7 +13,7 @@ export default function Accessibility() {
       <ul>
         <li>Check pages with automated accessibility tools and by hand, on phones and computers.</li>
         <li>Label every form field and button, keep text readable against its background, and let you zoom without breaking the page.</li>
-        <li>Offer the menu and AI answers in Spanish.</li>
+        <li>Offer the whole app and AI answers in Spanish.</li>
       </ul>
       <h2>Tell us about a problem</h2>
       <p>
