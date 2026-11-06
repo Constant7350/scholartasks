@@ -1,6 +1,6 @@
 {
   "note": "Made by presentation/build.mjs. Do not edit by hand.",
-  "minutes": 14,
+  "minutes": 15,
   "slides": [
     {
       "id": "cover",
@@ -61,6 +61,10 @@
     {
       "id": "trades",
       "title": "Trades and careers"
+    },
+    {
+      "id": "military",
+      "title": "Military paths"
     },
     {
       "id": "aid",
