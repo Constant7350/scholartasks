@@ -1,5 +1,6 @@
 "use client";
 
+import { VoiceButton } from "../voice";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { friendly } from "../../lib/supabase";
@@ -126,6 +127,7 @@ export function RescueCard({ sb, studentId, name, isParent, aiAllowed, courses, 
               placeholder="For example: I understand it in class but blank on tests."
               onChange={(e) => setAnswers({ ...answers, note: e.target.value })} /></div>
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginTop: 8 }}>
+            <VoiceButton value={answers.note} onText={(t) => setAnswers({ ...answers, note: t })} max={500} disabled={busy} />
             <button className="btn btn-inline" disabled={!ready || busy} onClick={() => void submit()}>{busy ? "Making the plan…" : "🤖 Make my plan"}</button>
             <button className="btn btn-ghost btn-inline" disabled={busy} onClick={() => setPick(null)}>Cancel</button>
             <span className="hint" style={{ fontSize: 12, margin: 0 }}>{ready ? "Uses 1 of today's 10 AI uses." : "Answer the questions above to continue."}</span>

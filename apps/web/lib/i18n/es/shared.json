@@ -1623,5 +1623,19 @@
   "Take the career interest quiz together and talk about two careers that sound fun": "Hagan juntos el test de intereses de carreras y hablen de dos carreras que suenen divertidas",
   "Take the career interest quiz, save the results, and pick high school classes that match": "Haz el test de intereses de carreras, guarda los resultados y elige clases de la preparatoria que vayan con ellos",
   "Team admin home": "Inicio del equipo",
-  "Hey! I'm using ScholarTasks for college stuff: deadlines, scholarships, SAT and ACT practice, and homework hints that help you figure it out yourself. It's free to try. Have your parent sign up and add you, then you get your own login: {LINK}": "¡Hola! Estoy usando ScholarTasks para cosas de la universidad: fechas límite, becas, práctica del SAT y ACT, y pistas para la tarea que te ayudan a resolverla tú solo. Es gratis probarlo. Pídele a tu papá o mamá que se registre y te agregue, y luego tendrás tu propio inicio de sesión: {LINK}"
+  "Hey! I'm using ScholarTasks for college stuff: deadlines, scholarships, SAT and ACT practice, and homework hints that help you figure it out yourself. It's free to try. Have your parent sign up and add you, then you get your own login: {LINK}": "¡Hola! Estoy usando ScholarTasks para cosas de la universidad: fechas límite, becas, práctica del SAT y ACT, y pistas para la tarea que te ayudan a resolverla tú solo. Es gratis probarlo. Pídele a tu papá o mamá que se registre y te agregue, y luego tendrás tu propio inicio de sesión: {LINK}",
+  "Talk it out with Speak, or wrote it on paper or in Word or Google Docs? Add it here. A photo is typed out word for word (1 AI use); nothing is fixed or changed.": "¿Prefieres hablar? Usa Hablar. ¿Lo escribiste en papel, en Word o en Google Docs? Agrégalo aquí. Una foto se copia palabra por palabra (1 uso de IA); no se corrige ni se cambia nada.",
+  "■ Stop reading": "■ Dejar de leer",
+  "🔊 Read aloud": "🔊 Leer en voz alta",
+  "I didn't hear anything. Tap Speak and try again.": "No escuché nada. Toca Hablar e inténtalo de nuevo.",
+  "Listening… talk now. Tap Stop when you're done.": "Escuchando… habla ahora. Toca Parar cuando termines.",
+  "Speak": "Hablar",
+  "Speak instead of typing": "Hablar en lugar de escribir",
+  "Stop listening": "Dejar de escuchar",
+  "Tap the 🎤 microphone on your keyboard, then talk. Your words show up in the box.": "Toca el micrófono 🎤 de tu teclado y habla. Tus palabras aparecen en el cuadro.",
+  "This browser can't listen. Use the 🎤 on your phone's keyboard, or your computer's dictation (Windows: Windows key + H. Mac: press Fn twice).": "Este navegador no puede escuchar. Usa el 🎤 del teclado de tu teléfono o el dictado de tu computadora (Windows: tecla Windows + H. Mac: presiona Fn dos veces).",
+  "To talk instead of type, allow the microphone for ScholarTasks in your browser, then tap Speak again.": "Para hablar en lugar de escribir, permite el micrófono para ScholarTasks en tu navegador y toca Hablar otra vez.",
+  "Voice typing needs the internet. Check your connection and try again.": "El dictado por voz necesita internet. Revisa tu conexión e inténtalo de nuevo.",
+  "Voice typing stopped. Tap Speak to try again.": "El dictado por voz se detuvo. Toca Hablar para intentarlo de nuevo.",
+  "Explaining out loud is quick, and it helps you think.": "Explicarlo en voz alta es rápido y te ayuda a pensar."
 }

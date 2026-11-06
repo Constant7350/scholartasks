@@ -6,6 +6,7 @@ import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { NotConfigured, Page } from "../ui";
 import { SignConsent } from "../sign-consent";
 import { ReportAi } from "../report-ai";
+import { VoiceButton } from "../voice";
 import {
   type Challenge, type Entry, POLISH, RULES_VERSION, countWords, day, grades, level, money, permissionWording, prizeText, steps,
 } from "../../lib/challenge";
@@ -97,6 +98,8 @@ function Workspace({ c, entry, student, writer, isParent, permission, onChanged 
   const sb = supabase()!;
   const [e, setE] = useState<Entry | null>(entry);
   const [body, setBody] = useState(entry?.body ?? "");
+  const [ideas, setIdeas] = useState(entry?.ideas ?? "");
+  const [outline, setOutline] = useState(entry?.outline ?? "");
   const [saved, setSaved] = useState<"saved" | "saving" | "error">("saved");
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -108,7 +111,7 @@ function Workspace({ c, entry, student, writer, isParent, permission, onChanged 
   const active = useRef(0);
   const lastKey = useRef(0);
 
-  useEffect(() => { setE(entry); setBody(entry?.body ?? ""); }, [entry]);
+  useEffect(() => { setE(entry); setBody(entry?.body ?? ""); setIdeas(entry?.ideas ?? ""); setOutline(entry?.outline ?? ""); }, [entry]);
   // Count writing time: seconds with a key pressed in the last minute.
   useEffect(() => {
     const t = setInterval(() => { if (Date.now() - lastKey.current < 60000) active.current += 5; }, 5000);
@@ -150,6 +153,8 @@ function Workspace({ c, entry, student, writer, isParent, permission, onChanged 
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => void save(patch), 1500);
   };
+  const onIdeas = (v: string) => { setIdeas(v); later({ ideas: v }); };
+  const onOutline = (v: string) => { setOutline(v); later({ outline: v }); };
   const onBody = (v: string) => { lastKey.current = Date.now(); setBody(v); later({ body: v }); };
   const blockPaste = (ev: React.ClipboardEvent | React.DragEvent) => {
     ev.preventDefault();
@@ -229,14 +234,16 @@ function Workspace({ c, entry, student, writer, isParent, permission, onChanged 
 
           <section className="challenge-step">
             <h3>💡 2. Ideas (one on each line)</h3>
-            <textarea className="input" rows={4} maxLength={4000} readOnly={!canWrite} defaultValue={e.ideas ?? ""}
-              placeholder="A time I…&#10;Something I'd change…&#10;Someone who taught me…" onChange={(x) => later({ ideas: x.target.value })} />
+            <textarea className="input" rows={4} maxLength={4000} readOnly={!canWrite} value={ideas}
+              placeholder="A time I…&#10;Something I'd change…&#10;Someone who taught me…" onChange={(x) => onIdeas(x.target.value)} />
+            {canWrite && <div className="share-row" style={{ marginTop: 6 }}><VoiceButton value={ideas} onText={onIdeas} max={4000} small /><span className="hint">Thinking out loud is a great way to find ideas.</span></div>}
           </section>
 
           <section className="challenge-step">
             <h3>🗺️ 3. Plan: beginning, middle, end</h3>
-            <textarea className="input" rows={4} maxLength={4000} readOnly={!canWrite} defaultValue={e.outline ?? ""}
-              placeholder="Beginning: …&#10;Middle: …&#10;End: …" onChange={(x) => later({ outline: x.target.value })} />
+            <textarea className="input" rows={4} maxLength={4000} readOnly={!canWrite} value={outline}
+              placeholder="Beginning: …&#10;Middle: …&#10;End: …" onChange={(x) => onOutline(x.target.value)} />
+            {canWrite && <div className="share-row" style={{ marginTop: 6 }}><VoiceButton value={outline} onText={onOutline} max={4000} small /></div>}
           </section>
 
           <section className="challenge-step">
@@ -252,7 +259,7 @@ function Workspace({ c, entry, student, writer, isParent, permission, onChanged 
               {canWrite && <> · {saved === "saving" ? "Saving…" : saved === "error" ? "Not saved. Check your connection." : "Saved"}</>}
               {" "}· Written on {e.writing_days} day{e.writing_days === 1 ? "" : "s"}
             </p>
-            {canWrite && <p className="hint small">Pasting is turned off. Type it yourself: the judges can see how your essay grew.</p>}
+            {canWrite && <p className="hint small">Pasting is turned off. Type it yourself: the judges can see how your essay grew. (Speak works for your ideas and plan; the essay itself is typed.)</p>}
           </section>
 
           {canWrite && (

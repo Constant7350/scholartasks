@@ -310,7 +310,7 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .bubble-assistant p:last-child, .bubble-assistant ul:last-child, .bubble-assistant ol:last-child { margin-bottom: 0; }
 .bubble-assistant ul, .bubble-assistant ol { margin: 0 0 8px; padding-left: 20px; }
 .typing { color: var(--muted); font-style: italic; }
-.chat-input { display: flex; gap: 10px; align-items: flex-end; }
+.chat-input { display: flex; gap: 10px; align-items: flex-end; position: relative; }
 .chat-input textarea { resize: vertical; min-height: 52px; }
 .chat-foot { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; font-size: 12px; }
 .linklike { font: inherit; font-size: 13px; background: none; border: 0; color: var(--navy); text-decoration: underline; cursor: pointer; padding: 0; white-space: nowrap; }
@@ -604,6 +604,20 @@ body.help-on { padding-bottom: 96px; }
 .report-ai { margin: 8px 0 0; font-size: 13px; }
 .report-ai .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--muted); text-decoration: underline; cursor: pointer; }
 .report-ai textarea { margin: 6px 0 8px; font-size: 14px; }
+.report-ai .read-aloud { margin-right: 14px; }
+
+/* Speak instead of typing (voice.tsx) */
+.voice { position: relative; display: inline-flex; }
+.voice-btn { white-space: nowrap; display: inline-flex; gap: 6px; align-items: center; }
+.voice-btn.voice-on { background: var(--err-soft); border-color: var(--err); color: var(--err); animation: voice-pulse 1.4s ease-in-out infinite; }
+@keyframes voice-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(179, 38, 30, 0.35); } 50% { box-shadow: 0 0 0 6px rgba(179, 38, 30, 0); } }
+@media (prefers-reduced-motion: reduce) { .voice-btn.voice-on { animation: none; } }
+.voice-pop { position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 30; width: max-content; max-width: min(300px, 80vw); padding: 10px 12px; border-radius: 10px; background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 6px 20px rgba(12, 31, 61, 0.16); font-size: 14px; line-height: 1.4; white-space: normal; text-align: left; }
+.voice-chat { position: static; }
+.voice-chat .voice-pop { left: 0; right: 0; width: auto; max-width: none; }
+.voice-live { color: var(--err); font-weight: 600; }
+@media (max-width: 480px) { .share-row > .voice { display: flex; align-items: flex-start; } .share-row > .voice .voice-btn { flex: 1; justify-content: center; } }
+@media (max-width: 520px) { .voice-chat .voice-word { display: none; } .voice-chat .voice-btn { padding: 12px 14px; } }
 
 /* Find colleges */
 .quiz-q { border: 0; padding: 0; margin: 0 0 14px; }
