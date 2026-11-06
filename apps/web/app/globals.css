@@ -787,3 +787,25 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
 .hw-reply .pill { margin: 0 0 6px; display: inline-block; }
 .hw-switch { display: flex; gap: 8px; align-items: center; margin: 8px 0 12px; font-size: 15px; }
 .hw-scroll { overflow-x: auto; }
+
+/* Compare colleges side by side */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.chip-x { border: 0; background: transparent; color: inherit; font: inherit; font-size: 16px; line-height: 1; padding: 0 0 0 6px; cursor: pointer; }
+.chip-sm { font-size: 13px; padding: 4px 10px; }
+.importance li { align-items: center; }
+.compare-wrap { overflow-x: auto; margin: 0 -4px; -webkit-overflow-scrolling: touch; }
+.compare { border-collapse: separate; border-spacing: 0; font-size: 14px; min-width: 100%; }
+.compare th, .compare td { text-align: left; vertical-align: top; padding: 10px; border-bottom: 1px solid var(--line); min-width: 140px; }
+.compare thead th { font-size: 15px; }
+.compare thead th .hint { display: block; font-weight: 400; font-size: 12px; }
+.compare tbody th { font-weight: 600; min-width: 120px; max-width: 160px; }
+.compare th:first-child { position: sticky; left: 0; background: #fff; z-index: 1; }
+.compare-overall td, .compare-overall th { background: var(--warm-tint); }
+.compare-overall th:first-child { background: var(--warm-tint); }
+.compare-off td { opacity: 0.55; }
+.compare-score { display: block; font-size: 12px; }
+.rank { display: inline-block; font-weight: 700; font-size: 12px; border-radius: 999px; padding: 2px 8px; margin-right: 4px; background: var(--warm-tint); color: var(--muted); }
+.rank-1 { background: var(--ok-soft); color: var(--ok); }
+.rank-2 { background: var(--gold-soft); color: #8a6514; }
+.compare-places { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.compare-places span { display: block; }
