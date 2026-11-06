@@ -10,6 +10,7 @@ import {
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
+import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../lib/colleges";
 import { STATE_NAMES } from "../../lib/trades";
 import { packFor } from "../../lib/state-packs";
@@ -64,6 +65,8 @@ export default function MajorsPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [onList, setOnList] = useState<Set<number>>(new Set());
+  const [onMine, setOnMine] = useState<Set<number>>(new Set());
+  const [space, setSpace] = useSpace();
   const [open, setOpen] = useState<string | null>(null);
   const [twoYear, setTwoYear] = useState<CollegeRow[]>([]);
   const [allHome, setAllHome] = useState(false);
@@ -94,6 +97,9 @@ export default function MajorsPage() {
 
   const student = students.find((s) => s.id === current);
   const mayUseIncome = isParent || !!student?.permissions?.see_income_and_costs;
+  // A parent in their own space saves to their own list, not the student's plan.
+  const mine = isParent && space === "parent";
+  const listed = mine ? onMine : onList;
   const home = student?.state ?? "GA";
   const homeName = STATE_NAMES[home] ?? "your state";
   const acm = !!packFor(home)?.regions.includes("ACM");
@@ -109,7 +115,8 @@ export default function MajorsPage() {
     void costInput(sb, student, mayUseIncome).then(setCtx);
     void sb.from("student_colleges").select("college_id").eq("student_id", student.id).then(({ data }) =>
       setOnList(new Set(((data as { college_id: number | null }[]) ?? []).map((r) => r.college_id).filter((x): x is number => x != null))));
-  }, [sb, student, mayUseIncome]);
+    if (isParent) void myPicks(sb, student.id, "college").then((rows) => setOnMine(new Set(rows.map((r) => Number(r.item_key)))));
+  }, [sb, student, mayUseIncome, isParent]);
 
   // Other federal major names that match what was typed.
   useEffect(() => {
@@ -181,6 +188,11 @@ export default function MajorsPage() {
   const add = async (c: CollegeRow) => {
     if (!student) return;
     setError(null);
+    if (mine) {
+      const { error: e } = await savePick(sb, { student_id: student.id, kind: "college", item_key: String(c.id), name: c.name });
+      if (e) return setError(friendly(e));
+      return setOnMine(new Set([...onMine, c.id]));
+    }
     const mayChange = isParent || !!student.permissions?.change_plan_without_approval;
     const { error: e } = await sb.from("student_colleges").insert({ student_id: student.id, name: c.name, college_id: c.id, plan: "RD", approved: mayChange });
     if (e) return setError(friendly(e));
@@ -262,7 +274,7 @@ export default function MajorsPage() {
                 <div className="item-actions">
                   <span className="pill" title="Program score out of 100 (see How we rank)">Score {h.score}</span>
                   {!isGrad && <button className="btn btn-ghost btn-inline btn-sm" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : `${title}-${c.id}`)}>{isOpen ? "Hide costs" : "Costs"}</button>}
-                  {student && (onList.has(c.id)
+                  {student && (listed.has(c.id)
                     ? <span className="pill pill-ok">On your list ✓</span>
                     : <button className="btn btn-inline btn-sm" onClick={() => void add(c)}>+ Add</button>)}
                   {c.price_calc_url && <a className="btn btn-ghost btn-inline btn-sm" href={c.price_calc_url} target="_blank" rel="noreferrer noopener">Price calculator</a>}
@@ -344,6 +356,7 @@ export default function MajorsPage() {
 
   return (
     <Page title="Search colleges by major">
+      {isParent && student && <SpaceSwitch space={space} onChange={setSpace} name={student.first_name} />}
       {isParent && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
@@ -460,7 +473,7 @@ export default function MajorsPage() {
                       <b>{c.name}</b> <span className="hint">({c.city}, {c.state})</span><br />
                       <span>{f?.note}</span>{" "}
                       {f?.url && <a href={f.url} target="_blank" rel="noreferrer">See the program</a>}
-                      {student && (onList.has(c.id)
+                      {student && (listed.has(c.id)
                         ? <span className="pill pill-ok" style={{ marginLeft: 8 }}>On the list</span>
                         : <button className="btn btn-ghost btn-inline btn-sm" style={{ marginLeft: 8 }} onClick={() => void add(c)}>Add to college list</button>)}
                     </li>

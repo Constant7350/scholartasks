@@ -8,6 +8,7 @@ import { GpaScorecard } from "../grades/scorecard";
 import { ProgressCard } from "./progress-card";
 import { PasskeyOffer } from "../passkey-offer";
 import { AdultConsent } from "../adult-consent";
+import { ParentIdeasCard, ParentSpaceCard } from "./parent-space-cards";
 
 interface Student { id: string; first_name: string; grade_level: number; state: string; match_profile?: { career_quiz?: { code: string; at: string } } | null; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string }
 interface Grade { student_id: string; course: string; grade: "A" | "B" | "C" | "D" | "F"; level: "standard" | "honors" | "AP" | "IB" | "DE"; core: boolean; grade_level: number; term: string }
@@ -26,6 +27,7 @@ export default function Home() {
   const [invites, setInvites] = useState<Invite[]>([]);
   const [grades, setGrades] = useState<Grade[]>([]);
   const [dues, setDues] = useState<Due[]>([]);
+  const [role, setRole] = useState<"parent" | "student" | "none">("none");
 
   useEffect(() => {
     if (!sb) return;
@@ -34,13 +36,16 @@ export default function Home() {
       setSignedIn(!!data.session);
       if (!data.session) return;
       setEmail(data.session.user.email ?? "");
-      const [st, inv, gr, tk, col] = await Promise.all([
+      const [st, inv, gr, tk, col, mem] = await Promise.all([
         sb.from("students").select("*").order("first_name"),
         sb.from("family_invites").select("student_id, accepted_at"),
         sb.from("course_grades").select("student_id, course, grade, level, core, grade_level, term"),
         sb.from("tasks").select("due_on, status"),
         sb.from("student_colleges").select("deadline, status"),
+        sb.from("family_members").select("role").eq("user_id", data.session.user.id),
       ]);
+      const roles = ((mem.data as { role: string }[]) ?? []).map((r) => r.role);
+      setRole(roles.includes("parent") ? "parent" : roles.includes("student") ? "student" : "none");
       setDues([
         ...((tk.data as { due_on: string | null; status: string }[]) ?? []).map((t) => ({ due: t.due_on, open: t.status === "todo" })),
         ...((col.data as { deadline: string | null; status: string }[]) ?? []).map((c) => ({ due: c.deadline, open: ["considering", "applying"].includes(c.status) })),
@@ -75,6 +80,9 @@ export default function Home() {
         <h1>Your college plan starts here</h1>
         <p className="hint">Look around and try the tools first. Add your student whenever you're ready.</p>
       </section>
+
+      {role === "parent" && <ParentSpaceCard sb={sb} firstName={students.length === 1 ? students[0]!.first_name : null} />}
+      {role === "student" && <ParentIdeasCard sb={sb} />}
 
       <AdultConsent sb={sb} mode="ask" />
       <PasskeyOffer sb={sb} />
