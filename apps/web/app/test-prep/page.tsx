@@ -1,6 +1,6 @@
 "use client";
 
-import { VoiceButton } from "../voice";
+import { NO_SUGGEST, VoiceButton } from "../voice";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PAYWALL_ON } from "../../lib/prices";
 import { checkablePrograms, classOf, testsFor } from "@scholartasks/core";
@@ -226,7 +226,7 @@ export default function TestPrepPage() {
               <details className="rescue-more" style={{ marginTop: 10 }}>
                 <summary>Still confused? Ask the tutor about this question</summary>
                 <div className="field" style={{ marginTop: 8 }}><label htmlFor="tp-ask">What&apos;s confusing? (optional)</label>
-                  <input id="tp-ask" className="input" maxLength={1000} value={ask} placeholder="Why isn't it choice B?" onChange={(e) => setAsk(e.target.value)} /></div>
+                  <input {...NO_SUGGEST} id="tp-ask" className="input" maxLength={1000} value={ask} placeholder="Why isn't it choice B?" onChange={(e) => setAsk(e.target.value)} /></div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
                   <VoiceButton value={ask} onText={setAsk} max={1000} small />
                   <button className="btn btn-ghost btn-inline btn-sm" onClick={() => void explain(q, run.picked)}>🤖 Explain it (1 AI use)</button>

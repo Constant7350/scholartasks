@@ -202,3 +202,11 @@ export function chunks(s: string): string[] {
   }
   return out.map((x) => x.trim()).filter(Boolean);
 }
+
+/**
+ * For homework and tutor boxes: turns off the phone keyboard's suggestion bar,
+ * which can offer the answer itself (for example a unit conversion like
+ * "1 mile = 1,609 meters") while the student types the question.
+ */
+export const NO_SUGGEST = { autoComplete: "off", autoCorrect: "off" } as const;
+
