@@ -19,3 +19,4 @@ export * from "./common-app";
 export * from "./compare";
 export * from "./openings";
 export * from "./faith";
+export * from "./military";

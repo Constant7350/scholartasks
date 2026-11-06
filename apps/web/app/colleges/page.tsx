@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CHURCH_FAMILIES, INTERESTS, INTEREST_PROGRAMS, SCHOOL_TYPES, SOUTHEAST, faithCodes, faithLabel, collegeFit, estimateCost, fitRecord, type CourseGrade, matchScore, sizeOf, type CostInput, type Fit, type MatchAnswers, type MatchProfile } from "@scholartasks/core";
+import { CHURCH_FAMILIES, INTERESTS, MILITARY_COLLEGE_IDS, SERVICE_ACADEMIES, militaryLabel, INTEREST_PROGRAMS, SCHOOL_TYPES, SOUTHEAST, faithCodes, faithLabel, collegeFit, estimateCost, fitRecord, type CourseGrade, matchScore, sizeOf, type CostInput, type Fit, type MatchAnswers, type MatchProfile } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
@@ -75,12 +75,17 @@ export default function CollegesPage() {
 
   const ranked = useMemo(() => {
     if (!results || !student || !ctx) return [];
+    const military = answers.type === "military";
+    const a = military ? { ...answers, where: "anywhere" as const, size: "any" as const, interests: [] } : answers;
     return results.map((r) => {
       const facts = toFacts(r);
       const cost = estimateCost(facts, ctx);
-      const score = matchScore(facts, answers, student.state, cost.estimate);
+      // Service academies charge no tuition: show them as free.
+      if (SERVICE_ACADEMIES.some((x) => x.id === r.id)) { cost.estimate = 0; cost.basis = "sticker"; }
+      const score = matchScore(facts, a, student.state, cost.estimate);
       return { r, cost, score, fit: collegeFit(facts, { sat: student.sat, act: student.act, gpa: record.gpa, rigor: record.rigor }) };
-    }).filter((x) => x.score != null).sort((a, b) => b.score! - a.score!).slice(0, 40);
+    }).filter((x) => x.score != null)
+      .sort((x, y) => (military ? Number(y.r.state === student.state) - Number(x.r.state === student.state) : 0) || y.score! - x.score!).slice(0, 40);
   }, [results, student, ctx, answers, record]);
 
   if (!sb) return <Page title="Find colleges"><NotConfigured /></Page>;
@@ -94,7 +99,10 @@ export default function CollegesPage() {
     const ownership = answers.type === "public" ? [1] : answers.type === "private" || answers.type === "christian" ? [2] : [1, 2];
     const programs = [...new Set(answers.interests.flatMap((i) => INTEREST_PROGRAMS[i] ?? []))];
     const faith = answers.type === "christian" ? faithCodes(answers.church) : null;
-    const { data, error: e } = await sb.rpc("match_colleges", { p_states: states, p_ownership: ownership, p_programs: programs, p_limit: 400, ...(faith ? { p_faith: faith } : {}) });
+    // Military: the service academies and military colleges, in every state (only 15, so no other filters but price).
+    const { data, error: e } = answers.type === "military"
+      ? await sb.from("colleges").select("*").in("id", MILITARY_COLLEGE_IDS)
+      : await sb.rpc("match_colleges", { p_states: states, p_ownership: ownership, p_programs: programs, p_limit: 400, ...(faith ? { p_faith: faith } : {}) });
     setBusy(false);
     if (e) return setError(friendly(e));
     setResults((data as CollegeRow[]) ?? []);
@@ -141,7 +149,7 @@ export default function CollegesPage() {
       <section className="panel quiz">
         {pick("1. Where?", [["home", STATE_NAMES[student.state] ?? "My state"], ["region", "The Southeast"], ["anywhere", "Anywhere in the U.S."]], "where")}
         {pick("2. How big?", [["small", "Small (under 5,000)"], ["medium", "Medium"], ["large", "Large (15,000+)"], ["any", "No preference"]], "size")}
-        {pick("3. What kind of college?", SCHOOL_TYPES.map(([v, l]) => [v, v === "christian" ? "Christian colleges" : v === "private" ? "Private colleges" : v === "public" ? "Public colleges" : "Any"] as [string, string]), "type")}
+        {pick("3. What kind of college?", SCHOOL_TYPES.map(([v, l]) => [v, v === "christian" ? "Christian colleges" : v === "military" ? "Military academies and colleges" : v === "private" ? "Private colleges" : v === "public" ? "Public colleges" : "Any"] as [string, string]), "type")}
         {answers.type === "christian" && (
           <fieldset className="quiz-q">
             <legend>Church family <span className="hint">(optional)</span></legend>
@@ -150,6 +158,9 @@ export default function CollegesPage() {
               {CHURCH_FAMILIES.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
             </select>
           </fieldset>
+        )}
+        {answers.type === "military" && (
+          <p className="hint" style={{ margin: "0 0 12px" }}>Shows the five service academies (free, with service after) and the senior and junior military colleges in every state, yours first. Nominations, ROTC and enlisting: see <a href="/military">Military paths</a>.</p>
         )}
         <fieldset className="quiz-q">
           <legend>4. What do you want to study? <span className="hint">(pick any)</span></legend>
@@ -183,10 +194,10 @@ export default function CollegesPage() {
               <li key={r.id}>
                 <div className="item-main">
                   <b>{r.name}</b>
-                  <span className="hint">{r.city ? `${r.city}, ` : ""}{r.state} · {OWNERSHIP[r.ownership]}{faithLabel(r.religious_affiliation) ? ` · ${faithLabel(r.religious_affiliation)}` : ""} · {sizeOf(r.size) ?? "size unknown"}{r.size ? ` (${r.size.toLocaleString()} students)` : ""}</span>
+                  <span className="hint">{r.city ? `${r.city}, ` : ""}{r.state} · {OWNERSHIP[r.ownership]}{faithLabel(r.religious_affiliation) ? ` · ${faithLabel(r.religious_affiliation)}` : ""}{militaryLabel(r.id) ? ` · ${militaryLabel(r.id)}` : ""} · {sizeOf(r.size) ?? "size unknown"}{r.size ? ` (${r.size.toLocaleString()} students)` : ""}</span>
                   <span className="hint">Admits {pct(r.admit_rate)} · Graduates {pct(r.grad_rate)} · Earnings after 10 years {money(r.earnings)}</span>
                   <span className="college-price">
-                    {cost.estimate != null ? <><b>About {money(cost.estimate)} a year</b> <span className="hint">({cost.basis === "typical" ? "typical for your income" : cost.basis === "state_award" ? "after HOPE/Zell" : "full price"}; full price {money(cost.sticker)})</span></> : <span className="hint">No price data</span>}
+                    {SERVICE_ACADEMIES.some((x) => x.id === r.id) ? <><b>No tuition</b> <span className="hint">(housing, food and a monthly stipend paid; about 5 years of service after graduation)</span></> : cost.estimate != null ? <><b>About {money(cost.estimate)} a year</b> <span className="hint">({cost.basis === "typical" ? "typical for your income" : cost.basis === "state_award" ? "after HOPE/Zell" : "full price"}; full price {money(cost.sticker)})</span></> : <span className="hint">No price data</span>}
                   </span>
                 </div>
                 <div className="item-actions">

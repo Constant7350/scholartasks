@@ -170,6 +170,7 @@ export const CAREER_INTERESTS = {
   justice: "Rules, fairness and the law",
   leading: "Leading and organizing people",
   research: "Solving puzzles and researching",
+  serving: "Serving my country, teamwork and adventure",
 } as const;
 export type CareerInterest = keyof typeof CAREER_INTERESTS;
 

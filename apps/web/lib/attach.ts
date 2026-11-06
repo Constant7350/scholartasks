@@ -8,7 +8,7 @@ export type Attachment =
   | { kind: "text"; name: string; text: string };
 
 /** What the "Upload a file" button accepts. */
-export const FILE_ACCEPT = "image/*,application/pdf,.pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.txt,text/plain,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,text/csv";
+export const FILE_ACCEPT = "image/*,application/pdf,.pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.txt,text/plain,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,text/csv,.doc,application/msword,.rtf,.odt,.ods,.odp,.xls,application/vnd.ms-excel,.xlsb,.numbers,.pages,.key,.pptx";
 /** Biggest PDF we send (the server takes about 3.5 MB once encoded). */
 export const MAX_PDF_BYTES = 2_500_000;
 const MAX_TEXT_CHARS = 20000;
@@ -139,12 +139,119 @@ export function wordXmlToText(xml: string): string {
     .trim();
 }
 
+/** An OpenDocument text or slides file's content.xml as plain text. */
+export function odfXmlToText(xml: string): string {
+  return unescapeXml(xml
+    .replace(/<text:tab\/>/g, "\t")
+    .replace(/<text:line-break\/>/g, "\n")
+    .replace(/<text:s(?:\s+text:c="(\d+)")?\/>/g, (_, n?: string) => " ".repeat(Number(n ?? 1)))
+    .replace(/<\/text:(?:p|h)>/g, "\n\n")
+    .replace(/<[^>]+>/g, ""))
+    .replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+/** The words on each PowerPoint slide, in order. */
+export function slidesToText(files: Map<string, string>): string {
+  return [...files.keys()].filter((k) => /^ppt\/slides\/slide\d+\.xml$/.test(k))
+    .sort((a, b) => Number(a.match(/(\d+)\.xml$/)![1]) - Number(b.match(/(\d+)\.xml$/)![1]))
+    .map((k, i) => {
+      const lines = files.get(k)!.split(/<\/a:p>/).map((p) => [...p.matchAll(/<a:t>([\s\S]*?)<\/a:t>/g)].map((m) => unescapeXml(m[1]!)).join("")).filter((l) => l.trim());
+      return lines.length ? `Slide ${i + 1}:\n${lines.join("\n")}` : "";
+    }).filter(Boolean).join("\n\n");
+}
+
+/** Plain text from an RTF file (WordPad, TextEdit). Skips fonts, colors, pictures and other hidden parts. */
+export function rtfToText(rtf: string): string {
+  const SKIP = /^(fonttbl|colortbl|stylesheet|info|pict|header|footer|headerl|headerr|footerl|footerr|listtable|listoverridetable|rsidtbl|generator|xmlnstbl|themedata|colorschememapping|latentstyles|datastore)$/;
+  let out = "";
+  const stack: boolean[] = [];
+  let skip = false;
+  for (let i = 0; i < rtf.length; i++) {
+    const ch = rtf[i]!;
+    if (ch === "{") { stack.push(skip); continue; }
+    if (ch === "}") { skip = stack.pop() ?? false; continue; }
+    if (ch === "\\") {
+      const next = rtf[i + 1] ?? "";
+      if (next === "*") { skip = true; i++; continue; }
+      if (next === "'") { if (!skip) out += String.fromCharCode(parseInt(rtf.slice(i + 2, i + 4), 16)); i += 3; continue; }
+      if (/[\\{}]/.test(next)) { if (!skip) out += next; i++; continue; }
+      const m = /^([a-z]+)(-?\d+)? ?/i.exec(rtf.slice(i + 1));
+      if (!m) { i++; continue; }
+      i += m[0].length;
+      const word = m[1]!;
+      if (SKIP.test(word)) skip = true;
+      else if (!skip) {
+        if (word === "par" || word === "line") out += "\n";
+        else if (word === "tab") out += "\t";
+        else if (word === "u" && m[2]) {
+          out += String.fromCharCode((Number(m[2]) + 65536) % 65536);
+          // Skip the plain-text stand-in that follows (one character or one \'hh).
+          i += rtf[i + 1] === "\\" && rtf[i + 2] === "'" ? 4 : 1;
+        }
+      }
+      continue;
+    }
+    if (ch === "\r" || ch === "\n") continue;
+    if (!skip) out += ch;
+  }
+  return out.replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+/** Older and other spreadsheets (.xls, .xlsb, .ods, Apple Numbers) read with SheetJS, loaded only when needed. */
+export async function sheetJsText(file: File): Promise<string> {
+  const XLSX = await import("@e965/xlsx");
+  const wb = XLSX.read(new Uint8Array(await file.arrayBuffer()), { type: "array", cellFormula: true, cellDates: true });
+  const parts: string[] = [];
+  for (const sheet of wb.SheetNames) {
+    const ws = wb.Sheets[sheet];
+    if (!ws?.["!ref"]) continue;
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    const rows: string[] = [];
+    for (let r = range.s.r; r <= Math.min(range.e.r, range.s.r + 1000); r++) {
+      const cells: string[] = [];
+      for (let c = range.s.c; c <= Math.min(range.e.c, range.s.c + 60); c++) {
+        const addr = XLSX.utils.encode_cell({ r, c });
+        const cell = ws[addr] as { v?: unknown; w?: string; f?: string } | undefined;
+        if (!cell) continue;
+        let value = (cell.w ?? (cell.v === undefined ? "" : String(cell.v))).trim();
+        if (cell.f) value = `${value} (=${cell.f})`.trim();
+        if (value) cells.push(`${addr} ${value}`);
+      }
+      if (cells.length) rows.push(cells.join(" | "));
+    }
+    if (rows.length) parts.push(`${wb.SheetNames.length > 1 ? `Sheet "${sheet}":\n` : ""}${rows.join("\n")}`);
+  }
+  return parts.join("\n\n");
+}
+
+/** Old Word (.doc) files are turned into text on our server; nothing is saved. */
+async function convertOnServer(file: File): Promise<string> {
+  if (file.size > 2_500_000) throw new Error("That file is too big. Save it as a PDF with only the pages you need, or copy and paste the text.");
+  const dataUrl = await toDataUrl(file);
+  const { supabase } = await import("./supabase");
+  const sb = supabase();
+  const { data } = sb ? await sb.auth.getSession() : { data: { session: null } };
+  const res = await fetch("/api/convert-file", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session?.access_token ?? ""}` },
+    body: JSON.stringify({ name: file.name, data: dataUrl.slice(dataUrl.indexOf(",") + 1) }),
+  });
+  const out = (await res.json().catch(() => null)) as { text?: string; error?: string } | null;
+  if (!res.ok || !out?.text) throw new Error(out?.error ?? "That file couldn't be opened. Save it as a PDF and try again, or copy and paste the text.");
+  return out.text;
+}
+
 /** Reads a picked file into something we can show and send. Throws a friendly message if it won't work. */
 export async function readAttachment(file: File, opts: { pdf?: boolean } = {}): Promise<Attachment> {
   const name = file.name || "file";
   const lower = name.toLowerCase();
-  if (file.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif|gif)$/.test(lower)) {
-    return { kind: "image", name, dataUrl: await shrinkPhoto(file) };
+  if (file.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif|gif|bmp)$/.test(lower)) {
+    try {
+      return { kind: "image", name, dataUrl: await shrinkPhoto(file) };
+    } catch (e) {
+      if (/\.hei[cf]$/.test(lower)) throw new Error("This computer can't open iPhone (HEIC) photos. Send the photo from the phone instead, or take a new photo here.");
+      throw e;
+    }
   }
   if (file.type === "application/pdf" || lower.endsWith(".pdf")) {
     if (opts.pdf === false) throw new Error("PDFs can't be used here. Take a photo instead.");
@@ -170,11 +277,31 @@ export async function readAttachment(file: File, opts: { pdf?: boolean } = {}): 
     if (!text) throw new Error("That file is empty.");
     return { kind: "text", name, text: text.slice(0, MAX_TEXT_CHARS) };
   }
-  if (lower.endsWith(".doc") || lower.endsWith(".pages") || lower.endsWith(".odt")) {
-    throw new Error("That kind of file can't be read here. Save it as a Word (.docx) file or a PDF and try again. In Google Docs: File, then Download, then Microsoft Word.");
+  // Everything below is converted automatically, so students never have to re-save a file.
+  const asText = (text: string, what: string): Attachment => {
+    if (!text.trim()) throw new Error(`That ${what} couldn't be read, or it's empty. Save it as a PDF and try again, or take a photo of it.`);
+    return { kind: "text", name, text: text.slice(0, MAX_TEXT_CHARS) };
+  };
+  if (lower.endsWith(".doc") || lower.endsWith(".dot")) return asText(await convertOnServer(file), "Word file");
+  if (lower.endsWith(".rtf")) return asText(rtfToText(await file.text()), "file");
+  if (lower.endsWith(".odt") || lower.endsWith(".odp")) {
+    const xml = await unzipEntry(await file.arrayBuffer(), "content.xml").catch(() => null);
+    return asText(xml ? odfXmlToText(new TextDecoder().decode(xml)) : "", "file");
   }
-  if (lower.endsWith(".xls") || lower.endsWith(".numbers") || lower.endsWith(".ods")) {
-    throw new Error("That kind of spreadsheet can't be read here. Save it as an Excel (.xlsx) file and try again. In Google Sheets: File, then Download, then Microsoft Excel.");
+  if (lower.endsWith(".pptx")) {
+    const entries = await unzipEntries(await file.arrayBuffer(), (n) => /^ppt\/slides\/slide\d+\.xml$/.test(n)).catch(() => new Map<string, Uint8Array>());
+    const dec = new TextDecoder();
+    return asText(slidesToText(new Map([...entries].map(([k, v]) => [k, dec.decode(v)]))), "PowerPoint file");
   }
-  throw new Error("That kind of file can't be read here. Use a photo, a PDF, a Word (.docx) file or an Excel (.xlsx) file.");
+  if (/\.(xls|xlsb|ods|numbers)$/.test(lower)) return asText(await sheetJsText(file).catch(() => ""), "spreadsheet");
+  if (lower.endsWith(".pages") || lower.endsWith(".key")) {
+    // Apple Pages and Keynote files carry a preview of the document; use that.
+    const entries = await unzipEntries(await file.arrayBuffer(), (n) => /^(QuickLook\/Preview\.pdf|QuickLook\/Thumbnail\.jpg|preview\.jpg|preview-web\.jpg)$/i.test(n)).catch(() => new Map<string, Uint8Array>());
+    const pdf = [...entries].find(([k]) => /\.pdf$/i.test(k))?.[1];
+    if (pdf && opts.pdf !== false && pdf.length <= MAX_PDF_BYTES) return { kind: "pdf", name, dataUrl: await toDataUrl(new Blob([pdf as Uint8Array<ArrayBuffer>], { type: "application/pdf" })) };
+    const jpg = entries.get("preview.jpg") ?? entries.get("QuickLook/Thumbnail.jpg") ?? entries.get("preview-web.jpg");
+    if (jpg) return { kind: "image", name, dataUrl: await shrinkPhoto(new Blob([jpg as Uint8Array<ArrayBuffer>], { type: "image/jpeg" })) };
+    throw new Error("That Pages or Keynote file couldn't be read. In Pages: File, then Export To, then PDF or Word.");
+  }
+  throw new Error("That kind of file can't be read here. Use a photo, a PDF, or a Word, Excel or PowerPoint file.");
 }

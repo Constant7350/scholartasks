@@ -1,6 +1,7 @@
 // Religious affiliation of colleges, from the federal College Scorecard
 // (school.religious_affiliation, the IPEDS RELAFFIL code). Families can pick
 // "Christian colleges" (or one church family) when they search for colleges.
+import { MILITARY_COLLEGE_IDS } from "./military";
 
 /** Scorecard religious affiliation codes and their names. */
 export const AFFILIATIONS: Record<number, string> = {
@@ -43,10 +44,10 @@ export const CHURCH_FAMILIES: { id: string; label: string; codes: number[] }[] =
   { id: "other", label: "Other Christian (Brethren, Mennonite, Quaker, Adventist, Latter-day Saints)", codes: [28, 43, 44, 58, 65, 69, 84, 94, 95, 107] },
 ];
 
-/** A search's school-type pick: any, public, private (nonprofit) or Christian. */
-export type SchoolType = "any" | "public" | "private" | "christian";
+/** A search's school-type pick: any, public, private (nonprofit), Christian, or military (academies and military colleges). */
+export type SchoolType = "any" | "public" | "private" | "christian" | "military";
 
-export const SCHOOL_TYPES: [SchoolType, string][] = [["any", "Any"], ["public", "Public"], ["private", "Private"], ["christian", "Christian"]];
+export const SCHOOL_TYPES: [SchoolType, string][] = [["any", "Any"], ["public", "Public"], ["private", "Private"], ["christian", "Christian"], ["military", "Military"]];
 
 /** True when the college reports a Christian church affiliation. */
 export function isChristian(code: number | null | undefined): boolean {
@@ -67,7 +68,8 @@ export function faithLabel(code: number | null | undefined): string | null {
 }
 
 /** Whether a college (ownership 1 public, 2 private nonprofit, 3 for-profit) fits a school-type pick. */
-export function fitsSchoolType(c: { ownership: number; religiousAffiliation?: number | null }, type: SchoolType, church?: string | null): boolean {
+export function fitsSchoolType(c: { id?: number; ownership: number; religiousAffiliation?: number | null }, type: SchoolType, church?: string | null): boolean {
+  if (type === "military") return c.id != null && MILITARY_COLLEGE_IDS.includes(c.id);
   if (type === "public") return c.ownership === 1;
   if (type === "private") return c.ownership !== 1;
   if (type === "christian") return c.religiousAffiliation != null && faithCodes(church).includes(c.religiousAffiliation);

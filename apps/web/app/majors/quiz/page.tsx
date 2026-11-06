@@ -82,6 +82,14 @@ export default function CareerQuiz() {
         </section>
       )}
 
+      {picked.includes("serving") && (
+        <section className="panel">
+          <h2>Military paths</h2>
+          <p className="hint">Serve as an officer after a service academy or ROTC (college paid for), study at a military college, or enlist and get paid training in hundreds of jobs, many of them trades. The GI Bill can pay for college or trade school later.</p>
+          <a className="btn btn-inline btn-sm link-btn" href="/military">Compare military paths</a>
+        </section>
+      )}
+
       {picked.length > 0 && (
         <p className="hint small">This is a starting point, not a test. Pay is the U.S. median (half earn more, half less) and varies by state. Try a job shadow, a summer program or a class in the subject, and talk it over with your family and the <a href="/counselor">AI counselor</a>.</p>
       )}

@@ -163,7 +163,7 @@ export default function MajorsPage() {
     const combined = combinePrograms(rows).map((c) => {
       const college = colleges.get(c.collegeId)!;
       return { ...c, state: college.state, gradRate: college.grad_rate, satAvg: college.sat_avg, college, online: c.rows.every((r) => r.online) };
-    }).filter((c) => fitsSchoolType({ ownership: c.college.ownership, religiousAffiliation: c.college.religious_affiliation }, type, church));
+    }).filter((c) => fitsSchoolType({ id: c.college.id, ownership: c.college.ownership, religiousAffiliation: c.college.religious_affiliation }, type, church));
     const hits: Hit[] = rankPrograms(combined, home).map(({ p, score, parts }) => ({
       college: p.college, grads: p.grads, earn1: p.earn1, earn4: p.earn4, debt: p.debt, online: p.online, score, parts: parts as unknown as Record<string, number | null>,
       cost: estimateCost(toFacts(p.college), ctx),
@@ -431,7 +431,7 @@ export default function MajorsPage() {
               <legend>What kind of college?</legend>
               <div className="chips" style={{ justifyContent: "flex-start" }}>
                 {SCHOOL_TYPES.map(([v, l]) => (
-                  <button key={v} type="button" className={`chip${type === v ? " chip-on" : ""}`} aria-pressed={type === v} onClick={() => setType(v)}>{v === "christian" ? "Christian colleges" : l}</button>
+                  <button key={v} type="button" className={`chip${type === v ? " chip-on" : ""}`} aria-pressed={type === v} onClick={() => setType(v)}>{v === "christian" ? "Christian colleges" : v === "military" ? "Military colleges" : l}</button>
                 ))}
               </div>
               {type === "christian" && (
