@@ -453,7 +453,7 @@ export const TOPICS: Topic[] = [
     area: "College plan",
     title: "Write college essays with the coach",
     href: "/essays",
-    keywords: ["essay", "personal statement", "common app essay", "upload", "photo", "word", "google docs", "supplement", "why this college", "why us", "writing", "feedback", "brainstorm", "topic", "word count"],
+    keywords: ["essay", "personal statement", "common app essay", "upload", "photo", "word", "google docs", "download", "docx", "supplement", "why this college", "why us", "writing", "feedback", "brainstorm", "topic", "word count"],
     summary: "Draft the Common App personal essay and each college's extra essays in one place. It saves as you type, counts words, and the AI coach gives feedback without writing for you.",
     steps: [
       "Open Menu, then College essays.",
@@ -462,6 +462,7 @@ export const TOPICS: Topic[] = [
       "Stuck? Tap Help me find a topic. The coach asks questions drawn from your activities.",
       "Wrote it on paper, in Word or in Google Docs? Tap Upload my draft (a Word file, old or new, or a Pages, OpenOffice, RTF or text file goes straight in) or Photo of my draft (it is typed out word for word, using 1 AI use). Read it over and fix anything misread.",
       "When you have a draft, tap Get feedback. Tick Finished when it's done.",
+      "Tap Download as Word to keep working on your draft in Word, Google Docs or Pages. On a phone it opens the share sheet so you can save it to Files or Drive.",
     ],
     body: [
       "The coach never writes sentences, openings or rewrites for you. Colleges want the student's own words, and an essay someone else wrote can get an application thrown out.",
@@ -941,7 +942,7 @@ export const TOPICS: Topic[] = [
     area: "Study and practice",
     title: "Homework Helper: help with any homework, without cheating",
     href: "/homework",
-    keywords: ["homework", "homework help", "tutor", "math", "essay", "science", "history", "spanish", "coding", "photo", "picture", "camera", "upload", "file", "pdf", "excel", "spreadsheet", "worksheet", "project", "hint", "cheating", "answers", "safe ai", "chatgpt", "add-on", "study coach", "thinking score"],
+    keywords: ["homework", "homework help", "tutor", "math", "essay", "science", "history", "spanish", "coding", "photo", "picture", "camera", "upload", "file", "pdf", "excel", "spreadsheet", "worksheet", "project", "hint", "cheating", "answers", "safe ai", "chatgpt", "add-on", "study coach", "thinking score", "save", "notes", "print", "reopen", "history"],
     summary: "An AI tutor for every subject that keeps your student doing the thinking. It gives hints, checks work and explains ideas, but never gives the answer or writes for them.",
     steps: [
       "Open Menu, then Homework Helper.",
@@ -949,13 +950,15 @@ export const TOPICS: Topic[] = [
       "Write what you've tried so far (it gets you better help).",
       "Tap Give me a hint, Check my work, or Explain the idea.",
       "Answer the helper's question with your next step. When you finish, explain it back and try the twin problem on paper.",
+      "Tap Save my notes for a one-page study sheet (the problem, the hints and ideas, and your own steps) to print or save as a PDF.",
+      "To come back to a problem later, open the Homework Helper on the same phone or computer and pick it under Pick up where you left off.",
     ],
     body: [
       "The helper gives one hint at a time, up to three, then keeps asking smaller questions. It never states the final answer to your problem, never does the next step for you, and never writes sentences, essays, translations or code you could hand in.",
       "Mid-chat, tap Photo of my work to show your steps on paper. The helper checks them and points to the first mistake for you to fix. A photo or file follows the same rules as typing: it will not fill in or solve what is on the page, and for a whole worksheet or project it asks which part to start with.",
       "Every reply is checked by a second AI before you see it. If a reply gives too much away, it is rewritten or replaced with a guiding question.",
       "No help on tests or quizzes. The helper offers to help you study the topic afterward instead.",
-      "Parents see a summary on the same page: subjects and topics, a thinking score (problems finished with 0, 1, 2 or 3+ hints, week by week), each time the helper said no to an answer, and any time it suggested talking to a trusted adult. Your full chat is not saved.",
+      "Parents see a summary on the same page: subjects and topics, a thinking score (problems finished with 0, 1, 2 or 3+ hints, week by week), each time the helper said no to an answer, and any time it suggested talking to a trusted adult. Your full chat is not saved on our servers. The last 10 problems are kept only on the student's own phone or computer so they can reopen them, and Clear the list removes them.",
       "A parent can turn the helper off for a student on the Homework Helper page. Turning off AI chat in Family and permissions turns it off too.",
       "Each reply uses 1 of the day's AI uses. With the Homework Helper add-on, a student gets up to 30 helper turns a day (400 a month for the family). The helper can make mistakes, so if something looks wrong, ask your teacher, and always follow your teacher's rules about AI.",
     ],
