@@ -6,7 +6,8 @@
 
 .trade-callouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
 .trade-callout { display: grid; gap: 4px; margin: 0; text-decoration: none; color: inherit; }
-a.trade-callout:hover { border-color: var(--navy); }
+a.trade-callout:hover, button.trade-callout:hover { border-color: var(--navy); }
+button.trade-callout { text-align: left; font: inherit; cursor: pointer; width: 100%; }
 
 .trade-chips { justify-content: flex-start; margin-bottom: 12px; }
 .trade-filters { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin: 4px 0 8px; }
