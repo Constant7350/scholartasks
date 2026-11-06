@@ -422,7 +422,7 @@ export default function TestPrepPage() {
         <p className="hint">
           Every question in ScholarTasks test prep is original. Our team writes each one, with help from AI, to match the skills, question types and difficulty that
           College Board and ACT describe in their published test outlines. We don&apos;t copy, reword or adapt questions from official tests,
-          prep books or websites. A teacher on our team checks every question before it loses its &ldquo;Draft&rdquo; label.
+          prep books or websites. Our education review team checks every question before it loses its &ldquo;Draft&rdquo; label.
         </p>
         <p className="hint" style={{ margin: 0 }}>
           Score estimates come from short practice sets and are approximate, not official scores. SAT® is a trademark of the College Board and

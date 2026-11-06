@@ -911,7 +911,7 @@ export const TOPICS: Topic[] = [
     body: [
       "Some lessons include tools: a review planner that spreads study out before a test, a focus timer, and a weekly plan saved on this device.",
       "Tap \"I finished this lesson\" when done (parents see \"Mark finished\"). Parents can see how many lessons their student has finished.",
-      "Lessons marked Draft are still being checked by our teacher reviewer.",
+      "Lessons marked Draft are still being checked by our review team.",
     ],
   },
   {
@@ -948,7 +948,7 @@ export const TOPICS: Topic[] = [
       "Drills are free and use no AI. \"Explain it\" asks the tutor to walk you through a question (1 of today's 10 AI uses).",
       "Timed practice tests are part of the Homework Helper add-on and are free while ScholarTasks is in beta.",
       "Scores are rough estimates from short tests, not official scores. Before test day, take a full-length official practice test: Bluebook for the SAT, or ACT's free practice test.",
-      "How the questions are made: every question is original, written by the ScholarTasks team (with help from AI) to match the skills, question types and difficulty in College Board's and ACT's published test outlines. We don't copy, reword or adapt questions from official tests, prep books or websites. A teacher on our team checks each one; until then it shows a Draft label.",
+      "How the questions are made: every question is original, written by the ScholarTasks team (with help from AI) to match the skills, question types and difficulty in College Board's and ACT's published test outlines. We don't copy, reword or adapt questions from official tests, prep books or websites. Our education review team checks each one; until then it shows a Draft label.",
       "SAT is a trademark of the College Board and ACT is a trademark of ACT Education Corp. Neither makes, sponsors or endorses ScholarTasks.",
       "Got an official score? Save it on the Grades page so scholarship matches and the counselor use it.",
     ],

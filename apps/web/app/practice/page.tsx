@@ -223,7 +223,7 @@ export default function PracticePage() {
           </div>
         </section>
       )}
-      <p className="hint" style={{ fontSize: 12 }}>Questions marked Draft are still being checked by our teacher reviewer. AI feedback can be wrong.</p>
+      <p className="hint" style={{ fontSize: 12 }}>Questions marked Draft are still being checked by our review team. AI feedback can be wrong.</p>
     </Page>
   );
 }

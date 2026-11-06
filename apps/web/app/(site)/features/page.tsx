@@ -107,7 +107,7 @@ export default function Features() {
             <ul>
               <li>Homework Helper for every subject: hints one at a time, checks their work, never gives answers or writes for them, and a second AI checks every reply</li>
               <li>A thinking score for parents: problems finished with fewer hints each week</li>
-              <li>Study skills library, reviewed by a teacher on our team</li>
+              <li>Study skills library, checked by our education review team</li>
               <li>Over 600 original SAT and ACT practice questions</li>
               <li>Timed practice tests and a score plan</li>
               <li>Practice questions for school subjects, to self-test before a test</li>

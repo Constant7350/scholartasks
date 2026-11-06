@@ -54,7 +54,7 @@ export default function RatePage() {
 
   return (
     <Page title="Rate ScholarTasks">
-      <p className="hint">How is ScholarTasks working for your family? Our small team reads every rating and note.</p>
+      <p className="hint">How is ScholarTasks working for your family? Our team reads every rating and note.</p>
 
       {store && (
         <div className="panel">

@@ -3,7 +3,7 @@
 // Dunlosky et al., 2013, "Improving Students' Learning With Effective Learning
 // Techniques"). Each lesson has steps, a quick check with feedback, and a
 // "try it this week" project sized by grade band. Content is reviewed by a
-// teacher on /admin/lessons before it is marked reviewed.
+// reviewer on /admin/lessons before it is marked reviewed.
 
 export interface Check { q: string; options: string[]; answer: number; explain: string }
 export interface Project { band: "8-9" | "10-12"; title: string; steps: string[] }
