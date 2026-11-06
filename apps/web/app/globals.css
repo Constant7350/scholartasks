@@ -809,6 +809,10 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
 .rank-2 { background: var(--gold-soft); color: #8a6514; }
 .compare-places { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
 .compare-places span { display: block; }
+/* Photos and files (Homework Helper, essay coaches) */
+.attach-preview { display: inline-flex; align-items: center; gap: 8px; }
+.attach-file { display: inline-block; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: .9rem; }
+.attach-draft { margin-top: 8px; }
 
 /* Rate ScholarTasks (/rate) */
 .stars { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin: 4px 0 16px; }

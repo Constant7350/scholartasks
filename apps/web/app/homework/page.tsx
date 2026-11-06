@@ -6,36 +6,17 @@ import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { ReportAi } from "../report-ai";
 import { Formatted } from "../formatted";
+import { AttachButtons, AttachPreview } from "../attach-buttons";
+import type { Attachment } from "../../lib/attach";
 import { HELP_LABEL, START_KINDS, SUBJECTS, subjectById, type HelpType, type StartKind } from "../../lib/homework";
 
 interface Student { id: string; first_name: string; grade_level: number; permissions: Record<string, boolean> }
-interface Msg { role: "user" | "assistant"; content: string; help?: HelpType; hints?: number; photo?: boolean }
+interface Msg { role: "user" | "assistant"; content: string; help?: HelpType; hints?: number; photo?: boolean | "pdf" }
 interface LogRow { created_at: string; subject: string; topic: string | null; help_type: HelpType; hints: number; solved: boolean; said_no: string | null; safety: boolean; note: string | null }
 interface Saved { subject: string; msgs: Msg[]; hints: number; solved: boolean }
 
 const storeKey = (id: string | null) => `st-homework-${id}`;
 const SAID_NO: Record<string, string> = { answer: "Asked for an answer", writing: "Asked the helper to write for them", test: "Asked for help on a test or quiz", other: "Asked for something the helper doesn't do" };
-
-/** Shrinks a photo in the browser so it uploads fast and costs less to read. */
-async function shrinkPhoto(file: File): Promise<string> {
-  const url = URL.createObjectURL(file);
-  try {
-    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const i = new Image();
-      i.onload = () => resolve(i);
-      i.onerror = () => reject(new Error("That photo couldn't be opened. Try another one."));
-      i.src = url;
-    });
-    const scale = Math.min(1, 1400 / Math.max(img.width, img.height));
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(img.width * scale);
-    canvas.height = Math.round(img.height * scale);
-    canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL("image/jpeg", 0.82);
-  } finally {
-    URL.revokeObjectURL(url);
-  }
-}
 
 function startOfWeek(d: Date): Date {
   const x = new Date(d);
@@ -139,12 +120,12 @@ export default function HomeworkPage() {
   const [solved, setSolved] = useState(false);
   const [problem, setProblem] = useState("");
   const [tried, setTried] = useState("");
-  const [photo, setPhoto] = useState<string | null>(null);
+  const [att, setAtt] = useState<Attachment | null>(null);
+  const [chatAtt, setChatAtt] = useState<Attachment | null>(null);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -180,11 +161,14 @@ export default function HomeworkPage() {
   }, [msgs, hints, solved, subject, current, busy, role]);
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [msgs]);
 
-  const send = async (content: string, image: string | null = null) => {
-    const text = content.trim();
+  const send = async (content: string, a: Attachment | null = null) => {
+    let text = content.trim() || (a ? "Here is my work. Can you look at it with me?" : "");
     if (!sb || !current || !text || busy) return;
     setError(null);
-    const history: Msg[] = [...msgs, { role: "user", content: text, photo: !!image }];
+    // Word and text files go in as text; photos and PDFs are read by the helper once.
+    if (a?.kind === "text") text += `\n\n[From my file ${a.name.replace(/[\[\]]/g, "")}]\n${a.text.slice(0, 6000)}`;
+    const image = a && a.kind !== "text" ? a.dataUrl : null;
+    const history: Msg[] = [...msgs, { role: "user", content: text, photo: a?.kind === "pdf" ? "pdf" : a?.kind === "image" }];
     setMsgs([...history, { role: "assistant", content: "" }]);
     setBusy(true);
     try {
@@ -196,13 +180,13 @@ export default function HomeworkPage() {
       });
       const out = (await res.json().catch(() => null)) as { reply?: string; help_type?: HelpType; hints?: number; solved?: boolean; problem_text?: string; error?: string } | null;
       if (!res.ok || !out?.reply) throw new Error(out?.error ?? "The helper couldn't answer. Please try again.");
-      // A photo is sent once; after that the conversation carries the problem as text.
+      // A photo or PDF is sent once; after that the conversation carries what it showed as text.
       if (image && out.problem_text) history[history.length - 1] = { ...history[history.length - 1]!, content: `${text}\n\n[Photo of the problem: ${out.problem_text}]` };
       setMsgs([...history, { role: "assistant", content: out.reply, help: out.help_type, hints: out.hints }]);
       setHints(out.hints ?? 0);
       setSolved(!!out.solved);
       setDraft("");
-      setProblem(""); setTried(""); setPhoto(null);
+      setProblem(""); setTried(""); setAtt(null); setChatAtt(null);
     } catch (e) {
       setError((e as Error).message);
       setMsgs(msgs);
@@ -214,14 +198,10 @@ export default function HomeworkPage() {
 
   const start = (kind: StartKind) => {
     const lead = START_KINDS.find((k) => k.id === kind)!.lead;
-    const parts = [lead, problem.trim() ? `The problem: ${problem.trim()}` : photo ? "The problem is in the photo." : "", `What I've tried so far: ${tried.trim() || "nothing yet"}`];
-    void send(parts.filter(Boolean).join("\n\n"), photo);
+    const parts = [lead, problem.trim() ? `The problem: ${problem.trim()}` : att?.kind === "pdf" ? "The problem is in the file." : att?.kind === "image" ? "The problem is in the photo." : att ? "The problem is in my file." : "", `What I've tried so far: ${tried.trim() || "nothing yet"}`];
+    void send(parts.filter(Boolean).join("\n\n"), att);
   };
-  const newProblem = () => { setMsgs([]); setHints(0); setSolved(false); setError(null); setDraft(""); };
-  const pickPhoto = async (file: File | undefined) => {
-    if (!file) return;
-    try { setPhoto(await shrinkPhoto(file)); } catch (e) { setError((e as Error).message); }
-  };
+  const newProblem = () => { setMsgs([]); setHints(0); setSolved(false); setError(null); setDraft(""); setChatAtt(null); };
   const toggle = async (on: boolean) => {
     if (!sb || !current) return;
     const { error: e } = await sb.rpc("homework_set_enabled", { p_student: current, p_on: on });
@@ -267,12 +247,11 @@ export default function HomeworkPage() {
             <div className="hw-start">
               <label className="field">
                 <span>What are you working on? ({subj.label})</span>
-                <textarea className="input" rows={3} maxLength={2000} placeholder="Type the problem or question, or add a photo" value={problem} onChange={(e) => setProblem(e.target.value)} />
+                <textarea className="input" rows={3} maxLength={2000} placeholder="Type the problem or question, or add a photo or file" value={problem} onChange={(e) => setProblem(e.target.value)} />
               </label>
               <div className="share-row">
-                <button type="button" className="btn btn-ghost btn-inline" onClick={() => fileRef.current?.click()}>📷 {photo ? "Change photo" : "Add a photo"}</button>
-                {photo && <><img src={photo} alt="Your homework photo" className="hw-thumb" /><button type="button" className="linklike" onClick={() => setPhoto(null)}>Remove</button></>}
-                <input ref={fileRef} type="file" accept="image/*" capture="environment" hidden onChange={(e) => { void pickPhoto(e.target.files?.[0]); e.target.value = ""; }} />
+                <AttachButtons onPick={setAtt} onError={setError} disabled={busy} photoLabel={att ? "New photo" : "Take a photo"} />
+                {att && <AttachPreview a={att} onRemove={() => setAtt(null)} />}
               </div>
               <label className="field">
                 <span>What have you tried so far?</span>
@@ -280,17 +259,17 @@ export default function HomeworkPage() {
               </label>
               <div className="share-row">
                 {START_KINDS.map((k, i) => (
-                  <button key={k.id} className={`btn btn-inline${i ? " btn-ghost" : ""}`} disabled={busy || (!problem.trim() && !photo)} onClick={() => start(k.id)}>{k.label}</button>
+                  <button key={k.id} className={`btn btn-inline${i ? " btn-ghost" : ""}`} disabled={busy || (!problem.trim() && !att)} onClick={() => start(k.id)}>{k.label}</button>
                 ))}
               </div>
-              <p className="hint" style={{ margin: 0 }}>Tip: showing what you tried gets you better help, faster.</p>
+              <p className="hint" style={{ margin: 0 }}>Tip: showing what you tried gets you better help, faster. Snap a photo of your worksheet or your work, or upload the assignment (photo, PDF or Word file).</p>
             </div>
           ) : (
             <div className="chat-log" aria-live="polite">
               {msgs.map((m, i) => (
                 <div key={i} className={`bubble bubble-${m.role}${m.role === "assistant" ? " hw-reply" : ""}`}>
                   {m.role === "assistant" && m.help && <span className="pill">{m.help === "hint" && m.hints ? `Hint ${Math.min(m.hints, 3)} of 3` : HELP_LABEL[m.help]}</span>}
-                  {m.role === "assistant" ? (m.content ? <Formatted text={m.content} /> : <span className="typing">Thinking…</span>) : m.content.replace(/\n\n\[Photo of the problem: [\s\S]*\]$/, m.photo ? "\n\n📷 photo" : "")}
+                  {m.role === "assistant" ? (m.content ? <Formatted text={m.content} /> : <span className="typing">Thinking…</span>) : m.content.replace(/\n\n\[Photo of the problem: [\s\S]*\]$/, m.photo ? (m.photo === "pdf" ? "\n\n📄 file" : "\n\n📷 photo") : "").replace(/\n\n\[From my file ([^\]]*)\][\s\S]*$/, "\n\n📝 $1")}
                   {m.role === "assistant" && m.content && !busy && <ReportAi feature="homework" text={m.content} />}
                 </div>
               ))}
@@ -307,7 +286,8 @@ export default function HomeworkPage() {
                   ✓ Solved with {hints === 0 ? "no hints" : hints === 1 ? "1 hint" : `${hints} hints`}. Now try the twin problem on paper, without me. That's how it sticks.
                 </p>
               )}
-              <form className="chat-input" onSubmit={(e) => { e.preventDefault(); void send(draft); }}>
+              {chatAtt && <p style={{ margin: 0 }}><AttachPreview a={chatAtt} onRemove={() => setChatAtt(null)} /> <span className="hint">Sends with your next message.</span></p>}
+              <form className="chat-input" onSubmit={(e) => { e.preventDefault(); void send(draft, chatAtt); }}>
                 <textarea
                   className="input"
                   rows={2}
@@ -316,15 +296,16 @@ export default function HomeworkPage() {
                   aria-label="Your message"
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(draft); } }}
+                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(draft, chatAtt); } }}
                 />
-                <button className="btn btn-inline" disabled={busy || !draft.trim()}>{busy ? "…" : "Send"}</button>
+                <button className="btn btn-inline" disabled={busy || (!draft.trim() && !chatAtt)}>{busy ? "…" : "Send"}</button>
               </form>
               <div className="chips" style={{ justifyContent: "flex-start" }}>
                 <button className="chip" disabled={busy} onClick={() => void send("Can I have a hint?")}>💡 Hint</button>
                 <button className="chip" disabled={busy || !draft.trim()} onClick={() => void send(`Please check my work: ${draft}`)}>✔️ Check this</button>
                 <button className="chip" disabled={busy} onClick={() => void send("Can you explain the idea behind this with a different example?")}>📘 Explain the idea</button>
                 <button className="chip" onClick={newProblem} disabled={busy}>➕ New problem</button>
+                <AttachButtons onPick={setChatAtt} onError={setError} disabled={busy} small photoLabel="Photo of my work" fileLabel="File" />
               </div>
               <div className="chat-foot">
                 <span className="hint">Hints on this problem: {hints}. The helper can make mistakes; if something looks wrong, ask your teacher. Follow your teacher's rules about AI.</span>

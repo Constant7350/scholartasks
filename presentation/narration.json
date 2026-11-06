@@ -51,7 +51,7 @@
     {
       "id": "homework",
       "title": "Homework Helper",
-      "narration": "Kids today can copy and paste an answer in seconds, and they learn nothing. The Homework Helper is the safe alternative. It helps with any subject, from algebra to essays, but it never gives the answer and never writes for the student. It asks what they tried, gives one hint at a time, checks their work, and asks them to explain their thinking. A second AI checks every reply before the student sees it. Parents see what was practiced, how many hints it took, and every time the helper said no. The goal is a student who can think it through on their own, even with the phone switched off."
+      "narration": "Kids today can copy and paste an answer in seconds, and they learn nothing. The Homework Helper is the safe alternative. It helps with any subject, from algebra to essays, but it never gives the answer and never writes for the student. Students type the problem, snap a photo of their work, or upload the assignment. It asks what they tried, gives one hint at a time, finds the first mistake in their work, and asks them to explain their thinking. A second AI checks every reply before the student sees it. Parents see what was practiced, how many hints it took, and every time the helper said no. The goal is a student who can think it through on their own, even with the phone switched off."
     },
     {
       "id": "beyond",
@@ -66,7 +66,7 @@
     {
       "id": "colleges",
       "title": "Colleges",
-      "narration": "Students can search almost two thousand colleges, take a quick match quiz, and add a school with one tap. Each college is marked reach, match or likely, based on grades, harder classes and test scores, and shows an estimated cost after state aid and saved scholarships. The essay coach gives feedback, but never writes for the student. And the Common App ready page checks every activity, honor and essay against Common App's limits, so applying is just copy, paste and submit."
+      "narration": "Students can search almost two thousand colleges, take a quick match quiz, and add a school with one tap. Each college is marked reach, match or likely, based on grades, harder classes and test scores, and shows an estimated cost after state aid and saved scholarships. The essay coach gives feedback on a draft typed in, uploaded from Word, or photographed from paper, but it never writes for the student. And the Common App ready page checks every activity, honor and essay against Common App's limits, so applying is just copy, paste and submit."
     },
     {
       "id": "majors",

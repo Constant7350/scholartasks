@@ -7,6 +7,7 @@ import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { ReportAi } from "../report-ai";
 import { EssayBundles } from "./bundles";
 import { COMMON_APP_PROMPTS } from "@scholartasks/core";
+import { DraftImport } from "../attach-buttons";
 
 interface Student { id: string; first_name: string }
 interface Essay {
@@ -101,6 +102,7 @@ function Editor({ essay, colleges, onSaved, onRemove }: { essay: Essay; colleges
         <label htmlFor="e-draft">Your draft</label>
         <textarea id="e-draft" className="input essay-text" rows={16} maxLength={20000} value={draft} onChange={(e) => onDraft(e.target.value)}
           placeholder="Write in your own words. It saves as you type." />
+        <DraftImport studentId={essay.student_id} draft={draft} onText={onDraft} disabled={busy} />
         <p className="hint essay-meta">
           <span className={max && words > max ? "note-err" : ""}>{words} word{words === 1 ? "" : "s"}{max ? ` of ${max}` : ""}</span>
           <span>{saved === "saving" ? "Saving…" : saved === "error" ? "Not saved. Check your connection." : "Saved ✓"}</span>
