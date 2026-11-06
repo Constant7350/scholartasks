@@ -127,7 +127,7 @@ export function TopBar() {
     <label className="student-switch">
       <span className="student-switch-label">{t.viewing}</span>
       {kids.length === 1 ? (
-        <b>{kids[0]?.first_name}</b>
+        <a href="/students"><b>{kids[0]?.first_name}</b></a>
       ) : (
         <select value={current ?? ""} onChange={(e) => { setCurrent(e.target.value); rememberStudent(e.target.value); }} aria-label="Choose a student">
           {kids.map((k) => <option key={k.id} value={k.id}>{k.first_name}</option>)}

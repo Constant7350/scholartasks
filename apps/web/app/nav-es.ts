@@ -10,6 +10,7 @@ const ES: Record<string, [label: string, short?: string]> = {
   "Testers and test links": ["Personas que prueban y enlaces"],
   "Home": ["Inicio"],
   "My parent space": ["Mi espacio de padres", "Mi espacio"],
+  "My students": ["Mis estudiantes", "Mis estudiantes"],
   "To-do list": ["Lista de tareas", "Tareas"],
   "College list and deadlines": ["Universidades y fechas límite", "Plan"],
   "Find colleges": ["Buscar universidades", "Universidades"],
