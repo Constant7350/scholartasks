@@ -1,5 +1,6 @@
 import { createHash, randomInt } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { itemTitle, langsFor, whenDue, wordsFor } from "./reminder-words";
 
 // Text messages through Twilio. Server only. Needs TWILIO_ACCOUNT_SID,
 // TWILIO_AUTH_TOKEN and TWILIO_FROM (a phone number or a Messaging Service SID
@@ -38,7 +39,6 @@ export async function sendText(to: string, body: string): Promise<{ ok: true } |
 }
 
 interface SmsDue { user_id: string; phone: string; student_first_name: string; item_type: "task" | "college"; item_id: string; title: string; days_before: number; texts_this_month: number }
-const when = (n: number) => (n === 0 ? "today" : n === 1 ? "tomorrow" : `in ${n} days`);
 
 /** The daily text job: one text per person listing what's due, within the monthly cap. */
 export async function sendTextReminders(sb: SupabaseClient, today: string, appUrl: string): Promise<{ texts_sent: number; skipped_cap: number; failed: number }> {
@@ -48,13 +48,17 @@ export async function sendTextReminders(sb: SupabaseClient, today: string, appUr
   const byUser = new Map<string, SmsDue[]>();
   for (const d of (data as SmsDue[]) ?? []) byUser.set(d.user_id, [...(byUser.get(d.user_id) ?? []), d]);
   let sent = 0, capped = 0, failed = 0;
+  const langs = await langsFor(sb, [...byUser.keys()]);
+  const words = await wordsFor(sb, [...langs.values()].includes("es"));
   for (const [userId, items] of byUser) {
+    const lang = langs.get(userId) ?? "en";
+    const T = (en: string) => words(lang, en);
     const first = items[0]!;
     if (first.texts_this_month >= MONTHLY_TEXT_CAP) { capped++; continue; }
     items.sort((a, b) => a.days_before - b.days_before);
-    const lines = items.slice(0, 3).map((i) => `${i.title} (${i.student_first_name}) is due ${when(i.days_before)}.`);
-    const more = items.length > 3 ? ` +${items.length - 3} more.` : "";
-    const body = `ScholarTasks: ${lines.join(" ")}${more} ${appUrl}/plan Reply STOP to stop texts.`;
+    const lines = items.slice(0, 3).map((i) => T(`${itemTitle(i.title, lang)} (${i.student_first_name}) is due ${whenDue(i.days_before, lang)}.`));
+    const more = items.length > 3 ? " " + T(`+${items.length - 3} more.`) : "";
+    const body = `ScholarTasks: ${lines.join(" ")}${more} ${appUrl}/plan ${T("Reply STOP to stop texts.")}`;
     const r = await sendText(first.phone, body);
     if (!r.ok) {
       failed++;
