@@ -11,8 +11,9 @@ import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { PICKS, savePick, useSpace, type ParentSave, type PickValue, type PickKind } from "../../lib/parent-space";
 import { TRADES } from "../../lib/trades";
+import { SignOffs } from "./sign-offs";
 
-interface Student { id: string; first_name: string; state: string; match_profile: { career_quiz?: SavedQuiz } | null }
+interface Student { id: string; first_name: string; state: string; permissions?: Record<string, boolean> | null; match_profile: { career_quiz?: SavedQuiz } | null }
 interface QuizAnswers { student_id: string; answers: Record<string, Answer>; seconds: number | null; saved_at: string }
 
 const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
@@ -45,7 +46,7 @@ export default function ParentSpacePage() {
     setMe(s.session.user.id);
     const [mem, st, ps, qa, pc, ch] = await Promise.all([
       sb.from("family_members").select("role, student_id").eq("user_id", s.session.user.id),
-      sb.from("students").select("id, first_name, state, match_profile").order("first_name"),
+      sb.from("students").select("id, first_name, state, permissions, match_profile").order("first_name"),
       sb.from("parent_saves").select("*").order("created_at"),
       sb.from("career_quiz_answers").select("student_id, answers, seconds, saved_at"),
       sb.from("student_colleges").select("student_id, college_id"),
@@ -147,6 +148,8 @@ export default function ParentSpacePage() {
         <span className="pill">{careers.length} careers and trades</span>
         <span className="pill pill-ok">{shared} shared with {name}</span>
       </div>
+
+      {me && <SignOffs sb={sb} me={me} kids={students} onChanged={() => void load()} />}
 
       <h2 className="section-title">Look around in your own space</h2>
       <div className="tiles">

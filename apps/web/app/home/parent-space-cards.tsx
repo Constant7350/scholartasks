@@ -26,7 +26,7 @@ export function ParentSpaceCard({ sb, firstName }: { sb: SupabaseClient; firstNa
       <div>
         <h2>👤 My parent space</h2>
         <p className="hint" style={{ margin: 0 }}>
-          Search colleges and scholarships for yourself, keep your own lists and notes, and look over {who}&apos;s career quiz. Nothing you save there shows as {who}&apos;s work.
+          Search colleges and scholarships for yourself, keep your own lists and notes, look over {who}&apos;s career quiz, and see every permission and sign-off in one place. Nothing you save there shows as {who}&apos;s work.
           {counts && counts.saved > 0 ? ` You have ${counts.saved} saved, ${counts.shared} shared with ${who}.` : ""}
         </p>
       </div>
