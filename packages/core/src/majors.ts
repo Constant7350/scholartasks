@@ -106,6 +106,23 @@ export const CAREERS: Record<string, Career> = {
   electrician: { name: "Electrician", pay: 63190, education: "High school plus a paid apprenticeship (a certificate helps)", level: 0, growth: 9, url: `${OOH}construction-and-extraction/electricians.htm` },
   pilot: { name: "Airline pilot", pay: 232140, education: "Bachelor's degree plus flight hours and FAA licenses", level: 3, growth: 7, url: `${OOH}transportation-and-material-moving/airline-and-commercial-pilots.htm` },
   designer: { name: "Graphic designer", pay: 62960, education: "Bachelor's degree", level: 3, growth: -2, url: `${OOH}arts-and-design/graphic-designers.htm` },
+  // Added for the career interest quiz so every interest type has careers (BLS OOH, May 2025 pay).
+  architect: { name: "Architect", pay: 99280, education: "Bachelor's degree in architecture, then a license", level: 3, growth: 4, url: `${OOH}architecture-and-engineering/architects.htm`, years: "5 years (most architecture degrees), plus paid training" },
+  writer: { name: "Writer or author", pay: 76910, education: "Bachelor's degree", level: 3, growth: 0, url: `${OOH}media-and-communication/writers-and-authors.htm` },
+  reporter: { name: "Reporter or journalist", pay: 62200, education: "Bachelor's degree", level: 3, growth: -6, url: `${OOH}media-and-communication/reporters-correspondents-and-broadcast-news-analysts.htm` },
+  producer: { name: "Film, TV or stage producer or director", pay: 90360, education: "Bachelor's degree, plus experience", level: 3, growth: 4, url: `${OOH}entertainment-and-sports/producers-and-directors.htm` },
+  interior: { name: "Interior designer", pay: 67190, education: "Bachelor's degree", level: 3, growth: 3, url: `${OOH}arts-and-design/interior-designers.htm` },
+  translator: { name: "Interpreter or translator", pay: 60170, education: "Bachelor's degree, plus fluency in two languages", level: 3, growth: 2, url: `${OOH}media-and-communication/interpreters-and-translators.htm` },
+  pr: { name: "Public relations specialist", pay: 74750, education: "Bachelor's degree", level: 3, growth: 2, url: `${OOH}media-and-communication/public-relations-specialists.htm` },
+  salesmanager: { name: "Sales manager", pay: 148270, education: "Bachelor's degree, plus years of sales experience", level: 3, growth: 4, url: `${OOH}management/sales-managers.htm` },
+  realestate: { name: "Real estate agent or broker", pay: 57400, education: "High school, plus a state license", level: 0, growth: 2, url: `${OOH}sales/real-estate-brokers-and-sales-agents.htm` },
+  insurance: { name: "Insurance sales agent", pay: 62280, education: "High school (a degree helps), plus a state license", level: 0, growth: 3, url: `${OOH}sales/insurance-sales-agents.htm` },
+  lodging: { name: "Hotel or resort manager", pay: 69250, education: "High school to bachelor's degree, plus experience", level: 0, growth: 4, url: `${OOH}management/lodging-managers.htm` },
+  hr: { name: "Human resources specialist", pay: 75940, education: "Bachelor's degree", level: 3, growth: 6, url: `${OOH}business-and-financial/human-resources-specialists.htm` },
+  schoolcounselor: { name: "School or career counselor", pay: 64330, education: "Master's degree", level: 5, growth: 3, url: `${OOH}community-and-social-service/school-and-career-counselors.htm` },
+  coach: { name: "Coach or sports scout", pay: 47320, education: "Bachelor's degree", level: 3, growth: 6, url: `${OOH}entertainment-and-sports/coaches-and-scouts.htm` },
+  librarian: { name: "Librarian", pay: 68270, education: "Master's degree", level: 5, growth: 3, url: `${OOH}education-training-and-library/librarians.htm` },
+  planner: { name: "Urban and regional planner", pay: 89320, education: "Master's degree (some start with a bachelor's)", level: 5, growth: 4, url: `${OOH}life-physical-and-social-science/urban-and-regional-planners.htm` },
 };
 
 /** One list of colleges inside a field, e.g. "Vet schools" or "Pre-vet majors". */

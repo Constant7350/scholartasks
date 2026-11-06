@@ -130,7 +130,7 @@ export default function Features() {
               <li>Search by major, with typical earnings and years for each degree</li>
               <li>Estimated cost after state aid and saved scholarships</li>
               <li>Reach, match and likely using grades, harder classes and test scores</li>
-              <li>Compare aid offers side by side, and a career quiz</li>
+              <li>Compare aid offers side by side, and a deep career interest quiz with a new mix of questions every time</li>
               <li>See the savings from starting at a community college, then transferring</li>
               <li>Essay coach that gives feedback but never writes for the student</li>
             </ul>

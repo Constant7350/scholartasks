@@ -20,3 +20,4 @@ export * from "./compare";
 export * from "./openings";
 export * from "./faith";
 export * from "./military";
+export * from "./career-quiz";
