@@ -10,7 +10,7 @@ const FAQ = [
   { q: "Is student data shared with colleges or advertisers?", a: "No. We never sell student data. We never ask for FSA IDs, Social Security numbers or tax returns, and each family's information is kept separate." },
   { q: "What does the school portal cost?", a: "Nothing. The school portal is free for every school. Families use ScholarTasks free and can upgrade for the AI counselor and tutor. AI packages for whole schools will come later." },
   { q: "What can counselors see?", a: "Only students whose families connected to your school, and only what each family chose to share: progress, or progress and grades. Never essays, AI chats, income or aid answers. Every look is recorded." },
-  { q: "Can we upload our roster?", a: "Not yet. Families connect themselves with your school code, so you can start without a data agreement. Roster upload comes later with a signed student data privacy agreement." },
+  { q: "Can we upload our roster?", a: "Yes, if you want to. You can start with just your school code, no data agreement needed. To upload a class list, your school admin signs our student data agreement in the portal, then uploads a CSV with names, grade, school ID and an optional email. You see who has joined and can email your code to families who haven't. No grades are uploaded, and the roster is deleted within 45 days if the agreement ends. We will also sign your district's own agreement." },
 ];
 
 export default function Schools() {

@@ -17,14 +17,14 @@ const FEATURES = [
   { icon: "🏫", color: "", title: "Colleges and majors", text: "Search almost 2,000 colleges across the country by major, with cost after Georgia aid, typical earnings and community college transfer savings." },
   { icon: "🔧", color: "coral", title: "Trades and careers", text: "50 skilled trades with earnings, training, licensing and schools in every state, plus apply checklists and ways to fund the training." },
   { icon: "🧾", color: "gold", title: "FAFSA and Georgia aid", text: "The FAFSA and Georgia's aid form, broken into small steps that explain who does each part. We never ask for FSA IDs or Social Security numbers." },
-  { icon: "✅", color: "green", title: "One to-do list", text: "Every date in one list, sorted into late, this week and coming up. Email reminders, calendar dates and phone reminders." },
+  { icon: "✅", color: "green", title: "One to-do list", text: "Every date in one list, sorted into late, this week and coming up. Reminders by email, text, calendar and phone." },
   { icon: "🌟", color: "purple", title: "Beyond grades", text: "Activities, service hours, leadership and recommendation letters, with milestones for each school year and a resume that builds itself." },
 ];
 
 const FAQ = [
   { q: "How much does ScholarTasks cost?", a: "Families can start for free, with no credit card. A paid family plan will cover every child in the house and will cost less than most paid test prep or essay apps. We are setting final prices now." },
   { q: "Is it only for Georgia?", a: "ScholarTasks is built in Georgia and knows HOPE, Zell Miller and Georgia's aid rules in detail. Searches always include colleges, majors and trades across the whole country, so families can choose freely. More states are coming." },
-  { q: "What grades is it for?", a: "8th grade through senior year. Younger students focus on grades, study skills and course choices. Juniors and seniors add test prep, college lists, scholarships, applications and aid forms." },
+  { q: "What grades is it for?", a: "6th grade through senior year. In grades 6 and 7 (under 13) the parent uses it with their student: study habits, the career quiz and the grades scorecard, with no student sign-in or AI until 13. From 8th grade, students focus on grades, study skills and course choices. Juniors and seniors add test prep, college lists, scholarships, applications and aid forms." },
   { q: "Will the AI do my student's homework or write their essays?", a: "No. The AI counselor and the Homework Helper explain, ask questions, give one hint at a time and check your student's own work. They never hand over answers or write essays, and a second AI checks every Homework Helper reply before your student sees it. Parents can see what was practiced and when the helper said no." },
   { q: "Is my family's information safe?", a: "We never sell data. We never ask for FSA IDs, Social Security numbers or tax returns. Each family's information is kept separate, students agree before using AI help, and you can delete everything from inside the app." },
   { q: "Is there a phone app?", a: "Yes. The iPhone and Android apps are in testing now. The website already works on any phone, tablet or computer, with Face ID or fingerprint sign-in." },
@@ -51,7 +51,7 @@ export default function Landing() {
             <ul className="s-trust-row">
               <li>Never sells student data</li>
               <li>Parent-controlled</li>
-              <li>Grades 8 to 12</li>
+              <li>Grades 6 to 12</li>
             </ul>
           </div>
           <HeroPhone />

@@ -21,6 +21,16 @@ export interface Milestone {
 const SUMMER: Milestone = { key: "summer", title: "Make a summer plan: a job, program, camp or volunteering", due: "04-15", link: "/activities" };
 
 export const MILESTONES: Record<number, Milestone[]> = {
+  6: [
+    { key: "habits", title: "Pick one study habit to practice this fall (a planner, a homework spot, or 20 minutes of reading)", due: "09-30", link: "/study" },
+    { key: "quiz6", title: "Take the career quiz together and talk about two careers that sound fun", due: "11-15", link: "/majors/quiz" },
+    { key: "try6", title: "Try a club, sport, instrument or volunteer project", due: "02-15", link: "/activities" },
+  ],
+  7: [
+    { key: "habits7", title: "Learn how to study for a test: a study lesson and a few practice questions", due: "10-15", link: "/study" },
+    { key: "quiz7", title: "Retake the career quiz and look up one college or trade path for a career you like", due: "12-15", link: "/majors/quiz" },
+    { key: "math8", title: "Ask the school about 8th grade math (some students take Algebra in 8th grade)", due: "03-01", link: "/grades" },
+  ],
   8: [
     { key: "explore", title: "Try two or three clubs, sports or activities to see what you enjoy", due: "10-15", link: "/activities" },
     { key: "plan9", title: "Plan 9th grade classes with your counselor, with honors where you can keep strong grades", due: "03-01", link: "/grades" },
@@ -58,7 +68,7 @@ export const milestoneId = (grade: number, key: string) => `bg:${grade}:${key}`;
 export const isMilestoneId = (id: string | null | undefined) => !!id && id.startsWith("bg:");
 
 /** The list for a grade. Grades 6 and 7 get the 8th grade list. */
-export const milestonesFor = (grade: number) => MILESTONES[Math.max(8, Math.min(12, grade))] ?? [];
+export const milestonesFor = (grade: number) => MILESTONES[Math.max(6, Math.min(12, grade))] ?? [];
 
 /** Looks up a milestone (for its link) from a task's deadline_id. */
 export function milestoneById(id: string | null | undefined): Milestone | undefined {

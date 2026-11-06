@@ -3,6 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../../lib/billing";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../../lib/ai-limit";
+import { aiLanguageNote } from "../../../../lib/lang";
+import { aiOffMessage } from "../../../../lib/ai-off";
 
 // "Get ready to apply": a short checklist for one scholarship, read from the
 // sponsor's official page. It's made once per award and shared by every
@@ -56,7 +58,7 @@ export async function POST(req: Request) {
   const limit = await aiDailyLimit(sb, studentId);
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
-  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
+  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? aiOffMessage(turn.error) : "Something went wrong. Please try again.");
   if (turn.data === false) return json(429, limitReached(limit));
 
   try {
@@ -67,7 +69,7 @@ export async function POST(req: Request) {
       const res = await client.messages.create({
         model: MODEL,
         max_tokens: 4000,
-        system: SYSTEM,
+        system: SYSTEM + aiLanguageNote(req),
         output_config: { effort: "low" },
         tools: [
           { type: "web_fetch_20250910", name: "web_fetch", max_uses: 3, max_content_tokens: 20000 },

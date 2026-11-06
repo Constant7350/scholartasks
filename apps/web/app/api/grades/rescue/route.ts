@@ -4,6 +4,8 @@ import { limitReached } from "../../../../lib/billing";
 import { CHECKIN, cleanAnswers, type RescuePlan } from "../../../grades/rescue-questions";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../../lib/ai-limit";
+import { aiLanguageNote } from "../../../../lib/lang";
+import { aiOffMessage } from "../../../../lib/ai-off";
 
 // Grade rescue: the student answers a short check-in about one class, and the
 // AI drafts a step-by-step plan to bring the grade back up. The plan is saved
@@ -83,7 +85,7 @@ export async function POST(req: Request) {
   const limit = await aiDailyLimit(sb, studentId);
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
-  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
+  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? aiOffMessage(turn.error) : "Something went wrong. Please try again.");
   if (turn.data === false) return json(429, limitReached(limit));
 
   const label = (id: string, v: string) => CHECKIN.find((q) => q.id === id)?.options.find((o) => o.v === v)?.label ?? v;
@@ -106,7 +108,7 @@ export async function POST(req: Request) {
       model: MODEL,
       max_tokens: 8000,
       output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
-      system: SYSTEM,
+      system: SYSTEM + aiLanguageNote(req),
       messages: [{ role: "user", content: context }],
     });
     if (res.stop_reason === "refusal") return json(422, "Sorry, a plan isn't available for this. Try the AI counselor instead.");

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { computeGpa, displayGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
 import { gpaLabel, packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
+import { Roster } from "./roster";
 
 
 export interface School {
@@ -178,6 +179,7 @@ export function Dashboard({ school, role, onChanged }: { school: School; role: "
         )}
       </div>
 
+      <Roster school={school} role={role} />
       <SendMessage schoolId={school.id} sent={msgs} onSent={load} />
       <LocalScholarships schoolId={school.id} list={local} onPosted={load} />
       <StaffList school={school} role={role} staff={staff} onChanged={load} />

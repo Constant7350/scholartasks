@@ -7,6 +7,8 @@ import { PACKED_STATES, aidOfficeFor, checkStatePrograms, packFor, stateName } f
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../lib/ai-limit";
 import { TRADES, TRADE_AID } from "../../../lib/trades";
+import { aiLanguageNote, langOf } from "../../../lib/lang";
+import { aiOffMessage } from "../../../lib/ai-off";
 
 // AI counselor chat. The browser sends the signed-in person's Supabase token;
 // every read below runs under that token, so row-level security decides what
@@ -181,11 +183,11 @@ How to help:
   return text;
 }
 
-function systemPrompt(talkingTo: "parent" | "student", context: string, today: string, state: string | null) {
+function systemPrompt(talkingTo: "parent" | "student", context: string, today: string, state: string | null, langNote = "") {
   const who = talkingTo === "parent" ? "the student's parent or guardian" : "the student themself";
   return [
     { type: "text" as const, text: staticPrompt(state), cache_control: { type: "ephemeral" as const } },
-    { type: "text" as const, text: `Today is ${today}. You are talking with ${who}.\n\nWhat you know about this family (from their ScholarTasks account):\n${context}` },
+    { type: "text" as const, text: `Today is ${today}. You are talking with ${who}.\n\nWhat you know about this family (from their ScholarTasks account):\n${context}${langNote}` },
   ];
 }
 
@@ -282,7 +284,9 @@ export async function POST(req: Request) {
 
   // A first question that matches a reviewed answer is answered from the bank,
   // free and instantly, without using the daily allowance.
-  const firstQuestion = messages.length === 1 ? messages[0]!.content.trim() : null;
+  // Reviewed answers are in English, so Spanish chats always get a fresh answer (and are not saved to the library).
+  const spanish = langOf(req) === "es";
+  const firstQuestion = messages.length === 1 && !spanish ? messages[0]!.content.trim() : null;
   if (firstQuestion) {
     const hit = await sb.rpc("answer_bank_lookup", { p_student: studentId, p_question: firstQuestion });
     if (hit.error && /not allowed/.test(hit.error.message)) return json(403, "AI chat is turned off for this student. A parent can turn it on in Family and permissions.");
@@ -300,7 +304,7 @@ export async function POST(req: Request) {
   if (turn.error) {
     if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
     if (turn.error.code === "PGRST202" || turn.error.code === "42883") return json(503, "The AI counselor needs the latest database update first.");
-    if (/not allowed/.test(turn.error.message)) return json(403, "AI chat is turned off for this student. A parent can turn it on in Family and permissions.");
+    if (/not allowed/.test(turn.error.message)) return json(403, aiOffMessage(turn.error, "AI chat is turned off for this student. A parent can turn it on in Family and permissions."));
     return json(500, "Something went wrong. Please try again.");
   }
   if (turn.data === false) return json(429, limitReached(limit, "counselor messages"));
@@ -321,7 +325,7 @@ export async function POST(req: Request) {
     const context = student
       ? await studentContext(sb, student, isParent, today)
       : "No student has been added yet; this parent is looking around first. Give general guidance, and when personal details (grades, scores, colleges) would change the answer, say that adding their student in ScholarTasks lets you tailor it.";
-    system = systemPrompt(student && !isParent ? "student" : "parent", context, today, student?.state ?? null);
+    system = systemPrompt(student && !isParent ? "student" : "parent", context, today, student?.state ?? null, aiLanguageNote(req));
   } catch (e) {
     return json(500, (e as Error).message);
   }

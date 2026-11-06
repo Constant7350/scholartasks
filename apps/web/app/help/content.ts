@@ -181,7 +181,7 @@ export const TOPICS: Topic[] = [
     ],
     faq: [
       { q: "Is it really free?", a: "Yes. The school portal is free for every school. Families use ScholarTasks free and can upgrade for the AI counselor and tutor." },
-      { q: "Can we upload our student list?", a: "Not yet. For now families connect themselves and choose what to share. Roster upload is coming with a school data agreement." },
+      { q: "Can we upload our student list?", a: "Yes. Your school admin signs the student data agreement in Class roster, then uploads a CSV (Student ID, First name, Last name, Grade, optional Email). You see who has connected and can email the school code to families who haven't. No grades are uploaded. Delete the roster any time; if the agreement ends it is deleted within 45 days." },
       { q: "Who sees that I looked at a student?", a: "Every look at the student list is written to a tamper-evident log." },
     ],
   },
@@ -402,6 +402,27 @@ export const TOPICS: Topic[] = [
       "A draft is cut to each award's word limit at the end of a sentence, as a starting point.",
       "Sending the exact same essay everywhere rarely wins. Mention each award's own goals and the people who give it.",
     ],
+  },
+  {
+    id: "younger-students",
+    area: "Getting started",
+    title: "Students in grades 6 and 7 (under 13)",
+    href: "/family",
+    keywords: ["6th grade", "7th grade", "sixth", "seventh", "middle school", "under 13", "younger", "child"],
+    summary: "A parent can add a student aged 10 to 12 in grades 6 to 8 and use ScholarTasks with them from the parent account.",
+    body: [
+      "Until 13 there is no student sign-in and no AI help, so nothing about your child is sent to an AI service. Study lessons, practice questions, the career quiz, the grades scorecard and the to-do list all work.",
+      "When your student turns 13, open Family and tap Invite to give them their own sign-in.",
+    ],
+  },
+  {
+    id: "spanish",
+    area: "Getting started",
+    title: "Use ScholarTasks in Spanish (en español)",
+    href: "/es",
+    keywords: ["spanish", "español", "espanol", "language", "idioma", "translate", "traducir"],
+    summary: "Open the Menu and pick Español under Language. The menu and every AI answer (counselor, Homework Helper, essay and course advice) switch to Spanish.",
+    body: ["Each person picks their own language on each device. Other pages are being translated step by step. The Spanish home page is at scholartasks.com/es. En el menú, elija Español en Language · Idioma."],
   },
   {
     id: "text-reminders",

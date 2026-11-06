@@ -5,6 +5,8 @@ import { buildScorecard, displayGpa, primaryGpa, type CourseGrade, type StatePac
 import { PLAIN_GPA as PLAIN, packFor } from "../../../../lib/state-packs";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../../lib/ai-limit";
+import { aiLanguageNote } from "../../../../lib/lang";
+import { aiOffMessage } from "../../../../lib/ai-off";
 
 // Advice on next year's classes: the student lists the courses they're
 // considering, and the AI weighs their goal, grades and their state scholarship's rules.
@@ -99,7 +101,7 @@ export async function POST(req: Request) {
   const limit = await aiDailyLimit(sb, studentId);
   const turn = await sb.rpc("ai_take_turn", { p_student: studentId, p_limit: limit });
   if (needsAiConsent(turn.error)) return json(428, AI_CONSENT_NEEDED);
-  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? "AI features are turned off for this student. A parent can turn on AI chat in Family and permissions." : "Something went wrong. Please try again.");
+  if (turn.error) return json(403, /not allowed/.test(turn.error.message) ? aiOffMessage(turn.error) : "Something went wrong. Please try again.");
   if (turn.data === false) return json(429, limitReached(limit));
 
   const { data: gr } = await sb.from("course_grades").select("course, grade, level, core, grade_level, term").eq("student_id", studentId).order("grade_level");
@@ -126,7 +128,7 @@ export async function POST(req: Request) {
       model: MODEL,
       max_tokens: 8000,
       output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
-      system: system(pack),
+      system: system(pack) + aiLanguageNote(req),
       messages: [{ role: "user", content: context }],
     });
     if (res.stop_reason === "refusal") return json(422, "Sorry, advice isn't available for this plan. Try the AI counselor instead.");
