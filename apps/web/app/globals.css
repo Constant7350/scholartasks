@@ -860,3 +860,66 @@ html.print-notes .hw-print, html.print-notes .hw-print * { visibility: visible; 
 
 /* Spanish: the page stays hidden for a moment until the translator has run (see LANG_BOOT). */
 html.tr-wait body { visibility: hidden; }
+
+/* ---------- Team admin layout (app/admin/shell.tsx) ----------
+   Menu down the left with a colored icon tile for each page, the page on the right.
+   Same layout as the HiveTask admin, in ScholarTasks navy and gold. On phones the menu
+   becomes a bar across the top that scrolls sideways. */
+.admin-app { display: grid; grid-template-columns: 260px minmax(0, 1fr); align-items: start; min-height: 100vh; }
+.admin-side { position: sticky; top: 0; align-self: start; height: 100vh; height: 100dvh; background: var(--card); border-right: 1px solid var(--line); padding: max(20px, env(safe-area-inset-top)) 14px max(16px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); display: flex; flex-direction: column; gap: 6px; }
+.admin-topline { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.admin-brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 14px; color: var(--ink); text-decoration: none; }
+.admin-brand b { font-size: 18px; letter-spacing: -0.01em; }
+.admin-brand small { display: block; font-size: 12px; color: var(--muted); font-weight: 600; line-height: 1.1; }
+.admin-logo { width: 40px; height: 40px; border-radius: 12px; object-fit: cover; flex: none; }
+.admin-nav { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line) transparent; margin: 0 -6px; padding: 0 6px; }
+.admin-navgroup { display: flex; flex-direction: column; gap: 2px; }
+.admin-navhead { font-size: 11.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding: 14px 10px 4px; }
+.admin-nav a { display: flex; align-items: center; gap: 11px; padding: 8px 10px; border-radius: 12px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 14.5px; line-height: 1.25; }
+.admin-nav a:hover { background: var(--warm-tint); }
+.admin-nav a.on { background: var(--gold-soft); }
+.admin-nav a.on .ai-tile { background: var(--gold); color: var(--navy-deep); }
+.admin-nav .admin-backlink { margin-top: 12px; border-top: 1px solid var(--line); border-radius: 0 0 12px 12px; padding-top: 12px; color: var(--muted); }
+.ai-tile { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; flex: none; }
+.ai-tile-lg { width: 42px; height: 42px; border-radius: 12px; }
+.ai-icon { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ai-tile-lg .ai-icon { width: 21px; height: 21px; }
+.ai-navy { background: #e4eaf4; color: var(--navy); }
+.ai-blue { background: var(--c-blue-soft); color: var(--c-blue); }
+.ai-green { background: var(--c-green-soft); color: var(--c-green); }
+.ai-gold { background: var(--c-gold-soft); color: #9a6a0c; }
+.ai-coral { background: var(--c-coral-soft); color: #b8532f; }
+.ai-purple { background: var(--c-purple-soft); color: var(--c-purple); }
+.admin-me { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 10px 0; border-top: 1px solid var(--line); }
+.admin-me > div { min-width: 0; flex: 1; }
+.admin-me b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.admin-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 14px; flex: none; }
+.admin-linkbtn { background: none; border: 0; padding: 0; color: var(--navy); font: inherit; font-weight: 600; font-size: 13px; cursor: pointer; }
+.admin-linkbtn:hover { text-decoration: underline; }
+.admin-signout-sm { display: none; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; font: inherit; font-weight: 600; font-size: 13px; color: var(--ink); cursor: pointer; }
+.admin-main { min-width: 0; }
+.admin-main .page { max-width: 1080px; margin: 0; padding: 28px max(32px, env(safe-area-inset-right)) 64px 32px; }
+.admin-sub { font-size: 13px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; margin: 26px 0 12px; }
+.admin-sub::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.admin-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.admin-card { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; color: var(--ink); text-decoration: none; }
+.admin-card:hover { border-color: var(--gold); }
+.admin-card b { display: block; line-height: 1.3; }
+.admin-card small { display: block; color: var(--muted); font-size: 13.5px; margin-top: 3px; line-height: 1.4; }
+@media (max-width: 860px) {
+  .admin-app { grid-template-columns: minmax(0, 1fr); }
+  .admin-side { z-index: 900; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: calc(10px + env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 10px max(12px, env(safe-area-inset-left)); gap: 8px; }
+  .admin-brand { padding: 0; }
+  .admin-logo { width: 32px; height: 32px; border-radius: 10px; }
+  .admin-me { display: none; }
+  .admin-signout-sm { display: inline-flex; }
+  .admin-nav { flex: none; flex-direction: row; overflow-x: auto; overflow-y: hidden; gap: 4px; scrollbar-width: none; margin: 0 -12px; padding: 0 12px; }
+  .admin-nav::-webkit-scrollbar { display: none; }
+  .admin-navgroup { flex-direction: row; gap: 4px; }
+  .admin-navhead { display: none; }
+  .admin-nav a { flex: none; padding: 6px 10px 6px 6px; font-size: 13.5px; min-height: 44px; }
+  .admin-nav .admin-backlink { margin-top: 0; border-top: 0; border-radius: 12px; padding-top: 6px; }
+  .ai-tile { width: 26px; height: 26px; border-radius: 8px; }
+  .admin-main .page { padding: 20px 16px 72px; }
+}
+@media print { .admin-side { display: none !important; } .admin-app { display: block; } }
