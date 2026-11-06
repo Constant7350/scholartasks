@@ -363,11 +363,12 @@ export const TOPICS: Topic[] = [
     area: "College plan",
     title: "Trades and trade schools",
     href: "/trades",
-    keywords: ["trade", "trade school", "technical college", "vocational", "apprenticeship", "union", "electrician", "welder", "welding", "plumber", "HVAC", "lineworker", "CDL", "truck", "cosmetology", "LPN", "mechanic", "HOPE Career Grant", "free tuition", "dual enrollment", "farrier", "Workforce Pell", "WIOA", "TN Promise", "youth apprenticeship", "SkillsUSA"],
+    keywords: ["trade", "trade school", "technical college", "vocational", "apprenticeship", "union", "electrician", "welder", "welding", "plumber", "HVAC", "lineworker", "CDL", "truck", "cosmetology", "LPN", "mechanic", "HOPE Career Grant", "free tuition", "dual enrollment", "farrier", "CNC", "machinist", "machining", "CNC programmer", "NIMS", "air traffic controller", "ultrasound", "respiratory therapist", "power plant", "millwright", "railroad", "Workforce Pell", "WIOA", "TN Promise", "youth apprenticeship", "SkillsUSA"],
     summary: "Explore skilled trades you can train for in weeks to a few years: what each pays, ways to train, licensing, schools in Georgia and every other state, and checklists to apply.",
     steps: [
       "Open Menu, then Trades and trade schools.",
-      "Search or tap a group (Building, Health care, Mechanics...). Tick Tuition-free in Georgia to see trades on the HOPE Career Grant list.",
+      "Search or tap a group (Building, CNC machining, Health care, Mechanics...). Tick Tuition-free in Georgia to see trades on the HOPE Career Grant list.",
+      "Tap CNC machining at the top to see machine operator, machinist, CNC programmer and tool and die maker, with how people move up from one to the next.",
       "Not sure? Tap the quiz and pick what you enjoy.",
       "Open a trade to see pay, ways to train, licensing and Where to train. Pick any state in the finder to see its schools.",
       "Under Steps to apply, tap Add steps to put a checklist on the student's To-do list and calendar.",
@@ -376,6 +377,7 @@ export const TOPICS: Topic[] = [
     ],
     body: [
       "Anyone can look at the trade pages without signing in. Adding a checklist needs a ScholarTasks account.",
+      "Sort by Pay to find well-paid trades many families don't know about, like power plant operator, substation technician, air traffic controller and respiratory therapist.",
       "Georgia comes first, but schools and apprenticeships in every state are always shown. HOPE money only works at Georgia schools; Pell Grants and most trade scholarships work anywhere.",
       "Pay is from the U.S. Bureau of Labor Statistics (May 2025). Schools come from the U.S. Department of Education's College Scorecard (schools that take federal aid). Apprenticeships come from the U.S. Department of Labor's finder.",
       "This is advice to help you compare. Check details with the school or program, and the final choice is your family's.",

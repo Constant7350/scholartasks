@@ -147,7 +147,7 @@ export default function Features() {
           <div>
             <p className="s-kicker">Trades and careers</p>
             <h2>College isn't the only path</h2>
-            <p>For students who want to build, fix or care for things, ScholarTasks maps out 50 skilled trades just as carefully as colleges.</p>
+            <p>For students who want to build, fix or care for things, ScholarTasks maps out 65 skilled trades just as carefully as colleges.</p>
             <ul>
               <li>Earnings, training time and licensing for each trade</li>
               <li>Training schools and apprenticeships in every state</li>

@@ -26,7 +26,7 @@ export default function Schools() {
             <div className="s-card"><span className="s-icon" aria-hidden="true">📚</span><h3>Better prepared families</h3><p>Parents and students arrive knowing their HOPE GPA, their deadlines and the next step on the FAFSA.</p></div>
             <div className="s-card"><span className="s-icon gold" aria-hidden="true">🍑</span><h3>Georgia rules, explained the same way</h3><p>HOPE, Zell Miller and Georgia aid forms, in plain language for every family.</p></div>
             <div className="s-card"><span className="s-icon green" aria-hidden="true">🌱</span><h3>Starts in middle school</h3><p>Study habits from 6th grade, then grades coaching, a four-year course plan and course advice from 8th grade, long before senior-year deadlines.</p></div>
-            <div className="s-card"><span className="s-icon coral" aria-hidden="true">🔧</span><h3>Every path counts</h3><p>College, community college transfer and 50 skilled trades, with training options across the country.</p></div>
+            <div className="s-card"><span className="s-icon coral" aria-hidden="true">🔧</span><h3>Every path counts</h3><p>College, community college transfer and 65 skilled trades, with training options across the country.</p></div>
           </div>
         </div>
       </section>

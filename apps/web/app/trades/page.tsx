@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { TRADE_CATEGORIES, payLine, type TradeCategory } from "@scholartasks/core";
+import { useEffect, useMemo, useState } from "react";
+import { TRADE_CATEGORIES, TRADE_CATEGORY_INTROS, payLine, type TradeCategory } from "@scholartasks/core";
 import { Page } from "../ui";
 import { TRADES, TRADES_PACK } from "../../lib/trades";
 import { TradeAidList } from "./aid-list";
@@ -17,6 +17,16 @@ export default function TradesPage() {
   const [cat, setCat] = useState<TradeCategory | "all">("all");
   const [free, setFree] = useState(false);
   const [sort, setSort] = useState<"pay" | "name">("pay");
+
+  // /trades?group=cnc opens one group (used by the CNC machining link).
+  useEffect(() => {
+    const g = new URLSearchParams(window.location.search).get("group");
+    if (g && g in TRADE_CATEGORIES) setCat(g as TradeCategory);
+  }, []);
+  const pickGroup = (c: TradeCategory) => {
+    setCat(c);
+    document.getElementById("trade-list")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const shown = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -46,6 +56,10 @@ export default function TradesPage() {
           <b>Apprenticeships and local openings</b>
           <span>Local companies post apprenticeships, paid training and jobs here. Our review team checks each one first.</span>
         </a>
+        <button type="button" className="panel trade-callout" onClick={() => pickGroup("cnc")}>
+          <b>CNC machining</b>
+          <span>Run, set up and program the computer-controlled machines that make metal parts. Start in months, move up to $60,000 or more.</span>
+        </button>
         <div className="panel trade-callout">
           <b>Free tuition in Georgia</b>
           <span>{freeCount} of these trades are on Georgia's HOPE Career Grant list: with the HOPE Grant, tuition is covered at Georgia's 22 technical colleges. No high school GPA is needed.</span>
@@ -73,6 +87,14 @@ export default function TradesPage() {
           </label>
         </div>
       </section>
+
+      <div id="trade-list" />
+      {cat !== "all" && TRADE_CATEGORY_INTROS[cat] && (
+        <section className="panel">
+          <h2>{TRADE_CATEGORIES[cat]}</h2>
+          <p>{TRADE_CATEGORY_INTROS[cat]}</p>
+        </section>
+      )}
 
       {shown.length === 0 ? <p className="hint">No trades match. Try another word or pick All.</p> : (
         <ul className="trade-grid">

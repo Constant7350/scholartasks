@@ -12,6 +12,7 @@ export const TRADE_CATEGORIES = {
   building: "Building and construction",
   electrical: "Electrical and energy",
   mechanics: "Mechanics and transportation",
+  cnc: "CNC machining",
   manufacturing: "Manufacturing and welding",
   health: "Health care",
   beauty: "Beauty and personal care",
@@ -21,6 +22,11 @@ export const TRADE_CATEGORIES = {
   food: "Food and cooking",
 } as const;
 export type TradeCategory = keyof typeof TRADE_CATEGORIES;
+
+/** A short intro shown above a group of trades when that group is picked. */
+export const TRADE_CATEGORY_INTROS: Partial<Record<TradeCategory, string>> = {
+  cnc: "CNC (computer numerical control) machines cut metal and plastic into exact parts for cars, planes, medical tools and more. Most people start as a machine operator, then move up to machinist, programmer or tool and die maker as they learn. Training is short, Georgia's technical colleges teach it tuition-free with the HOPE Grant, and NIMS credentials show employers your skills in any state.",
+};
 
 export const PATH_KINDS = {
   college: "Technical or community college",

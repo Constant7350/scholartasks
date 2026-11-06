@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { TradesPack, addDays, aidFor, checkTradesPack, checkableFacts, checklistSteps, gradeStepsFor, matchTrades, payLine, tradeGradeTaskId, tradeTaskId } from "../src/trades";
+import { TRADE_CATEGORY_INTROS, TradesPack, addDays, aidFor, checkTradesPack, checkableFacts, checklistSteps, gradeStepsFor, matchTrades, payLine, tradeGradeTaskId, tradeTaskId } from "../src/trades";
 
 const pack = TradesPack.parse(JSON.parse(readFileSync(resolve(__dirname, "../../../packs/trades/trades.json"), "utf8")));
 
@@ -9,6 +9,12 @@ describe("trades pack", () => {
   it("is valid and consistent", () => {
     expect(checkTradesPack(pack)).toEqual([]);
     expect(pack.trades.length).toBeGreaterThan(40);
+  });
+
+  it("has a CNC machining group from operator to programmer, with an intro", () => {
+    const cnc = pack.trades.filter((t) => t.category === "cnc").map((t) => t.slug);
+    expect(cnc).toEqual(expect.arrayContaining(["cnc-operator", "cnc-machinist", "cnc-programmer", "tool-and-die-maker"]));
+    expect(TRADE_CATEGORY_INTROS.cnc).toMatch(/NIMS/);
   });
 
   it("covers trades mostly found outside Georgia", () => {

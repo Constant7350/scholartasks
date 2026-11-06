@@ -460,6 +460,11 @@ export const TRADE_CODES: Record<string, string> = {
   cosmetologist: "ASE", barber: "ASR", "nail-technician": "ASR", "police-officer": "RES", firefighter: "RSE",
   "it-support": "RCI", "network-technician": "ICR", cybersecurity: "CIR", "drone-pilot": "RIC", chef: "ERA",
   "film-crew": "RAE", logistics: "CRE",
+  "cnc-operator": "RCI", "cnc-programmer": "IRC", "tool-and-die-maker": "RIC", millwright: "RIC",
+  "power-plant-operator": "RCI", "substation-technician": "RIC", "avionics-technician": "RIC", "crane-operator": "RCE",
+  "telecom-line-installer": "RCI", "air-traffic-controller": "CER", "railroad-conductor": "RCE", "boat-captain": "REC",
+  sonographer: "SIR", "mri-technologist": "RSI", "physical-therapist-assistant": "SRE", "occupational-therapy-assistant": "SRA",
+  "respiratory-therapist": "SIR",
 };
 
 const CODE_WEIGHTS = [1, 0.6, 0.35];
