@@ -76,7 +76,7 @@ a { color: var(--navy); }
   width: 100%; font: inherit; font-size: 16px; padding: 13px 14px; border-radius: 10px; border: 1.5px solid var(--line); background: #fff; color: var(--ink);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-.input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 4px rgba(20, 48, 90, 0.12); }
+.input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(20, 48, 90, 0.45); }
 
 .btn {
   width: 100%; font: inherit; font-weight: 600; font-size: 16px; padding: 13px 16px; border-radius: 10px; border: 0; cursor: pointer;
@@ -247,7 +247,7 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .legal ul { padding-left: 20px; }
 .legal li { margin: 6px 0; }
 .site-footer { max-width: 720px; margin: 0 auto; padding: 8px 16px 40px; display: flex; flex-wrap: wrap; gap: 18px; font-size: 13px; color: var(--muted); }
-.site-footer a { color: var(--muted); }
+.site-footer a { color: var(--muted); display: inline-block; padding: 4px 0; min-height: 24px; }
 
 /* ---------- College plan ---------- */
 .due-list, .items { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 0; }
@@ -809,6 +809,10 @@ html[data-theme="sunrise"] .tiles > .tile, html[data-theme="garden"] .tiles > .t
 .rank-2 { background: var(--gold-soft); color: #8a6514; }
 .compare-places { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
 .compare-places span { display: block; }
+/* Photos and files (Homework Helper, essay coaches) */
+.attach-preview { display: inline-flex; align-items: center; gap: 8px; }
+.attach-file { display: inline-block; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: .9rem; }
+.attach-draft { margin-top: 8px; }
 
 /* Rate ScholarTasks (/rate) */
 .stars { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin: 4px 0 16px; }

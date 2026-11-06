@@ -42,7 +42,7 @@ const PART3: [string, string, string[]][] = [
 
 function Table({ caption, rows }: { caption: string; rows: [string, string, string[]][] }) {
   return (
-    <div className="s-table-wrap" style={{ marginBottom: 28 }}>
+    <div className="s-table-wrap" style={{ marginBottom: 28 }} role="region" aria-label={caption} tabIndex={0}>
       <table className="s-table">
         <caption className="s-kicker" style={{ textAlign: "left", padding: "14px 14px 10px", margin: 0 }}>{caption}</caption>
         <thead>

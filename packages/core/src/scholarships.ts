@@ -82,6 +82,10 @@ export interface MatchProfile {
   sex?: Sex;
   citizen?: "yes" | "no" | "unsure";
   plan?: "four_year" | "technical" | "unsure";
+  /** College search preference saved by Find colleges: public, private or Christian colleges. */
+  college_type?: "any" | "public" | "private" | "christian";
+  /** With college_type "christian": a church family id from CHURCH_FAMILIES, or null for any. */
+  church?: string | null;
 }
 
 export interface MatchStudent {

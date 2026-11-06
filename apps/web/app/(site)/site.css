@@ -151,6 +151,7 @@
 .s-video video { width: 100%; height: 100%; display: block; }
 
 /* Comparison table */
+.s-table-wrap:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
 .s-table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--line); background: #fff; -webkit-overflow-scrolling: touch; }
 .s-table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 15px; }
 .s-table th, .s-table td { padding: 12px 14px; text-align: center; border-top: 1px solid var(--line); }
@@ -159,7 +160,7 @@
 .s-table tbody th { text-align: left; font-weight: 600; color: var(--ink); position: sticky; left: 0; background: #fff; }
 .s-table tbody tr:nth-child(odd) th, .s-table tbody tr:nth-child(odd) td { background: #fdf8ee; }
 .s-table td.us { font-weight: 800; color: var(--navy); }
-.s-table .no { color: #9aa0ab; }
+.s-table .no { color: #5d6878; }
 .s-table-note { font-size: 14px; color: var(--muted); margin: 12px 0 0; }
 
 /* FAQ */

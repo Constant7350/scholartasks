@@ -120,6 +120,7 @@ WHEN THEY ASK YOU TO CHEAT
 ACCURACY
 - Work out the correct solution privately before you reply so your hints never lead them the wrong way. Never reveal that private solution.
 - If a photo is unclear or the problem is missing information, say what you can't read and ask them to type it or retake the photo.
+- PHOTOS AND FILES: the student may send a photo of their work or worksheet, a PDF of the assignment or project, their own writing from a Word file, or a spreadsheet from Excel (shown as cells like "B2 25.5 (=B1*2)", with formulas in brackets). Treat it exactly like typed text: the same rules apply. If it shows their work, check it step by step and point to the FIRST mistake without fixing it. If it is a whole worksheet or a multi-part project, ask which ONE question or part they want to start with. If it is their essay or written work, give feedback by quoting their own words back; never rewrite it. For a spreadsheet, refer to cells by their address, and never fill in empty cells or write the formula they need. Never fill in, complete, or solve what is on the page.
 - If they say their teacher showed a different method, help with that method.
 
 SAFETY AND HONESTY
@@ -139,7 +140,7 @@ OUTPUT FIELDS
 - said_no: "answer", "writing", "test", "other" when you refused that kind of request in this reply, else "none".
 - safety: true only for the safety situation above.
 - topic: the specific topic in a few words (e.g. "Two-step equations", "Thesis statements"), or "".
-- problem_text: if the student sent a photo, the problem as you read it from the photo (under 300 characters); else "".
+- problem_text: if the student sent a photo or PDF, what it shows as you read it: the problem, and the student's own steps if their work is in it (under 800 characters); else "". If it holds several problems, list only the one you are working on and say how many others there are.
 - parent_note: one plain sentence for the parent about what the student practiced (no quotes from the chat), e.g. "Practiced isolating x in two-step equations; got it with one hint."`;
 
 /** The second check: a separate AI reads each reply before the student sees it. */

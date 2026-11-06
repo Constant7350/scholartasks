@@ -19,7 +19,14 @@
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["mailto", "sms", "tel", "webcal"]
+        "LSApplicationQueriesSchemes": [
+          "mailto",
+          "sms",
+          "tel",
+          "webcal"
+        ],
+        "NSCameraUsageDescription": "ScholarTasks uses the camera so you can take a photo of your homework or essay draft and get help with it.",
+        "NSPhotoLibraryUsageDescription": "ScholarTasks lets you pick a photo of your homework or essay draft to get help with it."
       }
     },
     "android": {
@@ -27,7 +34,10 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#14305a"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "plugins": [
       [
@@ -37,7 +47,13 @@
         }
       ],
       "expo-secure-store",
-      ["expo-notifications", { "color": "#14305a", "enableRemoteNotifications": false }]
+      [
+        "expo-notifications",
+        {
+          "color": "#14305a",
+          "enableRemoteNotifications": false
+        }
+      ]
     ]
   }
 }

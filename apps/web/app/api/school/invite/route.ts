@@ -1,4 +1,5 @@
 import { adminClient, json, userFromRequest } from "../../../../lib/passkeys";
+import { mailingAddress, unsubscribeUrl } from "../../../../lib/unsubscribe";
 
 export const runtime = "nodejs";
 
@@ -34,13 +35,28 @@ export async function POST(req: Request) {
     <p style="font-size:18px">School code: <b style="letter-spacing:2px">${esc(s.join_code)}</b></p>
     <p><a href="${appUrl}/my-school?code=${encodeURIComponent(s.join_code)}" style="background:#14305a;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600">Connect to ${esc(s.name)}</a></p>
     <p style="color:#5d6878;font-size:13px">¿Prefiere español? Abra el enlace y elija Español en el menú.</p>
-    <p style="color:#5d6878;font-size:12px;margin-top:24px">You got this email because ${esc(s.name)} has your address on its class list. ScholarTasks never sells your information.</p></div>`;
+    <p style="color:#5d6878;font-size:12px;margin-top:24px">You got this email because ${esc(s.name)} has your address on its class list. ScholarTasks never sells your information.</p>
+    {{OPTOUT}}</div>`;
+  const address = mailingAddress();
+  const htmlFor = (to: string) => {
+    const stop = unsubscribeUrl(appUrl, to);
+    const optOut = stop
+      ? `<a href="${esc(stop)}" style="color:#5d6878">Stop these invite emails</a>`
+      : `To stop these invite emails, email <a href="mailto:support@scholartasks.com?subject=Stop%20school%20invites" style="color:#5d6878">support@scholartasks.com</a>`;
+    return html.replace("{{OPTOUT}}", `<p style="color:#5d6878;font-size:12px">${optOut}.${address ? `<br>ScholarTasks · ${esc(address)}` : ""}</p>`);
+  };
 
   let sent = 0;
   for (let i = 0; i < emails.length; i += 100) {
     const batch = emails.slice(i, i + 100).map((to) => ({
       from: `${s.name.replace(/[<>"]/g, "")} via ScholarTasks <noreply@scholartasks.com>`,
-      to: [to], reply_to: user.email ? [user.email] : undefined, subject, html,
+      to: [to], reply_to: user.email ? [user.email] : undefined, subject, html: htmlFor(to),
+      headers: (() => {
+        const stop = unsubscribeUrl(appUrl, to);
+        if (!stop) return undefined;
+        const api = stop.replace("/unsubscribe?", "/api/unsubscribe?");
+        return { "List-Unsubscribe": `<${api}>, <mailto:support@scholartasks.com?subject=unsubscribe>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" };
+      })(),
     }));
     const res = await fetch("https://api.resend.com/emails/batch", {
       method: "POST",

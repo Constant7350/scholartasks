@@ -46,7 +46,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
           </div>
           <div className="site-foot-base">
             <span>© {new Date().getFullYear()} ScholarTasks · Made in Georgia</span>
-            <span><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/delete-account">Delete account</a></span>
+            <span><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/delete-account">Delete account</a> · <a href="/accessibility">Accessibility</a></span>
           </div>
         </div>
       </footer>
