@@ -80,14 +80,27 @@ export const TOPICS: Topic[] = [
       "Tap a tile to open that tool. The Menu button at the top right lists every page, grouped under headings such as Every day, Colleges and careers, Grades and courses, and Fund college. Only the headings show at first: tap one to open the pages under it, and tap it again (or another heading) to close it. The section of the page you are on opens by itself. Students see only their own pages; parents also see Family and permissions. Help and Sign out are at the bottom of the menu.",
       "Every page has a back link at the top with its section's name (for example \"‹ Grades and courses\"). Tap it to open the menu on that section and jump to a page next to it.",
       "On a computer, the main pages sit in a row under the top bar, and the page you are on is underlined. On a phone, they sit along the bottom of the screen, and More opens the full menu.",
-      "Parents: the Viewing box shows which student you are looking at. Pick another name and every page switches to that student, and stays on them as you move around.",
-      "Parents also have My parent space, right under Home in the menu: your own college, scholarship and career lists, kept separate from your student's plan.",
+      "Parents: the Student box at the top shows whose plan you are looking at. Pick another name and every page switches to that student, and stays on them as you move around. In My parent space, and on searches switched to your space, it says My parent space instead, so nothing looks like it is being done as your student.",
+      "Parents also have My parent space, right under Home in the menu: your own college, scholarship and career lists, kept separate from your student's plan. Each student's grades, scorecard and progress are on My students, not on a parent's Home.",
       "Home is always one tap away, in the page row on a computer or the bottom bar on a phone.",
       "Pick the app's colors near the bottom of the Menu, under Colors and language: Campus (navy and bright colors), Sunrise (cream and peach) or Garden (sage and teal). The choice is saved on that phone or computer, so each person in the family can pick their own.",
     ],
   },
 
   // ---------- Family ----------
+  {
+    id: "my-students",
+    area: "Family",
+    title: "My students: see how each student is doing",
+    href: "/students",
+    keywords: ["my students", "my kids", "children", "view my child", "progress", "scorecard", "how is my child doing", "student view", "kids page"],
+    summary: "Parents see each student's own work on My students: grades and GPA scorecard, what is late or due this week, the college list, career quiz and streak. Your Home and My parent space stay your own.",
+    steps: [
+      "Open Menu, then My students (or tap your student's name at the top of the page).",
+      "Each student has a card with what is late or due soon, their GPA scorecard and their streak and badges.",
+      "Tap To-do list, College list, Grades, Scholarships or Activities to open that page on that student's plan.",
+    ],
+  },
   {
     id: "parent-space",
     area: "Family",
@@ -1280,6 +1293,7 @@ export const TOPICS: Topic[] = [
     ],
     body: [
       "Your friend gets a link to scholartasks.com and starts their own family account. They don't join your family and can't see anything of yours.",
+      "Students can invite friends too. The student message asks the friend to have a parent sign up and add them, because every student account belongs to a family with a parent in charge.",
       "ScholarTasks never sees your contacts.",
       "To add your own student to your family, use the family code on the Family page instead.",
     ],

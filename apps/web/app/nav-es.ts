@@ -10,6 +10,7 @@ const ES: Record<string, [label: string, short?: string]> = {
   "Testers and test links": ["Personas que prueban y enlaces"],
   "Home": ["Inicio"],
   "My parent space": ["Mi espacio de padres", "Mi espacio"],
+  "My students": ["Mis estudiantes", "Mis estudiantes"],
   "To-do list": ["Lista de tareas", "Tareas"],
   "College list and deadlines": ["Universidades y fechas límite", "Plan"],
   "Find colleges": ["Buscar universidades", "Universidades"],
@@ -59,6 +60,6 @@ export function navShort(i: NavItem, lang: "en" | "es"): string {
 
 /** Words in the top bar and menu. */
 export const UI = {
-  en: { menu: "Menu", openMenu: "Open menu", signIn: "Sign in", signOut: "Sign out", more: "More", viewing: "Viewing", myPages: "My pages", pages: "Pages", pagesOf: (n: string) => `${n}'s pages`, family: "Family", connected: "Get connected", help: "Help", team: "ScholarTasks team", look: "Colors and language", backTo: "Back to" },
-  es: { menu: "Menú", openMenu: "Abrir menú", signIn: "Iniciar sesión", signOut: "Cerrar sesión", more: "Más", viewing: "Viendo", myPages: "Mis páginas", pages: "Páginas", pagesOf: (n: string) => `Páginas de ${n}`, family: "Familia", connected: "Conectarse", help: "Ayuda", team: "Equipo de ScholarTasks", look: "Colores e idioma", backTo: "Volver a" },
+  en: { menu: "Menu", openMenu: "Open menu", signIn: "Sign in", signOut: "Sign out", more: "More", viewing: "Student", mySpace: "👤 My parent space", myPages: "My pages", pages: "Pages", pagesOf: (n: string) => `${n}'s pages`, family: "Family", connected: "Get connected", help: "Help", team: "ScholarTasks team", look: "Colors and language", backTo: "Back to" },
+  es: { menu: "Menú", openMenu: "Abrir menú", signIn: "Iniciar sesión", signOut: "Cerrar sesión", more: "Más", viewing: "Estudiante", mySpace: "👤 Mi espacio de padres", myPages: "Mis páginas", pages: "Páginas", pagesOf: (n: string) => `Páginas de ${n}`, family: "Familia", connected: "Conectarse", help: "Ayuda", team: "Equipo de ScholarTasks", look: "Colores e idioma", backTo: "Volver a" },
 } as const;

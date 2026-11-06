@@ -915,9 +915,10 @@ html.tr-wait body { visibility: hidden; }
   .admin-signout-sm { display: inline-flex; }
   .admin-nav { flex: none; flex-direction: row; overflow-x: auto; overflow-y: hidden; gap: 4px; scrollbar-width: none; margin: 0 -12px; padding: 0 12px; }
   .admin-nav::-webkit-scrollbar { display: none; }
-  .admin-navgroup { flex-direction: row; gap: 4px; }
+  /* Groups and links keep their full width so labels never squeeze on top of each other; the bar scrolls instead. */
+  .admin-navgroup { flex-direction: row; gap: 4px; flex: none; }
   .admin-navhead { display: none; }
-  .admin-nav a { flex: none; padding: 6px 10px 6px 6px; font-size: 13.5px; min-height: 44px; }
+  .admin-nav a { flex: none; padding: 6px 10px 6px 6px; font-size: 13.5px; min-height: 44px; white-space: nowrap; }
   .admin-nav .admin-backlink { margin-top: 0; border-top: 0; border-radius: 12px; padding-top: 6px; }
   .ai-tile { width: 26px; height: 26px; border-radius: 8px; }
   .admin-main .page { padding: 20px 16px 72px; }
@@ -977,3 +978,9 @@ html.tr-wait body { visibility: hidden; }
 @media (max-width: 560px) { .certificate { padding: 24px 14px; } .certificate-title { font-size: 26px; } .certificate-name { font-size: 30px; } }
 @media print { .certificate { margin: 0 auto; border-width: 8px; } }
 .gift-code { font-family: ui-monospace, Menlo, monospace; font-size: 18px; letter-spacing: 1px; user-select: all; }
+.student-switch-own { text-decoration: none; }
+/* My students (/students) */
+.kid-block { margin-bottom: 28px; }
+.kid-pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
+.kid-links { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 8px; }
+.student-switch a { color: inherit; text-decoration: none; }
