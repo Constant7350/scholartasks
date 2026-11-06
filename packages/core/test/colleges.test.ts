@@ -48,6 +48,19 @@ describe("collegeFit", () => {
   it("labels a college likely when scores are well above average", () => expect(collegeFit({ admitRate: 0.8, satAvg: 1050, actMid: null }, { sat: 1200 })).toBe("likely"));
   it("labels a college a reach when scores are well below", () => expect(collegeFit(uga, { act: 22 })).toBe("reach"));
   it("falls back to the admit rate without scores", () => expect(collegeFit({ admitRate: 0.9, satAvg: null, actMid: null }, {})).toBe("likely"));
+  it("uses GPA and rigor when there are no test scores", () => {
+    const mid = { admitRate: 0.55, satAvg: 1200, actMid: null };
+    expect(collegeFit(mid, { gpa: 3.9, rigor: 5 })).toBe("likely");
+    expect(collegeFit(mid, { gpa: 3.4, rigor: 1 })).toBe("match");
+    expect(collegeFit(mid, { gpa: 2.8 })).toBe("reach");
+  });
+  it("moves a test-score fit up for strong grades and rigor, down for weak grades", () => {
+    const mid = { admitRate: 0.55, satAvg: 1200, actMid: null };
+    expect(collegeFit(mid, { sat: 1210 })).toBe("match");
+    expect(collegeFit(mid, { sat: 1210, gpa: 3.9, rigor: 6 })).toBe("likely");
+    expect(collegeFit(mid, { sat: 1210, gpa: 2.7 })).toBe("reach");
+    expect(collegeFit({ admitRate: 0.2, satAvg: 1400, actMid: null }, { sat: 1410, gpa: 4, rigor: 8 })).toBe("reach");
+  });
 });
 
 describe("matchScore", () => {

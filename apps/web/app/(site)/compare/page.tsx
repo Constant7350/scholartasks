@@ -23,7 +23,7 @@ const PART2: [string, string, string[]][] = [
   ["SAT and ACT practice", "Yes, 600+ questions", ["No", "No", "Links", "Some", "No", "Yes"]],
   ["Essay feedback that never writes", "Yes", ["No", "No", "No", "Some", "No", "No"]],
   ["Activities and resume", "Yes", ["Yes", "Yes", "No", "No", "No", "No"]],
-  ["Reminders", "Email, calendar, phone", ["Email, phone", "Yes", "Yes", "No", "Email, phone", "Phone"]],
+  ["Reminders", "Email, text, calendar, phone", ["Email, phone", "Yes", "Yes", "No", "Email, phone", "Phone"]],
   ["School counselor dashboard", "Yes (free)", ["Yes", "Yes", "Yes", "No", "Some", "Yes"]],
   ["Never sells student data", "Yes", ["Yes", "Yes", "Opt-in to colleges", "Colleges buy access", "Yes", "Yes"]],
 ];

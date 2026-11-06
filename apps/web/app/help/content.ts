@@ -260,7 +260,7 @@ export const TOPICS: Topic[] = [
     ],
     body: [
       "Colleges come from the U.S. Department of Education's College Scorecard: every four-year college, plus Georgia's two-year and technical colleges. To search by major, including two-year and trade schools in every state, use Search colleges by major.",
-      "Reach, Match and Likely compare the student's SAT or ACT with students the college admitted, and its admit rate. They are a rough guide, never a promise. Very selective colleges (under 15% admitted) are always a Reach.",
+      "Reach, Match and Likely weigh the student's unweighted GPA, how many AP, IB and dual enrollment classes they have taken, their SAT or ACT, and the college's admit rate. With no test scores (test-optional), grades and rigor decide. They are a rough guide, never a promise. Very selective colleges (under 15% admitted) are always a Reach.",
       "For-profit colleges are left out of matches. You can still add any college by name on the College plan.",
     ],
   },
@@ -402,6 +402,20 @@ export const TOPICS: Topic[] = [
       "A draft is cut to each award's word limit at the end of a sentence, as a starting point.",
       "Sending the exact same essay everywhere rarely wins. Mention each award's own goals and the people who give it.",
     ],
+  },
+  {
+    id: "text-reminders",
+    area: "College plan",
+    title: "Get deadline reminders by text",
+    href: "/plan",
+    keywords: ["text", "sms", "text message", "cell phone", "phone number", "reminder", "stop texts"],
+    summary: "Get a text 7 days before, the day before and the day of each deadline. It's optional and capped at 20 texts a month.",
+    steps: [
+      "Open the College plan and find Text reminders under Coming up.",
+      "Type your U.S. cell number and tap Text me a code.",
+      "Type the 6-digit code from the text and tap Turn on texts.",
+    ],
+    body: ["Each parent and student turns on their own. Tap Turn off, or reply STOP to any text, to stop. Message and data rates may apply. Your number is used only for these reminders and is never shared."],
   },
   {
     id: "calendar-reminders",
@@ -611,6 +625,15 @@ export const TOPICS: Topic[] = [
     keywords: ["next year", "schedule", "course selection", "registration", "which classes", "rigor", "workload"],
     summary: "List the classes your student is considering and their level. The AI weighs the goal, grades so far and your state scholarship's rules, then suggests where to stretch.",
     body: ["It also lists questions to ask the school counselor. Uses 1 of today's 10 AI uses. The final choice is yours and the school's."],
+  },
+  {
+    id: "course-plan",
+    area: "Grades and scholarships",
+    title: "Plan all four years of classes",
+    href: "/grades/plan",
+    keywords: ["four year plan", "4 year plan", "course plan", "graduation requirements", "credits", "rigor courses", "HOPE rigor", "world language"],
+    summary: "Lay out grade 9 to 12 class by class. The checklist adds up graduation credits, the rigor courses your state scholarship needs and years of the same world language.",
+    body: ["Classes with a saved grade show as taken. Press Check my plan with AI for advice on each year (1 AI use). Every school offers different classes, so go over the plan with the school counselor."],
   },
   {
     id: "transcripts",
