@@ -851,3 +851,6 @@ html.print-notes .hw-print, html.print-notes .hw-print * { visibility: visible; 
 .hw-print h1 { font-size: 22px; margin: 0 0 4px; }
 .hw-print h2 { font-size: 16px; margin: 16px 0 6px; }
 .hw-print-turn { margin: 8px 0; break-inside: avoid; }
+
+/* Spanish: the page stays hidden for a moment until the translator has run (see LANG_BOOT). */
+html.tr-wait body { visibility: hidden; }

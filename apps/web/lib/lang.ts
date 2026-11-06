@@ -16,3 +16,6 @@ export function aiLanguageNote(req: Request): string {
     ? "\n\nLANGUAGE: The family uses ScholarTasks in Spanish. Write every word a person will read (including every text field in JSON) in clear, warm, plain Latin American Spanish. Keep official names as they are (FAFSA, HOPE, Zell Miller, GAfutures, SAT, ACT, AP, Common App) and explain them in Spanish the first time."
     : "";
 }
+
+/** Runs before the page paints: in Spanish, the page waits (up to 1.5 s) for the translator so English doesn't flash. */
+export const LANG_BOOT = `try{if(/(?:^|;\\s*)st-lang=es\\b/.test(document.cookie)){var d=document.documentElement;d.lang="es";d.classList.add("tr-wait");setTimeout(function(){d.classList.remove("tr-wait")},1500)}}catch(e){}`;

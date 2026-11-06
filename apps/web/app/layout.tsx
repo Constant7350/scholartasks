@@ -5,6 +5,8 @@ import { InAppLinks } from "./in-app-links";
 import { AiConsent } from "./ai-consent";
 import { PhoneReminders } from "./phone-reminders";
 import { THEME_BOOT } from "../lib/theme";
+import { Translator } from "./translator";
+import { LANG_BOOT } from "../lib/lang";
 
 export const metadata = {
   metadataBase: new URL("https://scholartasks.com"),
@@ -23,8 +25,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         {/* Apply the color theme saved on this device before the page paints. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+        {/* In Spanish, hide the page for a moment until it is translated (never longer than 1.5 seconds). */}
+        <script dangerouslySetInnerHTML={{ __html: LANG_BOOT }} />
       </head>
       <body>
+        <Translator />
         <InAppLinks />
         {children}
         <AiConsent />
