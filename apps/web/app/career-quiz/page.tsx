@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   IMPORTANCE_SCALE, INTEREST_TYPES, LIKE_SCALE, QUIZ_DISCLAIMER, QUIZ_LENGTH, QUIZ_TAGS, RIASEC, WORK_VALUES,
-  careerYears, drawQuiz, fitLabel, militaryFit, payLine, quizCareers, quizItem, quizTrades, rankedValues, scoreQuiz, summarizeQuiz, topTags,
+  careerYears, closeTypes, drawNarrowing, drawQuiz, fitLabel, militaryFit, payLine, quizCareers, quizItem, quizTrades, rankedValues, scoreQuiz, summarizeQuiz, topTags,
   type Answer, type InterestItem, type ValueItem,
 } from "@scholartasks/core";
 import { Page } from "../ui";
@@ -18,7 +18,7 @@ const INTEREST_PARTS = 4;
 const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
 
 /** One sitting, kept on this device so a student can stop and come back. */
-interface Sitting { seed: number; ids: string[]; answers: Record<string, Answer>; seconds: number; deeper: boolean; done: boolean }
+interface Sitting { seed: number; ids: string[]; answers: Record<string, Answer>; seconds: number; deeper: boolean; done: boolean; narrowed?: number; extras?: { name: string; start: number }[] }
 interface Student { id: string; first_name: string; state: string; match_profile: Record<string, unknown> | null }
 type Item = InterestItem | ValueItem;
 /** A named part of the quiz: questions from `start` up to (not including) `end`. */
@@ -36,20 +36,19 @@ function newSitting(): Sitting {
 
 const ACTIVITY_HINT = "Picture yourself doing it. Don't think about pay, how much school it takes, or whether you're good at it yet.";
 
-/** Splits the questions into parts: four parts of activities, then work values, then any "go deeper" questions. */
-function partsOf(items: Item[]): Part[] {
-  const firstValue = items.findIndex((x) => "value" in x);
-  const nInterest = firstValue < 0 ? items.length : firstValue;
+/** Splits the questions into parts: four parts of activities, work values, then any extra rounds. */
+function partsOf(items: Item[], extras: { name: string; start: number }[] = []): Part[] {
+  const firstExtra = extras[0]?.start ?? items.length;
+  const base = items.slice(0, firstExtra);
+  const firstValue = base.findIndex((x) => "value" in x);
+  const nInterest = firstValue < 0 ? base.length : firstValue;
   const size = Math.ceil(nInterest / INTEREST_PARTS);
   const parts: Part[] = [];
   for (let i = 0; i < INTEREST_PARTS && i * size < nInterest; i++) {
     parts.push({ name: `Activities, set ${i + 1}`, hint: ACTIVITY_HINT, start: i * size, end: Math.min(nInterest, (i + 1) * size) });
   }
-  if (firstValue >= 0) {
-    const lastValue = items.length - [...items].reverse().findIndex((x) => "value" in x);
-    parts.push({ name: "What matters to you in a job", hint: "Think about the job you would want one day.", start: firstValue, end: lastValue });
-    if (lastValue < items.length) parts.push({ name: "Going deeper", hint: ACTIVITY_HINT, start: lastValue, end: items.length });
-  }
+  if (firstValue >= 0) parts.push({ name: "What matters to you in a job", hint: "Think about the job you would want one day.", start: firstValue, end: firstExtra });
+  extras.forEach((x, i) => parts.push({ name: x.name, hint: ACTIVITY_HINT, start: x.start, end: extras[i + 1]?.start ?? items.length }));
   return parts;
 }
 
@@ -74,7 +73,7 @@ export default function CareerQuiz() {
   const [asking, setAsking] = useState<null | "cancel" | "new">(null);
 
   const items = useMemo(() => (sitting?.ids ?? []).map((id) => quizItem(id)).filter((x): x is Item => !!x), [sitting?.ids]);
-  const parts = useMemo(() => partsOf(items), [items]);
+  const parts = useMemo(() => partsOf(items, sitting?.extras), [items, sitting?.extras]);
 
   useEffect(() => {
     const s = load();
@@ -117,11 +116,23 @@ export default function CareerQuiz() {
     }, 220);
   };
 
+  /** Adds an extra round at the end and jumps to it. */
+  const addRound = (name: string, ids: string[], patch: Partial<Sitting>) => {
+    if (!sitting || !ids.length) return;
+    const extras = [...(sitting.extras ?? []), { name, start: sitting.ids.length }];
+    save({ ...sitting, ...patch, ids: [...sitting.ids, ...ids], extras, done: false });
+    setPos(sitting.ids.length); setBreakAt(sitting.ids.length); setReviewing(false); setLastTick(Date.now()); top();
+  };
   const goDeeper = () => {
     if (!sitting) return;
     const extra = drawQuiz(sitting.seed + 1, { perType: QUIZ_LENGTH.deeperPerType, perValue: 0, exclude: sitting.ids });
-    save({ ...sitting, ids: [...sitting.ids, ...extra.interests.map((x) => x.id)], deeper: true, done: false });
-    setPos(sitting.ids.length); setBreakAt(null); setReviewing(false); setLastTick(Date.now()); top();
+    addRound("Going deeper", extra.interests.map((x) => x.id), { deeper: true });
+  };
+  const narrow = () => {
+    if (!sitting) return;
+    const round = (sitting.narrowed ?? 0) + 1;
+    const more = drawNarrowing(scoreQuiz(sitting.answers), sitting.seed + 100 + round, sitting.ids);
+    addRound("Narrowing it down", more.map((x) => x.id), { narrowed: round });
   };
 
   if (!ready) return <Page title="Career interest quiz"><p className="hint">Loading…</p></Page>;
@@ -134,7 +145,7 @@ export default function CareerQuiz() {
           <ul className="cq-facts">
             <li><b>{QUIZ_LENGTH.perType * 6 + QUIZ_LENGTH.perValue * 6} questions in 5 short parts</b>, about 15 minutes. One question at a time. Leave whenever you like and you&apos;ll pick up where you stopped on this device.</li>
             <li><b>No right or wrong answers.</b> It asks what you would like doing, not what you are good at. Don&apos;t worry about money or school for now.</li>
-            <li><b>A new mix every time.</b> Questions come from a bank of over 200, so your quiz is different from your friend&apos;s.</li>
+            <li><b>A new mix every time.</b> Questions come from a bank of over 600, so your quiz is different from your friend&apos;s.</li>
             <li><b>Fair to everyone.</b> It never asks about race, ethnicity, sex or gender, and those never change a result.</li>
           </ul>
           <button className="btn btn-inline" onClick={start}>Start the quiz</button>
@@ -199,7 +210,7 @@ export default function CareerQuiz() {
   const allDone = answeredCount === items.length;
   if (sitting.done && allDone) {
     return (
-      <Results sitting={sitting} banner={confirmBox} onNew={() => { setAsking("new"); top(); }} onCancel={() => { setAsking("cancel"); top(); }} onReview={() => { setReviewing(true); top(); }} onDeeper={goDeeper} />
+      <Results sitting={sitting} banner={confirmBox} onNew={() => { setAsking("new"); top(); }} onCancel={() => { setAsking("cancel"); top(); }} onReview={() => { setReviewing(true); top(); }} onDeeper={goDeeper} onNarrow={narrow} />
     );
   }
 
@@ -277,7 +288,7 @@ export default function CareerQuiz() {
   );
 }
 
-function Results({ sitting, banner, onNew, onCancel, onReview, onDeeper }: { sitting: Sitting; banner: ReactNode; onNew: () => void; onCancel: () => void; onReview: () => void; onDeeper: () => void }) {
+function Results({ sitting, banner, onNew, onCancel, onReview, onDeeper, onNarrow }: { sitting: Sitting; banner: ReactNode; onNew: () => void; onCancel: () => void; onReview: () => void; onDeeper: () => void; onNarrow: () => void }) {
   const result = useMemo(() => scoreQuiz(sitting.answers, { seconds: sitting.seconds }), [sitting]);
   const careers = useMemo(() => quizCareers(result, 10), [result]);
   const trades = useMemo(() => quizTrades(result, TRADES, 8), [result]);
@@ -285,6 +296,7 @@ function Results({ sitting, banner, onNew, onCancel, onReview, onDeeper }: { sit
   const values = rankedValues(result);
   const military = militaryFit(result);
   const ordered = [...RIASEC].sort((a, b) => result.scores[b] - result.scores[a]);
+  const close = closeTypes(result);
 
   return (
     <Page title="Your career interest results">
@@ -315,6 +327,14 @@ function Results({ sitting, banner, onNew, onCancel, onReview, onDeeper }: { sit
         {themes.length > 0 && <p className="hint">You lit up for: {themes.map((t) => QUIZ_TAGS[t.tag]).join(" · ")}</p>}
         {result.notes.map((n) => <p key={n} className="hint cq-note">{n}</p>)}
       </section>
+
+      {close && (sitting.narrowed ?? 0) < 2 && (
+        <section className="panel cq-narrow">
+          <h2>Too close to call? Narrow it down</h2>
+          <p className="hint">{close.map((t) => INTEREST_TYPES[t].name).join(close.length > 2 ? ", " : " and ")} are only a few points apart. Answer {close.length * QUIZ_LENGTH.narrowPerType} new questions about just {close.length > 2 ? "these" : "these two"}, focused on the themes you liked most, to see which one really stands out. Your answers so far are kept.</p>
+          <button className="btn btn-inline" onClick={onNarrow}>Narrow it down</button>
+        </section>
+      )}
 
       <section className="panel">
         <h2>Careers through college</h2>

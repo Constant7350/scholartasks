@@ -53,3 +53,4 @@
   .cq-stack .cq-opt { font-size: 16px; min-height: 52px; padding: 10px 16px; }
 }
 .cq-one > .hint.small { margin-top: 12px; }
+.cq-narrow { border-color: var(--c-gold); background: var(--c-gold-soft); }

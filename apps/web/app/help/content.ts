@@ -342,7 +342,7 @@ export const TOPICS: Topic[] = [
     area: "College plan",
     title: "Career interest quiz: which careers fit me?",
     href: "/career-quiz",
-    keywords: ["career quiz", "career interest quiz", "what should i be", "interest quiz", "career test", "job ideas", "undecided", "what major", "Holland code", "RIASEC", "work values", "personality test"],
+    keywords: ["career quiz", "career interest quiz", "narrow it down", "what should i be", "interest quiz", "career test", "job ideas", "undecided", "what major", "Holland code", "RIASEC", "work values", "personality test"],
     summary: "A long quiz (about 15 minutes) on what you like to do and what matters to you in a job. It suggests college careers, skilled trades and military paths, each linked to where to study or train.",
     steps: [
       "Open Menu, then Career quiz (or tap Start here on the home page). You don't need to sign in.",
@@ -354,7 +354,8 @@ export const TOPICS: Topic[] = [
       "Signed in? Tap Save to the student's profile so the AI counselor can use the results. Tap Go deeper for 48 more questions.",
     ],
     body: [
-      "Each quiz draws a new mix from a bank of more than 200 questions, so friends get different quizzes and can't copy each other's results. Retakes get mostly new questions too.",
+      "Each quiz draws a new mix from a bank of about 660 questions (600 activities and 60 about what matters to you), so friends get different quizzes and can't copy each other's results. Retakes get new questions too.",
+      "If your top interests are too close to call, the results page offers Narrow it down: a short extra round with new questions about only those close types, focused on the themes you liked most, to see which one really stands out.",
       "It is built on the Holland interest model (six types: Building, Thinking, Creating, Helping, Persuading, Organizing) used by school counselors and the U.S. Labor Department's O*NET Interest Profiler, plus O*NET's six work values. All questions were written by our team.",
       "It measures likes and values, not intelligence, grades or ability. It never asks about or uses race, ethnicity, sex or gender.",
       "Results are suggestions to explore, not a decision or a promise. Interests often change in the teen years, so retake it every 6 to 12 months, and talk it over with family and a school counselor.",
