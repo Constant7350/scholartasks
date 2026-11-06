@@ -1263,6 +1263,7 @@ export const TOPICS: Topic[] = [
     ],
     body: [
       "Your friend gets a link to scholartasks.com and starts their own family account. They don't join your family and can't see anything of yours.",
+      "Students can invite friends too. The student message asks the friend to have a parent sign up and add them, because every student account belongs to a family with a parent in charge.",
       "ScholarTasks never sees your contacts.",
       "To add your own student to your family, use the family code on the Family page instead.",
     ],
