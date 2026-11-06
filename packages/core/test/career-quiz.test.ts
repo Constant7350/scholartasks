@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { CAREERS, CAREER_CODES, INTEREST_ITEMS, QUIZ_LENGTH, RIASEC, TRADE_CODES, VALUE_ITEMS, WORK_VALUES, drawQuiz, quizCareers, quizTrades, scoreQuiz, summarizeQuiz, quizLine, militaryFit, type Answer, type Trade } from "../src";
+import { CAREERS, CAREER_CODES, INTEREST_ITEMS, QUIZ_LENGTH, RIASEC, TRADE_CODES, VALUE_ITEMS, WORK_VALUES, drawQuiz, quizCareers, quizTrades, scoreQuiz, summarizeQuiz, quizLine, militaryFit, closeTypes, drawNarrowing, type Answer, type Trade } from "../src";
 
 const trades = (JSON.parse(readFileSync(new URL("../../../packs/trades/trades.json", import.meta.url), "utf8")).trades ?? []) as Trade[];
 
@@ -18,8 +18,8 @@ describe("career interest quiz bank", () => {
     expect(ids.size).toBe(INTEREST_ITEMS.length + VALUE_ITEMS.length);
     const texts = new Set(INTEREST_ITEMS.map((x) => x.text.toLowerCase()));
     expect(texts.size).toBe(INTEREST_ITEMS.length);
-    for (const t of RIASEC) expect(INTEREST_ITEMS.filter((x) => x.type === t).length).toBeGreaterThanOrEqual(30);
-    for (const v of Object.keys(WORK_VALUES)) expect(VALUE_ITEMS.filter((x) => x.value === v).length).toBeGreaterThanOrEqual(5);
+    for (const t of RIASEC) expect(INTEREST_ITEMS.filter((x) => x.type === t).length).toBeGreaterThanOrEqual(100);
+    for (const v of Object.keys(WORK_VALUES)) expect(VALUE_ITEMS.filter((x) => x.value === v).length).toBeGreaterThanOrEqual(10);
   });
   it("never mentions race, ethnicity, sex or gender in a question", () => {
     const banned = /\b(boy|girl|man|men|woman|women|male|female|he|she|his|her|race|black|white|hispanic|latino|asian|gender)\b/i;
@@ -78,5 +78,21 @@ describe("scoring", () => {
     expect(JSON.stringify(s).length).toBeLessThan(800);
     expect(quizLine(s)).toMatch(/not a verdict/);
     expect(militaryFit(r)).toBeGreaterThan(50);
+  });
+});
+
+describe("narrowing it down", () => {
+  it("asks only about the close types, never repeats, and leaves clear results alone", () => {
+    const d = drawQuiz(11);
+    const ids = [...d.interests, ...d.values].map((x) => x.id);
+    const close = scoreQuiz(answerAs("SI", ids));
+    expect(closeTypes(close)?.sort().join("")).toBe("IS");
+    const more = drawNarrowing(close, 12, ids);
+    expect(more).toHaveLength(24);
+    expect(more.every((x) => x.type === "S" || x.type === "I")).toBe(true);
+    expect(more.some((x) => ids.includes(x.id))).toBe(false);
+    const clear = scoreQuiz(answerAs("A", ids));
+    expect(closeTypes(clear)).toBeNull();
+    expect(drawNarrowing(clear, 1, ids)).toEqual([]);
   });
 });

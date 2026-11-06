@@ -17,6 +17,7 @@
 import { CAREERS, FIELDS, type Career } from "./majors";
 import { CAREER_TAGS, CAREER_INTERESTS } from "./application";
 import type { Trade } from "./trades";
+import { MORE_ITEMS } from "./career-quiz-more";
 
 export const RIASEC = ["R", "I", "A", "S", "E", "C"] as const;
 export type InterestType = (typeof RIASEC)[number];
@@ -54,8 +55,9 @@ export interface InterestItem { id: string; type: InterestType; text: string; ta
 export interface ValueItem { id: string; value: WorkValue; text: string }
 
 type Row = [string, QuizTag[]];
+/** A type's first 34 questions, then the larger set added later (ids stay stable as the bank grows). */
 const bank = (type: InterestType, rows: Row[]): InterestItem[] =>
-  rows.map(([text, tags], i) => ({ id: `${type.toLowerCase()}${String(i + 1).padStart(2, "0")}`, type, text, tags }));
+  [...rows, ...MORE_ITEMS[type]].map(([text, tags], i) => ({ id: `${type.toLowerCase()}${String(i + 1).padStart(2, "0")}`, type, text, tags }));
 
 /** Every interest question: an activity the student rates from "Strongly dislike" to "Strongly like". */
 export const INTEREST_ITEMS: InterestItem[] = [
@@ -281,12 +283,12 @@ const vbank = (value: WorkValue, rows: string[]): ValueItem[] => rows.map((text,
 
 /** Work values: the student rates how important each is in a future job. */
 export const VALUE_ITEMS: ValueItem[] = [
-  ...vbank("achievement", ["Do work where I can see what I made or fixed", "Use what I am best at every day", "Finish hard jobs and feel proud of them", "Keep learning new skills on the job", "Do work that really matters"]),
-  ...vbank("independence", ["Make my own decisions about how to do my work", "Try out my own ideas", "Work without someone watching over me", "Set my own schedule", "Be my own boss someday"]),
-  ...vbank("recognition", ["Have a chance to move up to a higher job", "Be respected for the work I do", "Be in charge of other people", "Have a job people look up to", "Get credit when I do well"]),
-  ...vbank("relationships", ["Work with people I get along with", "Help other people through my work", "Never be asked to do something I think is wrong", "Be part of a close team", "Work for something I believe in"]),
-  ...vbank("support", ["Have a boss who treats workers fairly", "Get good training", "Work for a company I can trust", "Know exactly what is expected of me", "Have someone to ask when I am stuck"]),
-  ...vbank("conditions", ["Earn a lot of money", "Have a steady job that is hard to lose", "Do different things every day", "Work in a clean, safe place", "Have time for family and life outside work"]),
+  ...vbank("achievement", ["Do work where I can see what I made or fixed", "Use what I am best at every day", "Finish hard jobs and feel proud of them", "Keep learning new skills on the job", "Do work that really matters", "Master a skill so well that others ask me for help", "Solve problems nobody else could fix", "Make something that lasts for years", "Get better at my work every year", "Be proud to tell people what I do"]),
+  ...vbank("independence", ["Make my own decisions about how to do my work", "Try out my own ideas", "Work without someone watching over me", "Set my own schedule", "Be my own boss someday", "Choose which projects I work on", "Work from different places, not one desk", "Plan my own day", "Find my own way to solve a problem", "Have room to be creative"]),
+  ...vbank("recognition", ["Have a chance to move up to a higher job", "Be respected for the work I do", "Be in charge of other people", "Have a job people look up to", "Get credit when I do well", "Earn awards or titles for my work", "Be known as an expert", "Lead a team someday", "Have my work seen by many people", "Earn a promotion when I do well"]),
+  ...vbank("relationships", ["Work with people I get along with", "Help other people through my work", "Never be asked to do something I think is wrong", "Be part of a close team", "Work for something I believe in", "Make friends at work", "Help my community", "Work with people from many backgrounds", "Serve others", "Feel like my work is fair to everyone"]),
+  ...vbank("support", ["Have a boss who treats workers fairly", "Get good training", "Work for a company I can trust", "Know exactly what is expected of me", "Have someone to ask when I am stuck", "Have a mentor who teaches me", "Get help paying for more training", "Work where safety comes first", "Be treated with respect by my boss", "Know my company will stand by me"]),
+  ...vbank("conditions", ["Earn a lot of money", "Have a steady job that is hard to lose", "Do different things every day", "Work in a clean, safe place", "Have time for family and life outside work", "Have good health insurance and benefits", "Retire with savings someday", "Work regular hours", "Work outdoors instead of inside", "Have a job that is needed in every town"]),
 ];
 
 /** The five answers, scored 0 to 4, like the O*NET Interest Profiler's scale. */
@@ -295,7 +297,7 @@ export const IMPORTANCE_SCALE = ["Not important", "A little important", "Somewha
 export type Answer = 0 | 1 | 2 | 3 | 4;
 
 /** How many questions a sitting draws. The standard quiz is long on purpose: more answers, steadier results. */
-export const QUIZ_LENGTH = { perType: 16, perValue: 3, deeperPerType: 8 } as const;
+export const QUIZ_LENGTH = { perType: 16, perValue: 3, deeperPerType: 8, narrowPerType: 12 } as const;
 
 // ---------- Drawing a new quiz each time ----------
 
@@ -416,6 +418,42 @@ export function scoreQuiz(answers: Record<string, Answer>, opts: { seconds?: num
   if (scores[ordered[2]!] >= 40 && scores[ordered[2]!] - scores[ordered[3]!] < 4) notes.push(`Your third and fourth types (${INTEREST_TYPES[ordered[2]!].name} and ${INTEREST_TYPES[ordered[3]!].name}) are very close, so look at careers for both.`);
   if (opts.seconds && interestCount >= 20 && opts.seconds / interestCount < 1.5) notes.push("You answered very fast. Results are more accurate when you picture yourself doing each activity.");
   return { scores, code, tags, values, answered, notes };
+}
+
+// ---------- Narrowing it down when the result is close ----------
+
+/**
+ * The interest types that are too close to call: the top type plus any within 8 points of it
+ * (at most three). Null when one type clearly stands out, or nothing stood out at all.
+ */
+export function closeTypes(result: QuizResult): InterestType[] | null {
+  const ordered = [...RIASEC].sort((a, b) => result.scores[b] - result.scores[a]);
+  const topScore = result.scores[ordered[0]!];
+  if (topScore < 35) return null;
+  const close = ordered.filter((t) => topScore - result.scores[t] <= 8).slice(0, 3);
+  return close.length >= 2 ? close : null;
+}
+
+/**
+ * A follow-up round that asks only about the close types, so the stronger one stands out.
+ * Half the questions are about the themes the student liked most inside those types
+ * (animals, machines, music...), the rest are new questions from across each type.
+ * Nothing already asked is asked again.
+ */
+export function drawNarrowing(result: QuizResult, seed: number, asked: Iterable<string>, perType: number = QUIZ_LENGTH.narrowPerType): InterestItem[] {
+  const types = closeTypes(result);
+  if (!types) return [];
+  const rnd = seededRandom(seed);
+  const used = new Set(asked);
+  const liked = new Set(topTags(result, 6).map((t) => t.tag));
+  const out: InterestItem[] = [];
+  for (const t of types) {
+    const pool = shuffle(INTEREST_ITEMS.filter((x) => x.type === t && !used.has(x.id)), rnd);
+    const themed = pool.filter((x) => x.tags.some((g) => liked.has(g))).slice(0, Math.ceil(perType / 2));
+    const rest = pool.filter((x) => !themed.includes(x)).slice(0, perType - themed.length);
+    out.push(...themed, ...rest);
+  }
+  return spread(shuffle(out, rnd));
 }
 
 // ---------- Matching careers and trades ----------
