@@ -42,7 +42,7 @@ function emailHtml(items: Due[], appUrl: string): string {
     <p style="color:#5d6878;margin:0 0 12px">Here's what's due soon.</p>
     <table style="width:100%;border-collapse:collapse">${rows}</table>
     <p style="margin:20px 0"><a href="${appUrl}/plan" style="background:#14305a;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600">Open your plan</a></p>
-    <p style="color:#93a4c2;font-size:12px">You get these because reminders are on in ScholarTasks. Turn them off any time on your <a href="${appUrl}/plan">plan page</a>.</p>
+    <p style="color:#5d6878;font-size:12px">You get these because reminders are on in ScholarTasks. Turn them off any time on your <a href="${appUrl}/plan">plan page</a>.</p>
   </div>`;
 }
 

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Page } from "./ui";
 
 export const SUPPORT_EMAIL = "support@scholartasks.com";
-export const LEGAL_UPDATED = "November 3, 2026";
+export const LEGAL_UPDATED = "November 6, 2026";
 
 export function LegalPage({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -20,6 +20,7 @@ export function Footer() {
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="/delete-account">Delete account</a>
+      <a href="/accessibility">Accessibility</a>
       <a href="/about">About</a>
       <a href="/contact">Contact</a>
     </footer>

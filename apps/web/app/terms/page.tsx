@@ -10,7 +10,7 @@ export default function Terms() {
       <h2>Accounts</h2>
       <ul>
         <li>A parent or legal guardian who is at least 18 creates the family account and is responsible for it.</li>
-        <li>Students must be at least 13 and join only through their parent&apos;s invite code.</li>
+        <li>Students get their own sign-in only at 13 or older, and join only through their parent&apos;s invite code. A parent may add a child aged 10 to 12 in grades 6 to 8 as a profile on the parent&apos;s own account; the child has no sign-in and AI features are off for them until they turn 13.</li>
         <li>Keep your sign-in details private. Tell us right away at <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a> if you think someone else has used your account.</li>
       </ul>
 
@@ -38,7 +38,21 @@ export default function Terms() {
       <h2>Paid plans</h2>
       <p>
         Some features may require a paid subscription. Prices and what each plan includes will be shown before you pay. You can cancel at any time,
-        and your plan stays active until the end of the period you paid for.
+        and your plan stays active until the end of the period you paid for. Monthly and yearly plans renew automatically at the price shown until
+        you cancel. You can cancel online in a few taps, the same way you signed up, or in your App Store or Google Play subscriptions if you paid there.
+      </p>
+
+      <h2>Text messages</h2>
+      <p>
+        If you turn on text reminders, ScholarTasks sends automated deadline reminder texts to the number you confirm, up to 20 a month. Message and
+        data rates may apply. Reply STOP to stop, or HELP for help. Texts are optional and never needed to use ScholarTasks. Carriers are not
+        liable for delayed or undelivered messages.
+      </p>
+
+      <h2>Schools</h2>
+      <p>
+        A school that connects to ScholarTasks signs our student data agreement first. Families choose whether to connect to a school and what to share,
+        and can stop sharing at any time. School staff may use what a family shares only to help that student.
       </p>
 
       <h2>Your information</h2>

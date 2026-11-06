@@ -55,7 +55,7 @@ export function TextReminders({ sb }: { sb: SupabaseClient }) {
           <button className="btn btn-ghost btn-inline btn-sm" disabled={busy || phone.replace(/\D/g, "").length < 10}>Text me a code</button>
         </form>
       )}
-      {!on && <p className="hint small" style={{ margin: "4px 0 0" }}>Optional. Texts go out 7 days before, the day before and the day of each deadline, up to 20 a month. Message and data rates may apply. Reply STOP any time.</p>}
+      {!on && <p className="hint small" style={{ margin: "4px 0 0" }}>Optional, and not needed to use ScholarTasks. By pressing Text me a code, you agree to get automated deadline reminder texts from ScholarTasks at this number: 7 days before, the day before and the day of each deadline, up to 20 a month. Message and data rates may apply. Reply STOP to stop or HELP for help. See our <a href="/terms">Terms</a> and <a href="/privacy">Privacy policy</a>.</p>}
       {msg && <p className={`note ${msg.ok ? "note-info" : "note-err"}`} role="status">{msg.text}</p>}
     </div>
   );

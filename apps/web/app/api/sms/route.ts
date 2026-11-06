@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     await sb.from("sms_settings").update({
       phone: cur.pending_phone, sms_on: true, verified_at: now.toISOString(), pending_phone: null, code_hash: null, code_expires: null, code_tries: 0, updated_at: now.toISOString(),
     }).eq("user_id", userId);
-    await sendText(cur.pending_phone, "ScholarTasks: text reminders are on. We text 7 days before, the day before and the day of each deadline, up to 20 texts a month. Reply STOP to stop.");
+    await sendText(cur.pending_phone, "ScholarTasks: text reminders are on. We text 7 days before, the day before and the day of each deadline, up to 20 texts a month. Msg & data rates may apply. Reply HELP for help, STOP to stop.");
     return json(200, { ok: true, message: `Text reminders are on for ${showPhone(cur.pending_phone)}.` });
   }
   return json(400, { error: "Something went wrong. Please try again." });
