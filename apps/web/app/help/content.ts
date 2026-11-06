@@ -1038,6 +1038,7 @@ export const TOPICS: Topic[] = [
       "Face ID or fingerprint: sign in once any other way, then tap Turn on Face ID on your Home page (or open Face ID, sign-in and account in the Menu). Next time, tap Sign in with Face ID on the sign-in page. No email or password needed.",
       "Do this once on each phone or computer. Lost a device? Remove it on the Face ID, sign-in and account page.",
       "Forgot your password? Tap Forgot password on the sign-in page and follow the email.",
+      "Remember me (on the sign-in page, ticked at first) keeps you signed in on that device and fills in your email next time. On a shared or school computer, untick it: you are signed out when the browser closes. The phone app always keeps you signed in and unlocks with Face ID.",
       "Sign out from the Menu.",
       "Students should always use their own email, not a parent's.",
       "In the iPhone and Android app, sign in with a password, an email link or Face ID. Google sign-in works on the website.",

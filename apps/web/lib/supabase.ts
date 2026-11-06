@@ -4,13 +4,42 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 let client: SupabaseClient | null | undefined;
 
+/** "Remember me" on the sign-in page. "0" = forget the sign-in when the browser closes (shared computers). */
+export const REMEMBER_KEY = "st-remember";
+/** The email address saved by "Remember me", filled in next time. */
+export const REMEMBER_EMAIL_KEY = "st-email";
+
+export function rememberMe(): boolean {
+  try { return localStorage.getItem(REMEMBER_KEY) !== "0"; } catch { return true; }
+}
+
+/**
+ * Where the sign-in is kept: on the device (localStorage, the default) when "Remember me" is on,
+ * or only for this browser window (sessionStorage) when it is off.
+ */
+const authStorage = {
+  getItem(k: string) {
+    try { return sessionStorage.getItem(k) ?? localStorage.getItem(k); } catch { return null; }
+  },
+  setItem(k: string, v: string) {
+    try {
+      const keep = rememberMe();
+      (keep ? localStorage : sessionStorage).setItem(k, v);
+      (keep ? sessionStorage : localStorage).removeItem(k);
+    } catch { /* private mode: the sign-in lasts until the page closes */ }
+  },
+  removeItem(k: string) {
+    try { localStorage.removeItem(k); sessionStorage.removeItem(k); } catch { /* nothing saved */ }
+  },
+};
+
 /** Returns the browser Supabase client, or null until the project's keys are configured. */
 export function supabase(): SupabaseClient | null {
   if (client !== undefined) return client;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key =
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  client = url && key ? createClient(url, key) : null;
+  client = url && key ? createClient(url, key, { auth: { storage: typeof window === "undefined" ? undefined : authStorage } }) : null;
   return client;
 }
 
