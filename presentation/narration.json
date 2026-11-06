@@ -101,12 +101,17 @@
     {
       "id": "compare1",
       "title": "How we compare 1",
-      "narration": "Here's how we compare on planning and funding college. Other apps do one or two of these things well. ScholarTasks is the only one we found that links parent and student, has an AI counselor that knows Georgia, tracks HOPE and Zell Miller, and walks you through the FAFSA, all in one place."
+      "narration": "Here's how we compare on planning and funding college. Other apps do one or two of these things well. ScholarTasks is the only one we found that links parent and student, has an AI counselor that knows your state, tracks HOPE and Zell Miller, and walks you through the FAFSA, all in one place."
     },
     {
       "id": "compare2",
       "title": "How we compare 2",
       "narration": "On grades, test prep and trust, the picture is the same. No other app we found coaches grades and course choices from eighth grade. Reminders come by email, text, calendar and phone. Our school portal is free for every school. And we will never sell student data."
+    },
+    {
+      "id": "compare3",
+      "title": "How we compare 3",
+      "narration": "This fall we added the things other apps still did better. A four-year course plan that checks HOPE's harder-class rule. Reach, match and likely based on grades and harder classes, not just test scores. A homework helper that never gives answers. Side-by-side aid offers. Spanish menus and AI answers. Parent-managed accounts from sixth grade. And roster upload for schools. In our latest check, ScholarTasks covers more of the list than any other app."
     },
     {
       "id": "better",
@@ -116,7 +121,7 @@
     {
       "id": "privacy",
       "title": "Safety and privacy",
-      "narration": "Parents always ask about privacy, and they should. We never sell data, and we never ask for the most sensitive numbers. The app is for ages thirteen and up. Every family's information is kept separate. Students agree before using AI help. And you can delete everything from inside the app."
+      "narration": "Parents always ask about privacy, and they should. We never sell data, and we never ask for the most sensitive numbers. Students sign in at thirteen and up, and parents manage younger students, with no AI. Every family's information is kept separate. Students agree before using AI help. And you can delete everything from inside the app."
     },
     {
       "id": "schools",

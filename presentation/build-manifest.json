@@ -22,6 +22,7 @@
     "journey",
     "compare1",
     "compare2",
+    "compare3",
     "better",
     "privacy",
     "schools",
@@ -125,24 +126,29 @@
       "seconds": 34.3
     },
     "compare1": {
-      "slideHash": "2edccf7310bb9e88",
-      "narrationHash": "e1f1ecb987a5c2bb",
-      "seconds": 21.3
+      "slideHash": "c31c56ae2a90f876",
+      "narrationHash": "676f45190fefb637",
+      "seconds": 20.5
     },
     "compare2": {
       "slideHash": "a4d44eaa9c0dc11c",
       "narrationHash": "8ec44c44c0ad6928",
       "seconds": 22.3
     },
+    "compare3": {
+      "slideHash": "2a8107441b882afa",
+      "narrationHash": "eaf5a67d1a9c132d",
+      "seconds": 35.6
+    },
     "better": {
-      "slideHash": "eca256880e58deb3",
+      "slideHash": "19cd666e4f532acc",
       "narrationHash": "656a38490d906566",
       "seconds": 30.5
     },
     "privacy": {
-      "slideHash": "406160e40bbc241e",
-      "narrationHash": "3f73a20fa7c1cc7f",
-      "seconds": 21.8
+      "slideHash": "9a4d8b2315d9b372",
+      "narrationHash": "c5b5f96550b1f920",
+      "seconds": 25.3
     },
     "schools": {
       "slideHash": "b469fe5a0da0ce08",

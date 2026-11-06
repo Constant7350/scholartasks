@@ -41,9 +41,10 @@ export const TOPICS: Topic[] = [
     title: "What ScholarTasks does",
     href: "/home",
     keywords: ["start", "begin", "overview", "new", "first time", "intro"],
-    summary: "ScholarTasks helps families plan for college: colleges, deadlines, grades, state scholarships like HOPE and Bright Futures, scholarships and study help in one place.",
+    summary: "ScholarTasks helps families plan for college or a trade from grade 6 to graduation: colleges, deadlines, grades and a four-year course plan, state scholarships like HOPE and Bright Futures, scholarships, aid forms, homework help and SAT and ACT prep in one place, in English or Spanish.",
     body: [
       "A parent owns the family account and adds each student. Students can connect their own phone or computer with a code, and the parent chooses what they are allowed to do.",
+      "Reminders come by email, text (if you turn it on), calendar and phone. Choose English or Español in the Menu.",
       "Everything is advice only. The final decisions are always your family's, and official details should be checked on the college's or award's own official site.",
     ],
     steps: [
@@ -212,6 +213,7 @@ export const TOPICS: Topic[] = [
       "Coming up at the top shows anything due in the next 60 days.",
       "Add scholarships and other deadlines with a title and due date. Check the box when it's done.",
       "Reminder emails go out 30, 14, 7, 2 and 1 days before, and on the day. Turn them off with the switch under Coming up.",
+      "Prefer texts? Turn on Text reminders on this page (see Get deadline reminders by text).",
       "If a student checks something off and needs a parent's OK, it shows \"waiting for parent's OK\" until the parent taps Approve.",
     ],
   },
@@ -924,13 +926,14 @@ export const TOPICS: Topic[] = [
     title: "Signing in and passwords",
     href: "/signin",
     keywords: ["sign in", "log in", "login", "password", "forgot", "reset", "google", "email link", "sign out", "face id", "touch id", "fingerprint", "passkey", "biometric", "windows hello"],
-    summary: "Sign in with Face ID or fingerprint, email and password, an email link, or Google.",
+    summary: "Sign in with Face ID or fingerprint, email and password, an email link, or Google (website only).",
     body: [
       "Face ID or fingerprint: sign in once any other way, then tap Turn on Face ID on your Home page (or open Face ID, sign-in and account in the Menu). Next time, tap Sign in with Face ID on the sign-in page. No email or password needed.",
       "Do this once on each phone or computer. Lost a device? Remove it on the Face ID, sign-in and account page.",
       "Forgot your password? Tap Forgot password on the sign-in page and follow the email.",
       "Sign out from the Menu.",
       "Students should always use their own email, not a parent's.",
+      "In the iPhone and Android app, sign in with a password, an email link or Face ID. Google sign-in works on the website.",
     ],
   },
   {
