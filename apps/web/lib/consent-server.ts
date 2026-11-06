@@ -8,7 +8,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export const CODE_MINUTES = 10;
 export const CODE_TRIES = 5;
 
-export const KINDS = ["job_application", "school_link", "school_agreement", "video"] as const;
+export const KINDS = ["job_application", "school_link", "school_agreement", "video", "challenge", "prize"] as const;
 export type ConsentKind = (typeof KINDS)[number];
 
 /** What each consent is called in the email receipt. */
@@ -17,6 +17,8 @@ export const KIND_TITLE: Record<ConsentKind, string> = {
   school_link: "connecting your student to their school",
   school_agreement: "your school's student data agreement",
   video: "your student appearing in ScholarTasks videos",
+  challenge: "your student entering a ScholarTasks essay challenge",
+  prize: "picking up your student's essay challenge prize",
 };
 
 export const hashCode = (userId: string, code: string) => createHash("sha256").update(`${userId}:${code}`).digest("hex");

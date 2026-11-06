@@ -39,6 +39,11 @@
       "narration": "Instead of searching a dozen websites, students answer a few questions. Then they see awards sorted into You qualify, Maybe, and Not a fit. There are hundreds of Georgia and national awards, and the list grows every week. Each new award is checked on its official page before families see it, and re-checked twice a week in scholarship season. Then students apply step by step, right in the app. Each award gets its own page with the questions on the form, the papers and recommendation letters it needs, and a bar that shows what to do next. Short answers they already wrote show up as a starting point, and a copy-ready profile fills in the rest. For your school's own local scholarships, students send the application to the counselor right inside the app. And the app keeps track of what was sent and what was won."
     },
     {
+      "id": "contest",
+      "title": "Essay challenge",
+      "narration": "From time to time, ScholarTasks runs an essay challenge for each grade group, with a fresh topic in a different subject, like science, history or careers. Students write right in the app, step by step, like a game. They jot ideas, make a plan, write a draft, come back another day to improve it, and polish it, earning a badge for each step. Pasting is turned off, and the coach gives tips but never writes, so every word is their own. A parent signs permission in the app. Our review team judges with names hidden, so free and paid accounts have the same chance. Every student who finishes gets a certificate, and winners win gift cards that a parent picks up safely in the app."
+    },
+    {
       "id": "grades",
       "title": "Grades 8 to 12",
       "narration": "HOPE is earned in high school, so starting early matters. From eighth grade on, the scorecard shows the HOPE grade point average next to the school one, so there are no surprises later. If a grade slips, Grade Rescue asks a few questions and builds a simple plan. A four-year course plan adds up graduation credits and the rigor courses HOPE needs, and the AI suggests where to stretch."

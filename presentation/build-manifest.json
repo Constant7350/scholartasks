@@ -8,6 +8,7 @@
     "parent",
     "counselor",
     "scholarships",
+    "contest",
     "grades",
     "habits",
     "homework",
@@ -65,6 +66,11 @@
       "slideHash": "5130e006fab2b33b",
       "narrationHash": "fc257f27dbcf5e04",
       "seconds": 58.3
+    },
+    "contest": {
+      "slideHash": "e632b2b28cb31c4a",
+      "narrationHash": "e941e6b8d5a49b25",
+      "seconds": 47.8
     },
     "grades": {
       "slideHash": "5baec588def17bef",
