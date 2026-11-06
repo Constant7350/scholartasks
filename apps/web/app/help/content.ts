@@ -518,8 +518,8 @@ export const TOPICS: Topic[] = [
     title: "Use ScholarTasks in Spanish (en español)",
     href: "/es",
     keywords: ["spanish", "español", "espanol", "language", "idioma", "translate", "traducir"],
-    summary: "Open the Menu and open Colors and language, then pick Español. The menu and every AI answer (counselor, Homework Helper, essay and course advice) switch to Spanish.",
-    body: ["Each person picks their own language on each device. Other pages are being translated step by step. The Spanish home page is at scholartasks.com/es. En el menú, abra Colores e idioma y elija Español."],
+    summary: "Open the Menu and open Colors and language, then pick Español. The whole app and every AI answer (counselor, Homework Helper, essay and course advice) switch to Spanish.",
+    body: ["Each person picks their own language on each device. Reminder emails and texts come in the language you picked. A bilingual reviewer checks the Spanish. The Spanish home page is at scholartasks.com/es. En el menú, abre Colores e idioma y elige Español."],
   },
   {
     id: "text-reminders",

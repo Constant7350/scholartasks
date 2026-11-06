@@ -6,6 +6,8 @@ import type { NavItem } from "./nav";
  * translated step by step; the AI features already answer in Spanish.
  */
 const ES: Record<string, [label: string, short?: string]> = {
+  "Spanish check page": ["Revisión del español"],
+  "Testers and test links": ["Personas que prueban y enlaces"],
   "Home": ["Inicio"],
   "To-do list": ["Lista de tareas", "Tareas"],
   "College list and deadlines": ["Universidades y fechas límite", "Plan"],

@@ -18,7 +18,7 @@ const FEATURES = [
 ];
 
 const FAQ = [
-  { q: "¿Está todo en español?", a: "El menú y todas las respuestas de la IA (consejero, ayuda con la tarea, comentarios de ensayos y consejos de clases) ya están en español. Estamos traduciendo las demás páginas poco a poco, y una persona bilingüe revisa cada traducción." },
+  { q: "¿Está todo en español?", a: "Sí. Toda la aplicación, los recordatorios y todas las respuestas de la IA (consejero, ayuda con la tarea, comentarios de ensayos y consejos de clases) están en español. Una persona bilingüe revisa cada traducción." },
   { q: "¿Cuánto cuesta?", a: "Las familias pueden empezar gratis, sin tarjeta de crédito. El plan familiar cubrirá a todos los hijos de la casa y costará menos que la mayoría de las aplicaciones de preparación para exámenes." },
   { q: "¿Es solo para Georgia?", a: "ScholarTasks se hizo en Georgia y conoce las reglas de HOPE, Zell Miller y la ayuda de Georgia. Las búsquedas siempre incluyen universidades, carreras y oficios de todo el país, y ya funciona en más estados del sureste." },
   { q: "¿Necesito número de Seguro Social o estatus migratorio para usarlo?", a: "No. ScholarTasks nunca pide el número de Seguro Social ni datos migratorios. Para la FAFSA y algunas becas sí hay reglas de ciudadanía; la app le explica cuáles aplican a su familia y muestra becas abiertas a todos." },
