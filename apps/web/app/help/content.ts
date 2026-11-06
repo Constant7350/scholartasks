@@ -556,6 +556,24 @@ export const TOPICS: Topic[] = [
       "We never fill in or send a form for you. You paste, check and submit it yourself.",
     ],
   },
+  {
+    id: "common-app-ready",
+    area: "Activities and resume",
+    title: "Common App ready: check every section before you submit",
+    href: "/activities/common-app",
+    keywords: ["common app", "common application", "apply", "activities list", "150 characters", "honors", "personal essay", "650 words", "supplement", "self-reported", "srar", "ready"],
+    summary: "Every Common App section, filled from what you already entered, checked against Common App's limits, with a readiness score and Copy buttons.",
+    steps: [
+      "Open Menu, then Common App ready.",
+      "Look at the readiness score and fix anything marked ○: a description that is too long, a missing organization or hours, an essay under 250 or over 650 words.",
+      "Put your 10 most important activities first on the Activities page. Common App only takes 10 activities and 5 honors.",
+      "Tap Copy next to each part and paste it into Common App. Check the counter on the real form, then submit there.",
+    ],
+    body: [
+      "Limits checked: role 50, organization 100, description 150 characters; honor titles 100 characters; personal essay 250 to 650 words.",
+      "It only counts and checks. It never rewrites your words, and we never send the application for you.",
+    ],
+  },
 
   // ---------- Grades and scholarships ----------
   {

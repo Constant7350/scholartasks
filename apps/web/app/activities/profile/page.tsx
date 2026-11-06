@@ -117,7 +117,7 @@ export default function ApplicationProfile() {
 
   return (
     <Page title="Application profile">
-      <p className="hint"><a href="/activities">← Activities</a> · <a href={`/activities/resume?student=${student.id}`}>Resume</a> · <a href="/essays">Essays</a></p>
+      <p className="hint"><a href="/activities">← Activities</a> · <a href={`/activities/resume?student=${student.id}`}>Resume</a> · <a href="/essays">Essays</a> · <a href="/activities/common-app">Common App ready</a></p>
       <p className="hint">Everything scholarship and college forms ask for, ready to paste. Tap Copy, then paste it into the form. It all comes from your grades, activities and essays, so keep those up to date and this page stays current.</p>
       {error && <p className="note note-err" role="alert">{error}</p>}
 
