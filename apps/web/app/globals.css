@@ -224,6 +224,8 @@ details.menu[open] summary { background: #eef2f9; border-color: var(--navy); }
 .hero .hint { color: var(--muted); margin: 0; font-size: 16px; }
 .family-card { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 22px; }
 .family-card > div { flex: 1 1 300px; }
+a.cq-home { text-decoration: none; color: inherit; }
+a.cq-home:hover { border-color: var(--navy); }
 .link-btn { text-decoration: none; display: inline-block; }
 .kids { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; }
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--warm-tint); color: var(--muted); margin-left: 4px; }
