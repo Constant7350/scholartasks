@@ -1116,7 +1116,7 @@ export const TOPICS: Topic[] = [
     area: "Study and practice",
     title: "Homework Helper: help with any homework, without cheating",
     href: "/homework",
-    keywords: ["homework", "homework help", "tutor", "math", "essay", "science", "history", "spanish", "coding", "photo", "picture", "camera", "upload", "file", "pdf", "excel", "spreadsheet", "worksheet", "project", "hint", "cheating", "answers", "safe ai", "chatgpt", "add-on", "study coach", "thinking score", "save", "notes", "print", "reopen", "history"],
+    keywords: ["homework", "homework help", "tutor", "math", "essay", "science", "history", "spanish", "coding", "photo", "picture", "camera", "upload", "file", "pdf", "excel", "spreadsheet", "worksheet", "project", "hint", "cheating", "answers", "safe ai", "chatgpt", "add-on", "study coach", "thinking score", "save", "notes", "print", "reopen", "history", "weekly email", "progress email", "progress report", "encouragement"],
     summary: "An AI tutor for every subject that keeps your student doing the thinking. It gives hints, checks work and explains ideas, but never gives the answer or writes for them.",
     steps: [
       "Open Menu, then Homework Helper.",
@@ -1134,12 +1134,14 @@ export const TOPICS: Topic[] = [
       "No help on tests or quizzes. The helper offers to help you study the topic afterward instead.",
       "The phone keyboard's suggestion bar is turned off in the helper and tutor boxes, so the keyboard can't offer the answer (like a unit conversion) while you type. Voice typing still works.",
       "Parents see a summary on the same page: subjects and topics, a thinking score (problems finished with 0, 1, 2 or 3+ hints, week by week), each time the helper said no to an answer, and any time it suggested talking to a trusted adult. Your full chat is not saved on our servers. The last 10 problems are kept only on the student's own phone or computer so they can reopen them, and Clear the list removes them.",
+      "Every Monday, parents get a short weekly progress email built from that same summary. When the numbers show real progress (fewer hints per problem, more problems finished on their own), it says exactly what improved. When progress stalls or slips, it says so plainly and suggests one different thing to try at home that week, and it tries a new idea if last week's didn't help. It is written with AI from the summary only; chats are never read. Turn it off on the Homework Helper page or with the link in any email.",
       "A parent can turn the helper off for a student on the Homework Helper page. Turning off AI chat in Family and permissions turns it off too.",
       "Each reply uses 1 of the day's AI uses. With the Homework Helper add-on, a student gets up to 30 helper turns a day (400 a month for the family). The helper can make mistakes, so if something looks wrong, ask your teacher, and always follow your teacher's rules about AI.",
     ],
     faq: [
       { q: "Will it just give my student the answers?", a: "No. That is the whole point. It is built to ask before it tells, give hints instead of answers, and check that your student can explain their reasoning." },
       { q: "Can it help with essays?", a: "Yes, without writing any of it. It asks questions to help your student find their ideas, explains rules, and gives feedback on their own draft." },
+      { q: "How do I know if it's working?", a: "Watch the thinking score on the Homework Helper page, or read the weekly progress email each Monday. It praises real progress and, when there isn't any, suggests a different tactic to try." },
       { q: "Which grades and subjects?", a: "Grades 8 to 12: math, science, English and writing, reading, history and social studies, world languages, computer science, career and technical classes, and study skills." },
     ],
   },

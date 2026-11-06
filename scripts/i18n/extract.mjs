@@ -23,7 +23,7 @@ const OUT = join(web, "lib/i18n/lines.json");
 
 // Folders that are not part of the family app (team-only pages stay in English).
 const SKIP_DIRS = new Set(["node_modules", ".next", "admin", "i18n", "check"]);
-const SKIP_FILES = [/app\/translator\.tsx$/, /lib\/ics\.ts$/, /nav-es\.ts$/, /\(site\)\/es\//, /help\/content-es\.ts$/];
+const SKIP_FILES = [/app\/translator\.tsx$/, /lib\/ics\.ts$/, /lib\/progress-email\.ts$/, /nav-es\.ts$/, /\(site\)\/es\//, /help\/content-es\.ts$/];
 
 function files(dir, list = []) {
   for (const name of readdirSync(dir)) {
@@ -289,7 +289,7 @@ for (const dir of Object.keys(PACK_SCREEN)) {
 
 // Screens: the page folder a file belongs to (app/grades/record/page.tsx -> /grades/record).
 function screenOf(file) {
-  if (/^(lib\/(reminder-words|sms)\.ts|app\/api\/(cron\/reminders|sms)\/)/.test(file)) return "Emails and texts";
+  if (/^(lib\/(reminder-words|sms)\.ts|app\/api\/(cron\/reminders|cron\/progress|sms)\/)/.test(file)) return "Emails and texts";
   const m = file.match(/^app\/(.*?)(?:\/[^/]+)?\.(tsx|ts|json)$/);
   if (!m) return "Shared pieces";
   if (file.startsWith("lib/") || file.startsWith("core/")) return "Shared pieces";

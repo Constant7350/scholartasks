@@ -51,6 +51,20 @@ function startOfWeek(d: Date): Date {
 function ParentPanel({ student, enabled, onToggle }: { student: Student; enabled: boolean; onToggle: (on: boolean) => void }) {
   const sb = supabase();
   const [rows, setRows] = useState<LogRow[] | null>(null);
+  const [weekly, setWeekly] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!sb) return;
+    void sb.from("user_settings").select("progress_emails").maybeSingle()
+      .then(({ data, error }) => setWeekly(error ? null : ((data as { progress_emails?: boolean } | null)?.progress_emails ?? true)));
+  }, [sb]);
+  const setWeeklyOn = async (on: boolean) => {
+    if (!sb) return;
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) return;
+    setWeekly(on);
+    const { error } = await sb.from("user_settings").upsert({ user_id: user.id, progress_emails: on, updated_at: new Date().toISOString() });
+    if (error) setWeekly(!on);
+  };
   useEffect(() => {
     if (!sb) return;
     const since = new Date(Date.now() - 35 * 86400000).toISOString();
@@ -95,6 +109,12 @@ function ParentPanel({ student, enabled, onToggle }: { student: Student; enabled
         <input type="checkbox" checked={enabled} onChange={(e) => onToggle(e.target.checked)} />
         <span>Homework Helper is <b>{enabled ? "on" : "off"}</b> for {student.first_name}</span>
       </label>
+      {weekly !== null && (
+        <label className="hw-switch hw-weekly">
+          <input type="checkbox" checked={weekly} onChange={(e) => void setWeeklyOn(e.target.checked)} />
+          <span>Weekly progress email: <b>{weekly ? "on" : "off"}</b>. Every Monday, a short note on how the thinking went, with praise for real progress or one new idea to try when progress stalls.</span>
+        </label>
+      )}
       {rows === null ? <p className="hint">Loading…</p> : rows.length === 0 ? (
         <p className="hint">Nothing yet. When {student.first_name} uses the helper, a short summary shows up here.</p>
       ) : (
