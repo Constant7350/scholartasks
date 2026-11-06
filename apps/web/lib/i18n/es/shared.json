@@ -1127,7 +1127,6 @@
   "Remove {title}": "Quitar {title}",
   "The problem: {problem}": "El problema: {problem}",
   "What I've tried so far: {x}": "Lo que he intentado hasta ahora: {x}",
-  "Hey! I'm using ScholarTasks for college stuff: deadlines, scholarships, SAT and ACT practice, and homework hints that help you figure it out yourself. It's free to try: {LINK}": "¡Hola! Estoy usando ScholarTasks para cosas de la universidad: fechas límite, becas, práctica del SAT y ACT, y pistas para la tarea que te ayudan a resolverla tú solo. Es gratis probarlo: {LINK}",
   "Hi! I've been using ScholarTasks to plan for college. It keeps track of deadlines, finds scholarships our kid qualifies for, checks state scholarship GPAs, walks through the FAFSA and has free SAT and ACT practice. You can try it free: {LINK}": "¡Hola! He estado usando ScholarTasks para planear la universidad. Lleva el control de las fechas límite, encuentra becas para las que califica nuestro hijo, revisa los GPA de las becas estatales, explica la FAFSA paso a paso y tiene práctica gratis del SAT y ACT. Puedes probarlo gratis: {LINK}",
   "<1>Are you the parent?</1> You don't need a code. Go to <2>Your family</2> to set things up and get a code for your student.": "<1>¿Eres el padre o la madre?</1> No necesitas código. Ve a <2>Tu familia</2> para configurar todo y obtener un código para tu estudiante.",
   "ABCD2345": "ABCD2345",
@@ -1623,5 +1622,6 @@
   "Retake the career interest quiz and look up one college or trade path for a career you like": "Vuelve a hacer el test de intereses de carreras y busca un camino universitario o de oficio para una carrera que te guste",
   "Take the career interest quiz together and talk about two careers that sound fun": "Hagan juntos el test de intereses de carreras y hablen de dos carreras que suenen divertidas",
   "Take the career interest quiz, save the results, and pick high school classes that match": "Haz el test de intereses de carreras, guarda los resultados y elige clases de la preparatoria que vayan con ellos",
-  "Team admin home": "Inicio del equipo"
+  "Team admin home": "Inicio del equipo",
+  "Hey! I'm using ScholarTasks for college stuff: deadlines, scholarships, SAT and ACT practice, and homework hints that help you figure it out yourself. It's free to try. Have your parent sign up and add you, then you get your own login: {LINK}": "¡Hola! Estoy usando ScholarTasks para cosas de la universidad: fechas límite, becas, práctica del SAT y ACT, y pistas para la tarea que te ayudan a resolverla tú solo. Es gratis probarlo. Pídele a tu papá o mamá que se registre y te agregue, y luego tendrás tu propio inicio de sesión: {LINK}"
 }

@@ -14,7 +14,7 @@ const MESSAGES: Record<Who, { subject: string; body: string }> = {
   },
   student: {
     subject: "Check out ScholarTasks",
-    body: `Hey! I'm using ScholarTasks for college stuff: deadlines, scholarships, SAT and ACT practice, and homework hints that help you figure it out yourself. It's free to try: ${LINK}`,
+    body: `Hey! I'm using ScholarTasks for college stuff: deadlines, scholarships, SAT and ACT practice, and homework hints that help you figure it out yourself. It's free to try. Have your parent sign up and add you, then you get your own login: ${LINK}`,
   },
 };
 
