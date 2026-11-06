@@ -90,9 +90,11 @@ export const NAV: NavItem[] = [
   { href: "/admin/openings", label: "Review local openings", icon: "🧰", roles: ALL, group: "team" },
   { href: "/admin/schools", label: "Approve schools", icon: "🏫", roles: ALL, group: "team" },
   { href: "/admin/ratings", label: "App ratings and notes", icon: "⭐", roles: ALL, group: "team" },
+  { href: "/check", label: "Spanish check page", icon: "🇪🇸", roles: ALL, group: "team" },
   { href: "/admin/college-data", label: "Load college data", icon: "🏫", roles: ALL, group: "teamTools" },
   { href: "/admin/presentation", label: "Presentation for parents and schools", icon: "🎤", roles: ALL, group: "teamTools" },
   { href: "/admin/marketing", label: "Marketing and business plan", icon: "📣", roles: ALL, group: "teamTools" },
+  { href: "/admin/testers", label: "Testers and test links", icon: "🧪", roles: ALL, group: "teamTools" },
 ];
 
 /** True when this nav item is the page you are on (or a page inside it). */

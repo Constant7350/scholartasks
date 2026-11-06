@@ -18,6 +18,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm validate-packs
       - run: node presentation/build.mjs --check
+      - run: node scripts/i18n/extract.mjs --check
       - run: pnpm test
       - run: pnpm typecheck
       - run: pnpm --filter @scholartasks/web build

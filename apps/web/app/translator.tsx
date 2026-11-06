@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { compile, lookup, lookupKeepSpace, splitTags, type Compiled, type Dict } from "../lib/i18n/core";
 import { currentLang } from "../lib/lang-client";
 import { CHECK_COOKIE } from "../lib/i18n/check";
+import { supabase } from "../lib/supabase";
 
 /**
  * Shows every page in Spanish when the family picks Español.
@@ -231,11 +232,15 @@ async function loadDict(): Promise<Dict> {
   return base;
 }
 
+/** Lines our reviewers fixed on the check page. They win over the built-in word list. */
 async function loadFixes(): Promise<Dict> {
   try {
-    const r = await fetch("/api/i18n/fixes?lang=es", { cache: "no-store" });
-    if (!r.ok) return {};
-    return ((await r.json()) as { fixes?: Dict }).fixes ?? {};
+    const sb = supabase();
+    if (!sb) return {};
+    const { data } = await sb.rpc("i18n_fixes");
+    const out: Dict = {};
+    for (const r of (data as { en: string; es: string }[] | null) ?? []) out[r.en] = r.es;
+    return out;
   } catch {
     return {};
   }
@@ -245,6 +250,21 @@ const reviewing = () => typeof document !== "undefined" && document.cookie.inclu
 
 export function Translator() {
   const path = usePathname();
+
+  // Keep the account's language in step with this device, once per visit, so reminder
+  // emails and texts come in the language the person reads the app in.
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("st-lang-synced")) return;
+      const sb = supabase();
+      if (!sb) return;
+      void sb.auth.getSession().then(async ({ data }) => {
+        if (!data.session) return;
+        const { error } = await sb.rpc("set_my_lang", { p_lang: currentLang() });
+        if (!error) sessionStorage.setItem("st-lang-synced", "1");
+      });
+    } catch { /* private window: skip */ }
+  }, [path]);
 
   useEffect(() => {
     if (currentLang() !== "es") return;
@@ -292,17 +312,13 @@ function startLiveReport(t: PageTranslator, base: Dict) {
     timer = null;
     const lines = [...t.seen.values()].slice(0, 400);
     try {
-      const r = await fetch("/api/i18n/live", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: location.pathname, title: document.title, lines }),
-      });
+      const sb = supabase();
+      if (!sb) return;
+      await sb.rpc("i18n_live_report", { p_path: location.pathname, p_title: document.title, p_lines: lines });
       // Fixes saved on the check page show on this screen right away.
-      if (r.ok) {
-        const j = (await r.json()) as { fixes?: Dict };
-        const key = JSON.stringify(j.fixes ?? {});
-        if (j.fixes && key !== lastFixes) { lastFixes = key; t.setDict({ ...base, ...j.fixes }); }
-      }
+      const fixes = await loadFixes();
+      const key = JSON.stringify(fixes);
+      if (key !== lastFixes) { lastFixes = key; t.setDict({ ...base, ...fixes }); }
     } catch { /* try again on the next change */ }
   };
   t.onSeen = () => { if (!timer) timer = setTimeout(send, 2500); };

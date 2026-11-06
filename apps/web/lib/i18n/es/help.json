@@ -608,5 +608,6 @@
   "Search help": "Buscar en la ayuda",
   "Search help, for example: invite code": "Busca en la ayuda, por ejemplo: código de invitación",
   "Search the manual, or tap the <1>?</1> button at the top of any page to see help balloons right where you are.": "Busca en el manual o toca el botón <1>?</1> arriba en cualquier página para ver globos de ayuda justo donde estás.",
-  "Still stuck? Email <1>{SUPPORTEMAIL}</1>.": "¿Sigues atorado? Escribe a <1>{SUPPORTEMAIL}</1>."
+  "Still stuck? Email <1>{SUPPORTEMAIL}</1>.": "¿Sigues atorado? Escribe a <1>{SUPPORTEMAIL}</1>.",
+  "Each person picks their own language on each device. Reminder emails and texts come in the language you picked. A bilingual reviewer checks the Spanish. The Spanish home page is at scholartasks.com/es. En el menú, abre Colores e idioma y elige Español.": "Cada persona elige su idioma en cada dispositivo. Los correos y textos de recordatorio llegan en el idioma que elegiste. Una persona bilingüe revisa el español. La página principal en español está en scholartasks.com/es. En el menú, abre Colores e idioma y elige Español."
 }

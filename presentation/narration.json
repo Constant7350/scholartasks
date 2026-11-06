@@ -91,7 +91,7 @@
     {
       "id": "todo",
       "title": "To-do list",
-      "narration": "Everything with a date lands on one to-do list, already sorted into late, due this week, and coming up. Email reminders go out a month before, then two weeks, one week, two days and one day before. Dates can show up in your own calendar, and the phone app can remind the student too."
+      "narration": "Everything with a date lands on one to-do list, already sorted into late, due this week, and coming up. Email reminders go out a month before, then two weeks, one week, two days and one day before. Dates can show up in your own calendar, and the phone app can remind the student too. Reminders come in English or Spanish, whichever the family reads the app in."
     },
     {
       "id": "phone",
@@ -116,7 +116,7 @@
     {
       "id": "compare3",
       "title": "How we compare 3",
-      "narration": "This fall we added the things other apps still did better. A four-year course plan that checks HOPE's harder-class rule. Reach, match and likely based on grades and harder classes, not just test scores. A homework helper that never gives answers. Side-by-side aid offers. Spanish menus and AI answers. Parent-managed accounts from sixth grade. Roster upload for schools. And now, applying to scholarships right inside the app. In our latest check, ScholarTasks covers more of the list than any other app."
+      "narration": "This fall we added the things other apps still did better. A four-year course plan that checks HOPE's harder-class rule. Reach, match and likely based on grades and harder classes, not just test scores. A homework helper that never gives answers. Side-by-side aid offers. The whole app in Spanish, reminders and AI answers too. Parent-managed accounts from sixth grade. Roster upload for schools. And now, applying to scholarships right inside the app. In our latest check, ScholarTasks covers more of the list than any other app."
     },
     {
       "id": "better",

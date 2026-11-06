@@ -147,6 +147,8 @@ function nameOf(node) {
 function codeContext(node, isApi) {
   const p = node.parent;
   if (!p) return true;
+  // Server lines wrapped in T(...) are translated for emails and texts.
+  if (ts.isCallExpression(p) && calleeName(p) === "T") return false;
   if (ts.isImportDeclaration(p) || ts.isExportDeclaration(p) || ts.isExternalModuleReference(p)) return true;
   if (ts.isLiteralTypeNode(p)) return true;
   if (ts.isExpressionStatement(p)) return true; // "use client"
@@ -287,6 +289,7 @@ for (const dir of Object.keys(PACK_SCREEN)) {
 
 // Screens: the page folder a file belongs to (app/grades/record/page.tsx -> /grades/record).
 function screenOf(file) {
+  if (/^(lib\/(reminder-words|sms)\.ts|app\/api\/(cron\/reminders|sms)\/)/.test(file)) return "Emails and texts";
   const m = file.match(/^app\/(.*?)(?:\/[^/]+)?\.(tsx|ts|json)$/);
   if (!m) return "Shared pieces";
   if (file.startsWith("lib/") || file.startsWith("core/")) return "Shared pieces";
@@ -311,6 +314,19 @@ const lines = [...out.entries()]
 const json = JSON.stringify({ note: "Made by scripts/i18n/extract.mjs. Do not edit.", count: lines.length, lines: lines.map(({ en, screens }) => ({ en, screens })) }, null, 0).replace(/\},\{/g, "},\n{");
 
 const missing = lines.filter((l) => !(l.en in es));
+
+// Every {hole} and <1>tag</1> in the English must be in the Spanish, or a name or a link
+// would vanish. Plural endings ({x}, {x2}) may be dropped, since Spanish words carry their own.
+const parts = (s, re) => [...new Set(s.match(re) ?? [])];
+const broken = Object.entries(es).filter(([en, sp]) => {
+  if (sp === "=") return false;
+  const holes = parts(en, /\{[A-Za-z0-9_]+\}/g).filter((h) => !/^\{x\d*\}$/.test(h));
+  return holes.some((h) => !sp.includes(h)) || parts(en, /<\/?\d+>/g).some((t) => !sp.includes(t));
+});
+if (broken.length) {
+  for (const [en, sp] of broken) console.error("Spanish line is missing a {part} or <tag>:\n  " + en + "\n  " + sp);
+  if (process.argv.includes("--check")) process.exit(1);
+}
 if (process.argv.includes("--check")) {
   const now = existsSync(OUT) ? readFileSync(OUT, "utf8") : "";
   if (now.trim() !== json.trim()) {
