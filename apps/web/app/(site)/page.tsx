@@ -5,16 +5,16 @@ import tour from "../admin/presentation/slides.json";
 export const metadata = {
   title: "ScholarTasks · College, scholarships and Georgia aid, all in one plan",
   description:
-    "ScholarTasks helps families plan, fund and prepare for college or a trade, from 8th grade to graduation: an AI counselor, matched scholarships, HOPE and Zell tracking, grades, SAT/ACT prep and every deadline in one place.",
+    "ScholarTasks helps families plan, fund and prepare for college or a trade, from 6th grade to graduation: an AI counselor, matched scholarships, HOPE and Zell tracking, grades, SAT/ACT prep and every deadline in one place.",
 };
 
 const FEATURES = [
-  { icon: "💬", color: "", title: "AI counselor", text: "Answers about your student, not general advice. It knows their grades, college list, deadlines and Georgia rules. It coaches, but never does homework or writes essays." },
-  { icon: "🎓", color: "gold", title: "Scholarships and grants", text: "Almost 300 Georgia and national awards, sorted into You qualify, Maybe and Not a fit. Checked by our team and kept up to date in scholarship season." },
-  { icon: "📈", color: "green", title: "Grades and HOPE scorecard", text: "See the HOPE GPA next to the school GPA from 8th grade on. Grade Rescue builds a simple plan when a grade slips." },
+  { icon: "💬", color: "", title: "AI counselor", text: "Answers about your student, not general advice. It knows their grades, college list, deadlines and your state's rules, in English or Spanish. It coaches, but never does homework or writes essays." },
+  { icon: "🎓", color: "gold", title: "Scholarships and grants", text: "Hundreds of Georgia and national awards, sorted into You qualify, Maybe and Not a fit and checked on their official pages. Essay bundles let one draft serve awards with similar questions." },
+  { icon: "📈", color: "green", title: "Grades and HOPE scorecard", text: "See the HOPE GPA next to the school GPA from 8th grade on. A four-year course plan checks graduation credits and HOPE rigor, and Grade Rescue builds a simple plan when a grade slips." },
   { icon: "🦉", color: "green", title: "Homework Helper", text: "A safe AI tutor for every subject, from math to essays. One hint at a time, checks their work, asks them to explain their thinking, and never gives answers or writes for them. Parents see what was practiced." },
   { icon: "📝", color: "purple", title: "SAT and ACT prep", text: "Over 600 original practice questions, timed practice tests, a score plan and a tutor that explains instead of giving answers." },
-  { icon: "🏫", color: "", title: "Colleges and majors", text: "Search almost 2,000 colleges across the country by major, with cost after Georgia aid, typical earnings and community college transfer savings." },
+  { icon: "🏫", color: "", title: "Colleges and majors", text: "Search almost 2,000 colleges across the country by major, with reach, match and likely based on grades and scores, cost after state aid, aid offer compare and community college transfer savings." },
   { icon: "🔧", color: "coral", title: "Trades and careers", text: "50 skilled trades with earnings, training, licensing and schools in every state, plus apply checklists and ways to fund the training." },
   { icon: "🧾", color: "gold", title: "FAFSA and Georgia aid", text: "The FAFSA and Georgia's aid form, broken into small steps that explain who does each part. We never ask for FSA IDs or Social Security numbers." },
   { icon: "✅", color: "green", title: "One to-do list", text: "Every date in one list, sorted into late, this week and coming up. Reminders by email, text, calendar and phone." },
@@ -23,7 +23,7 @@ const FEATURES = [
 
 const FAQ = [
   { q: "How much does ScholarTasks cost?", a: "Families can start for free, with no credit card. A paid family plan will cover every child in the house and will cost less than most paid test prep or essay apps. We are setting final prices now." },
-  { q: "Is it only for Georgia?", a: "ScholarTasks is built in Georgia and knows HOPE, Zell Miller and Georgia's aid rules in detail. Searches always include colleges, majors and trades across the whole country, so families can choose freely. More states are coming." },
+  { q: "Is it only for Georgia?", a: "ScholarTasks is built in Georgia and knows HOPE, Zell Miller and Georgia's aid rules in detail. Searches always include colleges, majors and trades across the whole country, so families can choose freely. It also covers state aid in 10 more Southeast states: Florida, Alabama, South Carolina, North Carolina, Tennessee, Mississippi, Louisiana, Kentucky, Virginia and Arkansas." },
   { q: "What grades is it for?", a: "6th grade through senior year. In grades 6 and 7 (under 13) the parent uses it with their student: study habits, the career quiz and the grades scorecard, with no student sign-in or AI until 13. From 8th grade, students focus on grades, study skills and course choices. Juniors and seniors add test prep, college lists, scholarships, applications and aid forms." },
   { q: "Will the AI do my student's homework or write their essays?", a: "No. The AI counselor and the Homework Helper explain, ask questions, give one hint at a time and check your student's own work. They never hand over answers or write essays, and a second AI checks every Homework Helper reply before your student sees it. Parents can see what was practiced and when the helper said no." },
   { q: "Is my family's information safe?", a: "We never sell data. We never ask for FSA IDs, Social Security numbers or tax returns. Each family's information is kept separate, students agree before using AI help, and you can delete everything from inside the app." },
@@ -41,7 +41,7 @@ export default function Landing() {
             <p className="s-kicker">Built in Georgia, for families</p>
             <h1>College and scholarships, <em>finally in one plan</em></h1>
             <p className="s-lede">
-              ScholarTasks helps your family plan, fund and prepare for college or a trade, from 8th grade to graduation. An AI counselor that knows your student, matched scholarships, HOPE tracking, test prep and every deadline, on the phone and the web.
+              ScholarTasks helps your family plan, fund and prepare for college or a trade, from 6th grade to graduation, in English or Spanish. An AI counselor that knows your student, matched scholarships, HOPE tracking, test prep and every deadline, on the phone and the web.
             </p>
             <div className="s-cta">
               <a className="btn" href="/signin">Start free</a>
@@ -76,7 +76,7 @@ export default function Landing() {
             </div>
             <div className="s-card s-pillar prep">
               <span className="s-word">Prepare</span>
-              <p>Grades, study habits and test scores, starting as early as 8th grade, so senior year isn't a scramble.</p>
+              <p>Grades, study habits and test scores, starting as early as 6th grade, so senior year isn't a scramble.</p>
             </div>
           </div>
         </div>
@@ -142,7 +142,7 @@ export default function Landing() {
         <div className="site-wrap">
           <div className="s-stats">
             <div><strong>~2,000</strong><span>colleges across the country</span></div>
-            <div><strong>~300</strong><span>Georgia and national awards</span></div>
+            <div><strong>11</strong><span>Southeast states' aid rules</span></div>
             <div><strong>600+</strong><span>original SAT and ACT questions</span></div>
             <div><strong>50</strong><span>skilled trades, every state</span></div>
           </div>

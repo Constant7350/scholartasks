@@ -1,6 +1,6 @@
 {
   "note": "Made by presentation/build.mjs. Do not edit by hand.",
-  "minutes": 12,
+  "minutes": 13,
   "slides": [
     {
       "id": "cover",
@@ -85,6 +85,10 @@
     {
       "id": "compare2",
       "title": "How we compare 2"
+    },
+    {
+      "id": "compare3",
+      "title": "How we compare 3"
     },
     {
       "id": "better",

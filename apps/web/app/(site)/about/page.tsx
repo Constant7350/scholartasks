@@ -27,7 +27,7 @@ export default function About() {
           <h2 className="s-title">What we believe</h2>
           <div className="s-grid">
             <div className="s-card"><h3>Everything should be easy</h3><p>Fewer steps, fewer forms, fewer emails. If something takes more than a few taps, we work to make it shorter.</p></div>
-            <div className="s-card"><h3>Start early</h3><p>The best time to help with HOPE and study habits is 8th grade, not senior year.</p></div>
+            <div className="s-card"><h3>Start early</h3><p>The best time to help with HOPE and study habits is middle school, not senior year.</p></div>
             <div className="s-card"><h3>AI should teach, not do the work</h3><p>Our AI explains and coaches. It never does homework or writes essays, and it's advice only.</p></div>
             <div className="s-card"><h3>Every path is a good path</h3><p>Four-year college, community college or a skilled trade, close to home or across the country. Families choose.</p></div>
             <div className="s-card"><h3>Affordable for every family</h3><p>Free to start, and a family plan that costs less than most test prep or essay apps.</p></div>

@@ -4,7 +4,7 @@ import { LangPicker } from "../../lang-picker";
 export const metadata = {
   title: "ScholarTasks en español · Universidad, becas y ayuda de Georgia en un solo plan",
   description:
-    "ScholarTasks ayuda a las familias a planear, pagar y prepararse para la universidad o un oficio, desde el 8.º grado hasta la graduación: consejero con IA, becas, HOPE y Zell, calificaciones, SAT/ACT y todas las fechas límite.",
+    "ScholarTasks ayuda a las familias a planear, pagar y prepararse para la universidad o un oficio, desde el 6.º grado hasta la graduación: consejero con IA, becas, HOPE y Zell, calificaciones, SAT/ACT y todas las fechas límite.",
   alternates: { languages: { en: "/", es: "/es" } },
 };
 
@@ -35,7 +35,7 @@ export default function Espanol() {
           <p className="s-kicker">Hecho en Georgia, para familias</p>
           <h1>La universidad y las becas, <em>por fin en un solo plan</em></h1>
           <p className="s-lede">
-            ScholarTasks ayuda a su familia a planear, pagar y prepararse para la universidad o un oficio, desde el 8.º grado hasta la graduación. Un consejero con IA que conoce a su estudiante, becas, el promedio HOPE, preparación para el SAT y el ACT, y todas las fechas límite, en el teléfono y en la web.
+            ScholarTasks ayuda a su familia a planear, pagar y prepararse para la universidad o un oficio, desde el 6.º grado hasta la graduación. Un consejero con IA que conoce a su estudiante, becas, el promedio HOPE, preparación para el SAT y el ACT, y todas las fechas límite, en el teléfono y en la web.
           </p>
           <div className="s-cta">
             <a className="btn" href="/signin">Empezar gratis</a>

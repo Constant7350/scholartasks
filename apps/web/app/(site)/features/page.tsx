@@ -2,7 +2,7 @@ import { FinalCta, PageHead } from "../parts";
 
 export const metadata = {
   title: "Features · ScholarTasks",
-  description: "Everything ScholarTasks does: AI counselor, matched scholarships, HOPE and Zell tracking, grades coaching from 8th grade, SAT and ACT prep, college and major search, trades, FAFSA help and reminders.",
+  description: "Everything ScholarTasks does: AI counselor, matched scholarships, HOPE and Zell tracking, grades coaching and a four-year course plan from 6th grade, homework help, SAT and ACT prep, college and major search, trades, FAFSA help, text reminders and Spanish.",
 };
 
 const NAV = [
@@ -21,7 +21,7 @@ const NAV = [
 export default function Features() {
   return (
     <>
-      <PageHead kicker="Features" title="Everything your family needs, from 8th grade to graduation">
+      <PageHead kicker="Features" title="Everything your family needs, from 6th grade to graduation">
         Every part of ScholarTasks shares one plan, so a grade, a saved scholarship or a college on the list shows up everywhere it matters.
       </PageHead>
 
@@ -36,7 +36,8 @@ export default function Features() {
             <h2>A college counselor on call, who knows your student</h2>
             <p>The AI counselor can see your student's grades, college list and deadlines, so its answers are about your child, not general advice.</p>
             <ul>
-              <li>Knows Georgia's HOPE, Zell Miller and aid rules</li>
+              <li>Knows your state's scholarship and aid rules: HOPE and Zell Miller in Georgia, plus 10 more Southeast states</li>
+              <li>Answers in English or Spanish</li>
               <li>Always shows options across the country, not just nearby</li>
               <li>Explains and coaches, but never does homework or writes essays</li>
               <li>Advice only: your family makes the decisions</li>
@@ -55,10 +56,12 @@ export default function Features() {
             <h2>Matched awards, sorted for you</h2>
             <p>Instead of searching a dozen websites, students answer a few questions. Then they see awards sorted into You qualify, Maybe and Not a fit.</p>
             <ul>
-              <li>Almost 300 Georgia and national awards, checked by our team</li>
+              <li>Hundreds of state and national awards, checked on their official pages, with an AI finder adding more each week</li>
               <li>Kept up to date twice a week from September to March</li>
               <li>"Maybe" tells you exactly what to check</li>
               <li>Application checklist and essay feedback, never written for you</li>
+              <li>Essay bundles: one draft for awards that ask similar questions</li>
+              <li>A copy-ready profile to paste into any application form</li>
               <li>One tap adds the deadline to your plan</li>
             </ul>
           </div>
@@ -78,11 +81,12 @@ export default function Features() {
           <div>
             <p className="s-kicker">Grades and HOPE</p>
             <h2>No surprises about HOPE in senior year</h2>
-            <p>HOPE is earned in high school, so starting early matters. From 8th grade on, the scorecard shows the HOPE GPA next to the school GPA.</p>
+            <p>HOPE is earned in high school, so starting early matters. From 8th grade on, the scorecard shows the HOPE GPA next to the school GPA. Parents can add younger students in grades 6 and 7 for study habits and early planning.</p>
             <ul>
               <li>Add grades by hand, or snap a photo of the report card</li>
               <li>Grade Rescue asks a few questions and builds a simple plan</li>
               <li>Course advice weighs subject choice and harder classes</li>
+              <li>A four-year course plan checked against graduation credits and HOPE rigor, with an AI check</li>
               <li>Goals the family sets together, and a printable academic record</li>
               <li>Free <a href="/tools/hope">state scholarship checker</a> (HOPE, Bright Futures, TOPS and more), no account needed</li>
             </ul>
@@ -124,7 +128,9 @@ export default function Features() {
             <p>Search almost 2,000 colleges across the country, take a quick match quiz and add a school with one tap. Home-state options come first, but every search covers the whole country.</p>
             <ul>
               <li>Search by major, with typical earnings and years for each degree</li>
-              <li>Estimated cost after Georgia aid and saved scholarships</li>
+              <li>Estimated cost after state aid and saved scholarships</li>
+              <li>Reach, match and likely using grades, harder classes and test scores</li>
+              <li>Compare aid offers side by side, and a career quiz</li>
               <li>See the savings from starting at a community college, then transferring</li>
               <li>Essay coach that gives feedback but never writes for the student</li>
             </ul>
@@ -145,7 +151,7 @@ export default function Features() {
               <li>Earnings, training time and licensing for each trade</li>
               <li>Training schools and apprenticeships in every state</li>
               <li>A quiz to find trades that fit, and apply checklists</li>
-              <li>Ways to fund training, from federal and Georgia aid to trade scholarships</li>
+              <li>Ways to fund training, from federal and state aid to trade scholarships</li>
             </ul>
             <p><a href="/trades">Explore the trades</a></p>
           </div>
@@ -157,9 +163,9 @@ export default function Features() {
 
         <article className="s-feature" id="aid">
           <div>
-            <p className="s-kicker">FAFSA and Georgia aid</p>
+            <p className="s-kicker">FAFSA and state aid</p>
             <h2>Aid forms in small, clear steps</h2>
-            <p>ScholarTasks breaks the FAFSA and Georgia's aid form into small steps, and explains who does each part. You still file on the official government websites.</p>
+            <p>ScholarTasks breaks the FAFSA and your state's aid form into small steps, and explains who does each part. You still file on the official government websites.</p>
             <ul>
               <li>A checklist that shows what the parent does and what the student does</li>
               <li>Plain-language help for every step</li>
@@ -179,6 +185,7 @@ export default function Features() {
             <ul>
               <li>Email reminders a month before, then two weeks, one week, two days and one day before</li>
               <li>Add dates to your own Google or Apple calendar</li>
+              <li>Text reminders, if you turn them on</li>
               <li>Phone reminders in the app</li>
             </ul>
           </div>
@@ -216,6 +223,7 @@ export default function Features() {
               <li>At 18, students get a say in what parents can still see</li>
               <li>Face ID or fingerprint sign-in, because teenagers forget passwords</li>
               <li>iPhone and Android apps in testing now; the website works on any device</li>
+              <li>In English or <a href="/es">Spanish</a></li>
               <li>A <a href="/help">help guide</a> for every page</li>
             </ul>
           </div>
