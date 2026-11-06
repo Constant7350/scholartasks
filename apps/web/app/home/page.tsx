@@ -203,6 +203,14 @@ export default function Home() {
         </div>}
       </div>
 
+      <div className="panel share-card">
+        <p><b>💌 Know a family who would like ScholarTasks?</b><br /><span className="hint">Send it to another parent or a student in one tap, or tell us how we're doing.</span></p>
+        <div className="share-row">
+          <a className="btn btn-inline link-btn" href="/invite">Invite a friend</a>
+          <a className="btn btn-ghost btn-inline link-btn" href="/rate">⭐ Rate the app</a>
+        </div>
+      </div>
+
       {SOON.length > 0 && <h2 className="section-title">Coming soon</h2>}
       <div className="tiles">
         {SOON.map((s) => (

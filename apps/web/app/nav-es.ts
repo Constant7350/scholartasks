@@ -37,6 +37,8 @@ const ES: Record<string, [label: string, short?: string]> = {
   "Face ID, sign-in and account": ["Face ID, inicio de sesión y cuenta", "Cuenta"],
   "Plan and billing": ["Plan y pagos", "Pagos"],
   "Help and how-to": ["Ayuda y guías"],
+  "Invite a friend": ["Invitar a un amigo", "Invitar"],
+  "Rate ScholarTasks": ["Calificar ScholarTasks", "Calificar"],
 };
 
 export function navLabel(i: NavItem, lang: "en" | "es"): string {
