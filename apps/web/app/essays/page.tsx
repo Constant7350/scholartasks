@@ -8,6 +8,7 @@ import { ReportAi } from "../report-ai";
 import { EssayBundles } from "./bundles";
 import { COMMON_APP_PROMPTS } from "@scholartasks/core";
 import { DraftImport } from "../attach-buttons";
+import { downloadDocx } from "../../lib/docx";
 
 interface Student { id: string; first_name: string }
 interface Essay {
@@ -112,6 +113,7 @@ function Editor({ essay, colleges, onSaved, onRemove }: { essay: Essay; colleges
       <div className="row">
         <button className="btn btn-inline" disabled={busy} onClick={() => void ask("feedback")}>{busy ? "Reading…" : "✨ Get feedback"}</button>
         <button className="btn btn-ghost btn-inline" disabled={busy} onClick={() => void ask("brainstorm")}>💡 Help me find a topic</button>
+        <button className="btn btn-ghost btn-inline" disabled={!draft.trim()} onClick={() => void downloadDocx(draft, essay.title, { title: essay.title, note: prompt.trim() ? `Prompt: ${prompt.trim()}` : undefined })}>⬇ Download as Word</button>
       </div>
       <p className="hint">The coach gives feedback and asks questions. It never writes for you, because colleges want your own words. Each request uses 1 of today&apos;s AI uses.</p>
       {msg && <p className="note note-err" role="alert">{msg}</p>}

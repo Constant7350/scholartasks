@@ -11,6 +11,7 @@ import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { ReportAi } from "../report-ai";
 import { DraftImport } from "../attach-buttons";
+import { downloadDocx } from "../../lib/docx";
 
 
 interface Student {
@@ -411,6 +412,7 @@ function ApplyHelp({ s, choice }: { s: Row; choice: Choice }) {
       <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginTop: 6 }}>
         <span className="hint">{words} words</span>
         <button className="btn btn-ghost btn-inline btn-sm" disabled={busy !== null} onClick={() => void saveDraft()}>Save draft</button>
+        <button className="btn btn-ghost btn-inline btn-sm" disabled={!draft.trim()} onClick={() => void downloadDocx(draft, `${s.name} essay`, { title: `${s.name} essay`, note: prompt.trim() ? `Prompt: ${prompt.trim()}` : undefined })}>⬇ Download as Word</button>
         <button className="btn btn-inline btn-sm" disabled={busy !== null || words < 8} onClick={() => void coach()}>{busy === "essay" ? "Reading your draft…" : "Get feedback"}</button>
       </div>
       {msg && <p className="hint" role="status">{msg}</p>}
