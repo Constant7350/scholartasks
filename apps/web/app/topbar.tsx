@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { supabase } from "../lib/supabase";
 import { pickStudent, rememberStudent, useCurrentStudent } from "../lib/current-student";
@@ -29,6 +29,8 @@ export function TopBar() {
   const [who, setWho] = useState<Who | null>(null);
   const [current, setCurrent] = useCurrentStudent();
   const menu = useRef<HTMLDetailsElement>(null);
+  // Menu sections fold up: only the headings show, and one section is open at a time.
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   useEffect(() => {
     if (!sb) return setSignedIn(false);
@@ -86,6 +88,22 @@ export function TopBar() {
   const isParent = role === "parent";
   const kids = who?.students ?? [];
 
+  // Each time the menu opens, start with the section of the page you are on (or all closed).
+  const onMenuToggle = () => { if (menu.current?.open) setOpenGroup(here?.group ?? null); };
+  const toggleGroup = (key: string) => setOpenGroup((o) => (o === key ? null : key));
+  const section = (key: string, title: string, body: ReactNode) => {
+    const open = openGroup === key;
+    return (
+      <div key={key} className={`menu-group ${open ? "menu-group-open" : ""}`}>
+        <button type="button" className="menu-heading" aria-expanded={open} aria-controls={`menu-sec-${key}`} onClick={() => toggleGroup(key)}>
+          <span>{title}</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+        </button>
+        {open && <div id={`menu-sec-${key}`} className="menu-sec">{body}</div>}
+      </div>
+    );
+  };
+
   const groups = NAV_GROUPS.map((g) => ({ key: g.key, title: g.key === "family" && !isParent ? t.connected : g[lang] }));
 
   const link = (i: NavItem, cls: string, label: string) => (
@@ -111,6 +129,15 @@ export function TopBar() {
     if (menu.current) menu.current.open = !menu.current.open;
   };
 
+  // "Back to section" link at the top of every page: opens the menu on the section this page is in.
+  const crumbGroup = here && here.href !== "/home" ? groups.find((g) => g.key === here.group) : undefined;
+  const openSection = () => {
+    if (!menu.current) return;
+    menu.current.open = true;
+    setOpenGroup(here?.group ?? null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const tabs = items.filter((i) => i.tab).sort((a, b) => (a.tab ?? 0) - (b.tab ?? 0));
   const moreOn = !!here && !tabs.some((t) => isActive(t.href, path));
 
@@ -122,7 +149,7 @@ export function TopBar() {
           <HelpButton />
           {signedIn === false && <a href="/signin">{t.signIn}</a>}
           {signedIn && (
-            <details className="menu" ref={menu}>
+            <details className="menu" ref={menu} onToggle={onMenuToggle}>
               <summary aria-label={t.openMenu}>
                 {t.menu}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
@@ -132,17 +159,9 @@ export function TopBar() {
                 {groups.map((g) => {
                   const list = items.filter((i) => i.group === g.key);
                   if (!list.length) return null;
-                  return (
-                    <div key={g.key} className="menu-group">
-                      <p className="menu-heading">{g.title}</p>
-                      {list.map((i) => link(i, "menu-item", navLabel(i, lang)))}
-                    </div>
-                  );
+                  return section(g.key, g.title, list.map((i) => link(i, "menu-item", navLabel(i, lang))));
                 })}
-                <hr />
-                <ThemePicker />
-                <hr />
-                <LangPicker />
+                {section("look", t.look, <><ThemePicker /><LangPicker /></>)}
                 <hr />
                 <button role="menuitem" className="menu-item" onClick={signOut}><span aria-hidden="true">🚪</span> {t.signOut}</button>
               </div>
@@ -162,6 +181,18 @@ export function TopBar() {
                 </a>
               ))}
             </nav>
+          </div>
+        </div>
+      )}
+
+      {signedIn && crumbGroup && here && (
+        <div className="crumb">
+          <div className="crumb-inner">
+            <button type="button" data-menu-toggle onClick={openSection} aria-label={`${t.backTo} ${crumbGroup.title}`}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+              {crumbGroup.title}
+            </button>
+            <span className="crumb-here" aria-current="page">{navLabel(here, lang)}</span>
           </div>
         </div>
       )}
