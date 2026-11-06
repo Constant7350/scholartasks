@@ -339,6 +339,7 @@ function PeoplePanel({ sb, people, setPeople, setError }: { sb: SupabaseClient; 
   const [parent, setParent] = useState("");
   const [date, setDate] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [parentDraft, setParentDraft] = useState<Record<string, string>>({});
 
   const add = async () => {
     setError(null);
@@ -346,7 +347,7 @@ function PeoplePanel({ sb, people, setPeople, setError }: { sb: SupabaseClient; 
     if (minor && date && !parent.trim()) { setError("Add the parent's name with the permission date."); return; }
     const { data, error } = await sb.from("social_people").insert({ name: name.trim(), is_minor: minor, parent_name: parent.trim() || null, consent_on: date || null }).select("*").single();
     if (error) setError(friendly(error));
-    else { setPeople((p) => [...p, data as Person]); setName(""); setParent(""); setDate(""); }
+    else { setPeople((p) => [...p, data as Person]); setName(""); setParent(""); setDate(""); setShowForm(false); }
   };
   const update = async (id: string, f: Partial<Person>) => {
     setError(null);
@@ -368,10 +369,13 @@ function PeoplePanel({ sb, people, setPeople, setError }: { sb: SupabaseClient; 
           </div>
           {p.is_minor && (
             <div className="share-row" style={{ alignItems: "center", marginTop: 6 }}>
-              <input className="input input-sm" placeholder="Parent's name" defaultValue={p.parent_name ?? ""} aria-label={`Parent of ${p.name}`}
+              <label className="hint" htmlFor={`pn-${p.id}`}>1. Parent&apos;s name</label>
+              <input id={`pn-${p.id}`} className="input input-sm" placeholder="Type the parent's name" value={parentDraft[p.id] ?? p.parent_name ?? ""}
+                onChange={(e) => setParentDraft({ ...parentDraft, [p.id]: e.target.value })}
                 onBlur={(e) => { if (e.target.value.trim() !== (p.parent_name ?? "")) void update(p.id, { parent_name: e.target.value.trim() || null }); }} />
-              <label className="hint" htmlFor={`c-${p.id}`}>Permission date</label>
+              <label className="hint" htmlFor={`c-${p.id}`}>2. Date they agreed</label>
               <input id={`c-${p.id}`} type="date" className="input input-sm" value={p.consent_on ?? ""} onChange={(e) => void update(p.id, { consent_on: e.target.value || null })} />
+              {!p.consent_on && <button className="btn btn-inline btn-sm" onClick={() => { const n = (parentDraft[p.id] ?? p.parent_name ?? "").trim(); if (!n) { setError(`Type ${p.name}'s parent's name first.`); return; } const d = new Date(); void update(p.id, { parent_name: n, consent_on: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` }); }}>Parent agreed today</button>}
             </div>
           )}
           <div className="share-row" style={{ alignItems: "center", marginTop: 6 }}>
