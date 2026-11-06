@@ -5,6 +5,7 @@ import { computeGpa, displayGpa, primaryGpa, type CourseGrade } from "@scholarta
 import { gpaLabel, packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { Roster } from "./roster";
+import { SchoolApplications } from "./applications";
 
 
 export interface School {
@@ -182,6 +183,7 @@ export function Dashboard({ school, role, onChanged }: { school: School; role: "
       <Roster school={school} role={role} />
       <SendMessage schoolId={school.id} sent={msgs} onSent={load} />
       <LocalScholarships schoolId={school.id} list={local} onPosted={load} />
+      <SchoolApplications schoolId={school.id} />
       <StaffList school={school} role={role} staff={staff} onChanged={load} />
     </>
   );
@@ -298,7 +300,7 @@ function LocalScholarships({ schoolId, list, onPosted }: { schoolId: string; lis
   return (
     <div className="panel">
       <h2>Local scholarships</h2>
-      <p className="hint">Awards from local clubs, businesses and your school. Only your connected families see them. Our team checks each one, and it shows as "Not yet verified" until then.</p>
+      <p className="hint">Awards from local clubs, businesses and your school. Only your connected families see them, and students can apply right in the app: their applications show up below. Our team checks each one, and it shows as "Not yet verified" until then.</p>
       <div className="row">
         <div className="field"><label htmlFor="l-name">Scholarship name</label><input id="l-name" className="input" value={f.name} onChange={set("name")} /></div>
         <div className="field"><label htmlFor="l-amt">Amount (as families should see it)</label><input id="l-amt" className="input" value={f.amount_text} onChange={set("amount_text")} placeholder="e.g. $1,000" /></div>

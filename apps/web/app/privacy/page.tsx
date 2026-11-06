@@ -55,7 +55,7 @@ export default function Privacy() {
       <h2>Schools</h2>
       <p>
         When a family connects to their school, the school&apos;s counselors see only what the family chose to share, and the family can stop sharing at
-        any time. A school may upload a class list (names, grades and contact emails) only after signing our student data agreement. We use it only to
+        any time. When a student applies in the app for a school&apos;s own local scholarship, only that school&apos;s counselors see the application, and only what the family chose to send. A school may upload a class list (names, grades and contact emails) only after signing our student data agreement. We use it only to
         help that school invite and support its students, never for advertising, and we delete it 45 days after the agreement ends. Information a
         school provides stays under the school&apos;s control as the law requires (including FERPA).
       </p>

@@ -18,7 +18,7 @@ const SHARE: Record<Link["share"], { label: string; detail: string }> = {
     detail: "Everything above, plus course grades and the state scholarship GPA.",
   },
 };
-const NEVER = "Never shared: essays, notes, AI counselor chats, family income, aid answers, or anything about parents.";
+const NEVER = "Never shared: essays, notes, AI counselor chats, family income, aid answers, or anything about parents. (When you apply in the app for this school's own local scholarship, the school sees only what you chose to send for it.)";
 
 const isAdult = (birth: string) => {
   const b = new Date(birth + "T12:00:00"), n = new Date();

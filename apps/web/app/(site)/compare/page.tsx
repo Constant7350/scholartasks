@@ -37,7 +37,7 @@ const PART3: [string, string, string[]][] = [
   ["Spanish", "Menu and AI answers", ["Some", "Some", "Some", "No", "No", "Yes"]],
   ["Starts in grade 6", "Yes, parent-managed", ["No", "Yes", "No", "No", "No", "Yes"]],
   ["School roster upload", "Yes, with data agreement", ["No", "Yes", "Some", "No", "No", "Yes"]],
-  ["Apply to scholarships inside the app", "Not yet", ["No", "No", "No", "No", "Yes", "No"]],
+  ["Apply to scholarships inside the app", "Yes, step by step; school awards sent here", ["No", "No", "No", "No", "Yes", "No"]],
 ];
 
 function Table({ caption, rows }: { caption: string; rows: [string, string, string[]][] }) {
@@ -70,7 +70,7 @@ export default function Compare() {
   return (
     <>
       <PageHead kicker="How we compare" title="Other apps do one or two things. ScholarTasks does them together.">
-        We looked at the apps families use most for college planning, scholarships and test prep. Here is an honest side by side, including what we haven't built yet.
+        We looked at the apps families use most for college planning, scholarships and test prep. Here is an honest side by side.
       </PageHead>
 
       <div className="site-wrap">
