@@ -12,6 +12,7 @@ import { ThemePicker } from "./theme-picker";
 import { LangPicker } from "./lang-picker";
 import { UI, navLabel, navShort } from "./nav-es";
 import { useLang } from "../lib/lang-client";
+import { useSpace } from "../lib/parent-space";
 import { NAV, NAV_GROUPS, bestMatch, isActive, type NavItem, type NavRole } from "./nav";
 
 interface Who { role: NavRole; students: { id: string; first_name: string }[]; own: string | null; admin: boolean; tester: boolean }
@@ -29,6 +30,7 @@ export function TopBar() {
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [who, setWho] = useState<Who | null>(null);
   const [current, setCurrent] = useCurrentStudent();
+  const [space] = useSpace();
   const menu = useRef<HTMLDetailsElement>(null);
   // Menu sections fold up: only the headings show, and one section is open at a time.
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -116,7 +118,12 @@ export function TopBar() {
     </a>
   );
 
-  const switcher = isParent && kids.length > 0 && (
+  // In a parent's own space (My parent space, or a search page switched to it) the bar says so,
+  // instead of naming the student, so nothing looks like it is being done as the student.
+  const ownSpace = isParent && (path === "/parent" || (space === "parent" && ["/colleges", "/majors", "/scholarships"].includes(path)));
+  const switcher = ownSpace ? (
+    <a className="student-switch student-switch-own" href="/parent"><b>{t.mySpace}</b></a>
+  ) : isParent && kids.length > 0 && (
     <label className="student-switch">
       <span className="student-switch-label">{t.viewing}</span>
       {kids.length === 1 ? (

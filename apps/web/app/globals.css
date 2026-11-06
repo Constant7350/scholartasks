@@ -946,3 +946,4 @@ html.tr-wait body { visibility: hidden; }
 .ps-answers h4 { margin: 12px 0 4px; font-size: 14px; }
 .ps-answers ul { margin: 0; padding-left: 20px; font-size: 14px; }
 .ps-card { border-color: var(--navy); }
+.student-switch-own { text-decoration: none; }
