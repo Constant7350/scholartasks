@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { Page } from "../ui";
 
-/** Opt-out page linked from school invite emails. A button press (not just opening the link) stops the emails. */
+/** Opt-out page linked from school invite emails and the weekly progress email. A button press (not just opening the link) stops the emails. */
 export default function Unsubscribe() {
-  const [link, setLink] = useState<{ e: string; t: string } | null>(null);
+  const [link, setLink] = useState<{ e: string; t: string; k: string } | null>(null);
   const [state, setState] = useState<"ready" | "busy" | "done" | "error">("ready");
   const [error, setError] = useState("");
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
-    setLink({ e: q.get("e") ?? "", t: q.get("t") ?? "" });
+    setLink({ e: q.get("e") ?? "", t: q.get("t") ?? "", k: q.get("k") === "progress" ? "progress" : "" });
   }, []);
 
   const stop = async () => {
@@ -21,6 +21,25 @@ export default function Unsubscribe() {
     if (res?.ok) setState("done");
     else { setError(out?.error ?? "That didn't work. Please email support@scholartasks.com and we'll stop the emails."); setState("error"); }
   };
+
+  if (link?.k === "progress") return (
+    <Page title="Stop the weekly progress email">
+      <div className="panel">
+        {state === "done" ? (
+          <p role="status">Done. We won&apos;t send the weekly progress email to <strong>{link.e}</strong> again. You can turn it back on from the Homework Helper page.</p>
+        ) : link.e && link.t ? (
+          <>
+            <p>Stop the weekly Homework Helper progress email to <strong>{link.e}</strong>?</p>
+            <button className="btn" disabled={state === "busy"} onClick={stop}>{state === "busy" ? "Stopping…" : "Stop these emails"}</button>
+            {state === "error" && <p className="note note-err" role="alert">{error}</p>}
+          </>
+        ) : (
+          <p>This link is missing a part. Email <a href="mailto:support@scholartasks.com?subject=Stop%20emails">support@scholartasks.com</a> and we&apos;ll stop the emails.</p>
+        )}
+        <p className="hint small">Deadline reminders are separate. You still see the same numbers any time on the <a href="/homework">Homework Helper</a> page.</p>
+      </div>
+    </Page>
+  );
 
   return (
     <Page title="Stop school invite emails">
