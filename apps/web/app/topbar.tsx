@@ -7,6 +7,7 @@ import { pickStudent, rememberStudent, useCurrentStudent } from "../lib/current-
 import { Brand } from "./brand";
 import { HelpButton, HelpLayer } from "./help/balloons";
 import { inPhoneApp } from "../lib/passkeys-client";
+import { appSignOut } from "../lib/share";
 import { ThemePicker } from "./theme-picker";
 import { LangPicker } from "./lang-picker";
 import { UI, navLabel, navShort } from "./nav-es";
@@ -76,6 +77,8 @@ export function TopBar() {
   useEffect(() => setInApp(inPhoneApp()), []);
 
   const signOut = async () => {
+    // In the phone app the app decides: lock with Face ID, or sign out fully.
+    if (appSignOut()) return;
     await sb?.auth.signOut();
     window.location.href = "/signin";
   };
