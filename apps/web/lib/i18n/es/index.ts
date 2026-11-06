@@ -15,5 +15,6 @@ import colleges from "./colleges.json";
 import more from "./more.json";
 import help from "./help.json";
 import school from "./school.json";
+import careers from "./careers.json";
 
-export const ES: Dict = { ...help, ...site, ...more, ...school, ...study, ...activities, ...colleges, ...grades, ...plan, ...scholarships, ...aid, ...start, ...shared };
+export const ES: Dict = { ...careers, ...help, ...site, ...more, ...school, ...study, ...activities, ...colleges, ...grades, ...plan, ...scholarships, ...aid, ...start, ...shared };
