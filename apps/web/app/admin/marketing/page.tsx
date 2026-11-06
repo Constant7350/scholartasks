@@ -5,6 +5,7 @@ import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { StatusPill, whenOf } from "../review-kit";
 import { Outlook } from "./outlook-view";
+import { Social } from "./social-view";
 import { ALL_EMPLOYER_STEPS, EMPLOYER_CHANNELS, EMPLOYER_MESSAGES, EMPLOYER_METRICS, EMPLOYER_PHASES, EMPLOYER_SOURCES, EMPLOYER_SUMMARY, HOW_IT_WORKS, LEGAL, PART_TIME_PHASES, PART_TIME_SCALE, PART_TIME_SOURCES, PRICING, SAFETY } from "./employers";
 import { ALL_STEPS, AUDIENCE, BUSINESS, CALENDAR, CHANNELS, MESSAGES, PHASES, SOURCES, SUMMARY, type Step } from "./plan";
 
@@ -22,6 +23,7 @@ const TABS = [
   ["message", "What we say"],
   ["channels", "Where we market"],
   ["business", "Business plan"],
+  ["social", "Social media"],
   ["outlook", "Five-year outlook"],
   ["employers", "Employers and apprenticeships"],
 ] as const;
@@ -219,6 +221,7 @@ export default function MarketingPage() {
           </section>
         </>
       )}
+      {tab === "social" && <Social sb={sb} />}
       {tab === "outlook" && <Outlook />}
       {tab === "employers" && (() => {
         const empDone = ALL_EMPLOYER_STEPS.filter((s) => ["done", "skip"].includes(statusOf(s.id))).length;
