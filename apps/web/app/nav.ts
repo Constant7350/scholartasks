@@ -5,12 +5,26 @@
  *
  * roles: who sees it. "parent" = parent account, "student" = a student signed in on their own,
  *        "none" = signed in but not in a family yet.
- * group: which part of the menu it sits in.
+ * group: which section of the menu it sits in (see NAV_GROUPS). Inside a section, items keep the order below.
  * strip: also show it in the page strip / phone tab bar (short label is used there).
  */
 
 export type NavRole = "parent" | "student" | "none";
-export type NavGroup = "student" | "family" | "help" | "team";
+/** Menu sections, shown in the order of NAV_GROUPS. The team sections only show for the ScholarTasks team. */
+export type NavGroup = "daily" | "colleges" | "grades" | "study" | "apply" | "fund" | "family" | "help" | "team" | "teamTools";
+
+export const NAV_GROUPS: { key: NavGroup; en: string; es: string; team?: boolean }[] = [
+  { key: "daily", en: "Every day", es: "Cada día" },
+  { key: "colleges", en: "Colleges and careers", es: "Universidades y carreras" },
+  { key: "grades", en: "Grades and courses", es: "Notas y clases" },
+  { key: "study", en: "Study and test prep", es: "Estudio y exámenes" },
+  { key: "apply", en: "Applications", es: "Solicitudes" },
+  { key: "fund", en: "Fund college", es: "Financiar la universidad" },
+  { key: "family", en: "Family and account", es: "Familia y cuenta" },
+  { key: "help", en: "Help", es: "Ayuda" },
+  { key: "team", en: "Team: review", es: "Equipo: revisar", team: true },
+  { key: "teamTools", en: "Team: tools and plans", es: "Equipo: herramientas y planes", team: true },
+];
 
 export interface NavItem {
   href: string;
@@ -30,28 +44,28 @@ export interface NavItem {
 const ALL: NavRole[] = ["parent", "student", "none"];
 
 export const NAV: NavItem[] = [
-  { href: "/home", label: "Home", icon: "🏠", roles: ALL, group: "student", strip: true, tab: 1 },
-  { href: "/todo", label: "To-do list", short: "To do", icon: "✅", roles: ALL, group: "student", strip: true },
-  { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "student", strip: true, tab: 2 },
-  { href: "/colleges", label: "Find colleges", short: "Find colleges", icon: "🔎", roles: ALL, group: "student" },
-  { href: "/majors", label: "Search colleges by major", short: "By major", icon: "🧭", roles: ALL, group: "student" },
-  { href: "/majors/quiz", label: "Career quiz", short: "Career quiz", icon: "🧩", roles: ALL, group: "student" },
-  { href: "/trades", label: "Trades and trade schools", short: "Trades", icon: "🔧", roles: ALL, group: "student" },
-  { href: "/grades", label: "Grades and scholarships", short: "Grades", icon: "🎓", roles: ALL, group: "student", strip: true, tab: 3 },
-  { href: "/grades/plan", label: "Four-year course plan", short: "Course plan", icon: "🗓️", roles: ALL, group: "student" },
-  { href: "/grades/record", label: "Academic record (print)", short: "Record", icon: "📄", roles: ALL, group: "student" },
-  { href: "/essays", label: "College essays", short: "Essays", icon: "✍️", roles: ALL, group: "student" },
-  { href: "/activities", label: "Activities and resume", short: "Activities", icon: "🏅", roles: ALL, group: "student" },
-  { href: "/activities/profile", label: "Application profile (copy and paste)", short: "Profile", icon: "📋", roles: ALL, group: "student" },
-  { href: "/activities/common-app", label: "Common App ready", short: "Common App", icon: "✅", roles: ALL, group: "student" },
-  { href: "/scholarships", label: "Scholarships and grants", short: "Scholarships", icon: "💰", roles: ALL, group: "student", strip: true, tab: 4 },
-  { href: "/aid", label: "FAFSA and aid forms", short: "Aid forms", icon: "🧾", roles: ALL, group: "student" },
-  { href: "/plan/offers", label: "Compare aid offers", short: "Offers", icon: "⚖️", roles: ALL, group: "student" },
-  { href: "/homework", label: "Homework Helper", short: "Homework", icon: "🦉", roles: ["parent", "student"], group: "student", strip: true },
-  { href: "/counselor", label: "AI counselor", short: "Counselor", icon: "🤖", roles: ALL, group: "student", strip: true },
-  { href: "/study", label: "Study skills library", short: "Study", icon: "📚", roles: ALL, group: "student", strip: true },
-  { href: "/practice", label: "Practice questions", short: "Practice", icon: "✏️", roles: ALL, group: "student", strip: true },
-  { href: "/test-prep", label: "SAT and ACT prep", short: "SAT/ACT", icon: "📝", roles: ALL, group: "student", strip: true },
+  { href: "/home", label: "Home", icon: "🏠", roles: ALL, group: "daily", strip: true, tab: 1 },
+  { href: "/todo", label: "To-do list", short: "To do", icon: "✅", roles: ALL, group: "daily", strip: true },
+  { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "colleges", strip: true, tab: 2 },
+  { href: "/colleges", label: "Find colleges", short: "Find colleges", icon: "🔎", roles: ALL, group: "colleges" },
+  { href: "/majors", label: "Search colleges by major", short: "By major", icon: "🧭", roles: ALL, group: "colleges" },
+  { href: "/majors/quiz", label: "Career quiz", short: "Career quiz", icon: "🧩", roles: ALL, group: "colleges" },
+  { href: "/trades", label: "Trades and trade schools", short: "Trades", icon: "🔧", roles: ALL, group: "colleges" },
+  { href: "/grades", label: "Grades and scholarships", short: "Grades", icon: "🎓", roles: ALL, group: "grades", strip: true, tab: 3 },
+  { href: "/grades/plan", label: "Four-year course plan", short: "Course plan", icon: "🗓️", roles: ALL, group: "grades" },
+  { href: "/grades/record", label: "Academic record (print)", short: "Record", icon: "📄", roles: ALL, group: "grades" },
+  { href: "/essays", label: "College essays", short: "Essays", icon: "✍️", roles: ALL, group: "apply" },
+  { href: "/activities", label: "Activities and resume", short: "Activities", icon: "🏅", roles: ALL, group: "apply" },
+  { href: "/activities/profile", label: "Application profile (copy and paste)", short: "Profile", icon: "📋", roles: ALL, group: "apply" },
+  { href: "/activities/common-app", label: "Common App ready", short: "Common App", icon: "✅", roles: ALL, group: "apply" },
+  { href: "/scholarships", label: "Scholarships and grants", short: "Scholarships", icon: "💰", roles: ALL, group: "fund", strip: true, tab: 4 },
+  { href: "/aid", label: "FAFSA and aid forms", short: "Aid forms", icon: "🧾", roles: ALL, group: "fund" },
+  { href: "/plan/offers", label: "Compare aid offers", short: "Offers", icon: "⚖️", roles: ALL, group: "fund" },
+  { href: "/homework", label: "Homework Helper", short: "Homework", icon: "🦉", roles: ["parent", "student"], group: "daily", strip: true },
+  { href: "/counselor", label: "AI counselor", short: "Counselor", icon: "🤖", roles: ALL, group: "daily", strip: true },
+  { href: "/study", label: "Study skills library", short: "Study", icon: "📚", roles: ALL, group: "study", strip: true },
+  { href: "/practice", label: "Practice questions", short: "Practice", icon: "✏️", roles: ALL, group: "study", strip: true },
+  { href: "/test-prep", label: "SAT and ACT prep", short: "SAT/ACT", icon: "📝", roles: ALL, group: "study", strip: true },
 
   { href: "/family", label: "Family, students and permissions", icon: "👪", roles: ["parent"], group: "family" },
   { href: "/family", label: "Set up my family (parents)", icon: "👪", roles: ["none"], group: "family" },
@@ -69,9 +83,9 @@ export const NAV: NavItem[] = [
   { href: "/admin/scholarships", label: "Review scholarships", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/trades", label: "Review trade facts", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/schools", label: "Approve schools", icon: "🏫", roles: ALL, group: "team" },
-  { href: "/admin/college-data", label: "Load college data", icon: "🏫", roles: ALL, group: "team" },
-  { href: "/admin/presentation", label: "Presentation for parents and schools", icon: "🎤", roles: ALL, group: "team" },
-  { href: "/admin/marketing", label: "Marketing and business plan", icon: "📣", roles: ALL, group: "team" },
+  { href: "/admin/college-data", label: "Load college data", icon: "🏫", roles: ALL, group: "teamTools" },
+  { href: "/admin/presentation", label: "Presentation for parents and schools", icon: "🎤", roles: ALL, group: "teamTools" },
+  { href: "/admin/marketing", label: "Marketing and business plan", icon: "📣", roles: ALL, group: "teamTools" },
 ];
 
 /** True when this nav item is the page you are on (or a page inside it). */

@@ -11,7 +11,7 @@ import { ThemePicker } from "./theme-picker";
 import { LangPicker } from "./lang-picker";
 import { UI, navLabel, navShort } from "./nav-es";
 import { useLang } from "../lib/lang-client";
-import { NAV, bestMatch, isActive, type NavGroup, type NavItem, type NavRole } from "./nav";
+import { NAV, NAV_GROUPS, bestMatch, isActive, type NavItem, type NavRole } from "./nav";
 
 interface Who { role: NavRole; students: { id: string; first_name: string }[]; own: string | null; admin: boolean }
 
@@ -81,19 +81,12 @@ export function TopBar() {
   const lang = useLang();
   const t = UI[lang];
   const role: NavRole = who?.role ?? "none";
-  const items = NAV.filter((i) => i.roles.includes(role) && (i.group !== "team" || who?.admin) && !(i.webOnly && inApp));
+  const items = NAV.filter((i) => i.roles.includes(role) && (!i.group.startsWith("team") || who?.admin) && !(i.webOnly && inApp));
   const here = bestMatch(items, path);
   const isParent = role === "parent";
   const kids = who?.students ?? [];
-  const student = kids.find((k) => k.id === current);
-  const studentTitle = role === "student" ? t.myPages : isParent && student ? t.pagesOf(student.first_name) : t.pages;
 
-  const groups: { key: NavGroup; title: string }[] = [
-    { key: "student", title: studentTitle },
-    { key: "family", title: isParent ? t.family : t.connected },
-    { key: "help", title: t.help },
-    { key: "team", title: t.team },
-  ];
+  const groups = NAV_GROUPS.map((g) => ({ key: g.key, title: g.key === "family" && !isParent ? t.connected : g[lang] }));
 
   const link = (i: NavItem, cls: string, label: string) => (
     <a key={i.href + i.label} className={`${cls} ${here === i ? "nav-on" : ""}`} href={i.href} aria-current={here === i ? "page" : undefined}>
