@@ -946,3 +946,9 @@ html.tr-wait body { visibility: hidden; }
 .ps-answers h4 { margin: 12px 0 4px; font-size: 14px; }
 .ps-answers ul { margin: 0; padding-left: 20px; font-size: 14px; }
 .ps-card { border-color: var(--navy); }
+.student-switch-own { text-decoration: none; }
+/* My students (/students) */
+.kid-block { margin-bottom: 28px; }
+.kid-pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
+.kid-links { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 8px; }
+.student-switch a { color: inherit; text-decoration: none; }

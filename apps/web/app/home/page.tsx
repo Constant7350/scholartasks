@@ -109,18 +109,21 @@ export default function Home() {
                 ))}
               </ul>
             </div>
-            <a className="btn btn-ghost btn-inline link-btn" href="/family">Manage family</a>
+            {role === "parent"
+              ? <a className="btn btn-inline link-btn" href="/students">{students.length === 1 ? `See ${students[0]!.first_name}'s progress` : "See my students"}</a>
+              : <a className="btn btn-ghost btn-inline link-btn" href="/family">Manage family</a>}
           </>
         )}
       </div>
 
       <CareerQuizCard students={students} />
 
-      {students.map((s) => (
+      {/* Parents see each student's scorecard and streak on My students, not on their own Home. */}
+      {role !== "parent" && students.map((s) => (
         <GpaScorecard key={s.id} rows={grades.filter((g) => g.student_id === s.id)} currentGrade={s.grade_level} pack={packFor(s.state)} name={s.first_name} compact href="/grades" goal={s.goal_gpa == null ? null : Number(s.goal_gpa)} minGrade={s.min_grade} weights={{ rigor: Number(s.weight_rigor ?? 1), honors: Number(s.weight_honors ?? 0.5) }} />
       ))}
 
-      {sb && students.map((s) => (
+      {sb && role !== "parent" && students.map((s) => (
         <ProgressCard key={`p-${s.id}`} sb={sb} studentId={s.id} name={students.length > 1 ? s.first_name : null} />
       ))}
 
