@@ -65,6 +65,7 @@ export const NAV: NavItem[] = [
   { href: "/activities", label: "Activities and resume", short: "Activities", icon: "🏅", roles: ALL, group: "apply" },
   { href: "/activities/profile", label: "Application profile (copy and paste)", short: "Profile", icon: "📋", roles: ALL, group: "apply" },
   { href: "/activities/common-app", label: "Common App ready", short: "Common App", icon: "✅", roles: ALL, group: "apply" },
+  { href: "/plan/papers", label: "Transcripts and letters", short: "Transcripts", icon: "📨", roles: ALL, group: "apply" },
   { href: "/scholarships", label: "Scholarships and grants", short: "Scholarships", icon: "💰", roles: ALL, group: "fund", strip: true, tab: 4 },
   { href: "/aid", label: "FAFSA and aid forms", short: "Aid forms", icon: "🧾", roles: ALL, group: "fund" },
   { href: "/plan/offers", label: "Compare aid offers", short: "Offers", icon: "⚖️", roles: ALL, group: "fund" },

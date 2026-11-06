@@ -219,6 +219,7 @@ export const TOPICS: Topic[] = [
       "Use the filters to find seniors without a FAFSA, students with no college list, or overdue deadlines. Download a CSV any time.",
       "Add other counselors: send them the staff link from Add counselors.",
       "Post local scholarships. Students apply right in the app, and their applications show up under Applications for your scholarships. Open one, add a note if you like, and mark it Reviewing, Awarded or Not chosen. The family sees the result in their app.",
+      "Students who need a transcript or counselor letter can ask under Transcript and letter requests. Send it the way you always do, then tap Sent; the family sees it with your note.",
     ],
     faq: [
       { q: "Is it really free?", a: "Yes. The school portal is free for every school. Families use ScholarTasks free and can upgrade for the AI counselor and tutor." },
@@ -783,6 +784,25 @@ export const TOPICS: Topic[] = [
     body: [
       "Limits checked: role 50, organization 100, description 150 characters; honor titles 100 characters; personal essay 250 to 650 words.",
       "It only counts and checks. It never rewrites your words, and we never send the application for you.",
+    ],
+  },
+  {
+    id: "transcript-requests",
+    area: "Activities and resume",
+    title: "Transcripts and letters: ask on time, see what was sent",
+    href: "/plan/papers",
+    keywords: ["transcript", "counselor letter", "school report", "teacher letter", "recommendation", "test scores", "mid-year report", "final transcript", "parchment", "gafutures", "send scores"],
+    summary: "For each college on your list, track what the school and teachers must send (transcript, counselor letter, teacher letters, mid-year report) and your test scores. If your school uses ScholarTasks, ask your counselor right in the app.",
+    steps: [
+      "Open Menu, then Transcripts and letters.",
+      "Under each college, tap Add the usual four, or add one item at a time. Check the college's site for what it really wants.",
+      "Ask your counselor at least two weeks before the deadline and teachers three to four weeks before, then tap Asked.",
+      "Connected to your school on My school? Tap Ask my counselor and it shows up in their ScholarTasks list. When they tap Sent, you see it here with their note.",
+      "After you apply, check the college's portal and tap College has it for each item.",
+    ],
+    body: [
+      "You still send your own application on Common App or the college's site, and the school sends the transcript the way it always does (Common App, GAfutures, Parchment or mail). ScholarTasks keeps track so nothing is missed.",
+      "Test scores come from your College Board or ACT account, not the school.",
     ],
   },
 
@@ -1365,6 +1385,9 @@ export const TIPS: Tip[] = [
   { routes: ["*"], sel: ".tabbar", body: "Main pages along the bottom. More opens the full menu.", topic: "home" },
   { routes: ["*"], sel: ".pagestrip .student-switch", body: "Which student you are looking at. Pick another name and every page switches to that student.", topic: "home" },
   { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/homework", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs):not(.space-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
+
+  // Transcripts and letters
+  { routes: ["/plan/papers"], sel: "main .panel p", body: "Your school sends transcripts and counselor letters; teachers send their letters. Track each one here so none is missed.", topic: "transcript-requests" },
 
   // Activities
   { routes: ["/activities"], sel: "#checkup h2", body: "What colleges read besides grades, and the next step for each. It changes with your grade.", topic: "beyond-grades" },
