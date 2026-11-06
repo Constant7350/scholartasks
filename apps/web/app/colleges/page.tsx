@@ -1,14 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { INTERESTS, INTEREST_PROGRAMS, SOUTHEAST, collegeFit, estimateCost, fitRecord, type CourseGrade, matchScore, sizeOf, type CostInput, type Fit, type MatchAnswers } from "@scholartasks/core";
+import { CHURCH_FAMILIES, INTERESTS, INTEREST_PROGRAMS, SCHOOL_TYPES, SOUTHEAST, faithCodes, faithLabel, collegeFit, estimateCost, fitRecord, type CourseGrade, matchScore, sizeOf, type CostInput, type Fit, type MatchAnswers, type MatchProfile } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../lib/colleges";
 import { STATE_NAMES } from "../../lib/trades";
 
-interface Student extends CostStudent { first_name: string; match_profile: { interests?: string[] } | null }
+interface Student extends CostStudent { first_name: string; match_profile: MatchProfile | null }
 
 const FIT: Record<Fit, { label: string; cls: string; hint: string }> = {
   likely: { label: "Likely", cls: "pill-ok", hint: "Your grades, rigor and scores are above most admitted students'." },
@@ -62,7 +62,8 @@ export default function CollegesPage() {
 
   useEffect(() => {
     if (!sb || !student) return;
-    setAnswers((a) => ({ ...a, interests: (student.match_profile?.interests ?? []).filter((i) => INTEREST_PROGRAMS[i]) }));
+    const mp = student.match_profile ?? {};
+    setAnswers((a) => ({ ...a, interests: (mp.interests ?? []).filter((i) => INTEREST_PROGRAMS[i]), type: mp.college_type ?? "any", church: mp.church ?? null }));
     void costInput(sb, student, mayUseIncome).then(setCtx);
     void sb.from("course_grades").select("course, grade, level, core, grade_level, term").eq("student_id", student.id).then(({ data }) =>
       setRecord(fitRecord(((data as { course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }[]) ?? [])
@@ -90,12 +91,22 @@ export default function CollegesPage() {
   const search = async () => {
     setBusy(true); setError(null);
     const states = answers.where === "home" ? [student.state] : answers.where === "region" ? [...new Set([student.state, ...SOUTHEAST])] : null;
-    const ownership = answers.type === "public" ? [1] : answers.type === "private" ? [2] : [1, 2];
+    const ownership = answers.type === "public" ? [1] : answers.type === "private" || answers.type === "christian" ? [2] : [1, 2];
     const programs = [...new Set(answers.interests.flatMap((i) => INTEREST_PROGRAMS[i] ?? []))];
-    const { data, error: e } = await sb.rpc("match_colleges", { p_states: states, p_ownership: ownership, p_programs: programs, p_limit: 400 });
+    const faith = answers.type === "christian" ? faithCodes(answers.church) : null;
+    const { data, error: e } = await sb.rpc("match_colleges", { p_states: states, p_ownership: ownership, p_programs: programs, p_limit: 400, ...(faith ? { p_faith: faith } : {}) });
     setBusy(false);
     if (e) return setError(friendly(e));
     setResults((data as CollegeRow[]) ?? []);
+    // Remember the kind of college (public, private, Christian) for this student's other searches and the AI counselor.
+    const mp = student.match_profile ?? {};
+    const church = answers.type === "christian" ? answers.church ?? null : null;
+    if ((mp.college_type ?? "any") !== answers.type || (mp.church ?? null) !== church) {
+      const next = { ...mp, college_type: answers.type, church };
+      const r = await sb.rpc("set_match_profile", { p_student: student.id, p_profile: next });
+      // Kept in place (no re-render) so the results on screen stay put.
+      if (!r.error) student.match_profile = next;
+    }
   };
 
   const add = async (c: CollegeRow) => {
@@ -130,7 +141,16 @@ export default function CollegesPage() {
       <section className="panel quiz">
         {pick("1. Where?", [["home", STATE_NAMES[student.state] ?? "My state"], ["region", "The Southeast"], ["anywhere", "Anywhere in the U.S."]], "where")}
         {pick("2. How big?", [["small", "Small (under 5,000)"], ["medium", "Medium"], ["large", "Large (15,000+)"], ["any", "No preference"]], "size")}
-        {pick("3. Public or private?", [["public", "Public"], ["private", "Private"], ["any", "Either"]], "type")}
+        {pick("3. What kind of college?", SCHOOL_TYPES.map(([v, l]) => [v, v === "christian" ? "Christian colleges" : v === "private" ? "Private colleges" : v === "public" ? "Public colleges" : "Any"] as [string, string]), "type")}
+        {answers.type === "christian" && (
+          <fieldset className="quiz-q">
+            <legend>Church family <span className="hint">(optional)</span></legend>
+            <select className="input" style={{ maxWidth: 360 }} value={answers.church ?? ""} onChange={(e) => set("church", e.target.value || null)}>
+              <option value="">Any Christian college</option>
+              {CHURCH_FAMILIES.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
+            </select>
+          </fieldset>
+        )}
         <fieldset className="quiz-q">
           <legend>4. What do you want to study? <span className="hint">(pick any)</span></legend>
           <div className="chips">
@@ -156,14 +176,14 @@ export default function CollegesPage() {
       {results && (
         <section className="panel">
           <h2>{ranked.length ? `${ranked.length} colleges that fit` : "No colleges fit every answer"}</h2>
-          {!ranked.length && <p className="hint">Try a bigger area, a higher price, or fewer subjects.</p>}
+          {!ranked.length && <p className="hint">Try a bigger area, a higher price, or fewer subjects.{answers.where === "home" && answers.type !== "any" ? " Choose The Southeast or Anywhere in the U.S. to see more " + (answers.type === "christian" ? "Christian" : answers.type) + " colleges." : ""}</p>}
           <p className="hint" style={{ marginTop: 0 }}>Reach, Match and Likely weigh your grades (unweighted GPA{record.gpa != null ? ` ${record.gpa.toFixed(2)}` : ""}), your AP, IB and dual enrollment classes ({record.rigor}), your SAT or ACT, and each college&apos;s admit rate. They&apos;re a rough guide, not a prediction.</p>
           <ul className="items college-results">
             {ranked.map(({ r, cost, fit }) => (
               <li key={r.id}>
                 <div className="item-main">
                   <b>{r.name}</b>
-                  <span className="hint">{r.city ? `${r.city}, ` : ""}{r.state} · {OWNERSHIP[r.ownership]} · {sizeOf(r.size) ?? "size unknown"}{r.size ? ` (${r.size.toLocaleString()} students)` : ""}</span>
+                  <span className="hint">{r.city ? `${r.city}, ` : ""}{r.state} · {OWNERSHIP[r.ownership]}{faithLabel(r.religious_affiliation) ? ` · ${faithLabel(r.religious_affiliation)}` : ""} · {sizeOf(r.size) ?? "size unknown"}{r.size ? ` (${r.size.toLocaleString()} students)` : ""}</span>
                   <span className="hint">Admits {pct(r.admit_rate)} · Graduates {pct(r.grad_rate)} · Earnings after 10 years {money(r.earnings)}</span>
                   <span className="college-price">
                     {cost.estimate != null ? <><b>About {money(cost.estimate)} a year</b> <span className="hint">({cost.basis === "typical" ? "typical for your income" : cost.basis === "state_award" ? "after HOPE/Zell" : "full price"}; full price {money(cost.sticker)})</span></> : <span className="hint">No price data</span>}

@@ -9,13 +9,15 @@ export interface CollegeRow {
   tuition_in: number | null; tuition_out: number | null; cost_attendance: number | null; avg_net_price: number | null;
   net_price: (number | null)[]; grad_rate: number | null; earnings: number | null; median_debt: number | null;
   programs: Record<string, number>; data_year: string | null;
+  /** Scorecard religious affiliation code (null when none); see faithLabel in core. */
+  religious_affiliation?: number | null;
 }
 
 export const toFacts = (r: CollegeRow): CollegeFacts => ({
   id: r.id, name: r.name, state: r.state, ownership: r.ownership, size: r.size,
   admitRate: r.admit_rate == null ? null : Number(r.admit_rate), satAvg: r.sat_avg, actMid: r.act_mid,
   tuitionIn: r.tuition_in, tuitionOut: r.tuition_out, costOfAttendance: r.cost_attendance, avgNetPrice: r.avg_net_price,
-  netPriceByIncome: r.net_price ?? [], programs: r.programs ?? {},
+  netPriceByIncome: r.net_price ?? [], programs: r.programs ?? {}, religiousAffiliation: r.religious_affiliation ?? null,
 });
 
 export const OWNERSHIP: Record<number, string> = { 1: "Public", 2: "Private", 3: "For-profit" };

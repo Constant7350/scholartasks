@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   COMPARE_CRITERIA, DEFAULT_IMPORTANCE, FIELDS, combinePrograms, compareColleges, estimateCost, findFields, ordinal, placeAmong, rankPrograms,
   type CompareKey, type CostInput, type Importance, type Place, type StudyField,
+  faithLabel,
 } from "@scholartasks/core";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
@@ -277,7 +278,7 @@ export default function ComparePage() {
                   {order.map((c) => (
                     <th key={c.id} scope="col">
                       {c.url ? <a href={c.url} target="_blank" rel="noreferrer noopener">{c.name}</a> : c.name}
-                      <span className="hint">{c.city ? `${c.city}, ` : ""}{c.state} · {OWNERSHIP[c.ownership]}</span>
+                      <span className="hint">{c.city ? `${c.city}, ` : ""}{c.state} · {OWNERSHIP[c.ownership]}{faithLabel(c.religious_affiliation) ? ` · ${faithLabel(c.religious_affiliation)}` : ""}</span>
                     </th>
                   ))}
                 </tr>

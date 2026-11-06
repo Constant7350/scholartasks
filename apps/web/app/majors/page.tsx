@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   DEGREES, EARNINGS_SOURCE, FIELDS, HIGH_SCHOOL_PAY, INCOME_LABELS, SCORE_EXPLAINED, SCORE_WEIGHTS,
-  careerYears, combinePrograms, estimateCost, fieldFromMajor, findFields, rankPrograms, sortCareers,
+  CHURCH_FAMILIES, SCHOOL_TYPES, careerYears, combinePrograms, estimateCost, faithLabel, fieldFromMajor, findFields, fitsSchoolType, rankPrograms, sortCareers,
+  type SchoolType,
   type CostEstimate, type CostInput, type FieldGroup, type StudyField,
 } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
@@ -16,7 +17,7 @@ import acmJson from "../../../../packs/regions/ACM.json";
 
 const ACM_MEMBERS: string[] = acmJson.members;
 
-interface Student extends CostStudent { first_name: string }
+interface Student extends CostStudent { first_name: string; match_profile?: { college_type?: SchoolType; church?: string | null } | null }
 interface ProgRow { college_id: number; cip: string; level: number; grads: number; earn_1yr: number | null; earn_4yr: number | null; debt: number | null; online: boolean; college: CollegeRow }
 interface NationalRow { cip: string; level: number; programs: number; grads: number; earn_1yr: number | null; earn_4yr: number | null; debt: number | null }
 interface Hit { college: CollegeRow; grads: number; earn1: number | null; earn4: number | null; debt: number | null; online: boolean; score: number; cost: CostEstimate; parts: Record<string, number | null> }
@@ -55,7 +56,8 @@ export default function MajorsPage() {
   const [field, setField] = useState<StudyField | null>(null);
   const [groupIx, setGroupIx] = useState(0);
   const [careerSort, setCareerSort] = useState<"fast" | "pay">("pay");
-  const [type, setType] = useState<"any" | "public" | "private">("any");
+  const [type, setType] = useState<SchoolType>("any");
+  const [church, setChurch] = useState<string | null>(null);
   const [online, setOnline] = useState(false);
   const [rows, setRows] = useState<ProgRow[] | null>(null);
   const [national, setNational] = useState<NationalRow[]>([]);
@@ -95,6 +97,12 @@ export default function MajorsPage() {
   const home = student?.state ?? "GA";
   const homeName = STATE_NAMES[home] ?? "your state";
   const acm = !!packFor(home)?.regions.includes("ACM");
+
+  // Start from the kind of college this student picked on Find colleges (public, private, Christian).
+  useEffect(() => {
+    setType(student?.match_profile?.college_type ?? "any");
+    setChurch(student?.match_profile?.church ?? null);
+  }, [student?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!sb || !student) return;
@@ -155,14 +163,14 @@ export default function MajorsPage() {
     const combined = combinePrograms(rows).map((c) => {
       const college = colleges.get(c.collegeId)!;
       return { ...c, state: college.state, gradRate: college.grad_rate, satAvg: college.sat_avg, college, online: c.rows.every((r) => r.online) };
-    }).filter((c) => type === "any" || (type === "public" ? c.college.ownership === 1 : c.college.ownership !== 1));
+    }).filter((c) => fitsSchoolType({ ownership: c.college.ownership, religiousAffiliation: c.college.religious_affiliation }, type, church));
     const hits: Hit[] = rankPrograms(combined, home).map(({ p, score, parts }) => ({
       college: p.college, grads: p.grads, earn1: p.earn1, earn4: p.earn4, debt: p.debt, online: p.online, score, parts: parts as unknown as Record<string, number | null>,
       cost: estimateCost(toFacts(p.college), ctx),
     }));
     const inHome = hits.filter((h) => h.college.state === home);
     return { home: allHome ? inHome : inHome.slice(0, 12), homeTotal: inHome.length, nation: hits.slice(0, 20) };
-  }, [rows, type, home, ctx, allHome]);
+  }, [rows, type, church, home, ctx, allHome]);
 
   if (!sb) return <Page title="Search by major"><NotConfigured /></Page>;
   if (!ready || !signedIn) return <Page title="Search by major"><p className="hint">Loading…</p></Page>;
@@ -211,7 +219,7 @@ export default function MajorsPage() {
               <li key={`${title}-${c.id}`}>
                 <div className="item-main">
                   <b>{i + 1}. {c.name}</b>
-                  <span className="hint">{c.city ? `${c.city}, ` : ""}{c.state} · {OWNERSHIP[c.ownership]}{h.online ? " · Online" : ""}{c.size ? ` · ${c.size.toLocaleString()} students` : ""}</span>
+                  <span className="hint">{c.city ? `${c.city}, ` : ""}{c.state} · {OWNERSHIP[c.ownership]}{faithLabel(c.religious_affiliation) ? ` · ${faithLabel(c.religious_affiliation)}` : ""}{h.online ? " · Online" : ""}{c.size ? ` · ${c.size.toLocaleString()} students` : ""}</span>
                   <span className="hint">
                     {h.grads.toLocaleString()} {h.grads === 1 ? "graduate" : "graduates"} a year in this major{c.grad_rate != null ? ` · ${pct(c.grad_rate)} of students finish` : ""}
                   </span>
@@ -420,12 +428,18 @@ export default function MajorsPage() {
             )}
             {group?.hint && <p className="hint">{group.hint}</p>}
             <fieldset className="quiz-q">
-              <legend>Public or private?</legend>
+              <legend>What kind of college?</legend>
               <div className="chips" style={{ justifyContent: "flex-start" }}>
-                {([["any", "Either"], ["public", "Public"], ["private", "Private"]] as const).map(([v, l]) => (
-                  <button key={v} type="button" className={`chip${type === v ? " chip-on" : ""}`} aria-pressed={type === v} onClick={() => setType(v)}>{l}</button>
+                {SCHOOL_TYPES.map(([v, l]) => (
+                  <button key={v} type="button" className={`chip${type === v ? " chip-on" : ""}`} aria-pressed={type === v} onClick={() => setType(v)}>{v === "christian" ? "Christian colleges" : l}</button>
                 ))}
               </div>
+              {type === "christian" && (
+                <select className="input" style={{ maxWidth: 360, marginTop: 8 }} aria-label="Church family" value={church ?? ""} onChange={(e) => setChurch(e.target.value || null)}>
+                  <option value="">Any Christian college</option>
+                  {CHURCH_FAMILIES.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
+                </select>
+              )}
             </fieldset>
             <label style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}><input type="checkbox" checked={online} onChange={(e) => setOnline(e.target.checked)} /> Include online-only programs</label>
             {!ctx.incomeBand && <p className="hint" style={{ margin: "6px 0 0" }}>{mayUseIncome ? <>Add your income range on the <a href="/scholarships">Scholarships</a> page for prices that fit your family.</> : "Prices shown are full price; your parent can share estimates for your family."}</p>}
