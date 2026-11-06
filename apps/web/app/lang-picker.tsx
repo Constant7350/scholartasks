@@ -12,7 +12,7 @@ export function LangPicker() {
         <button type="button" aria-pressed={lang === "en"} onClick={() => lang !== "en" && setLang("en")}>English</button>
         <button type="button" aria-pressed={lang === "es"} onClick={() => lang !== "es" && setLang("es")}>Español</button>
       </div>
-      {lang === "es" && <p className="hint small" style={{ margin: "6px 0 0" }}>El menú y las respuestas de la IA están en español. Estamos traduciendo las demás páginas.</p>}
+      {lang === "es" && <p className="hint small" style={{ margin: "6px 0 0" }}>Toda la aplicación y las respuestas de la IA están en español. Una persona bilingüe está revisando la traducción.</p>}
     </div>
   );
 }

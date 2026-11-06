@@ -34,7 +34,7 @@ const PART3: [string, string, string[]][] = [
   ["Homework help that never gives answers", "Yes, a second AI checks", ["No", "No", "No", "No", "No", "Yes"]],
   ["Compare aid offers", "Yes", ["No", "Some", "Some", "No", "Some", "No"]],
   ["Common App ready check, essay bundles, copy-ready profile", "Yes", ["No", "No", "No", "No", "Yes", "No"]],
-  ["Spanish", "Menu and AI answers", ["Some", "Some", "Some", "No", "No", "Yes"]],
+  ["Spanish", "Whole app and AI answers", ["Some", "Some", "Some", "No", "No", "Yes"]],
   ["Starts in grade 6", "Yes, parent-managed", ["No", "Yes", "No", "No", "No", "Yes"]],
   ["School roster upload", "Yes, with data agreement", ["No", "Yes", "Some", "No", "No", "Yes"]],
   ["Apply to scholarships inside the app", "Not yet", ["No", "No", "No", "No", "Yes", "No"]],
