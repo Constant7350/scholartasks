@@ -1,6 +1,6 @@
 "use client";
 
-import { VoiceButton } from "../voice";
+import { NO_SUGGEST, VoiceButton } from "../voice";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
@@ -310,7 +310,7 @@ export default function HomeworkPage() {
               )}
               <label className="field">
                 <span>What are you working on? ({subj.label})</span>
-                <textarea className="input" rows={3} maxLength={2000} placeholder="Type the problem or question, or add a photo or file" value={problem} onChange={(e) => setProblem(e.target.value)} />
+                <textarea {...NO_SUGGEST} className="input" rows={3} maxLength={2000} placeholder="Type the problem or question, or add a photo or file" value={problem} onChange={(e) => setProblem(e.target.value)} />
               </label>
               <div className="share-row">
                 <VoiceButton value={problem} onText={setProblem} max={2000} disabled={busy} />
@@ -319,7 +319,7 @@ export default function HomeworkPage() {
               </div>
               <label className="field">
                 <span>What have you tried so far?</span>
-                <textarea className="input" rows={2} maxLength={1500} placeholder="Your steps, your answer, or where you got stuck" value={tried} onChange={(e) => setTried(e.target.value)} />
+                <textarea {...NO_SUGGEST} className="input" rows={2} maxLength={1500} placeholder="Your steps, your answer, or where you got stuck" value={tried} onChange={(e) => setTried(e.target.value)} />
               </label>
               <div className="share-row" style={{ marginTop: -6 }}>
                 <VoiceButton value={tried} onText={setTried} max={1500} disabled={busy} small />
@@ -357,6 +357,7 @@ export default function HomeworkPage() {
               {chatAtt && <p style={{ margin: 0 }}><AttachPreview a={chatAtt} onRemove={() => setChatAtt(null)} /> <span className="hint">Sends with your next message.</span></p>}
               <form className="chat-input" onSubmit={(e) => { e.preventDefault(); void send(draft, chatAtt); }}>
                 <textarea
+                  {...NO_SUGGEST}
                   className="input"
                   rows={2}
                   maxLength={4000}

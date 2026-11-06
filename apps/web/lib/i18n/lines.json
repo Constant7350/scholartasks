@@ -1,4 +1,4 @@
-{"note":"Made by scripts/i18n/extract.mjs. Do not edit.","count":7227,"lines":[{"en":"About us","screens":["/","/about"]},
+{"note":"Made by scripts/i18n/extract.mjs. Do not edit.","count":7228,"lines":[{"en":"About us","screens":["/","/about"]},
 {"en":"AI counselor","screens":["/","/compare","/counselor","/features","/help","/home","Shared pieces"]},
 {"en":"Never sells student data","screens":["/","/compare"]},
 {"en":"Website","screens":["/","/colleges","/contact","/majors","/military","/trades/post"]},
@@ -2734,6 +2734,7 @@
 {"en":"The Next button at the top always jumps to the next step left.","screens":["/help"]},
 {"en":"The one exception is your choice: when a student applies in the app for the school's own local scholarship, that school's counselors see what you chose to send for that one award.","screens":["/help"]},
 {"en":"The parent names the family account, then adds each student with their first name and grade.","screens":["/help"]},
+{"en":"The phone keyboard's suggestion bar is turned off in the helper and tutor boxes, so the keyboard can't offer the answer (like a unit conversion) while you type. Voice typing still works.","screens":["/help"]},
 {"en":"The plan includes what to say to the teacher, study tips and how a parent can help. It uses 1 of today's 10 AI uses.","screens":["/help"]},
 {"en":"The resume updates itself whenever you add an activity or a grade.","screens":["/help"]},
 {"en":"The rules follow the federal teen work laws: limited hours for 14 and 15 year olds, no hazardous jobs under 18, work permits where the state needs them, at least minimum wage, and meeting students only at the workplace.","screens":["/help"]},

@@ -1,6 +1,6 @@
 "use client";
 
-import { VoiceButton } from "../voice";
+import { NO_SUGGEST, VoiceButton } from "../voice";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
@@ -175,7 +175,7 @@ export default function PracticePage() {
           {q.kind === "written" && (
             <div>
               <div className="field"><label htmlFor="pr-written">Your answer</label>
-                <textarea id="pr-written" className="input" rows={4} maxLength={2000} value={written} onChange={(e) => setWritten(e.target.value)} /></div>
+                <textarea {...NO_SUGGEST} id="pr-written" className="input" rows={4} maxLength={2000} value={written} onChange={(e) => setWritten(e.target.value)} /></div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
                 <VoiceButton value={written} onText={setWritten} max={2000} disabled={busy} />
                 {student && aiAllowed && <button className="btn btn-inline" disabled={busy || written.trim().length < 2} onClick={() => void callTutor(q, "check")}>{busy ? "Checking…" : "🤖 Check my answer"}</button>}
@@ -199,7 +199,7 @@ export default function PracticePage() {
             <details className="rescue-more" style={{ marginTop: 10 }}>
               <summary>Still confused? Ask the tutor about this question</summary>
               <div className="field" style={{ marginTop: 8 }}><label htmlFor="pr-ask">What&apos;s confusing? (optional)</label>
-                <input id="pr-ask" className="input" maxLength={1000} value={ask} placeholder="Why isn't it the second choice?" onChange={(e) => setAsk(e.target.value)} /></div>
+                <input {...NO_SUGGEST} id="pr-ask" className="input" maxLength={1000} value={ask} placeholder="Why isn't it the second choice?" onChange={(e) => setAsk(e.target.value)} /></div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
                 <VoiceButton value={ask} onText={setAsk} max={1000} small />
                 <button className="btn btn-ghost btn-inline btn-sm" onClick={() => void callTutor(q, "help")}>🤖 Explain it (1 AI use)</button>
