@@ -883,11 +883,11 @@ export const TOPICS: Topic[] = [
     area: "Study and practice",
     title: "Homework Helper: help with any homework, without cheating",
     href: "/homework",
-    keywords: ["homework", "homework help", "tutor", "math", "essay", "science", "history", "spanish", "coding", "photo", "picture", "camera", "upload", "file", "pdf", "worksheet", "project", "hint", "cheating", "answers", "safe ai", "chatgpt", "add-on", "study coach", "thinking score"],
+    keywords: ["homework", "homework help", "tutor", "math", "essay", "science", "history", "spanish", "coding", "photo", "picture", "camera", "upload", "file", "pdf", "excel", "spreadsheet", "worksheet", "project", "hint", "cheating", "answers", "safe ai", "chatgpt", "add-on", "study coach", "thinking score"],
     summary: "An AI tutor for every subject that keeps your student doing the thinking. It gives hints, checks work and explains ideas, but never gives the answer or writes for them.",
     steps: [
       "Open Menu, then Homework Helper.",
-      "Pick the subject, then type the problem, tap Take a photo (of the worksheet or your work), or tap Upload a file (a photo, PDF or Word file of the assignment).",
+      "Pick the subject, then type the problem, tap Take a photo (of the worksheet or your work), or tap Upload a file (a photo, PDF, Word or Excel file of the assignment).",
       "Write what you've tried so far (it gets you better help).",
       "Tap Give me a hint, Check my work, or Explain the idea.",
       "Answer the helper's question with your next step. When you finish, explain it back and try the twin problem on paper.",
