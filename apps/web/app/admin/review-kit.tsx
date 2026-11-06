@@ -118,6 +118,7 @@ const REVIEWS = [
   ["/admin/lessons", "Study lessons"],
   ["/admin/scholarships", "Scholarships"],
   ["/admin/trades", "Trade facts"],
+  ["/admin/openings", "Local openings"],
 ] as const;
 
 /** Tabs at the top of every review page, with how many wait in each, so you can switch without the main menu. */
@@ -135,13 +136,14 @@ export function ReviewNav() {
       sb.from("scholarship_updates").select("id", { count: "exact", head: true }).eq("status", "pending"),
       sb.from("scholarships").select("id", { count: "exact", head: true }).eq("status", "pending"),
       sb.from("trade_checks").select("subject", { count: "exact", head: true }).eq("status", "review"),
-    ]).then(([a, q, l, su, sp, t]) => {
+      sb.from("local_openings").select("id", { count: "exact", head: true }).eq("status", "pending"),
+    ]).then(([a, q, l, su, sp, t, op]) => {
       const lessons = n(l);
       const sch = n(su) == null || n(sp) == null ? null : n(su)! + n(sp)!;
       setCounts({
         "/admin/answers": n(a), "/admin/questions": n(q),
         "/admin/lessons": lessons == null ? null : Math.max(0, LESSONS.length - lessons),
-        "/admin/scholarships": sch, "/admin/trades": n(t),
+        "/admin/scholarships": sch, "/admin/trades": n(t), "/admin/openings": n(op),
       });
     });
   }, [path]);

@@ -42,6 +42,10 @@ export default function TradesPage() {
           <b>Not sure where to start?</b>
           <span>Answer a few questions and see trades that fit what you enjoy.</span>
         </a>
+        <a className="panel trade-callout" href="/trades/openings">
+          <b>Apprenticeships and local openings</b>
+          <span>Local companies post apprenticeships, paid training and jobs here. Our review team checks each one first.</span>
+        </a>
         <div className="panel trade-callout">
           <b>Free tuition in Georgia</b>
           <span>{freeCount} of these trades are on Georgia's HOPE Career Grant list: with the HOPE Grant, tuition is covered at Georgia's 22 technical colleges. No high school GPA is needed.</span>
@@ -101,6 +105,7 @@ export default function TradesPage() {
       <p className="hint small">
         Pay: {TRADES_PACK.pay_source} Always confirm program details with the school or program before applying.
         Want a degree instead or as well? <a href="/majors">Search colleges by major</a>.
+        {" "}Do you hire for a trade? <a href="/trades/post">Post an apprenticeship or opening for free</a>.
       </p>
     </Page>
   );
