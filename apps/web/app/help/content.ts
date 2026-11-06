@@ -346,8 +346,10 @@ export const TOPICS: Topic[] = [
     summary: "A long quiz (about 15 minutes) on what you like to do and what matters to you in a job. It suggests college careers, skilled trades and military paths, each linked to where to study or train.",
     steps: [
       "Open Menu, then Career quiz (or tap Start here on the home page). You don't need to sign in.",
-      "Answer each activity from Strongly dislike to Strongly like. Picture yourself doing it; don't think about pay or whether you're good at it yet. Then rate what matters to you in a job.",
-      "You can stop and come back on the same device. Tap See my results at the end.",
+      "One question shows at a time, in 5 short parts. Tap an answer from Strongly dislike to Strongly like and the next question comes up. Picture yourself doing it; don't think about pay or whether you're good at it yet. The last part asks what matters to you in a job.",
+      "Leave any time. When you come back on the same device, the quiz opens at the next question you haven't answered.",
+      "Tap Back to change the last answer, or Review my answers to see and change any of them. Cancel quiz erases your answers; Start a new quiz gives you a fresh set of questions.",
+      "Tap See my results at the end.",
       "Tap Colleges for this or How to start. Majors and trades show your home state first, then the whole country.",
       "Signed in? Tap Save to the student's profile so the AI counselor can use the results. Tap Go deeper for 48 more questions.",
     ],

@@ -35,3 +35,21 @@
 @media print {
   .cq-nav, .cq-progress { display: none; }
 }
+
+/* One question at a time. */
+.cq-one h2 { margin-top: 4px; }
+.cq-big { font-size: 22px; line-height: 1.35; margin: 6px 0 16px; }
+.cq-stack { grid-template-columns: 1fr; gap: 8px; max-width: 440px; }
+.cq-stack .cq-opt { font-size: 16px; min-height: 52px; text-align: left; padding: 10px 16px; }
+.cq-menu { display: flex; flex-wrap: wrap; gap: 18px; margin: 4px 0 16px; }
+.cq-menu .linklike:disabled { color: var(--muted); text-decoration: none; cursor: default; }
+.cq-break { text-align: left; }
+.cq-confirm { border-color: var(--c-coral); background: var(--c-coral-soft); }
+.cq-review { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+.cq-review li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.cq-review li:last-child { border-bottom: 0; }
+.cq-review select { font: inherit; font-size: 14px; padding: 6px 8px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--card); }
+@media (max-width: 560px) {
+  .cq-stack .cq-opt { font-size: 16px; min-height: 52px; padding: 10px 16px; }
+}
+.cq-one > .hint.small { margin-top: 12px; }
