@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { friendly, supabase } from "../../lib/supabase";
+import { REMEMBER_EMAIL_KEY, REMEMBER_KEY, friendly, rememberMe, supabase } from "../../lib/supabase";
 import { inPhoneApp, passkeysSupported, signInWithPasskey, unlockName } from "../../lib/passkeys-client";
 import { Brand } from "../brand";
 import { NotConfigured, Page } from "../ui";
@@ -49,6 +49,8 @@ export default function SignIn() {
   const [state, setState] = useState<"idle" | "sending" | "sent" | "confirm" | "reset-sent">("idle");
   const [error, setError] = useState<string | null>(null);
   const [deleted, setDeleted] = useState(false);
+  const [remember, setRemember] = useState(true);
+  const [inApp, setInApp] = useState(false);
   const sb = supabase();
 
   useEffect(() => {
@@ -58,6 +60,10 @@ export default function SignIn() {
       setPasskey(used ? "used" : "available");
       setUnlock(unlockName());
     }
+    // "Remember me": keep the last choice and fill in the saved email.
+    setRemember(rememberMe());
+    setInApp(inPhoneApp());
+    try { const saved = localStorage.getItem(REMEMBER_EMAIL_KEY); if (saved) setEmail(saved); } catch {}
     if (new URLSearchParams(window.location.search).get("next")?.startsWith("/join")) setRole("student");
     // If Google or an email link sent the person back with an error, show it instead of failing silently.
     const back = new URLSearchParams(window.location.search + "&" + window.location.hash.replace(/^#/, ""));
@@ -83,6 +89,16 @@ export default function SignIn() {
     const requested = new URLSearchParams(window.location.search).get("next");
     return requested?.startsWith("/") && !requested.startsWith("//") ? requested : role === "student" ? "/join" : "/home";
   };
+  /** Saves the "Remember me" choice before signing in, so the new sign-in is kept in the right place. */
+  const saveRemember = () => {
+    try {
+      // The phone app always keeps you signed in (it unlocks with Face ID).
+      const keep = remember || inApp;
+      localStorage.setItem(REMEMBER_KEY, keep ? "1" : "0");
+      if (keep) localStorage.setItem(REMEMBER_EMAIL_KEY, email.trim());
+      else localStorage.removeItem(REMEMBER_EMAIL_KEY);
+    } catch { /* private mode */ }
+  };
   const fail = (e: unknown) => {
     setError(friendly(e));
     setState("idle");
@@ -91,6 +107,7 @@ export default function SignIn() {
   const sendLink = async (e: FormEvent) => {
     e.preventDefault();
     if (!valid) return;
+    saveRemember();
     setState("sending");
     setError(null);
     const { error } = await sb.auth.signInWithOtp({ email: email.trim(), options: { emailRedirectTo: window.location.origin + nextPath() } });
@@ -101,6 +118,7 @@ export default function SignIn() {
   const usePassword = async (e: FormEvent) => {
     e.preventDefault();
     if (!valid || password.length < 8) return;
+    saveRemember();
     setState("sending");
     setError(null);
     if (pwAction === "signin") {
@@ -126,12 +144,14 @@ export default function SignIn() {
 
   const withGoogle = async () => {
     setError(null);
+    saveRemember();
     const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin + nextPath() } });
     if (error) fail(error);
   };
 
   const withPasskey = async () => {
     setError(null);
+    saveRemember();
     setState("sending");
     try {
       if (await signInWithPasskey(sb)) window.location.href = nextPath();
@@ -259,6 +279,16 @@ export default function SignIn() {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
+                )}
+
+                {!inApp && (
+                  <label className="remember">
+                    <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+                    <span>
+                      <b>Remember me</b> on this device
+                      <small>{remember ? "Stay signed in and keep your email filled in." : "You'll be signed out when you close this browser. Good for shared or school computers."}</small>
+                    </span>
+                  </label>
                 )}
 
                 <button className="btn" type="submit" disabled={!valid || state === "sending" || (mode === "password" && password.length < 8)}>

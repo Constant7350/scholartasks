@@ -2,16 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  buildScorecard, GROUPS, INTERESTS, matchScholarship, normalizeProfile,
+  APPLICATION_STATUS, buildScorecard, GROUPS, summarizeApplications, type ApplicationStatus, INTERESTS, matchScholarship, normalizeProfile,
   primaryGpa, type CourseGrade, type IncomeBand, type MatchProfile, type MatchResult, type Scholarship,
 } from "@scholartasks/core";
 import { PLAIN_GPA, meritNames, packFor, stateName } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
-import { ReportAi } from "../report-ai";
-import { DraftImport } from "../attach-buttons";
-import { downloadDocx } from "../../lib/docx";
+import type { Choice, Row } from "./types";
 
 
 interface Student {
@@ -19,12 +17,7 @@ interface Student {
   income_band: IncomeBand | null; permissions: Record<string, boolean>; weight_rigor?: number; weight_honors?: number;
   match_profile: MatchProfile | null;
 }
-interface Row extends Scholarship {
-  kind: "scholarship" | "grant";
-  sponsor: string; url: string; summary: string; how_to_apply: string | null; amount_text: string; amount_max: number | null;
-  deadline_text: string | null; automatic: boolean; status: "pending" | "approved" | "retired" | "found"; last_checked: string | null; school_id?: string | null;
-}
-interface Choice { id: string; student_id: string; scholarship_id: string; choice: "added" | "hidden"; task_id: string | null; done_steps?: number[]; essay_draft?: string | null }
+interface AppRow { student_id: string; scholarship_id: string; status: ApplicationStatus; amount_won: number | null }
 interface GradeRow { student_id: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }
 
 const TABS = [
@@ -46,6 +39,7 @@ export default function ScholarshipsPage() {
   const [list, setList] = useState<Row[] | null>(null);
   const [choices, setChoices] = useState<Choice[]>([]);
   const [colleges, setColleges] = useState<{ student_id: string; name: string }[]>([]);
+  const [apps, setApps] = useState<AppRow[]>([]);
   const [tab, setTab] = useState<Tab | null>(null);
   useEffect(() => setTab(null), [current]);
   const [error, setError] = useState<string | null>(null);
@@ -54,13 +48,14 @@ export default function ScholarshipsPage() {
     if (!sb) return;
     const { data: s } = await sb.auth.getSession();
     if (!s.session) return window.location.replace("/signin?next=/scholarships");
-    const [mem, st, gr, sc, ch, cl] = await Promise.all([
+    const [mem, st, gr, sc, ch, cl, ap] = await Promise.all([
       sb.from("family_members").select("role, student_id").eq("user_id", s.session.user.id),
       sb.from("students").select("*").order("first_name"),
       sb.from("course_grades").select("student_id, term, course, grade, level, core, grade_level"),
       sb.from("scholarships").select("*").order("name"),
       sb.from("scholarship_choices").select("id, student_id, scholarship_id, choice, task_id, done_steps, essay_draft"),
       sb.from("student_colleges").select("student_id, name"),
+      sb.from("scholarship_applications").select("student_id, scholarship_id, status, amount_won"),
     ]);
     const m = (mem.data as { role: "parent" | "student"; student_id: string | null }[]) ?? [];
     const r = m.some((x) => x.role === "parent") ? "parent" : m.some((x) => x.role === "student") ? "student" : null;
@@ -72,6 +67,7 @@ export default function ScholarshipsPage() {
     setList((sc.data as Row[]) ?? []);
     setChoices((ch.data as Choice[]) ?? []);
     setColleges((cl.data as { student_id: string; name: string }[]) ?? []);
+    setApps((ap.data as AppRow[]) ?? []);
     if (sc.error) setError(friendly(sc.error));
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
@@ -113,7 +109,12 @@ export default function ScholarshipsPage() {
   const hidden = results.filter((x) => choiceOf(x.s.id)?.choice === "hidden");
   const shownTab: Tab = tab ?? (groups.match.length ? "match" : groups.maybe.length ? "maybe" : "later");
 
-  const addToDeadlines = async (s: Row, due: string) => {
+  const myApps = apps.filter((a) => a.student_id === current);
+  const appOf = (id: string) => myApps.find((a) => a.scholarship_id === id);
+  const sum = summarizeApplications(myApps);
+  const applyLink = (id: string) => `/scholarships/apply?id=${id}${student ? `&student=${student.id}` : ""}`;
+
+  const addToDeadlines = async (s: Row, due: string, thenApply = false) => {
     if (!sb || !student) return;
     setError(null);
     const { data: t, error: e } = await sb.from("tasks").insert({
@@ -122,6 +123,7 @@ export default function ScholarshipsPage() {
     if (e) return setError(friendly(e));
     const { error: e2 } = await sb.from("scholarship_choices").upsert({ student_id: student.id, scholarship_id: s.id, choice: "added", task_id: (t as { id: string }).id }, { onConflict: "student_id,scholarship_id" });
     if (e2) return setError(friendly(e2));
+    if (thenApply) return window.location.assign(applyLink(s.id));
     void load();
   };
   const hide = async (s: Row) => {
@@ -157,6 +159,12 @@ export default function ScholarshipsPage() {
       {student && (
         <>
           <ProfileCard key={student.id} student={student} isParent={role === "parent"} seesIncome={seesIncome} onSaved={load} />
+          {myApps.length > 0 && (
+            <p className="note note-info" style={{ marginTop: 12 }}>
+              <b>My applications:</b> {[sum.gettingReady && `${sum.gettingReady} getting ready`, sum.sent && `${sum.sent} sent`, sum.won && `${sum.won} won${sum.totalWon ? ` ($${sum.totalWon.toLocaleString()})` : ""}`, sum.notWon && `${sum.notWon} not this time`].filter(Boolean).join(" · ")}.{" "}
+              <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setTab("saved")}>See them</button>
+            </p>
+          )}
           <div className="tabs sch-tabs" role="tablist">
             {TABS.map(([k, label]) => (
               <button key={k} role="tab" aria-selected={shownTab === k} onClick={() => setTab(k)}>
@@ -168,7 +176,7 @@ export default function ScholarshipsPage() {
           {shownTab === "no" && <p className="hint">Something on these doesn&apos;t fit right now. If an answer above changes, they may move up.</p>}
           {groups[shownTab].length === 0 && <p className="hint">Nothing here right now.</p>}
           {groups[shownTab].map(({ s, r }) => (
-            <ScholarshipCard key={s.id} s={s} r={r} choice={choiceOf(s.id)} onAdd={addToDeadlines} onHide={hide} />
+            <ScholarshipCard key={s.id} s={s} r={r} choice={choiceOf(s.id)} app={appOf(s.id)} applyHref={applyLink(s.id)} onAdd={addToDeadlines} onHide={hide} />
           ))}
           {hidden.length > 0 && (
             <details className="rescue-more" style={{ marginTop: 16 }}>
@@ -187,8 +195,8 @@ export default function ScholarshipsPage() {
   );
 }
 
-function ScholarshipCard({ s, r, choice, onAdd, onHide }: {
-  s: Row; r: MatchResult; choice?: Choice; onAdd: (s: Row, due: string) => Promise<void>; onHide: (s: Row) => Promise<void>;
+function ScholarshipCard({ s, r, choice, app, applyHref, onAdd, onHide }: {
+  s: Row; r: MatchResult; choice?: Choice; app?: AppRow; applyHref: string; onAdd: (s: Row, due: string, thenApply?: boolean) => Promise<void>; onHide: (s: Row) => Promise<void>;
 }) {
   const [due, setDue] = useState(s.deadline ?? "");
   const [adding, setAdding] = useState(false);
@@ -203,6 +211,7 @@ function ScholarshipCard({ s, r, choice, onAdd, onHide }: {
           <b className="sch-amount">{s.amount_text}</b>
           {s.school_id && <div><span className="pill pill-ok">From your school</span></div>}
           {s.status === "pending" && <div><span className="pill pill-soon">Not yet verified</span></div>}
+          {app && <div><span className={`pill ${app.status === "won" ? "pill-ok" : app.status === "getting_ready" ? "pill-soon" : ""}`}>{APPLICATION_STATUS[app.status]}</span></div>}
         </div>
       </div>
       <p style={{ margin: "10px 0" }}>{s.summary}</p>
@@ -228,11 +237,18 @@ function ScholarshipCard({ s, r, choice, onAdd, onHide }: {
             <button className="btn btn-inline btn-sm" onClick={() => void onAdd(s, due)}>Save</button>
           </>
         ) : (
-          <button className="btn btn-inline btn-sm" onClick={() => setAdding(true)}>Add to my deadlines</button>
+          <>
+            <button className="btn btn-inline btn-sm" onClick={() => void onAdd(s, s.deadline ?? "", true)}>{s.school_id ? "Apply in the app" : "Start my application"}</button>
+            <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setAdding(true)}>Add to my deadlines</button>
+          </>
         )}
         {!choice && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => void onHide(s)}>Not for us</button>}
       </div>
-      {choice?.choice === "added" && <ApplyHelp s={s} choice={choice} />}
+      {choice?.choice === "added" && (
+        <a className="btn btn-inline btn-sm link-btn" style={{ marginTop: 10 }} href={applyHref}>
+          📝 {!app ? (s.school_id ? "Apply in the app" : "Start my application") : app.status === "getting_ready" ? "Keep working on my application" : "Open my application"}
+        </a>
+      )}
     </section>
   );
 }
@@ -313,121 +329,5 @@ function ProfileCard({ student, isParent, seesIncome, onSaved }: { student: Stud
         {err && <span className="note note-err" role="alert">{err}</span>}
       </div>
     </details>
-  );
-}
-
-interface Steps { steps: { title: string; detail: string }[]; essay_prompts: string[]; sources: string[] }
-interface Feedback { strengths: string[]; improve: string[]; answers_prompt: string; word_count_note: string; next_step: string; words: number }
-
-/** "Get ready to apply": the checklist for one saved award, plus the essay coach. */
-function ApplyHelp({ s, choice }: { s: Row; choice: Choice }) {
-  const sb = supabase();
-  const [open, setOpen] = useState(false);
-  const [steps, setSteps] = useState<Steps | null>(null);
-  const [done, setDone] = useState<number[]>(choice.done_steps ?? []);
-  const [draft, setDraft] = useState(choice.essay_draft ?? "");
-  const [prompt, setPrompt] = useState("");
-  const [limit, setLimit] = useState("");
-  const [fb, setFb] = useState<Feedback | null>(null);
-  const [busy, setBusy] = useState<"steps" | "essay" | "save" | null>(null);
-  const [msg, setMsg] = useState<string | null>(null);
-
-  const call = async <T,>(path: string, body: object): Promise<T> => {
-    const { data } = await sb!.auth.getSession();
-    const res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session?.access_token ?? ""}` }, body: JSON.stringify(body) });
-    const out = await res.json();
-    if (!res.ok) throw new Error(out.error ?? "Something went wrong.");
-    return out as T;
-  };
-  const loadSteps = async () => {
-    setOpen(true); setMsg(null);
-    if (steps || !sb) return;
-    const { data } = await sb.from("scholarship_steps").select("steps, essay_prompts, sources").eq("scholarship_id", s.id).maybeSingle();
-    if (data) { setSteps(data as Steps); setPrompt((data as Steps).essay_prompts[0] ?? ""); }
-  };
-  const makeSteps = async () => {
-    setBusy("steps"); setMsg(null);
-    try { const out = await call<Steps>("/api/scholarships/steps", { studentId: choice.student_id, scholarshipId: s.id }); setSteps(out); setPrompt(out.essay_prompts[0] ?? ""); }
-    catch (e) { setMsg((e as Error).message); }
-    setBusy(null);
-  };
-  const toggle = async (i: number) => {
-    const next = done.includes(i) ? done.filter((x) => x !== i) : [...done, i];
-    setDone(next);
-    const { error } = await sb!.from("scholarship_choices").update({ done_steps: next }).eq("id", choice.id);
-    if (error) setMsg(friendly(error));
-  };
-  const saveDraft = async () => {
-    setBusy("save"); setMsg(null);
-    const { error } = await sb!.from("scholarship_choices").update({ essay_draft: draft.slice(0, 12000) || null }).eq("id", choice.id);
-    setMsg(error ? friendly(error) : "Draft saved.");
-    setBusy(null);
-  };
-  const coach = async () => {
-    setBusy("essay"); setMsg(null); setFb(null);
-    try {
-      await sb!.from("scholarship_choices").update({ essay_draft: draft.slice(0, 12000) || null }).eq("id", choice.id);
-      setFb(await call<Feedback>("/api/scholarships/essay", { studentId: choice.student_id, scholarshipId: s.id, prompt, limit, draft }));
-    } catch (e) { setMsg((e as Error).message); }
-    setBusy(null);
-  };
-  const words = draft.split(/\s+/).filter(Boolean).length;
-
-  if (!open) return <button className="btn btn-inline btn-sm" style={{ marginTop: 10 }} onClick={() => void loadSteps()}>📝 Get ready to apply</button>;
-  return (
-    <div className="sch-apply">
-      <h3 style={{ margin: "14px 0 6px" }}>Get ready to apply</h3>
-      {!steps ? (
-        <p className="hint">
-          We can read the official page and make a step-by-step checklist (uses 1 AI use; free after the first family asks).{" "}
-          <button className="btn btn-inline btn-sm" disabled={busy === "steps"} onClick={() => void makeSteps()}>{busy === "steps" ? "Reading the official page…" : "Make my checklist"}</button>
-        </p>
-      ) : (
-        <>
-          <p className="hint" style={{ margin: "0 0 6px" }}>{done.filter((i) => i < steps.steps.length).length} of {steps.steps.length} done. Always confirm on the <a href={s.url} target="_blank" rel="noopener noreferrer">official site</a>.</p>
-          <ol className="sch-steps">
-            {steps.steps.map((x, i) => (
-              <li key={i}>
-                <label style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                  <input type="checkbox" checked={done.includes(i)} onChange={() => void toggle(i)} style={{ marginTop: 4 }} />
-                  <span><b style={done.includes(i) ? { textDecoration: "line-through" } : undefined}>{x.title}</b><br /><span className="hint">{x.detail}</span></span>
-                </label>
-              </li>
-            ))}
-          </ol>
-        </>
-      )}
-      <h3 style={{ margin: "14px 0 6px" }}>Essay coach</h3>
-      <p className="hint" style={{ margin: "0 0 8px" }}>Write your own essay here. The coach gives feedback (1 AI use each time), but it won&apos;t write it for you: the people who award it want your own words.</p>
-      {steps && steps.essay_prompts.length > 1 ? (
-        <select className="input" value={prompt} onChange={(e) => setPrompt(e.target.value)} aria-label="Essay prompt">
-          {steps.essay_prompts.map((p) => <option key={p} value={p}>{p.length > 120 ? p.slice(0, 117) + "…" : p}</option>)}
-        </select>
-      ) : (
-        <textarea className="input" rows={2} placeholder="Essay prompt (copy it from the official site)" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
-      )}
-      <input className="input" style={{ marginTop: 6, maxWidth: 260 }} placeholder="Length limit, e.g. 500 words" value={limit} onChange={(e) => setLimit(e.target.value)} />
-      <textarea className="input" rows={10} style={{ marginTop: 6 }} placeholder="Your draft" value={draft} maxLength={12000} onChange={(e) => setDraft(e.target.value)} />
-      <DraftImport studentId={choice.student_id} draft={draft} onText={(t) => setDraft(t.slice(0, 12000))} disabled={busy !== null} />
-      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginTop: 6 }}>
-        <span className="hint">{words} words</span>
-        <button className="btn btn-ghost btn-inline btn-sm" disabled={busy !== null} onClick={() => void saveDraft()}>Save draft</button>
-        <button className="btn btn-ghost btn-inline btn-sm" disabled={!draft.trim()} onClick={() => void downloadDocx(draft, `${s.name} essay`, { title: `${s.name} essay`, note: prompt.trim() ? `Prompt: ${prompt.trim()}` : undefined })}>⬇ Download as Word</button>
-        <button className="btn btn-inline btn-sm" disabled={busy !== null || words < 8} onClick={() => void coach()}>{busy === "essay" ? "Reading your draft…" : "Get feedback"}</button>
-      </div>
-      {msg && <p className="hint" role="status">{msg}</p>}
-      {fb && (
-        <div className="panel" style={{ marginTop: 10 }}>
-          {fb.answers_prompt !== "no prompt" && <p style={{ margin: "0 0 6px" }}><b>Answers the prompt:</b> {fb.answers_prompt}</p>}
-          <p style={{ margin: "0 0 4px" }}><b>What works</b></p>
-          <ul>{fb.strengths.map((x) => <li key={x}>{x}</li>)}</ul>
-          <p style={{ margin: "0 0 4px" }}><b>To make it stronger</b></p>
-          <ul>{fb.improve.map((x) => <li key={x}>{x}</li>)}</ul>
-          {fb.word_count_note && <p className="hint">{fb.word_count_note}</p>}
-          <p style={{ margin: 0 }}><b>Next step:</b> {fb.next_step}</p>
-          <ReportAi feature="essay coach" text={[...fb.strengths, ...fb.improve, fb.next_step].join("\n")} />
-        </div>
-      )}
-    </div>
   );
 }

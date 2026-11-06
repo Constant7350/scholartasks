@@ -62,6 +62,7 @@ export default function Features() {
               <li>Application checklist and essay feedback, never written for you</li>
               <li>Essay bundles: one draft for awards that ask similar questions</li>
               <li>A copy-ready profile to paste into any application form</li>
+              <li>Apply step by step: form questions, letters, papers and a tracker for what you sent and won. Your school&apos;s own local awards are sent right in the app</li>
               <li>One tap adds the deadline to your plan</li>
             </ul>
           </div>
@@ -130,7 +131,7 @@ export default function Features() {
               <li>Search by major, with typical earnings and years for each degree</li>
               <li>Estimated cost after state aid and saved scholarships</li>
               <li>Reach, match and likely using grades, harder classes and test scores</li>
-              <li>Compare aid offers side by side, and a career quiz</li>
+              <li>Compare aid offers side by side, and a deep career interest quiz with a new mix of questions every time</li>
               <li>See the savings from starting at a community college, then transferring</li>
               <li>Essay coach that gives feedback but never writes for the student</li>
             </ul>

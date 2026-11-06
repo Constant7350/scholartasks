@@ -224,6 +224,8 @@ details.menu[open] summary { background: #eef2f9; border-color: var(--navy); }
 .hero .hint { color: var(--muted); margin: 0; font-size: 16px; }
 .family-card { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 22px; }
 .family-card > div { flex: 1 1 300px; }
+a.cq-home { text-decoration: none; color: inherit; }
+a.cq-home:hover { border-color: var(--navy); }
 .link-btn { text-decoration: none; display: inline-block; }
 .kids { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; }
 .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--warm-tint); color: var(--muted); margin-left: 4px; }
@@ -251,6 +253,10 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .tabs { display: grid; grid-template-columns: 1fr 1fr; background: var(--warm-tint); border-radius: 10px; padding: 4px; margin-bottom: 18px; }
 .tabs button { font: inherit; font-size: 14px; font-weight: 600; border: 0; background: none; padding: 9px; border-radius: 8px; color: var(--muted); cursor: pointer; }
 .tabs button[aria-selected="true"] { background: #fff; color: var(--navy); box-shadow: 0 1px 3px rgba(12, 31, 61, 0.12); }
+/* "Remember me" box on the sign-in page */
+.remember { display: flex; gap: 10px; align-items: flex-start; margin: 2px 0 14px; cursor: pointer; font-size: 15px; color: var(--ink); }
+.remember input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--navy); flex: none; cursor: pointer; }
+.remember small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
 .label-row { display: flex; justify-content: space-between; align-items: baseline; }
 .text-btn { font: inherit; font-size: 14px; background: none; border: 0; padding: 0; color: var(--navy); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 .switch { text-align: center; color: var(--muted); font-size: 14px; margin: 14px 0 0; }

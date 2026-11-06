@@ -36,7 +36,7 @@
     {
       "id": "scholarships",
       "title": "Scholarships",
-      "narration": "Instead of searching a dozen websites, students answer a few questions. Then they see awards sorted into You qualify, Maybe, and Not a fit. There are hundreds of Georgia and national awards, and the list grows every week. Each new award is checked on its official page before families see it, and re-checked twice a week in scholarship season. One tap adds a deadline to the plan. Essays that ask the same kind of question are bundled, so one strong draft can start the others. And a copy-ready profile holds every answer a form asks for."
+      "narration": "Instead of searching a dozen websites, students answer a few questions. Then they see awards sorted into You qualify, Maybe, and Not a fit. There are hundreds of Georgia and national awards, and the list grows every week. Each new award is checked on its official page before families see it, and re-checked twice a week in scholarship season. Then students apply step by step, right in the app. Each award gets its own page with the questions on the form, the papers and recommendation letters it needs, and a bar that shows what to do next. Short answers they already wrote show up as a starting point, and a copy-ready profile fills in the rest. For your school's own local scholarships, students send the application to the counselor right inside the app. And the app keeps track of what was sent and what was won."
     },
     {
       "id": "grades",
@@ -71,7 +71,7 @@
     {
       "id": "majors",
       "title": "Search by major",
-      "narration": "Most students know what they love before they know where to go. Type in a dream, like marine biology, vet or nursing. You'll see what those careers earn, and how many years of school they take. Then you get the strongest programs in your own state first, and across the whole country too, with a yearly cost for your family. Then compare your favorites side by side. Each college is ranked first, second or third on strength in the major, cost, graduation, pay and debt, in your state and nationwide, and you choose what matters most. It even shows what you could save by starting at a two-year college, then transferring. Not sure yet? A short career quiz suggests college careers and skilled trades, side by side."
+      "narration": "Most students know what they love before they know where to go. Type in a dream, like marine biology, vet or nursing. You'll see what those careers earn, and how many years of school they take. Then you get the strongest programs in your own state first, and across the whole country too, with a yearly cost for your family. Then compare your favorites side by side. Each college is ranked first, second or third on strength in the major, cost, graduation, pay and debt, in your state and nationwide, and you choose what matters most. It even shows what you could save by starting at a two-year college, then transferring. Not sure yet? Start with the career interest quiz: more than a hundred questions about what a student likes to do and what matters to them in a job, with a new mix every time, so no two friends get the same quiz. It suggests college careers, skilled trades and military paths. It measures interests, not intelligence, and never uses race or gender."
     },
     {
       "id": "trades",
@@ -96,7 +96,7 @@
     {
       "id": "phone",
       "title": "Phone app",
-      "narration": "Families live on their phones, so ScholarTasks does too. The iPhone and Android apps are in testing now, and the website works on any device. Sign-in is quick with Face ID or a fingerprint, which helps, because teenagers forget passwords. What you add on the phone shows up on the computer too. The menu stays short: only the headings show until you tap one, and every page links back to its section."
+      "narration": "Families live on their phones, so ScholarTasks does too. The iPhone and Android apps are in testing now, and the website works on any device. Sign-in is quick with Face ID or a fingerprint, which helps, because teenagers forget passwords. Remember me keeps you signed in at home, and on a shared computer you just untick it. What you add on the phone shows up on the computer too. The menu stays short: only the headings show until you tap one, and every page links back to its section."
     },
     {
       "id": "journey",
@@ -116,7 +116,7 @@
     {
       "id": "compare3",
       "title": "How we compare 3",
-      "narration": "This fall we added the things other apps still did better. A four-year course plan that checks HOPE's harder-class rule. Reach, match and likely based on grades and harder classes, not just test scores. A homework helper that never gives answers. Side-by-side aid offers. Spanish menus and AI answers. Parent-managed accounts from sixth grade. And roster upload for schools. In our latest check, ScholarTasks covers more of the list than any other app."
+      "narration": "This fall we added the things other apps still did better. A four-year course plan that checks HOPE's harder-class rule. Reach, match and likely based on grades and harder classes, not just test scores. A homework helper that never gives answers. Side-by-side aid offers. Spanish menus and AI answers. Parent-managed accounts from sixth grade. Roster upload for schools. And now, applying to scholarships right inside the app. In our latest check, ScholarTasks covers more of the list than any other app."
     },
     {
       "id": "better",
@@ -131,7 +131,7 @@
     {
       "id": "schools",
       "title": "For schools",
-      "narration": "For school leaders and counselors: ScholarTasks supports your counselors. It doesn't replace them. Our school portal is free for every school. Counselors can see who filed the FAFSA, who has a college list, and who's behind on deadlines. They can upload a class roster to see who has joined, email a whole grade at once, and post local scholarships just for their families. Families choose what to share with a school code, and can stop any time. Essays, AI chats and income are never shared."
+      "narration": "For school leaders and counselors: ScholarTasks supports your counselors. It doesn't replace them. Our school portal is free for every school. Counselors can see who filed the FAFSA, who has a college list, and who's behind on deadlines. They can upload a class roster to see who has joined, email a whole grade at once, and post local scholarships just for their families. Students apply for those right in the app, and counselors mark each one awarded or not. Families choose what to share with a school code, and can stop any time. Essays, AI chats and income are never shared, unless a student chooses to send an essay with an application for the school's own scholarship."
     },
     {
       "id": "cost",

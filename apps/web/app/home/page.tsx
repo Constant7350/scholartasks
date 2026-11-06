@@ -9,7 +9,7 @@ import { ProgressCard } from "./progress-card";
 import { PasskeyOffer } from "../passkey-offer";
 import { AdultConsent } from "../adult-consent";
 
-interface Student { id: string; first_name: string; grade_level: number; state: string; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string }
+interface Student { id: string; first_name: string; grade_level: number; state: string; match_profile?: { career_quiz?: { code: string; at: string } } | null; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string }
 interface Grade { student_id: string; course: string; grade: "A" | "B" | "C" | "D" | "F"; level: "standard" | "honors" | "AP" | "IB" | "DE"; core: boolean; grade_level: number; term: string }
 interface Invite { student_id: string; accepted_at: string | null }
 interface Due { due: string | null; open: boolean }
@@ -105,6 +105,8 @@ export default function Home() {
           </>
         )}
       </div>
+
+      <CareerQuizCard students={students} />
 
       {students.map((s) => (
         <GpaScorecard key={s.id} rows={grades.filter((g) => g.student_id === s.id)} currentGrade={s.grade_level} pack={packFor(s.state)} name={s.first_name} compact href="/grades" goal={s.goal_gpa == null ? null : Number(s.goal_gpa)} minGrade={s.min_grade} weights={{ rigor: Number(s.weight_rigor ?? 1), honors: Number(s.weight_honors ?? 0.5) }} />
@@ -222,5 +224,21 @@ export default function Home() {
         ))}
       </div>
     </Page>
+  );
+}
+
+/** Early in the journey: point each student without saved results to the career interest quiz. */
+function CareerQuizCard({ students }: { students: Student[] }) {
+  const todo = students.filter((s) => !s.match_profile?.career_quiz);
+  if (students.length > 0 && todo.length === 0) return null;
+  const who = todo.length === 1 ? todo[0]!.first_name : todo.length > 1 ? "your students" : "your student";
+  return (
+    <a className="panel family-card cq-home" href="/career-quiz">
+      <div>
+        <h2>🧩 Start here: what careers fit {who}?</h2>
+        <p className="hint" style={{ margin: 0 }}>A 15-minute career interest quiz about what they like to do and what matters to them. It links to majors, trades and military paths, home state first and nationwide.</p>
+      </div>
+      <span className="btn btn-inline link-btn">Take the quiz</span>
+    </a>
   );
 }

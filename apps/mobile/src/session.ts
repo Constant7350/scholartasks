@@ -23,6 +23,23 @@ export async function forget() {
   await SecureStore.deleteItemAsync(TOKEN, opts);
 }
 
+/** Full sign-out: ends this phone's sign-in on our server too, then forgets it. */
+export async function endSession() {
+  try {
+    const t = await savedToken();
+    if (t) {
+      const { data } = await sb.auth.refreshSession({ refresh_token: t });
+      if (data.session) await sb.auth.signOut({ scope: "local" });
+    }
+  } catch { /* offline: the saved sign-in is still deleted below */ }
+  await forget();
+}
+
+/** The last email used to sign in on this phone, filled in on the sign-in screen. */
+const EMAIL = "st.email";
+export const savedEmail = () => SecureStore.getItemAsync(EMAIL, opts);
+export const saveEmail = (e: string) => SecureStore.setItemAsync(EMAIL, e, opts);
+
 export const faceIdOn = async () => (await SecureStore.getItemAsync(FACE_ID, opts)) === "1";
 export const setFaceId = (on: boolean) => SecureStore.setItemAsync(FACE_ID, on ? "1" : "0", opts);
 export const askedFaceId = async () => (await SecureStore.getItemAsync(ASKED, opts)) === "1";
@@ -42,6 +59,7 @@ export async function signIn(email: string, password: string): Promise<Session> 
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
   if (error || !data.session) throw error ?? new Error("Couldn't sign in.");
   await saveToken(data.session.refresh_token);
+  await saveEmail(email);
   return data.session;
 }
 

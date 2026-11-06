@@ -42,3 +42,14 @@ export function canRateInStore(): boolean {
 export function rateInStore() {
   appBridge()?.postMessage(JSON.stringify({ rate: true }));
 }
+
+/**
+ * Inside the phone app (0.3 and later), Sign out hands over to the app: with Face ID on it locks,
+ * so opening the app again is one glance; otherwise it signs out fully. Returns false on the website.
+ */
+export function appSignOut(): boolean {
+  const bridge = appVersion() >= 3 && typeof window !== "undefined" ? window.ReactNativeWebView : undefined;
+  if (!bridge) return false;
+  bridge.postMessage(JSON.stringify({ signOut: true }));
+  return true;
+}
