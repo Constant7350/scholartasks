@@ -5,6 +5,7 @@ import { NATIONAL_FINDERS, TRADES, TRADES_PACK, checklistById, dollars, tradeByS
 import { AddChecklist } from "../add-checklist";
 import { TradeAidList } from "../aid-list";
 import { TrainingFinder } from "../finder";
+import { OpeningsList } from "../openings-list";
 import "../trades.css";
 
 export function generateStaticParams() {
@@ -81,6 +82,12 @@ export default async function TradePage({ params }: { params: Promise<{ slug: st
       </section>
 
       <TrainingFinder slug={t.slug} />
+
+      <section className="panel">
+        <h2>Local openings and apprenticeships</h2>
+        <p className="hint">Posted by companies and checked by our review team. Your home state first, then across the country.</p>
+        <OpeningsList trade={t.slug} compact />
+      </section>
 
       <section className="panel">
         <h2>Apprenticeships and union programs anywhere in the U.S.</h2>

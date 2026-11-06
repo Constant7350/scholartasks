@@ -41,3 +41,21 @@ a.trade-callout:hover { border-color: var(--navy); }
 .trade-more { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
 .trade-more > summary { cursor: pointer; font-weight: 600; color: var(--navy); }
 .trade-grade-steps { margin: 8px 0 12px; padding-left: 20px; display: grid; gap: 4px; }
+
+/* Local openings: company form, student list, team review. */
+.opening-form h2 { margin-top: 24px; }
+.opening-form h2:first-child { margin-top: 0; }
+.opening-form textarea { resize: vertical; }
+.opening-form .row { margin-bottom: 16px; }
+.opening-rules { margin: 0 0 8px; padding-left: 20px; display: grid; gap: 6px; }
+.opening-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.opening-card { display: grid; gap: 6px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.opening-card h3 { margin: 0; font-size: 18px; }
+.opening-card p { margin: 0; }
+.opening-card .trade-tags { margin-top: 2px; }
+.opening-card details summary { cursor: pointer; font-weight: 600; color: var(--navy); }
+.opening-card details[open] summary { margin-bottom: 8px; }
+.opening-card .pre { white-space: pre-wrap; }
+.opening-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.opening-actions .btn { width: auto; }
+.opening-flags { margin: 0; padding-left: 20px; color: #8a6514; }
