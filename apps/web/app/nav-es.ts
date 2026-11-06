@@ -19,6 +19,7 @@ const ES: Record<string, [label: string, short?: string]> = {
   "College essays": ["Ensayos universitarios", "Ensayos"],
   "Activities and resume": ["Actividades y currículum", "Actividades"],
   "Application profile (copy and paste)": ["Perfil para solicitudes (copiar y pegar)", "Perfil"],
+  "Common App ready": ["Listo para el Common App", "Common App"],
   "Scholarships and grants": ["Becas y ayudas", "Becas"],
   "FAFSA and aid forms": ["FAFSA y formularios de ayuda", "Ayuda"],
   "Compare aid offers": ["Comparar ofertas de ayuda", "Ofertas"],
