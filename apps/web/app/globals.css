@@ -251,6 +251,10 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .tabs { display: grid; grid-template-columns: 1fr 1fr; background: var(--warm-tint); border-radius: 10px; padding: 4px; margin-bottom: 18px; }
 .tabs button { font: inherit; font-size: 14px; font-weight: 600; border: 0; background: none; padding: 9px; border-radius: 8px; color: var(--muted); cursor: pointer; }
 .tabs button[aria-selected="true"] { background: #fff; color: var(--navy); box-shadow: 0 1px 3px rgba(12, 31, 61, 0.12); }
+/* "Remember me" box on the sign-in page */
+.remember { display: flex; gap: 10px; align-items: flex-start; margin: 2px 0 14px; cursor: pointer; font-size: 15px; color: var(--ink); }
+.remember input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--navy); flex: none; cursor: pointer; }
+.remember small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
 .label-row { display: flex; justify-content: space-between; align-items: baseline; }
 .text-btn { font: inherit; font-size: 14px; background: none; border: 0; padding: 0; color: var(--navy); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 .switch { text-align: center; color: var(--muted); font-size: 14px; margin: 14px 0 0; }
