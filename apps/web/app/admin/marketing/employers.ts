@@ -26,6 +26,9 @@ export const HOW_IT_WORKS = [
   { title: "How students make contact", text: "They apply the way the company asks: the company's website, a work email or a business phone. The student decides. We never send a student's name or details to a company, and companies can't message students inside the app." },
   { title: "Who checks it", text: "Our review team approves every listing on Team: Review local openings before it shows, usually within two business days. The company gets an email when it's live or if we turn it down." },
   { title: "How long it stays", text: "Up to 180 days. Companies reply to their email to change or remove it." },
+  { title: "Weekend and holiday jobs (company accounts)", text: "scholartasks.com/employers. A company makes an account, agrees to the teen job rules and posts weekend, holiday and school-break jobs. Our team approves the company and each job. Students apply inside ScholarTasks (Menu > Weekend and holiday jobs)." },
+  { title: "Parent consent on every application", text: "Nothing reaches the company until a parent reads the consent and ticks I agree. The consent, its exact wording, who agreed and when are saved in the tamper-proof audit log. The company sees only the application (first name, grade, age, message, availability, the shared contact and the parent's email)." },
+  { title: "Work experience and reference letters", text: "When a student is hired, the family adds the job to Activities and the resume (work or leadership) in one tap. The company can write a reference letter; a parent decides whether to keep it in the records or hide it, and the company isn't told." },
 ];
 
 /** What keeps it safe and friendly, especially for students under 18. */
@@ -59,6 +62,7 @@ export const PRICING = {
     { name: "Featured listing", price: "Idea: $39 for 30 days", what: "Shows first in its state with a Featured label, plus a monthly count of how many students opened it and pressed Apply." },
     { name: "Local employer plan", price: "Idea: $29 a month or $290 a year", what: "Up to 10 live listings, one always Featured, a 'Checked employer' badge, and a monthly results email." },
     { name: "Multi-location plan", price: "Idea: $99 a month", what: "Unlimited listings in several states, three Featured at a time, and help writing listings that get applicants." },
+    { name: "Weekend or holiday job post", price: "Idea: $25 flat for 60 days (free while we launch)", what: "One weekend, holiday or school-break job from a company account, with in-app applications that come with a parent's consent and the option to write reference letters." },
   ],
   launch: [
     "Founding employers: the first 100 companies get the Local employer plan free for 12 months and a Founding employer badge.",
@@ -106,6 +110,9 @@ export const EMPLOYER_PHASES: Phase[] = [
     goal: "50 real Georgia listings before we tell students about it widely",
     steps: [
       { id: "emp-db", title: "Run database updates 50 and 53", how: "Paste each file into Supabase > SQL Editor and press Run. Until then, the posting form can't save.", who: "Constant", when: "Now" },
+      { id: "emp-db54", title: "Run database update 54 (weekend and holiday jobs)", how: "Paste the file into Supabase > SQL Editor and press Run. Until then, company accounts and in-app applications can't save.", who: "Constant", when: "Now" },
+      { id: "emp-teen-test", title: "Test a weekend job from start to finish", how: "Make a test company account, post a weekend job, approve the company and job, apply as the sample student, agree as the parent, mark Hired, write a letter, then keep it.", who: "Team", when: "Nov 2026" },
+      { id: "emp-retail", title: "Invite 30 local shops that hire teens on weekends", how: "Garden centers, grocery stores, restaurants, movie theaters, pet stores and summer camps near our first schools. Before Thanksgiving for holiday help, and in spring for summer jobs.", who: "Team", when: "Nov 2026 to Apr 2027" },
       { id: "emp-test", title: "Post a test listing and approve it", how: "Post one from /trades/post, approve it on Team: Review local openings, check the emails, then take it down.", who: "Team", when: "Nov 2026" },
       { id: "emp-flyer", title: "Make a one-page flyer and email for companies", how: "One page: what it is, free, five minutes, the rules, the link and a QR code. Plus a short email to send to shops and coordinators.", who: "Claude", when: "Nov 2026", claude: true },
       { id: "emp-wbl", title: "Contact 20 work-based learning and Youth Apprenticeship coordinators", how: "Start with our counselor portal schools. Ask them to share the link with the employers they already work with.", who: "Constant", when: "Dec 2026" },
@@ -134,6 +141,7 @@ export const EMPLOYER_PHASES: Phase[] = [
     steps: [
       { id: "emp-lawyer", title: "Lawyer reads the employer terms and the paid label", how: "Employer terms on the Terms page, refunds, removal rights, the Featured label wording, and sales tax with our accountant.", who: "Constant", when: "Jul 2027" },
       { id: "emp-prices", title: "Set employer prices from real numbers", how: "Use how many companies posted, how many students applied, and what local job ads cost. Then put the prices in one place, like the family prices.", who: "Constant", when: "Aug 2027" },
+      { id: "emp-flatfee", title: "Turn on the flat fee for weekend and holiday job posts", how: "Decide the price from real numbers (idea: $25 for 60 days), add Stripe checkout on the website, set fee_status to unpaid until paid, and keep the first post free for founding employers.", who: "Claude", when: "Aug 2027", claude: true },
       { id: "emp-checkout", title: "Build paid Featured and the Local employer plan", how: "Stripe checkout on the website only, Featured turns on by itself after payment, receipts by email. Founding employers get 12 months free.", who: "Claude", when: "Aug 2027", claude: true },
       { id: "emp-launch", title: "Turn on paid Featured state by state", how: "Only in states with about 50 live listings and steady student use. Keep Basic free forever.", who: "Team", when: "Sep 2027" },
     ],

@@ -11,6 +11,8 @@ export const OPENING_KINDS = {
   training: "Paid training program",
   job: "Entry-level job",
   internship: "Internship or job shadow",
+  weekend: "Weekend job",
+  holiday: "Holiday and school-break job",
 } as const;
 export type OpeningKind = keyof typeof OPENING_KINDS;
 
@@ -44,6 +46,52 @@ export const OPENING_LAW_LINKS = [
   { label: "Equal employment opportunity (U.S. EEOC)", url: "https://www.eeoc.gov/employers" },
   { label: "Check a Registered Apprenticeship (apprenticeship.gov Partner Finder)", url: "https://www.apprenticeship.gov/partner-finder" },
 ] as const;
+
+/** Kinds for students' part-time work, shown under "Weekend and holiday jobs". */
+export const PART_TIME_KINDS = ["weekend", "holiday"] as const satisfies readonly OpeningKind[];
+
+/**
+ * Extra rules a company agrees to before posting weekend and holiday jobs from a company
+ * account, where students apply inside ScholarTasks. Based on the federal Fair Labor
+ * Standards Act child labor rules (U.S. Department of Labor, YouthRules); states can be stricter.
+ */
+export const TEEN_JOB_RULES = [
+  "Every application comes with a parent's or guardian's consent. We copy the parent on our replies and invite them to any interview.",
+  "We pay at least the federal minimum wage ($7.25 an hour) or the state or local minimum if it is higher, and we pay on time.",
+  "Ages 14 and 15: only outside school hours, up to 3 hours on a school day and 18 hours in a school week, up to 8 hours on a non-school day and 40 hours in a non-school week, and only between 7 a.m. and 7 p.m. (9 p.m. from June 1 to Labor Day).",
+  "Ages 14 to 17: no hazardous work the law bars for their age, such as driving for work, power-driven meat slicers, bakery mixers, forklifts, roofing or demolition.",
+  "Where the state requires it, we get a work permit or age certificate before the first shift (Georgia: needed under 16).",
+  "We meet students in public, at our workplace, with a supervisor on site. We never ask a student to meet alone, in a car or at a private home.",
+  "We contact students only by the email or phone they shared with their application, and always copy the parent.",
+] as const;
+
+/** Official pages for the teen work rules. */
+export const TEEN_JOB_LAW_LINKS = [
+  { label: "Hours and jobs for teens: Fact Sheet 43 (U.S. Department of Labor)", url: "https://www.dol.gov/agencies/whd/fact-sheets/43-child-labor-non-agriculture" },
+  { label: "Child labor rules for teens (YouthRules)", url: "https://www.dol.gov/agencies/whd/youthrules" },
+  { label: "Hazardous jobs teens can't do (U.S. Department of Labor)", url: "https://www.dol.gov/agencies/whd/child-labor/hazardous-occupations" },
+  { label: "State child labor laws (U.S. Department of Labor)", url: "https://www.dol.gov/agencies/whd/state/child-labor" },
+  { label: "Georgia work permits for minors (Georgia Department of Labor)", url: "https://dol.georgia.gov/" },
+] as const;
+
+/**
+ * The flat fee idea for a company's weekend or holiday job post. A placeholder: posting is free
+ * while we launch and no payment is taken until prices are set (build first, measure, then price).
+ */
+export const PART_TIME_POST_FEE = { amountUsd: 25, days: 60, freeWhileLaunching: true } as const;
+
+/** Where an in-app job application is, in plain words for the family. */
+export const JOB_APPLICATION_STATUS = {
+  needs_parent: "Waiting for a parent to agree",
+  declined_by_parent: "Parent said no",
+  sent: "Sent to the company",
+  seen: "The company opened it",
+  interview: "The company wants to meet",
+  not_selected: "Not this time",
+  hired: "Hired",
+  withdrawn: "Taken back",
+} as const;
+export type JobApplicationStatus = keyof typeof JOB_APPLICATION_STATUS;
 
 export interface OpeningInput {
   kind: OpeningKind;
