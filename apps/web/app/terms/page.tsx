@@ -22,6 +22,12 @@ export default function Terms() {
         financial adviser, and it cannot guarantee admission, scholarships or aid.
       </p>
       <p>
+        The career interest quiz and every career, major, trade or military suggestion in ScholarTasks are ideas to explore, not professional career
+        counseling, a test of ability, or a recommendation that any student follow a particular path. Results depend on the answers given and can change
+        as a student grows. ScholarTasks does not promise that a career will be a good fit, open to the student, or pay a certain amount. Students and
+        families make their own decisions about careers, schools, majors and training and are responsible for those decisions.
+      </p>
+      <p>
         SAT and ACT practice questions in ScholarTasks are original, written by our team with help from AI to match the skills and formats described in the
         publicly available College Board and ACT test outlines. They are not official test questions, and practice scores are estimates, not
         predictions of an official score. SAT is a trademark of the College Board and ACT is a trademark of ACT Education Corp. Neither
