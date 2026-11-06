@@ -62,3 +62,21 @@ describe("careers and degrees", () => {
     for (const d of DEGREES) expect(d.years).toBeTruthy();
   });
 });
+
+describe("featured colleges", () => {
+  it("marine biology covers environmental science and lists coastal Georgia colleges", () => {
+    const marine = FIELDS.find((f) => f.id === "marine-biology")!;
+    expect(marine.groups.some((g) => g.cips.includes("0301"))).toBe(true);
+    expect(marine.featured?.map((f) => f.id)).toContain(139250); // College of Coastal Georgia
+  });
+  it("featured entries have unique ids, a state and a link", () => {
+    for (const f of FIELDS) {
+      const ids = (f.featured ?? []).map((x) => x.id);
+      expect(new Set(ids).size).toBe(ids.length);
+      for (const x of f.featured ?? []) {
+        expect(x.state).toMatch(/^[A-Z]{2}$/);
+        expect(x.url).toMatch(/^https:\/\//);
+      }
+    }
+  });
+});

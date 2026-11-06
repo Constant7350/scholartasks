@@ -129,6 +129,12 @@ export interface StudyField {
   /** Things to check about a program that the federal data doesn't have (accreditation, licensing pass rates). */
   checks?: CheckLink[];
   note?: string;
+  /**
+   * Colleges known to offer this career's path inside a broader major, which the
+   * federal data can't show (for example a marine track inside Biology).
+   * id = College Scorecard id; each one links to the college's own program page.
+   */
+  featured?: { id: number; state: string; note: string; url: string }[];
 }
 
 const B: DegreeLevel[] = [3];
@@ -147,8 +153,14 @@ export const FIELDS: StudyField[] = [
       { title: "Marine biology, ecology and fisheries majors", cips: ["2613", "0303"], levels: B, hint: "Federal data groups marine biology with ecology and evolution, so check each college has a marine track." },
       { title: "Biology (most marine biologists start here)", cips: ["2601"], levels: B },
       { title: "Oceanography and earth science", cips: ["4006"], levels: B },
+      { title: "Environmental science (some have a marine track)", cips: ["0301"], levels: B, hint: "Some colleges put marine science inside environmental science, so check for a marine track." },
     ],
     careers: ["zoologist", "geoscientist", "conservation"],
+    featured: [
+      { id: 139250, state: "GA", note: "Brunswick, on the coast. Marine Science track (Environmental Science) and Coastal Ecology track (Biology).", url: "https://www.ccga.edu/academics/artsandsciences/environmentalscience/marinescience/" },
+      { id: 140960, state: "GA", note: "Savannah. Bachelor's in Marine Sciences, on the marsh.", url: "https://www.savannahstate.edu/" },
+      { id: 139959, state: "GA", note: "Athens, with the Skidaway Institute of Oceanography and Marine Institute at Sapelo Island. Bachelor's in Marine Sciences.", url: "https://marsci.uga.edu/" },
+    ],
     note: "Many marine biologists earn a master's degree. Colleges on the coast often have field stations and boats; ask about them on a visit.",
   },
   {

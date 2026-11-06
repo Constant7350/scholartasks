@@ -64,6 +64,8 @@ export default function MajorsPage() {
   const [onList, setOnList] = useState<Set<number>>(new Set());
   const [open, setOpen] = useState<string | null>(null);
   const [twoYear, setTwoYear] = useState<CollegeRow[]>([]);
+  const [allHome, setAllHome] = useState(false);
+  const [featured, setFeatured] = useState<CollegeRow[]>([]);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -122,7 +124,7 @@ export default function MajorsPage() {
   useEffect(() => {
     if (!sb || !group) return;
     let stale = false;
-    setBusy(true); setError(null); setRows(null); setOpen(null);
+    setBusy(true); setError(null); setRows(null); setOpen(null); setAllHome(false);
     void sb.rpc("programs_for", { p_cips: group.cips, p_levels: group.levels, p_state: home, p_online: online, p_limit: 250 }).then(({ data, error: e }) => {
       if (stale) return;
       setBusy(false);
@@ -131,6 +133,13 @@ export default function MajorsPage() {
     });
     return () => { stale = true; };
   }, [sb, group, home, online]);
+
+  // Colleges known to have this path inside a broader major (the federal data can't show it).
+  useEffect(() => {
+    const ids = field?.featured?.map((f) => f.id) ?? [];
+    if (!sb || !ids.length) { setFeatured([]); return; }
+    void sb.from("colleges").select("*").in("id", ids).then(({ data }) => setFeatured((data as CollegeRow[]) ?? []));
+  }, [sb, field]);
 
   // Public two-year colleges in the home state, for "start there, then transfer".
   useEffect(() => {
@@ -141,7 +150,7 @@ export default function MajorsPage() {
   }, [sb, field, home]);
 
   const ranked = useMemo(() => {
-    if (!rows) return { home: [] as Hit[], nation: [] as Hit[] };
+    if (!rows) return { home: [] as Hit[], homeTotal: 0, nation: [] as Hit[] };
     const colleges = new Map(rows.map((r) => [r.college_id, r.college]));
     const combined = combinePrograms(rows).map((c) => {
       const college = colleges.get(c.collegeId)!;
@@ -151,8 +160,9 @@ export default function MajorsPage() {
       college: p.college, grads: p.grads, earn1: p.earn1, earn4: p.earn4, debt: p.debt, online: p.online, score, parts: parts as unknown as Record<string, number | null>,
       cost: estimateCost(toFacts(p.college), ctx),
     }));
-    return { home: hits.filter((h) => h.college.state === home).slice(0, 12), nation: hits.slice(0, 20) };
-  }, [rows, type, home, ctx]);
+    const inHome = hits.filter((h) => h.college.state === home);
+    return { home: allHome ? inHome : inHome.slice(0, 12), homeTotal: inHome.length, nation: hits.slice(0, 20) };
+  }, [rows, type, home, ctx, allHome]);
 
   if (!sb) return <Page title="Search by major"><NotConfigured /></Page>;
   if (!ready || !signedIn) return <Page title="Search by major"><p className="hint">Loading…</p></Page>;
@@ -424,9 +434,38 @@ export default function MajorsPage() {
           {error && <p className="note note-err" role="alert">{error}</p>}
           {busy && <p className="hint">Finding colleges…</p>}
 
+          {field?.featured && featured.length > 0 && (
+            <section className="panel">
+              <h2>Colleges with a {field.label.toLowerCase()} track</h2>
+              <p className="hint">Federal data lists some {field.label.toLowerCase()} programs under a broader major like Biology, so they can rank lower in the lists below. These colleges offer this path; check their page for details.</p>
+              <ul className="items">
+                {[...featured].sort((a, b) => Number(b.state === home) - Number(a.state === home) || a.name.localeCompare(b.name)).map((c) => {
+                  const f = field.featured!.find((x) => x.id === c.id);
+                  return (
+                    <li key={c.id}>
+                      <b>{c.name}</b> <span className="hint">({c.city}, {c.state})</span><br />
+                      <span>{f?.note}</span>{" "}
+                      {f?.url && <a href={f.url} target="_blank" rel="noreferrer">See the program</a>}
+                      {student && (onList.has(c.id)
+                        ? <span className="pill pill-ok" style={{ marginLeft: 8 }}>On the list</span>
+                        : <button className="btn btn-ghost btn-inline btn-sm" style={{ marginLeft: 8 }} onClick={() => void add(c)}>Add to college list</button>)}
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
+
           {rows && group && (
             <>
               {list(ranked.home, `Best in ${homeName}: ${group.title}`, `No college in ${homeName} reports this major at this level. See the nationwide list below.`)}
+              {ranked.homeTotal > 12 && (
+                <p style={{ margin: "-6px 0 16px" }}>
+                  <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setAllHome(!allHome)}>
+                    {allHome ? `Show the top 12 in ${homeName}` : `Show all ${ranked.homeTotal} colleges in ${homeName}`}
+                  </button>
+                </p>
+              )}
               {list(ranked.nation, `Best nationwide: ${group.title}`, "No colleges found. Try another list or include online programs.")}
               {transfer()}
               {!isGrad && costChart([...ranked.home.slice(0, 5), ...ranked.nation.filter((h) => !ranked.home.some((x) => x.college.id === h.college.id)).slice(0, 5)])}
