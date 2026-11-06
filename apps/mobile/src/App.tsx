@@ -6,7 +6,7 @@ import * as Print from "expo-print";
 import { WebView as RNWebView, type WebViewMessageEvent, type WebViewProps } from "react-native-webview";
 import type { Session } from "@supabase/supabase-js";
 import { RELOCK_AFTER_MS, SITE_HOSTS, SITE_URL, WEB_SESSION_KEY } from "./config";
-import { askedFaceId, faceIdOn, forget, friendly, markAskedFaceId, resume, saveToken, setFaceId, signIn } from "./session";
+import { endSession, faceIdOn, friendly, markAskedFaceId, resume, savedEmail, saveToken, setFaceId, signIn } from "./session";
 import { unlock, unlockKind } from "./unlock";
 import { clearReminders, scheduleReminders, type Reminder } from "./reminders";
 import { rateApp, shareText } from "./share";
@@ -70,17 +70,31 @@ export default function App() {
     return () => sub.remove();
   }, [kind, tryUnlock]);
 
+  // After typing a password, offer Face ID whenever it is still off, so next time is one glance.
   const signedIn = async (s: Session) => {
     setSession(s);
-    if (kind && !(await askedFaceId())) setScreen("offer");
+    if (kind && !(await faceIdOn())) setScreen("offer");
     else setScreen("app");
   };
 
+  /** "Use a different account": ends the sign-in completely. The email stays filled in. */
   const signedOut = async () => {
-    await forget();
+    await endSession();
     await clearReminders();
     setSession(null);
     setScreen("signin");
+  };
+
+  /**
+   * Sign out from the website menu (app 0.3 and later). With Face ID on, the app just locks:
+   * opening it again is one glance, like a banking app. Without Face ID it signs out fully.
+   */
+  const lockOrSignOut = async () => {
+    if (kind && (await faceIdOn())) {
+      setSession(null);
+      setScreen("locked");
+      await tryUnlock(kind);
+    } else await signedOut();
   };
 
   return (
@@ -99,7 +113,7 @@ export default function App() {
         />
       )}
       {screen === "locked" && kind && <Locked kind={kind} error={error} onUnlock={() => tryUnlock(kind)} onOther={signedOut} />}
-      {screen === "app" && session && <Site session={session} onSignedOut={signedOut} />}
+      {screen === "app" && session && <Site session={session} onSignedOut={signedOut} onSignOut={lockOrSignOut} />}
     </SafeAreaProvider>
   );
 }
@@ -115,6 +129,8 @@ function Splash() {
 
 function SignIn({ onDone }: { onDone: (s: Session) => void }) {
   const [email, setEmail] = useState("");
+  // Fill in the email used last time on this phone.
+  useEffect(() => { savedEmail().then((e) => e && setEmail((cur) => cur || e)).catch(() => {}); }, []);
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -183,7 +199,7 @@ function Locked({ kind, error, onUnlock, onOther }: { kind: string; error: strin
       </Pressable>
       {error && <Text style={[s.err, { color: "#fff" }]}>{error}</Text>}
       <Pressable onPress={onOther}>
-        <Text style={[s.link, { color: "#fff" }]}>Sign in another way</Text>
+        <Text style={[s.link, { color: "#fff" }]}>Use a different account</Text>
       </Pressable>
     </SafeAreaView>
   );
@@ -223,14 +239,16 @@ function bridge(session: Session) {
   })(); true;`;
 }
 
-function Site({ session, onSignedOut }: { session: Session; onSignedOut: () => void }) {
+function Site({ session, onSignedOut, onSignOut }: { session: Session; onSignedOut: () => void; onSignOut: () => void }) {
   const [inject] = useState(() => bridge(session));
   const [loading, setLoading] = useState(true);
   const [offline, setOffline] = useState(false);
 
   const onMessage = async (e: WebViewMessageEvent) => {
     try {
-      const m = JSON.parse(e.nativeEvent.data) as { refresh_token?: string | null; reminders?: Reminder[]; print?: string; share?: { title?: unknown; text?: unknown }; rate?: boolean };
+      const m = JSON.parse(e.nativeEvent.data) as { refresh_token?: string | null; reminders?: Reminder[]; print?: string; share?: { title?: unknown; text?: unknown }; rate?: boolean; signOut?: boolean };
+      // Sign out in the website menu: lock with Face ID, or sign out fully (see lockOrSignOut).
+      if (m.signOut === true) return onSignOut();
       if (m.refresh_token) await saveToken(m.refresh_token);
       if (Array.isArray(m.reminders)) await scheduleReminders(m.reminders);
       // "Print or save as PDF" on the website: the web view can't print, so the phone does.
@@ -264,7 +282,8 @@ function Site({ session, onSignedOut }: { session: Session; onSignedOut: () => v
         allowsBackForwardNavigationGestures
         pullToRefreshEnabled
         // 0.2 and later: the website may ask for the share sheet and store rating box (see apps/web/lib/share.ts).
-        applicationNameForUserAgent="ScholarTasksApp/0.2"
+        // 0.3 and later: Sign out in the menu asks the app to lock (Face ID) instead of ending the sign-in.
+        applicationNameForUserAgent="ScholarTasksApp/0.3"
         // Every link goes through onShouldStartLoadWithRequest below. The default list only lets
         // http(s) through and quietly drops mailto:/sms:/tel: links on iPhone.
         originWhitelist={["*"]}

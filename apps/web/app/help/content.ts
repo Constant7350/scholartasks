@@ -1042,6 +1042,7 @@ export const TOPICS: Topic[] = [
       "Sign out from the Menu.",
       "Students should always use their own email, not a parent's.",
       "In the iPhone and Android app, sign in with a password, an email link or Face ID. Google sign-in works on the website.",
+      "In the phone app, Sign out locks the app when Face ID or fingerprint is on: open it again and just look at the phone. To switch to another person, tap Use a different account on the lock screen. Your email is filled in for you next time.",
     ],
   },
   {
