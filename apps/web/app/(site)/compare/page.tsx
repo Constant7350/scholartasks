@@ -37,7 +37,7 @@ const PART3: [string, string, string[]][] = [
   ["Spanish", "Whole app and AI answers", ["Some", "Some", "Some", "No", "No", "Yes"]],
   ["Starts in grade 6", "Yes, parent-managed", ["No", "Yes", "No", "No", "No", "Yes"]],
   ["School roster upload", "Yes, with data agreement", ["No", "Yes", "Some", "No", "No", "Yes"]],
-  ["Apply to scholarships inside the app", "Yes, step by step; school awards sent here", ["No", "No", "No", "No", "Yes", "No"]],
+  ["Scholarship applications in the app", "Made ready step by step; school awards sent here", ["No", "No", "No", "No", "Yes", "No"]],
 ];
 
 function Table({ caption, rows }: { caption: string; rows: [string, string, string[]][] }) {
