@@ -16,6 +16,7 @@
     "colleges",
     "majors",
     "trades",
+    "military",
     "aid",
     "todo",
     "phone",
@@ -104,6 +105,11 @@
       "slideHash": "233004e19d5ba621",
       "narrationHash": "9e0adbfacf32d974",
       "seconds": 28
+    },
+    "military": {
+      "slideHash": "75456a90b93227aa",
+      "narrationHash": "b200fd09a6c1e6b5",
+      "seconds": 41.7
     },
     "aid": {
       "slideHash": "5c3ef7be28b5819f",
