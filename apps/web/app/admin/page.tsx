@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
-import { Icon, lookOf, teamSections } from "./shell";
+import { Badge, Icon, lookOf, teamSections, useAttention } from "./shell";
 
 /** One line under each team page on the admin home. Pages not listed just show their name. */
 const ABOUT: Record<string, string> = {
@@ -27,6 +27,7 @@ const ABOUT: Record<string, string> = {
 export default function AdminHome() {
   const sb = supabase();
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
+  const attention = useAttention();
 
   useEffect(() => {
     if (!sb) return;
@@ -45,7 +46,7 @@ export default function AdminHome() {
 
   return (
     <Page title={title}>
-      <p className="hint">Everything the team looks after, in one place. Pick a page below or from the menu.</p>
+      <p className="hint">Everything the team looks after, in one place. A red number means that many things still need someone to look at them.</p>
       {teamSections().map((s) => (
         <section key={s.title}>
           <h2 className="admin-sub">{s.title}</h2>
@@ -53,12 +54,13 @@ export default function AdminHome() {
             {s.items.map((i) => {
               const { icon, tone } = lookOf(i.href);
               return (
-                <a key={i.href} href={i.href} className="admin-card">
+                <a key={i.href} href={i.href} className={`admin-card${attention[i.href] ? " admin-card-due" : ""}`}>
                   <span className={`ai-tile ai-tile-lg ai-${tone}`}><Icon name={icon} /></span>
                   <span>
                     <b>{i.label}</b>
                     {ABOUT[i.href] && <small>{ABOUT[i.href]}</small>}
                   </span>
+                  <Badge href={i.href} count={attention[i.href]} />
                 </a>
               );
             })}

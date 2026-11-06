@@ -6,6 +6,7 @@ import { supabase } from "../../lib/supabase";
 import { appSignOut } from "../../lib/share";
 import { BrandMark } from "../brand";
 import { NAV, NAV_GROUPS, bestMatch, type NavItem } from "../nav";
+import { attentionLabel, loadAttention, type Attention } from "./attention";
 
 /**
  * Team admin layout: a menu down the left side with a colored icon for each page,
@@ -19,6 +20,17 @@ import { NAV, NAV_GROUPS, bestMatch, type NavItem } from "../nav";
 /** True inside the team admin layout: Page() then leaves out the family top bar and footer. */
 const InShell = createContext(false);
 export const useInAdminShell = () => useContext(InShell);
+
+/** How many things wait on each team page (see attention.ts). Empty until loaded. */
+const AttentionCtx = createContext<Attention>({});
+export const useAttention = () => useContext(AttentionCtx);
+
+/** Red number: how many things on that page still need someone to look at them. */
+export function Badge({ href, count }: { href: string; count: number | undefined }) {
+  if (!count) return null;
+  const label = attentionLabel(href, count);
+  return <span className="admin-count" title={label} aria-label={label}>{count > 99 ? "99+" : count}</span>;
+}
 
 type Tone = "navy" | "blue" | "green" | "gold" | "coral" | "purple";
 
@@ -87,6 +99,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   // normal page (which says "This page is for the ScholarTasks team").
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [name, setName] = useState("");
+  const [attention, setAttention] = useState<Attention>({});
 
   useEffect(() => {
     if (!sb) return setAdmin(false);
@@ -99,6 +112,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
       setAdmin(r.data === true);
     })();
   }, [sb]);
+
+  // Fresh counts on every page change, so a number drops as soon as you finish a review.
+  useEffect(() => {
+    if (!sb || !admin) return;
+    let live = true;
+    loadAttention(sb).then((a) => { if (live) setAttention(a); }).catch(() => undefined);
+    return () => { live = false; };
+  }, [sb, admin, path]);
 
   useEffect(() => { window.scrollTo(0, 0); }, [path]);
   // On phones the menu scrolls sideways: bring the page you are on into view.
@@ -123,13 +144,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
     return (
       <a key={href + label} href={href} className={on ? "on" : ""} aria-current={on ? "page" : undefined}>
         <span className={`ai-tile ai-${tone}`}><Icon name={icon} /></span>
-        {label}
+        <span className="admin-navlabel">{label}</span>
+        <Badge href={href} count={attention[href]} />
       </a>
     );
   };
 
   return (
     <InShell.Provider value={true}>
+      <AttentionCtx.Provider value={attention}>
       <div className="admin-app">
         <aside className="admin-side">
           <div className="admin-topline">
@@ -162,6 +185,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         </aside>
         <div className="admin-main">{children}</div>
       </div>
+      </AttentionCtx.Provider>
     </InShell.Provider>
   );
 }
