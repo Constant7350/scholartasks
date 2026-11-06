@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export interface StudyStudent { id: string; first_name: string; grade_level: number }
 export interface StudyContext { role: "parent" | "student" | null; students: StudyStudent[]; own: string | null; done: Record<string, string[]>; reviews: Record<string, "approved" | "changes"> }
 
-/** Who is looking, their students, which lessons each finished, and which lessons a teacher approved. */
+/** Who is looking, their students, which lessons each finished, and which lessons our review team approved. */
 export async function loadStudy(sb: SupabaseClient, userId: string): Promise<StudyContext> {
   const [mem, st, pr, rv] = await Promise.all([
     sb.from("family_members").select("role, student_id").eq("user_id", userId),

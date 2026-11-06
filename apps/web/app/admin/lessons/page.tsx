@@ -8,7 +8,7 @@ import { ReviewNav, timeOf } from "../review-kit";
 
 interface Review { lesson_id: string; status: "approved" | "changes"; notes: string | null; updated_at: string }
 
-/** Teacher review of the study skills lessons: approve each one or leave notes for changes. */
+/** Team review of the study skills lessons: approve each one or leave notes for changes. */
 export default function LessonReviewPage() {
   const sb = supabase();
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
@@ -73,7 +73,7 @@ export default function LessonReviewPage() {
     <Page title={title}>
       <ReviewNav />
       <p className="hint" style={{ marginTop: -8 }}>
-        Read each study skills lesson as a teacher would. Approve it if it&apos;s accurate and right for grades 8 to 12, or write what should change and pick &quot;Needs changes&quot;. Your notes come to us and we update the lesson. <b>{approved} of {LESSONS.length}</b> approved. Practice questions are reviewed on the <a href="/admin/questions">question review page</a>.
+        Read each study skills lesson the way a classroom teacher would. Approve it if it&apos;s accurate and right for grades 8 to 12, or write what should change and pick &quot;Needs changes&quot;. Your notes come to us and we update the lesson. <b>{approved} of {LESSONS.length}</b> approved. Practice questions are reviewed on the <a href="/admin/questions">question review page</a>.
       </p>
       {error && <p className="note note-err" role="alert">{error}</p>}
       {notReviewed.length > 1 && (

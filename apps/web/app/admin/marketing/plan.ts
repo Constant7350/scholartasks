@@ -95,7 +95,7 @@ export const CHANNELS = [
   { rank: 5, name: "Short videos for students", cost: "Free to low", why: "'Hidden gem scholarship of the week' and deadline alerts are the posts students engage with most. Use college-student ambassadors and our 'checked by people' promise against scams." },
   { rank: 6, name: "Workshops with community partners", cost: "Low", why: "A ready-made 30-minute 'Plan, Fund, Prepare' night using our presentation. Churches, libraries and clubs bring the families." },
   { rank: 7, name: "Monthly email: what to do this month", cost: "Low", why: "One short email per grade each month keeps families coming back and turns free families into paying ones." },
-  { rank: 8, name: "Local news and podcasts", cost: "Free", why: "'Georgia parents and a teacher build the college app they wished they had' is a story local TV, newspapers and parenting podcasts like." },
+  { rank: 8, name: "Local news and podcasts", cost: "Free", why: "'A Georgia company builds the all-in-one college and aid app families wished they had' is a story local TV, newspapers and parenting podcasts like." },
   { rank: 9, name: "App Store and Google Play listing", cost: "Free", why: "Good screenshots, the words parents search for, and asking happy families for a review after a win." },
   { rank: 10, name: "Small paid ad tests, later", cost: "Medium", why: "Education app installs on Meta often cost $10 to $70 each, so wait until we know how many free families start paying. Then test $300 a month aimed at Georgia parents during the busy months." },
 ];
@@ -152,7 +152,7 @@ export const PHASES: Phase[] = [
     goal: "15 schools, 1,500 families, 150 paying, every Southeast state switched on.",
     steps: [
       { id: "ambassadors", title: "Start a college-student ambassador program", how: "5 to 10 Georgia college students post and run one workshop each, paid per family that joins.", who: "Student", when: "Apr 2027" },
-      { id: "press", title: "Pitch local news and parenting podcasts", how: "Story: a Georgia family and a teacher built the app they wished they'd had. Include a free-tool angle and real family results.", who: "Constant", when: "Apr to May 2027" },
+      { id: "press", title: "Pitch local news and parenting podcasts", how: "Story: a Georgia company built the all-in-one app families wished they'd had. Include a free-tool angle and real family results.", who: "Constant", when: "Apr to May 2027" },
       { id: "summer-essays", title: "Run a free summer essay week for rising seniors", how: "Five short lessons by email plus the essay coach. Big sign-up driver before senior year.", who: "Fiona", when: "Jun to Jul 2027" },
       { id: "gsca-2027", title: "Present or exhibit at GSCA 2027", how: "Send a session proposal when the call opens (usually spring) and book a booth.", who: "Fiona", when: "Spring 2027" },
       { id: "store-reviews", title: "Ask happy families for store reviews", how: "In-app prompt after a win (scholarship saved, deadline met). Aim for 50 reviews at 4.5 stars or more.", who: "Claude", when: "May 2027", claude: true },

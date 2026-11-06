@@ -2,22 +2,22 @@ import { FinalCta, PageHead } from "../parts";
 
 export const metadata = {
   title: "About us · ScholarTasks",
-  description: "ScholarTasks was made by a Georgia family: a parent, a teacher who reviews the lessons, and a high school senior who tests every page.",
+  description: "ScholarTasks is a Georgia company building one easy app for college, scholarships and state aid, with every lesson and practice question checked by our review team.",
 };
 
 export default function About() {
   return (
     <>
-      <PageHead kicker="About us" title="Made by a Georgia family, for families like yours">
-        We built ScholarTasks while going through college applications ourselves. We wanted one place that kept track of everything and explained it in plain language.
+      <PageHead kicker="About us" title="Built in Georgia, for families everywhere">
+        ScholarTasks brings college plans, scholarships, state aid, grades and test prep into one place, and explains every step in plain language. Our goal is simple: no family should miss money or a deadline because the process was too confusing.
       </PageHead>
 
       <section className="s-section tint">
         <div className="site-wrap">
           <div className="s-grid s-grid-3">
-            <div className="s-card"><span className="s-icon" aria-hidden="true">🛠️</span><h3>A parent who builds it</h3><p>Who got tired of tracking deadlines on a dozen websites and spreadsheets.</p></div>
-            <div className="s-card"><span className="s-icon green" aria-hidden="true">🍎</span><h3>A teacher who checks it</h3><p>Who reviews the study lessons, practice questions and answers before families see them.</p></div>
-            <div className="s-card"><span className="s-icon gold" aria-hidden="true">🎓</span><h3>A senior who tests it</h3><p>Who uses every page for real applications and tells us when something is confusing.</p></div>
+            <div className="s-card"><span className="s-icon" aria-hidden="true">🛠️</span><h3>Our product team</h3><p>Designs and builds every page, so families stop tracking deadlines across a dozen websites and spreadsheets.</p></div>
+            <div className="s-card"><span className="s-icon green" aria-hidden="true">🍎</span><h3>Our education review team</h3><p>Checks the study lessons, practice questions and answers before families see them.</p></div>
+            <div className="s-card"><span className="s-icon gold" aria-hidden="true">🎓</span><h3>Tested with real students</h3><p>Students use ScholarTasks for real applications and tell us when something is confusing, so we can make it simpler.</p></div>
           </div>
         </div>
       </section>
