@@ -112,7 +112,7 @@ export const TOPICS: Topic[] = [
       "Open Menu, then My parent space (or tap Open my space on the Home page).",
       "Tap Find colleges, Search by major or Scholarships. At the top of those pages, My parent space is picked. Tap Save to my list on anything you like.",
       "Back in My parent space, mark each one Like, Maybe or Not for us, and add a note if you want.",
-      "Tick Share with (your student's name) on anything you want your student to see. It shows on their Home page under Ideas from your parents. They never see a Not for us.",
+      "Check Share with (your student's name) on anything you want your student to see. It shows on their Home page under Ideas from your parents. They never see a Not for us.",
       "Ready to make it official? Tap Add to (name)'s college list or Add to (name)'s deadlines.",
       "Want to add straight to your student's plan from a search? Switch the top of the page to (name)'s plan. Those show on the plan as Added by your parent.",
     ],
@@ -268,12 +268,12 @@ export const TOPICS: Topic[] = [
     steps: [
       "Open Menu, then To-do list, or tap the To-do list tile on Home.",
       "To do shows open items in groups: Late (red), Due this week (yellow), Due this month, Later, and No due date.",
-      "Tick the box when something is finished. It moves to the Done tab. Untick it there to move it back.",
+      "Check the box when something is finished. It moves to the Done tab. Uncheck it there to move it back.",
     ],
     body: [
       "The list fills itself from the College plan (colleges you're applying to and every deadline you add) and from scholarships you saved.",
-      "For a saved scholarship with a checklist, tap the steps line to tick off each step right from the to-do list.",
-      "Ticking a college as done marks the application Submitted. Change it to Accepted and so on from the College plan.",
+      "For a saved scholarship with a checklist, tap the steps line to check off each step right from the to-do list.",
+      "Checking a college as done marks the application Submitted. Change it to Accepted and so on from the College plan.",
       "If a student needs a parent's OK to mark things done, the item shows \"Waiting for parent's OK\" in Done until the parent taps Approve.",
       "\"Beyond grades\" steps for the student's grade (join activities, log service, take a leadership role, line up recommenders, draft the essay) are added once each school year. Tap Not for me to hide one that doesn't fit.",
     ],
@@ -297,7 +297,7 @@ export const TOPICS: Topic[] = [
     summary: "Answer five quick questions (where, how big, what kind of college: public, private or Christian, what to study, price) and see colleges that fit, each with a yearly price and a Reach, Match or Likely label.",
     steps: [
       "Open Menu, then Find colleges.",
-      "Tap an answer for each question. Subjects your student picked on the Scholarships page are already ticked.",
+      "Tap an answer for each question. Subjects your student picked on the Scholarships page are already checked.",
       "Question 3, What kind of college?: pick Public colleges, Private colleges, Christian colleges or Military academies and colleges. With Christian colleges you can also pick a church family (Baptist, Catholic, Methodist, Presbyterian, Lutheran, nondenominational and more), or leave it on Any Christian college.",
       "Tap Show my matches.",
       "Tap + Add on any college to put it on the college list, where its price and deadlines live.",
@@ -408,7 +408,7 @@ export const TOPICS: Topic[] = [
     summary: "Explore skilled trades you can train for in weeks to a few years: what each pays, ways to train, licensing, schools in Georgia and every other state, and checklists to apply.",
     steps: [
       "Open Menu, then Trades and trade schools.",
-      "Search or tap a group (Building, CNC machining, Health care, Mechanics...). Tick Tuition-free in Georgia to see trades on the HOPE Career Grant list.",
+      "Search or tap a group (Building, CNC machining, Health care, Mechanics...). Check Tuition-free in Georgia to see trades on the HOPE Career Grant list.",
       "Tap CNC machining at the top to see machine operator, machinist, CNC programmer and tool and die maker, with how people move up from one to the next.",
       "Not sure? Tap the quiz and pick what you enjoy.",
       "Open a trade to see pay, ways to train, licensing and Where to train. Pick any state in the finder to see its schools.",
@@ -456,7 +456,7 @@ export const TOPICS: Topic[] = [
     steps: [
       "Open scholartasks.com/trades/post (there's a link at the bottom of the Trades page and For employers at the bottom of the website). Companies anywhere in the U.S. can post.",
       "Fill in your company, the opening, the youngest age you can take and how students should apply.",
-      "Read the listing rules, tick the box and tap Send for review.",
+      "Read the listing rules, check the box and tap Send for review.",
       "Our review team checks it, usually within two business days, and emails you when it's live. To change it or take it down, reply to that email.",
     ],
     body: [
@@ -495,7 +495,7 @@ export const TOPICS: Topic[] = [
     summary: "Companies make a company account, agree to the teen job rules and post weekend, holiday and school-break jobs. Students apply in the app with a parent's consent.",
     steps: [
       "Open scholartasks.com/employers and tap Create a company account. Sign up with your work email.",
-      "Fill in your company, read the teen job rules, tick I agree and tap Make my company account. Our review team checks your company.",
+      "Fill in your company, read the teen job rules, check I agree and tap Make my company account. Our review team checks your company.",
       "Post a job: weekend or holiday, pay, days and hours, the youngest age you can take, and up to 3 questions of your own. Our team checks each job before students see it.",
       "Applications arrive after a parent agrees. Move each one along: Mark as seen, Let's meet, Hired or Not this time. The family sees it right away.",
       "After someone worked for you, tap Write a reference letter about their work ethic and character.",
@@ -558,7 +558,7 @@ export const TOPICS: Topic[] = [
       "For a college's own essays, tap Add a college's essay, pick the college from your list, paste its prompt and word limit.",
       "Stuck? Tap Help me find a topic. The coach asks questions drawn from your activities.",
       "Wrote it on paper, in Word or in Google Docs? Tap Upload my draft (a Word file, old or new, or a Pages, OpenOffice, RTF or text file goes straight in) or Photo of my draft (it is typed out word for word, using 1 AI use). Read it over and fix anything misread.",
-      "When you have a draft, tap Get feedback. Tick Finished when it's done.",
+      "When you have a draft, tap Get feedback. Check Finished when it's done.",
       "Tap Download as Word to keep working on your draft in Word, Google Docs or Pages. On a phone it opens the share sheet so you can save it to Files or Drive.",
     ],
     body: [
@@ -577,11 +577,11 @@ export const TOPICS: Topic[] = [
     summary: "From time to time our team opens an essay challenge for each grade group, with its own topic and subject. Students write the essay right in the app, earn badges step by step, and every finished essay earns a certificate. Winners get gift card prizes.",
     steps: [
       "Open Menu, then Essay challenge (win prizes). You see the challenges open for your grade.",
-      "Tap Take the challenge, read the topic and the official rules, and tick the box.",
+      "Tap Take the challenge, read the topic and the official rules, and check the box.",
       "Write down three ideas, then a short plan: beginning, middle and end.",
       "Write the essay in the box. It saves as you type. Pasting is turned off, so type it yourself.",
       "Come back on another day to improve it, and tap Get tips on my draft for the coach's feedback.",
-      "Tick each line of the Polish checklist when it's true.",
+      "Check each line of the Polish checklist when it's true.",
       "A parent signs permission once, in their own login (an adult student signs for themselves).",
       "Tap Send my essay in, then Claim my certificate to print it or save it as a PDF.",
     ],
@@ -679,7 +679,7 @@ export const TOPICS: Topic[] = [
     keywords: ["streak", "badge", "badges", "award", "progress", "weeks in a row", "motivation", "fire"],
     summary: "Home shows how many weeks in a row your student has made progress, plus badges for milestones like 5 colleges on the list or a finished essay.",
     steps: [
-      "Get anything done in a week: tick off a to-do, add a grade or activity, save a college or scholarship, answer practice questions, finish a lesson or a FAFSA step.",
+      "Get anything done in a week: check off a to-do, add a grade or activity, save a college or scholarship, answer practice questions, finish a lesson or a FAFSA step.",
       "Do it again next week to grow the streak. A week only breaks the streak once it's over, so there's always time.",
       "Tap See all badges on Home to see what's left and how close you are.",
     ],
@@ -699,7 +699,7 @@ export const TOPICS: Topic[] = [
     steps: [
       "Open Menu, then Activities and resume.",
       "On the Activities tab, tap Add an activity. Pick the type, then type your role, the club or employer, and what you did (150 characters, like the Common App).",
-      "Tick the grades you did it in and add hours per week and weeks per year.",
+      "Check the grades you did it in and add hours per week and weeks per year.",
       "On the Honors and awards tab, add each award and how far it reaches (school, state, national).",
       "Use the arrows to put the most important one first. Colleges read them in that order.",
     ],
@@ -746,7 +746,7 @@ export const TOPICS: Topic[] = [
     steps: [
       "Open Activities and resume, then tap Make my resume.",
       "Type your full name and an email or city for the top. These stay on this device only.",
-      "Untick Show GPA if you'd rather leave it off.",
+      "Uncheck Show GPA if you'd rather leave it off.",
       "Tap Print or save as PDF.",
     ],
     body: ["The resume updates itself whenever you add an activity or a grade."],
@@ -817,7 +817,7 @@ export const TOPICS: Topic[] = [
     steps: [
       "Open Menu, then Grades and scholarships.",
       "Under Courses and grades, start typing the course name and pick it from the list (or keep what you typed).",
-      "Choose the level, grade and term, and tick Core if it's English, math, science, social studies or a world language.",
+      "Choose the level, grade and term, and check Core if it's English, math, science, social studies or a world language.",
       "Tap Add course.",
     ],
     body: ["Core courses are the ones that count toward most state scholarships (like HOPE and Bright Futures). A student can only add grades if the parent allows it."],
@@ -1045,7 +1045,7 @@ export const TOPICS: Topic[] = [
     body: [
       "The bar at the top shows how much is done and the next thing to do.",
       "The Scholarships page shows a count of your applications: getting ready, sent and won, with the total won.",
-      "Sending to your school: you choose what goes in (answers always; GPA and scores, activities and the essay if you tick them). Only that school's counselors see it, and you can take it back until they start reviewing it.",
+      "Sending to your school: you choose what goes in (answers always; GPA and scores, activities and the essay if you check them). Only that school's counselors see it, and you can take it back until they start reviewing it.",
       "Every answer stays in your own words. ScholarTasks never writes essays or answers for you.",
     ],
     faq: [
@@ -1071,7 +1071,7 @@ export const TOPICS: Topic[] = [
     ],
     body: [
       "The checklist follows your student's graduation year. A senior in fall 2026 files the 2027-28 FAFSA, which uses 2025 taxes.",
-      "Parents and the connected student share the same checklist, so either can tick steps off.",
+      "Parents and the connected student share the same checklist, so either can check steps off.",
     ],
     faq: [
       { q: "Will ScholarTasks fill in or submit the FAFSA for us?", a: "No. Only the student and their parents may sign in to StudentAid.gov and submit. We explain each screen, list what to have ready and remind you of dates." },
@@ -1097,7 +1097,7 @@ export const TOPICS: Topic[] = [
     title: "Your document list",
     href: "/aid",
     keywords: ["documents", "tax return", "1040", "w-2", "bank", "investments", "what do i need"],
-    summary: "A list of what to have ready, built from your household answers. Tick each one off when it's in hand.",
+    summary: "A list of what to have ready, built from your household answers. Check each one off when it's in hand.",
     body: [
       "Keep the papers at home. Don't upload tax returns or bank statements to ScholarTasks.",
       "Most tax numbers move over from the IRS once each contributor gives consent on the FAFSA.",
@@ -1234,7 +1234,7 @@ export const TOPICS: Topic[] = [
       "Face ID or fingerprint: sign in once any other way, then tap Turn on Face ID on your Home page (or open Face ID, sign-in and account in the Menu). Next time, tap Sign in with Face ID on the sign-in page. No email or password needed.",
       "Do this once on each phone or computer. Lost a device? Remove it on the Face ID, sign-in and account page.",
       "Forgot your password? Tap Forgot password on the sign-in page and follow the email.",
-      "Remember me (on the sign-in page, ticked at first) keeps you signed in on that device and fills in your email next time. On a shared or school computer, untick it: you are signed out when the browser closes. The phone app always keeps you signed in and unlocks with Face ID.",
+      "Remember me (on the sign-in page, checked at first) keeps you signed in on that device and fills in your email next time. On a shared or school computer, uncheck it: you are signed out when the browser closes. The phone app always keeps you signed in and unlocks with Face ID.",
       "Sign out from the Menu.",
       "Students should always use their own email, not a parent's.",
       "In the iPhone and Android app, sign in with a password, an email link or Face ID. Google sign-in works on the website.",
@@ -1397,7 +1397,7 @@ export const TIPS: Tip[] = [
   { routes: ["/home"], sel: ".hero h1", body: "This is your home base. Try any tool below. You can add your student whenever you're ready.", topic: "welcome" },
   { routes: ["/home"], sel: ".ps-card h2", body: "Your own space: search and save colleges, scholarships and careers without it showing as your student's work.", topic: "parent-space" },
   { routes: ["/colleges", "/majors", "/scholarships"], sel: ".space-switch .tabs", body: "My parent space saves to your own list. Switch to your student's plan to add straight to their plan.", topic: "parent-space" },
-  { routes: ["/parent"], sel: ".ps-share", body: "Tick this to show the pick to your student on their Home page. Untick it any time.", topic: "parent-space" },
+  { routes: ["/parent"], sel: ".ps-share", body: "Check this to show the pick to your student on their Home page. Uncheck it any time.", topic: "parent-space" },
   { routes: ["/home"], sel: ".family-card:not(.ps-card) h2", body: "Your students and whether each one has connected their own phone or computer.", topic: "invite-student" },
   { routes: ["/home", "/grades"], sel: ".scorecard .eyebrow", body: "The GPA scorecard: your state scholarship GPA against the goal, whether things are on track, and classes that need attention.", topic: "scorecard" },
   { routes: ["/home"], sel: ".tile[href='/plan'] b", body: "Colleges, scholarships and forms in one list, with email reminders before each deadline.", topic: "plan-deadlines" },
@@ -1431,7 +1431,7 @@ export const TIPS: Tip[] = [
   // To-do list
   { routes: ["/todo"], sel: ".todo-summary", body: "How many things are late, due in the next 7 days, and already done.", topic: "todo" },
   { routes: ["/todo"], sel: ".todo-tabs", body: "To do shows what's left, sorted by due date. Done shows what's finished.", topic: "todo" },
-  { routes: ["/todo"], sel: ".todo-steps summary", body: "Tap to tick off this scholarship's application steps.", topic: "scholarship-save" },
+  { routes: ["/todo"], sel: ".todo-steps summary", body: "Tap to check off this scholarship's application steps.", topic: "scholarship-save" },
 
   // College plan
   { routes: ["/plan"], sel: "h2", text: "Coming up", body: "Everything due in the next 60 days. The switch below turns reminder emails on or off.", topic: "plan-deadlines" },
@@ -1450,7 +1450,7 @@ export const TIPS: Tip[] = [
   { routes: ["/grades"], sel: "h2", text: "Plan ", body: "List next year's classes and get advice on where to stretch. Uses 1 AI use.", topic: "next-year" },
   { routes: ["/grades"], sel: "h2", text: "School transcripts", body: "Keep copies of report cards and transcripts here. Private to your family.", topic: "transcripts" },
   { routes: ["/grades"], sel: "h2", text: "Self-reported academic record", body: "A printable grade summary for colleges that let students report their own grades.", topic: "record" },
-  { routes: ["/grades"], sel: "h2", text: "Courses and grades", body: "Add each final grade. Tick Core for English, math, science, social studies and world languages.", topic: "grades-enter" },
+  { routes: ["/grades"], sel: "h2", text: "Courses and grades", body: "Add each final grade. Check Core for English, math, science, social studies and world languages.", topic: "grades-enter" },
 
   // Record
   { routes: ["/grades/record"], sel: "h1", body: "Check everything matches the report cards before you use it on an application.", topic: "record" },
@@ -1475,7 +1475,7 @@ export const TIPS: Tip[] = [
   { routes: ["/aid"], sel: ".aid-summary h2", body: "How many FAFSA steps are done. The button jumps to the next one.", topic: "aid-checklist" },
   { routes: ["/aid"], sel: ".aid-safe", body: "You file on the official sites. We never ask for FSA IDs, passwords or SSNs.", topic: "aid-safety" },
   { routes: ["/aid"], sel: "h2", text: "Who fills in", body: "Who must take part in the FAFSA, from the household questions.", topic: "aid-household" },
-  { routes: ["/aid"], sel: "h2", text: "Documents to have ready", body: "What to have ready before you start. Tick each one off.", topic: "aid-documents" },
+  { routes: ["/aid"], sel: "h2", text: "Documents to have ready", body: "What to have ready before you start. Check each one off.", topic: "aid-documents" },
   { routes: ["/aid"], sel: "h2", text: "Aid dates", body: "Get reminders for the FAFSA deadline and each college's aid priority date.", topic: "aid-dates" },
   { routes: ["/aid"], sel: ".aid-step summary", body: "Tap a step to see what to do, then Mark done.", topic: "aid-checklist" },
   { routes: ["/home"], sel: ".tile[href='/aid'] b", body: "Step-by-step FAFSA and state aid checklist with reminders.", topic: "aid-checklist" },

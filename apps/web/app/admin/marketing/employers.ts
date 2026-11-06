@@ -27,7 +27,7 @@ export const HOW_IT_WORKS = [
   { title: "Who checks it", text: "Our review team approves every listing on Team: Review local openings before it shows, usually within two business days. The company gets an email when it's live or if we turn it down." },
   { title: "How long it stays", text: "Up to 180 days. Companies reply to their email to change or remove it." },
   { title: "Weekend and holiday jobs (company accounts)", text: "scholartasks.com/employers. A company makes an account, agrees to the teen job rules and posts weekend, holiday and school-break jobs. Our team approves the company and each job. Students apply inside ScholarTasks (Menu > Weekend and holiday jobs)." },
-  { title: "Parent consent on every application", text: "Nothing reaches the company until a parent reads the consent and ticks I agree. The consent, its exact wording, who agreed and when are saved in the tamper-proof audit log. The company sees only the application (first name, grade, age, message, availability, the shared contact and the parent's email)." },
+  { title: "Parent consent on every application", text: "Nothing reaches the company until a parent reads the consent and checks I agree. The consent, its exact wording, who agreed and when are saved in the tamper-proof audit log. The company sees only the application (first name, grade, age, message, availability, the shared contact and the parent's email)." },
   { title: "Work experience and reference letters", text: "When a student is hired, the family adds the job to Activities and the resume (work or leadership) in one tap. The company can write a reference letter; a parent decides whether to keep it in the records or hide it, and the company isn't told." },
 ];
 

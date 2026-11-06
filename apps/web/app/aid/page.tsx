@@ -217,7 +217,7 @@ export default function AidPage() {
         {who.note && <p className="hint" style={{ margin: "8px 0 0" }}>{who.note} <a href="https://studentaid.gov/apply-for-aid/fafsa/filling-out/parent-info" target="_blank" rel="noreferrer noopener">Check the official rules</a>.</p>}
         <details className="aid-house" open={!answers.parents}>
           <summary>{answers.parents ? "Change household answers" : "Answer 6 quick questions"}</summary>
-          {!isParent && <p className="note note-info">A parent answers these. You can see them and tick off documents.</p>}
+          {!isParent && <p className="note note-info">A parent answers these. You can see them and check off documents.</p>}
           <fieldset disabled={!isParent} className="aid-fields">
             <div className="field">
               <label htmlFor="h-parents">The student's parents are…</label>
@@ -257,7 +257,7 @@ export default function AidPage() {
 
       <section className="panel">
         <h2>Documents to have ready</h2>
-        <p className="hint">{found.filter((id) => docs.some((d) => d.id === id)).length} of {docs.length} found. Tick each one when it's in hand. Keep the papers at home; don't upload them here.</p>
+        <p className="hint">{found.filter((id) => docs.some((d) => d.id === id)).length} of {docs.length} found. Check each one when it's in hand. Keep the papers at home; don't upload them here.</p>
         <ul className="items">
           {docs.map((d) => (
             <li key={d.id} className={found.includes(d.id) ? "is-done" : ""}>

@@ -13,7 +13,7 @@ export default function JobsPage() {
     <Page title="Weekend and holiday jobs">
       <p className="lead">
         Part-time work on weekends, over the holidays and during school breaks, from local companies our review team checked.
-        Apply right here. A parent reads every application and ticks I agree before the company sees it.
+        Apply right here. A parent reads every application and checks I agree before the company sees it.
       </p>
       <JobsHome />
     </Page>

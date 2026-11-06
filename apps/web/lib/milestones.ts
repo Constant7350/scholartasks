@@ -2,7 +2,7 @@
  * "Beyond grades" milestones: the things colleges weigh besides GPA and test
  * scores (activities, roles, service, recommendations, essays), as one short
  * list per school year. The To-do page adds the current grade's list to each
- * student's to-do list once; students can tick them off or set them aside.
+ * student's to-do list once; students can check them off or set them aside.
  *
  * Sources: UGA Common Data Set 2024-25 (C7) and first-year review criteria,
  * Georgia Tech "Contribution to Community", NACAC Factors in the Admission

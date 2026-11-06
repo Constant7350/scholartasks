@@ -129,7 +129,7 @@ export default function TranscriptsAndLetters() {
         <p className="hint" style={{ margin: 0 }}>
           {school
             ? <>Connected to <b>{school.school_name}</b>. Tap <b>Ask my counselor</b> on a line and it shows up in your counselor&apos;s ScholarTasks list. They mark it sent and you see it here.</>
-            : <>Ask your counselor in person or by email, then tick <b>Asked</b>. If your school uses ScholarTasks, <a href="/my-school">connect to it</a> and you can ask right here.</>}
+            : <>Ask your counselor in person or by email, then check <b>Asked</b>. If your school uses ScholarTasks, <a href="/my-school">connect to it</a> and you can ask right here.</>}
         </p>
       </div>
 
@@ -171,7 +171,7 @@ export default function TranscriptsAndLetters() {
           <li>Georgia public colleges often get transcripts through <a href="https://www.gafutures.org" target="_blank" rel="noopener">GAfutures</a>. Many other schools use <a href="https://www.parchment.com" target="_blank" rel="noopener">Parchment</a> or Common App.</li>
           <li>Send SAT scores from <a href="https://mysat.collegeboard.org" target="_blank" rel="noopener">College Board</a> and ACT scores from <a href="https://my.act.org" target="_blank" rel="noopener">MyACT</a>. Check if the college takes self-reported scores first; it can save the fee.</li>
           <li>Give teachers and your counselor your <a href="/activities">activities and resume</a> so their letters say more.</li>
-          <li>After you apply, check each college&apos;s portal to see that every paper arrived, then tick <b>College has it</b>.</li>
+          <li>After you apply, check each college&apos;s portal to see that every paper arrived, then check <b>College has it</b>.</li>
         </ul>
       </div>
     </Page>

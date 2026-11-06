@@ -59,7 +59,7 @@ export function ProgressCard({ sb, studentId, name }: { sb: SupabaseClient; stud
             <span className="hint">
               {streak.current
                 ? streak.thisWeek ? `${name ? `${name} got` : "You got"} something done this week. Keep it going next week!` : "Do one thing this week to keep the streak."
-                : "Get one thing done this week: tick off a to-do, add a grade or an activity."}
+                : "Get one thing done this week: check off a to-do, add a grade or an activity."}
             </span>
           </div>
         </div>

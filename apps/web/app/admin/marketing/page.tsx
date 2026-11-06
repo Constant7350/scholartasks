@@ -10,7 +10,7 @@ import { ALL_EMPLOYER_STEPS, EMPLOYER_CHANNELS, EMPLOYER_MESSAGES, EMPLOYER_METR
 import { ALL_STEPS, AUDIENCE, BUSINESS, CALENDAR, CHANNELS, MESSAGES, PHASES, SOURCES, SUMMARY, type Step } from "./plan";
 
 /**
- * Team-only marketing plan and business plan, with steps the team ticks off.
+ * Team-only marketing plan and business plan, with steps the team checks off.
  * The words live in ./plan.ts; progress lives in the marketing_steps table (database update 38).
  */
 type Status = "todo" | "doing" | "done" | "skip";
@@ -81,7 +81,7 @@ export default function MarketingPage() {
     setSaved((m) => ({ ...m, [id]: { status, note, updated_at: new Date().toISOString() } }));
     const { error: e } = await sb.rpc("save_marketing_step", { p_step: id, p_status: status, p_note: note ?? "" });
     if (e) {
-      setError(/save_marketing_step/.test(e.message) ? "Run database update 38 in Supabase first, then your ticks will be saved." : friendly(e));
+      setError(/save_marketing_step/.test(e.message) ? "Run database update 38 in Supabase first, then your checks will be saved." : friendly(e));
       setSaved((m) => { const c = { ...m }; if (before) c[id] = before; else delete c[id]; return c; });
     }
   };
@@ -92,8 +92,8 @@ export default function MarketingPage() {
 
   return (
     <Page title="Marketing and business plan">
-      <p className="hint">{SUMMARY.oneLine} Follow the steps in order, tick them off, and check the numbers each month.</p>
-      {needsUpdate && <p className="note" role="status">Run <b>database update 38</b> in Supabase so the team's ticks and notes are saved. You can read the whole plan now.</p>}
+      <p className="hint">{SUMMARY.oneLine} Follow the steps in order, check them off, and check the numbers each month.</p>
+      {needsUpdate && <p className="note" role="status">Run <b>database update 38</b> in Supabase so the team's checks and notes are saved. You can read the whole plan now.</p>}
       {error && <p className="note note-err" role="alert">{error}</p>}
 
       <section className="panel">

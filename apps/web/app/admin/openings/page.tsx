@@ -104,7 +104,7 @@ export default function ReviewOpeningsPage() {
           <li>No fees, deposits or private details (Social Security or bank numbers) asked of students.</li>
           <li>Under 18: duties are allowed for that age (no hazardous jobs barred by law), and hours fit teen rules. Under 16 has tighter hours and often a work permit.</li>
           <li>Equal opportunity: nothing that limits who can apply by race, sex, religion, national origin, disability or age (a legal minimum age is fine).</li>
-          <li>Registered Apprenticeship: look it up on apprenticeship.gov before ticking Verified.</li>
+          <li>Registered Apprenticeship: look it up on apprenticeship.gov before checking Verified.</li>
         </ul>
         <p className="hint small">{OPENING_LAW_LINKS.map((l, i) => <span key={l.url}>{i ? " · " : ""}<a href={l.url} target="_blank" rel="noreferrer">{l.label}</a></span>)}</p>
       </details>

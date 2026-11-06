@@ -298,11 +298,11 @@ export default function TodoPage() {
           })
         )
       ) : done.length === 0 ? (
-        <div className="panel"><h2>Nothing done yet</h2><p className="hint" style={{ margin: 0 }}>Tick the box next to a to-do when it&apos;s finished and it moves here.</p></div>
+        <div className="panel"><h2>Nothing done yet</h2><p className="hint" style={{ margin: 0 }}>Check the box next to a to-do when it&apos;s finished and it moves here.</p></div>
       ) : (
         <section className="panel todo-group todo-group-done">
           <h2><span className="todo-dot" aria-hidden="true" />Done <span className="hint">({done.length})</span></h2>
-          <p className="hint" style={{ margin: 0 }}>Untick one to move it back to To do.</p>
+          <p className="hint" style={{ margin: 0 }}>Uncheck one to move it back to To do.</p>
           <ul className="items">{done.map(row)}</ul>
         </section>
       )}

@@ -105,7 +105,7 @@ export const LESSONS: Lesson[] = [
       { title: "Collect everything", body: "On Sunday, check every class's portal or planner and list what's due this week and what tests are coming." },
       { title: "Block your time", body: "Mark when you're busy (practice, work, family) and choose study times in the gaps." },
       { title: "Plan backward for big projects", body: "Start from the due date and list the steps: research, outline, draft, revise. Give each step its own date." },
-      { title: "Check daily", body: "Each evening, take two minutes to tick off what's done and move anything you missed." },
+      { title: "Check daily", body: "Each evening, take two minutes to check off what's done and move anything you missed." },
     ],
     tool: "week-planner",
     checks: [
