@@ -206,7 +206,7 @@ export default function Home() {
       }}>
         <label htmlFor="home-q" className="home-ask-label">💬 Ask the AI counselor</label>
         <div className="home-ask-row">
-          <input id="home-q" name="q" placeholder="Colleges, scholarships, aid, deadlines…" enterKeyHint="send" autoComplete="off" />
+          <input id="home-q" name="q" placeholder="Colleges, aid, deadlines…" enterKeyHint="send" autoComplete="off" />
           <button className="btn btn-inline" type="submit">Ask</button>
         </div>
         {!isParent && <a className="home-more" href="/homework">🦉 Stuck on homework? Get a hint</a>}

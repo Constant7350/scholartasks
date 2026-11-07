@@ -217,7 +217,7 @@ function Intro() {
   return (
     <div className="panel">
       <p className="eyebrow">Free for every school</p>
-      <h2>See which students need you, without the spreadsheets</h2>
+      <h1>See which students need you, without the spreadsheets</h1>
       <ul style={{ margin: "8px 0 0", paddingLeft: 20, lineHeight: 1.6 }}>
         <li>Families connect with your school's code and choose what to share.</li>
         <li>See who hasn't filed the FAFSA, who has no college list, and who has overdue deadlines.</li>

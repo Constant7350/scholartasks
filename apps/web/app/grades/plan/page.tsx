@@ -124,7 +124,6 @@ export default function CoursePlanner() {
   const planStart = "grade-" + String(Math.min(12, Math.max(9, student.grade_level)));
   return (
     <Page title="Four-year course plan">
-      <p className="hint"><a href="/grades">← Grades</a></p>
       <p className="hint">Add the classes {student.first_name} plans to take each year. It&apos;s a plan, not a sign-up: check it with the school counselor.</p>
       {error && <p className="note note-err" role="alert">{error}</p>}
 

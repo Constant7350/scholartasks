@@ -13,7 +13,6 @@ export const metadata = {
 export default function OpeningsPage() {
   return (
     <Page title="Apprenticeships and local openings">
-      <p className="hint"><a href="/trades">← Trades and trade schools</a></p>
       <p className="lead">
         Apprenticeships, paid training and entry-level jobs from companies looking for people who want to learn a trade.
         Our review team checks every listing before it shows. Openings in your home state come first, then the rest of the country.
