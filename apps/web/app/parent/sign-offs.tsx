@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { PART_TIME_KINDS, PERMISSIONS } from "@scholartasks/core";
+import { PERMISSIONS } from "@scholartasks/core";
+import { waitingFrom, type Waiting } from "./waiting";
 import { friendly } from "../../lib/supabase";
 
 interface Kid { id: string; first_name: string; permissions?: Record<string, boolean> | null }
-interface Waiting { key: string; icon: string; text: string; href: string; action: string }
 interface Signature {
   id: string; user_id: string; kind: string; student_id: string | null; signed_name: string; wording: string;
   version: string | null; verified_by: "passkey" | "email_code"; signed_at: string; used_at: string | null;
@@ -45,27 +45,7 @@ export function SignOffs({ sb, me, kids, onChanged }: { sb: SupabaseClient; me: 
       sb.from("challenge_entries").select("challenge_id, student_id, challenges(title, status)").eq("status", "draft"),
       sb.from("challenge_permissions").select("challenge_id, student_id"),
     ]);
-    const w: Waiting[] = [];
-    for (const a of ((jobs.data as { id: string; student_id: string; title: string; company_name: string; kind: string; status: string }[]) ?? []).filter((x) => x.status === "needs_parent")) {
-      const part = (PART_TIME_KINDS as readonly string[]).includes(a.kind);
-      w.push({ key: `job-${a.id}`, icon: "🛍️", text: `${name(a.student_id)} wants to apply to ${a.title} at ${a.company_name}`, href: part ? "/jobs" : "/trades/openings", action: "Review and sign" });
-    }
-    for (const l of ((links.data as { id: string; student_id: string; school_name: string; status: string }[]) ?? []).filter((x) => x.status === "pending_parent")) {
-      w.push({ key: `school-${l.id}`, icon: "🏫", text: `${name(l.student_id)} wants to connect to ${l.school_name}`, href: "/my-school", action: "Review and sign" });
-    }
-    for (const t of (tasks.data as { id: string; student_id: string; title: string }[]) ?? []) {
-      w.push({ key: `task-${t.id}`, icon: "✅", text: `${name(t.student_id)} marked "${t.title}" done`, href: "/plan", action: "Check and approve" });
-    }
-    for (const c of (colleges.data as { id: string; student_id: string; name: string }[]) ?? []) {
-      w.push({ key: `college-${c.id}`, icon: "🗂️", text: `${name(c.student_id)} changed ${c.name} on the college list`, href: "/plan", action: "Check and approve" });
-    }
-    // Essay challenge entries still waiting for a parent's signed permission (database update 59).
-    const okd = new Set(((perms.data as { challenge_id: string; student_id: string }[] | null) ?? []).map((p) => `${p.challenge_id}:${p.student_id}`));
-    for (const e of (entries.data as unknown as { challenge_id: string; student_id: string; challenges: { title: string; status: string } | null }[] | null) ?? []) {
-      if (okd.has(`${e.challenge_id}:${e.student_id}`) || e.challenges?.status !== "open") continue;
-      w.push({ key: `challenge-${e.challenge_id}-${e.student_id}`, icon: "🏆", text: `${name(e.student_id)} is writing for the essay challenge "${e.challenges.title}"`, href: "/challenge", action: "Read the rules and sign" });
-    }
-    setWaiting(w);
+    setWaiting(waitingFrom(name, { jobs: jobs.data, links: links.data, tasks: tasks.data, colleges: colleges.data, entries: entries.data, perms: perms.data }));
     setSigned((sigs.data as Signature[]) ?? []);
     setAiOn((settings.data as { ai_consent_at: string | null } | null)?.ai_consent_at ?? null);
   }, [sb, me, name]);

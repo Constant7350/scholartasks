@@ -16,6 +16,7 @@ const NAV = [
   ["#todo", "To-do and reminders"],
   ["#beyond", "Beyond grades"],
   ["#family", "Family and phone"],
+  ["#years", "Year by year"],
 ];
 
 export default function Features() {
@@ -232,6 +233,32 @@ export default function Features() {
             <div className="m-card"><b>Join code for Emma</b><span style={{ fontSize: 28, fontWeight: 800, letterSpacing: "0.18em", color: "var(--navy)", fontFamily: "ui-monospace, monospace" }}>K7P-4QX</span><span className="m-sub">Tap Text or Email to send it</span></div>
           </div>
         </article>
+
+        <section id="years" style={{ margin: "56px 0" }}>
+          <h3 className="s-title" style={{ fontSize: 26, marginTop: 24 }}>What each year looks like</h3>
+          <div className="s-journey">
+            <div>
+              <span className="g">Grades 8 and 9</span>
+              <h3>Build good habits</h3>
+              <ul><li>Grades scorecard</li><li>Study skills lessons</li><li>Choosing courses</li><li>Goals set together</li></ul>
+            </div>
+            <div>
+              <span className="g">Grade 10</span>
+              <h3>Track HOPE</h3>
+              <ul><li>HOPE GPA tracking</li><li>Harder classes at the right pace</li><li>Activities and service hours</li><li>Explore majors and trades</li></ul>
+            </div>
+            <div>
+              <span className="g">Grade 11</span>
+              <h3>Test and search</h3>
+              <ul><li>SAT and ACT prep</li><li>College or trade list</li><li>Cost after aid</li><li>Who will write letters</li></ul>
+            </div>
+            <div>
+              <span className="g">Grade 12</span>
+              <h3>Apply and fund</h3>
+              <ul><li>Applications and essays</li><li>Scholarships</li><li>FAFSA and Georgia aid</li><li>Every deadline, reminded</li></ul>
+            </div>
+          </div>
+        </section>
       </div>
 
       <FinalCta />
