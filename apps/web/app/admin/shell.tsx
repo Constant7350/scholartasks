@@ -20,6 +20,10 @@ import { attentionLabel, loadAttention, type Attention } from "./attention";
 /** True inside the team admin layout: Page() then leaves out the family top bar and footer. */
 const InShell = createContext(false);
 export const useInAdminShell = () => useContext(InShell);
+/** Wraps a layout that brings its own menu (the school portal): Page() leaves out the family top bar and footer. */
+export function NoFamilyChrome({ children }: { children: ReactNode }) {
+  return <InShell.Provider value={true}>{children}</InShell.Provider>;
+}
 
 /** How many things wait on each team page (see attention.ts). Empty until loaded. */
 const AttentionCtx = createContext<Attention>({});
@@ -53,6 +57,8 @@ const ICONS: Record<string, string> = {
   shield: '<path d="M12 3l7.5 3v6c0 4.5-3.2 7.8-7.5 9-4.3-1.2-7.5-4.5-7.5-9V6z"/><path d="M9 12l2 2 4-4"/>',
   file: '<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h5"/>',
   back: '<path d="M15 18l-6-6 6-6"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 010 6.8M21.5 20c0-3-1.8-5.2-4.5-5.8"/>',
   logout: '<path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3"/><path d="M10 17l-5-5 5-5M5 12h11"/>',
 };
 

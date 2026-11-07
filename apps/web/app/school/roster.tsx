@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
-import type { School } from "./dashboard";
+import type { School } from "./parts";
 import { SignConsent } from "../sign-consent";
 
 /** The agreement a school admin signs (kept word for word with the signature). */

@@ -36,7 +36,7 @@ do $$ begin
     'counts and private details stay with the team';
 end $$;
 reset role;
-update local_openings set featured_until = current_date - 1 where title = 'Live one';
+update local_openings set featured_until = (now() at time zone 'America/New_York')::date - 1 where title = 'Live one';
 do $$ begin
   assert (select not featured from public_openings where title = 'Live one'), 'featured ends on its date';
 end $$;
