@@ -1,4 +1,4 @@
-// ALL PRICES LIVE HERE. These are placeholders until running costs are known.
+// ALL PRICES LIVE HERE. Set by Constant on 2026-11-07: Family $12.99 a month or $99 a year.
 // Change a number here and the Plan and billing page and Stripe checkout both
 // follow (amounts are in cents). Safe to import in the browser.
 

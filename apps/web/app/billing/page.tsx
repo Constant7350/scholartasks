@@ -122,7 +122,7 @@ export default function BillingPage() {
       )}
 
       {!PAYWALL_ON && (
-        <p className="note">ScholarTasks is free while we're in beta, with {FAMILY_DAILY_LIMIT} AI uses a day per person. Prices below are not final, and nobody is charged until the beta ends.</p>
+        <p className="note">ScholarTasks is free while we're in beta, with {FAMILY_DAILY_LIMIT} AI uses a day per person. Nobody is charged until the beta ends.</p>
       )}
 
       <div className="tiles" style={{ marginTop: 16 }}>

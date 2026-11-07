@@ -92,7 +92,6 @@
   "Plans aren't managed in the phone app. Everything your family's plan includes works here as usual.": "Los planes no se manejan en la app del teléfono. Todo lo que incluye el plan de tu familia funciona aquí como siempre.",
   "Plans need the latest database update first.": "Los planes necesitan primero la última actualización de la base de datos.",
   "Renews on {d}.": "Se renueva el {d}.",
-  "ScholarTasks is free while we're in beta, with {FAMILYDAILYLIMIT} AI uses a day per person. Prices below are not final, and nobody is charged until the beta ends.": "ScholarTasks es gratis mientras estamos en beta, con {FAMILYDAILYLIMIT} usos de IA al día por persona. Los precios de abajo no son finales, y no se le cobra a nadie hasta que termine la beta.",
   "See the Homework Helper": "Ver Ayuda con la tarea",
   "Set up your family first on <1>Family and permissions</1>, then come back to choose a plan.": "Primero crea tu familia en <1>Familia y permisos</1> y luego regresa para elegir un plan.",
   "Thanks! Homework Helper is being added.": "¡Gracias! Estamos agregando Ayuda con la tarea.",
@@ -676,5 +675,6 @@
   "Without consent from every contributor, the FAFSA can't be processed and no aid can be offered.": "Sin el consentimiento de todas las personas que aportan datos, la FAFSA no se puede procesar y no se puede ofrecer ayuda.",
   "WV Invests Grant": "WV Invests Grant",
   "You can send the FAFSA to up to 20 colleges at once, free. Add every college the student is applying to, even if unsure.": "Puedes enviar la FAFSA a hasta 20 universidades a la vez, gratis. Agrega todas las universidades a las que el estudiante va a solicitar, aunque no esté seguro.",
-  "FAFSA": "FAFSA"
+  "FAFSA": "FAFSA",
+  "ScholarTasks is free while we're in beta, with {FAMILYDAILYLIMIT} AI uses a day per person. Nobody is charged until the beta ends.": "ScholarTasks es gratis mientras estamos en beta, con {FAMILYDAILYLIMIT} usos de IA al día por persona. No se le cobra a nadie hasta que termine la beta."
 }

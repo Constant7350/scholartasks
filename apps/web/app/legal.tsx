@@ -16,7 +16,7 @@ export function LegalPage({ title, children }: { title: string; children: ReactN
 export function Footer() {
   return (
     <footer className="site-footer">
-      <span>© {new Date().getFullYear()} ScholarTasks</span>
+      <span>© {new Date().getFullYear()} ScholarTasks · Built in Georgia</span>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
       <a href="/delete-account">Delete account</a>
