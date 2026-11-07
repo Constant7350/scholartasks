@@ -1703,5 +1703,9 @@
   "Parts of test prep": "Partes de preparación",
   "Practice test": "Examen de práctica",
   "Parts of this trade": "Partes de este oficio",
-  "Training": "Capacitación"
+  "Training": "Capacitación",
+  "Reload": "Volver a cargar",
+  "Something went wrong": "Algo salió mal",
+  "Reloading usually fixes it.": "Volver a cargar suele arreglarlo.",
+  "Reloading usually fixes it. If it keeps happening, tell us at support@scholartasks.com.": "Volver a cargar suele arreglarlo. Si sigue pasando, escríbenos a support@scholartasks.com."
 }

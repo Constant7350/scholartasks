@@ -13,7 +13,7 @@ export function IconTabs({ tabs, label, start }: { tabs: IconTab[]; label: strin
   const shown = tabs.filter((t) => t.body !== null && t.body !== false && t.body !== undefined);
   const [tab, setTab] = useState<string | null>(null);
   useEffect(() => {
-    const fromHash = () => { const h = decodeURIComponent(window.location.hash.slice(1)); if (h) setTab(h); };
+    const fromHash = () => { let h = window.location.hash.slice(1); try { h = decodeURIComponent(h); } catch {} if (h) setTab(h); };
     fromHash();
     window.addEventListener("hashchange", fromHash);
     return () => window.removeEventListener("hashchange", fromHash);
