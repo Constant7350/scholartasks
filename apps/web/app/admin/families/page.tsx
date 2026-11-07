@@ -37,7 +37,7 @@ export default function FamilyFlagsPage() {
     const next = f.student_limit + 2;
     const { error: e } = await sb.rpc("set_family_student_limit", { p_family: f.family_id, p_limit: next });
     if (e) return setError(friendly(e));
-    setNotice(`${f.family_name} can now have up to ${next} students.`);
+    setNotice(`${f.family_name} can now have up to ${next} students. Raising the limit is free; each student after the first 2 is still billed at the extra-student price.`);
     void load();
   }
 
