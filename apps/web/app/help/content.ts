@@ -146,6 +146,24 @@ export const TOPICS: Topic[] = [
     ],
   },
   {
+    id: "new-school-year",
+    area: "Family",
+    title: "Grades move up every August",
+    href: "/family",
+    keywords: ["grade", "new school year", "move up", "next grade", "august", "graduate", "graduated", "senior", "wrong grade", "change grade", "fix grade"],
+    summary: "Every August 1, each student moves up one grade and seniors are marked graduated. Parents get an email, and a text if texts are on.",
+    steps: [
+      "On August 1 we move each student up one grade. Grade 12 students are marked Graduated.",
+      "You get an email listing each change (and a short text if you turned on text reminders).",
+      "Grade wrong, for example a student who repeats a year or skips one? Open Menu, then Family and permissions, tap the student and pick the right grade.",
+    ],
+    body: [
+      "A grade you set in June or July is treated as next year's grade and isn't moved again that August.",
+      "Graduated students keep their account and everything saved. They no longer count toward your Family plan price or your 6 student places. To undo it, pick Grade 12 again.",
+      "If a new grade changes your family's price level, you get a separate email about 30 days before your next bill.",
+    ],
+  },
+  {
     id: "remove-student",
     area: "Family",
     title: "Remove a student",
@@ -1310,6 +1328,7 @@ export const TOPICS: Topic[] = [
       "The free plan is free for good: deadlines, college list and costs, grades and state scholarships, scholarships, FAFSA checklist, activities and resume, essays and practice, plus 3 AI uses a day per person. The Family plan adds more AI help (10 a day per person).",
       "The Family plan has three levels, set by your oldest student's grade: Explore (grades 6 to 8) $6.99 a month or $59 a year, Build (grades 9 and 10) $9.99 a month or $79 a year, Apply (grades 11 and 12) $12.99 a month or $99 a year.",
       "2 students are included. Each additional student is $2.99 a month ($30 a year on yearly plans). Each student's app still follows their own grade.",
+      "Students who graduated keep their account for free: they don't count toward your price, your level or your 6 student places.",
       "A family account can have up to 6 students, who must be your own children or children in your legal care. Big family? Email support@scholartasks.com and we'll raise your limit for free. Each student after the first 2 is still $2.99 a month.",
       "When your oldest student's grade moves your family to another level, they graduate or leave the account, or you add or remove an additional student, you get an email and a notice on Home about 30 days before your next bill. The new price starts at that next bill (at renewal for yearly plans), never in the middle of a period you paid for.",
       "During the beta everyone gets the Family plan's AI uses for free, and nobody is charged.",

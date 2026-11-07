@@ -27,6 +27,7 @@ interface Student {
   family_id: string;
   first_name: string;
   grade_level: number;
+  graduated_on?: string | null;
   birth_date?: string | null;
   state: string;
   permissions: Record<PermissionKey, boolean>;
@@ -151,6 +152,7 @@ export default function FamilyPage() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [familyName, setFamilyName] = useState("");
+  const [canGraduate, setCanGraduate] = useState(false);
   const [child, setChild] = useState({ first_name: "", birth_date: "", grade_level: "9", state: "GA" });
   // A second student most likely lives in the same state as the first, so start there.
   useEffect(() => { const st = students[0]?.state; if (st && !child.first_name) setChild((c) => ({ ...c, state: st })); }, [students]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -160,11 +162,15 @@ export default function FamilyPage() {
     const { data: s } = await sb.auth.getSession();
     setSignedIn(!!s.session);
     if (!s.session) return;
-    const [f, st, inv] = await Promise.all([
+    const cols = "id, family_id, first_name, grade_level, state, permissions, birth_date, match_profile";
+    const [f, st0, inv] = await Promise.all([
       sb.from("families").select("id, name"),
-      sb.from("students").select("id, family_id, first_name, grade_level, state, permissions, birth_date, match_profile").order("first_name"),
+      sb.from("students").select(`${cols}, graduated_on`).order("first_name"),
       sb.from("family_invites").select("student_id, code, expires_at, accepted_at").order("created_at", { ascending: false }),
     ]);
+    // Before database update 67 there is no graduated_on column yet.
+    const st = st0.error ? await sb.from("students").select(cols).order("first_name") : st0;
+    setCanGraduate(!st0.error);
     setFamilies((f.data as Family[]) ?? []);
     setStudents((st.data as Student[]) ?? []);
     setInvites((inv.data as Invite[]) ?? []);
@@ -221,7 +227,7 @@ export default function FamilyPage() {
           <StateSelect id="child-state" value={child.state} onChange={(v) => setChild({ ...child, state: v })} />
         </div>
         <div className="field" style={{ flex: "0 1 140px" }}>
-          <label htmlFor="grade">Grade</label>
+          <label htmlFor="grade">{[5, 6].includes(new Date().getMonth()) ? "Grade this fall" : "Grade"}</label>
           <select id="grade" className="input" value={child.grade_level} onChange={(e) => setChild({ ...child, grade_level: e.target.value })}>
             {[6, 7, 8, 9, 10, 11, 12].map((g) => <option key={g} value={g}>Grade {g}</option>)}
           </select>
@@ -275,16 +281,30 @@ export default function FamilyPage() {
           ...students.map((s) => {
             const code = activeCode(s.id);
             const isConnected = connected(s.id);
-            return { key: s.first_name.toLowerCase(), icon: isConnected ? "🧑‍🎓" : "✉️", label: s.first_name, body: (
+            return { key: s.first_name.toLowerCase(), icon: s.graduated_on ? "🎓" : isConnected ? "🧑‍🎓" : "✉️", label: s.first_name, body: (
               <div key={s.id} className="panel">
-                <h2>{s.first_name}</h2>
-                <div className="row" style={{ alignItems: "flex-end", gap: 8 }}>
-                  <p className="hint" style={{ margin: 0 }}>Grade {s.grade_level} · lives in</p>
-                  <div className="field" style={{ flex: "0 1 260px", margin: 0 }}>
-                    <StateSelect id={`state-${s.id}`} label={`State ${s.first_name} lives in`} value={s.state} onChange={(v) => void run(() => sb!.from("students").update({ state: v }).eq("id", s.id))} />
+                <h2>{s.first_name}{s.graduated_on && <span className="pill" style={{ marginLeft: 8, verticalAlign: "middle" }}>🎓 Graduated</span>}</h2>
+                <div className="row">
+                  <div className="field" style={{ flex: "0 1 150px" }}>
+                    <label htmlFor={`grade-${s.id}`}>Grade</label>
+                    <select id={`grade-${s.id}`} className="input" value={s.graduated_on ? "grad" : String(s.grade_level)}
+                      onChange={(e) => void run(() => sb!.from("students").update(e.target.value === "grad"
+                        ? { graduated_on: new Date().toISOString().slice(0, 10) }
+                        : { grade_level: Number(e.target.value), ...(canGraduate ? { graduated_on: null } : {}) }).eq("id", s.id))}>
+                      {[6, 7, 8, 9, 10, 11, 12].map((g) => <option key={g} value={g}>Grade {g}</option>)}
+                      {canGraduate && s.grade_level === 12 && <option value="grad">Graduated</option>}
+                    </select>
+                  </div>
+                  <div className="field" style={{ flex: "0 1 260px" }}>
+                    <label htmlFor={`state-${s.id}`}>Lives in</label>
+                    <StateSelect id={`state-${s.id}`} value={s.state} onChange={(v) => void run(() => sb!.from("students").update({ state: v }).eq("id", s.id))} />
                   </div>
                 </div>
-                <p className="hint" style={{ fontSize: 12, marginTop: 4 }}>The home state decides which state scholarships, grants and deadlines {s.first_name} sees. College searches always include every state.</p>
+                <p className="hint" style={{ fontSize: 12, marginTop: 4 }}>
+                  {s.graduated_on
+                    ? <>{s.first_name} graduated, so {s.first_name} no longer counts toward your price or your 6 student places. Their account and records stay open.</>
+                    : <>Grades move up by themselves every August 1, and we email you the changes. The home state decides which state scholarships, grants and deadlines {s.first_name} sees. College searches always include every state.</>}
+                </p>
 
                 {isConnected ? (
                   <p className="note note-ok">✓ {s.first_name} is connected to the student app.</p>

@@ -6,6 +6,7 @@ import { extraStudents, familyPlanLevel, noticeShowing, type LevelNotice, type P
 import { CATALOG as C, EXTRA_STUDENT, FAMILY_LEVELS, familyCents, FAMILY_DAILY_LIMIT, FREE_DAILY_LIMIT, FREE_PLAN_INCLUDES, HOMEWORK_DAILY_LIMIT, HOMEWORK_MONTHLY_LIMIT, PAYWALL_ON, money } from "../../lib/prices";
 import { inPhoneApp } from "../../lib/passkeys-client";
 import { NotConfigured, Page } from "../ui";
+import { currentStudents } from "../../lib/current-students";
 
 interface Plan { family_id: string | null; family_plan: boolean; study_coach: boolean; ai_credits: number }
 interface Sub { id: string; kind: "family" | "study_coach"; status: string; billing_interval: "month" | "year" | null; current_period_end: string | null; cancel_at_period_end: boolean; level?: PlanLevel | null; level_notice?: LevelNotice | null }
@@ -59,9 +60,7 @@ export default function BillingPage() {
     const parent = ((m.data as { role: string }[]) ?? []).some((r) => r.role === "parent");
     setIsParent(parent);
     if (row?.family_id) {
-      const k = await sb.from("students").select("first_name, grade_level").eq("family_id", row.family_id)
-        .order("grade_level", { ascending: false }).order("first_name");
-      setKids((k.data as Kid[]) ?? []);
+      setKids(await currentStudents<Kid>(sb, row.family_id, "first_name, grade_level"));
     }
     if (parent && row?.family_id) {
       const cols = "id, kind, status, billing_interval, current_period_end, cancel_at_period_end";

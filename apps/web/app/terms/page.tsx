@@ -51,7 +51,8 @@ export default function Terms() {
         The Family plan is priced by your oldest student&apos;s grade: Explore for grades 6 to 8, Build for grades 9 and 10, and Apply for grades 11
         and 12. The price includes 2 students, and each additional student is $2.99 a month ($30 a year on yearly plans). When your oldest student&apos;s grade moves your family to another level, or they graduate or leave the
         account, or you add or remove an additional student, we tell you by email and in the app about 30 days before your next bill. The new price starts at that next billing date (at renewal for
-        yearly plans), never in the middle of a period you already paid for.
+        yearly plans), never in the middle of a period you already paid for. Each August 1, every student moves up one grade and grade 12 students
+        are marked graduated; we email you the changes and you can correct any grade. Graduated students keep their account at no charge.
       </p>
       <p>
         Students on a family account must be the parent&apos;s own children or children in their legal care. The parent is responsible for the

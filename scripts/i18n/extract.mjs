@@ -23,7 +23,7 @@ const OUT = join(web, "lib/i18n/lines.json");
 
 // Folders that are not part of the family app (team-only pages stay in English).
 const SKIP_DIRS = new Set(["node_modules", ".next", "admin", "i18n", "check"]);
-const SKIP_FILES = [/app\/translator\.tsx$/, /lib\/ics\.ts$/, /lib\/progress-email\.ts$/, /nav-es\.ts$/, /\(site\)\/es\//, /help\/content-es\.ts$/, /lib\/stage-brief\.ts$/, /api\/cron\/plan-level\//];
+const SKIP_FILES = [/app\/translator\.tsx$/, /lib\/ics\.ts$/, /lib\/progress-email\.ts$/, /nav-es\.ts$/, /\(site\)\/es\//, /help\/content-es\.ts$/, /lib\/stage-brief\.ts$/, /api\/cron\/plan-level\//, /api\/cron\/school-year\//, /lib\/current-students\.ts$/];
 
 function files(dir, list = []) {
   for (const name of readdirSync(dir)) {
