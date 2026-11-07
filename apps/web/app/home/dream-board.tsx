@@ -56,9 +56,9 @@ export function DreamBoardCard({ sb, student, who, onSaved }: Props) {
           <button type="button" className="btn-link" onClick={() => setEditing(true)}>Change</button>
         </div>
         <ul className="dream-list">
-          {saved!.wants.filter(Boolean).map((w) => <li key={w}>{w}</li>)}
+          {saved!.wants.filter(Boolean).map((w) => <li key={w} translate="no">{w}</li>)}
         </ul>
-        {saved!.admire && <p className="hint dream-admire">Looks up to: {saved!.admire}</p>}
+        {saved!.admire && <p className="hint dream-admire">Looks up to: <span translate="no">{saved!.admire}</span></p>}
         <a className="btn btn-inline btn-sm link-btn" href={ask}>Ask the counselor how to get there</a>
       </section>
     );

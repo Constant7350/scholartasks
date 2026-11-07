@@ -1,6 +1,6 @@
 {
   "note": "Made by presentation/build.mjs. Do not edit by hand.",
-  "minutes": 20,
+  "minutes": 21,
   "slides": [
     {
       "id": "cover",
@@ -84,7 +84,11 @@
     },
     {
       "id": "journey",
-      "title": "Grade 8 to graduation"
+      "title": "Grade 6 to graduation"
+    },
+    {
+      "id": "stages",
+      "title": "Younger students"
     },
     {
       "id": "compare1",

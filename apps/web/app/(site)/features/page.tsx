@@ -236,16 +236,17 @@ export default function Features() {
 
         <section id="years" style={{ margin: "56px 0" }}>
           <h3 className="s-title" style={{ fontSize: 26, marginTop: 24 }}>What each year looks like</h3>
+          <p className="s-lede">The app shows each student only the pages for their stage, so a seventh grader never sees a FAFSA checklist. Parents can show every page any time, and the full app opens by itself in grade 11.</p>
           <div className="s-journey">
             <div>
-              <span className="g">Grades 8 and 9</span>
+              <span className="g">Grades 6 to 8 · Explore</span>
               <h3>Build good habits</h3>
-              <ul><li>Grades scorecard</li><li>Study skills lessons</li><li>Choosing courses</li><li>Goals set together</li></ul>
+              <ul><li>Career quiz and dream board</li><li>Grades scorecard</li><li>Study skills and Homework Helper</li><li>Careers to try</li></ul>
             </div>
             <div>
-              <span className="g">Grade 10</span>
+              <span className="g">Grades 9 and 10 · Build</span>
               <h3>Track HOPE</h3>
-              <ul><li>HOPE GPA tracking</li><li>Harder classes at the right pace</li><li>Activities and service hours</li><li>Explore majors and trades</li></ul>
+              <ul><li>HOPE GPA tracking</li><li>Courses at the right pace</li><li>Activities and service hours</li><li>PSAT, early scholarships, a first look at colleges</li></ul>
             </div>
             <div>
               <span className="g">Grade 11</span>

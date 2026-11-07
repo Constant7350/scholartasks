@@ -15,7 +15,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
           <div className="site-foot-grid">
             <div>
               <a className="brand" href="/"><BrandMark /><span>ScholarTasks</span></a>
-              <p>College, scholarships, Georgia aid, grades and test prep for families, from 8th grade to graduation.</p>
+              <p>College, scholarships, Georgia aid, grades and test prep for families, from 6th grade to graduation.</p>
             </div>
             <div>
               <h4>Learn more</h4>

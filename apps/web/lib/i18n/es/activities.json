@@ -283,5 +283,11 @@
   "Which prompt? <1>(650 words, at least 250)</1>": "¿Qué pregunta? <1>(650 palabras, al menos 250)</1>",
   "Why this college?": "¿Por qué esta universidad?",
   "Word limit": "Límite de palabras",
-  "Write in your own words. It saves as you type.": "Escribe con tus propias palabras. Se guarda mientras escribes."
+  "Write in your own words. It saves as you type.": "Escribe con tus propias palabras. Se guarda mientras escribes.",
+  "Add each club, sport, job, volunteer role and award once; the resume and Common App fill themselves.": "Agrega cada club, deporte, trabajo, voluntariado y premio una sola vez; el currículum y el Common App se llenan solos.",
+  "Copy profile": "Copiar perfil",
+  "Everything the <1>Common App</1> asks for, checked against its limits. Copy each part in and submit there.": "Todo lo que pide el <1>Common App</1>, revisado según sus límites. Copia cada parte y envíala allí.",
+  "Everything forms ask for, ready to paste: tap Copy, then paste it into the form.": "Todo lo que piden los formularios, listo para pegar: toca Copiar y pégalo en el formulario.",
+  "email · city": "correo · ciudad",
+  "Draft the Common App essay and each college's extra essays here. It saves as you type, and the coach gives feedback without writing for you.": "Redacta aquí el ensayo del Common App y los ensayos extra de cada universidad. Se guarda mientras escribes, y el coach da comentarios sin escribir por ti."
 }
