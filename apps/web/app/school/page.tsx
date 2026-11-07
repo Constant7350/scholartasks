@@ -2,199 +2,131 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
-import { NotConfigured, Page } from "../ui";
-import { Dashboard, type School } from "./dashboard";
+import { Page } from "../ui";
+import { usePortal } from "./portal";
+import { ShareCode, daysAgo, type LocalSch } from "./parts";
+import { WHAT, fmtDay, type Req } from "./transcripts";
 
-/**
- * The free school portal for counselors.
- * - Not on a school yet: sign the school up (our team approves it) or join with a staff code.
- * - Waiting for approval: says so.
- * - Approved: the caseload dashboard.
- */
-export default function SchoolPortal() {
+interface Ev { id: string; title: string; starts_on: string }
+
+/** Today: what needs the counselor right now, each with its one-click action. */
+export default function Today() {
   const sb = supabase();
-  const [signedIn, setSignedIn] = useState<boolean | null>(null);
-  const [schools, setSchools] = useState<(School & { my_role: "admin" | "counselor" })[]>([]);
-  const [current, setCurrent] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { school, role, rows, pending, me, reload } = usePortal();
+  const [papers, setPapers] = useState<Req[] | null>(null);
+  const [events, setEvents] = useState<Ev[]>([]);
+  const [local, setLocal] = useState<LocalSch[]>([]);
+  const [err, setErr] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!sb) return;
-    const { data: s } = await sb.auth.getSession();
-    setSignedIn(!!s.session);
-    if (!s.session) return;
-    const uid = s.session.user.id;
-    const [sc, st] = await Promise.all([
-      sb.from("schools").select("id, name, city, state, status, join_code, staff_code, ai_plan").order("name"),
-      sb.from("school_staff").select("school_id, role").eq("user_id", uid),
+    const soon = new Date(Date.now() + 45 * 86400000).toISOString().slice(0, 10);
+    const today = new Date().toISOString().slice(0, 10);
+    const [t, e, l] = await Promise.all([
+      sb.rpc("school_transcript_requests", { p_school: school.id }),
+      sb.from("school_events").select("id, title, starts_on").eq("school_id", school.id).gte("starts_on", today).lte("starts_on", soon).order("starts_on").limit(5),
+      sb.rpc("school_scholarships", { p_school: school.id }),
     ]);
-    if (sc.error) {
-      setError(/schools/.test(sc.error.message) && /exist|schema cache/i.test(sc.error.message)
-        ? "The school portal needs database update 37. Run it in Supabase, then reload this page."
-        : friendly(sc.error));
-      return;
-    }
-    const roles = new Map(((st.data as { school_id: string; role: "admin" | "counselor" }[]) ?? []).map((r) => [r.school_id, r.role]));
-    const mine = ((sc.data as School[]) ?? []).filter((x) => roles.has(x.id)).map((x) => ({ ...x, my_role: roles.get(x.id)! }));
-    setSchools(mine);
-    setCurrent((c) => (c && mine.some((m) => m.id === c) ? c : mine[0]?.id ?? null));
-  }, [sb]);
+    setPapers(((t.data as Req[]) ?? []).filter((r) => r.status === "asked" || r.status === "to_ask"));
+    setEvents((e.data as Ev[]) ?? []);
+    setLocal(((l.data as LocalSch[]) ?? []).filter((s) => s.deadline && s.deadline >= today && s.deadline <= soon));
+  }, [sb, school.id]);
   useEffect(() => { void load(); }, [load]);
 
-  if (!sb) return <Page title="School counselor portal"><NotConfigured /></Page>;
-  if (signedIn === null) return <Page title="School counselor portal"><p className="hint">Loading…</p></Page>;
-  if (!signedIn)
-    return (
-      <Page title="School counselor portal">
-        <Intro />
-        <div className="panel">
-          <h2>Sign in to start</h2>
-          <p className="hint">Use your school email. If you don't have a ScholarTasks sign-in yet, the sign-in page makes one in a minute.</p>
-          <a className="btn btn-inline" style={{ display: "inline-block", textDecoration: "none" }} href="/signin?next=/school">Sign in</a>
-        </div>
-      </Page>
-    );
+  const all = rows ?? [];
+  const seniors = all.filter((r) => r.grade_level === 12);
+  const noFafsa = seniors.filter((r) => !r.fafsa_submitted).length;
+  const noList = all.filter((r) => r.grade_level >= 11 && r.colleges === 0).length;
+  const overdue = all.filter((r) => r.tasks_overdue > 0).length;
+  const quiet = all.filter((r) => { const d = daysAgo(r.last_active); return d === null || d > 30; }).length;
+  const sent = seniors.reduce((n, r) => n + r.submitted, 0);
+  const hour = new Date().getHours();
+  const hello = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
-  const school = schools.find((s) => s.id === current);
+  const markSent = async (id: string) => {
+    if (!sb) return;
+    setErr(null);
+    const { error } = await sb.rpc("school_mark_paper", { p_id: id, p_status: "sent", p_note: null });
+    if (error) setErr(friendly(error)); else { void load(); reload(); }
+  };
+
+  const fafsaMsg = `/school/messages?grades=12&subject=${encodeURIComponent("Reminder: please file the FAFSA")}`;
+  const items: { key: string; tone: "red" | "gold" | "gray"; title: string; sub: string; action?: { label: string; href?: string; onClick?: () => void } }[] = [
+    ...(papers ?? []).slice(0, 6).map((p) => ({
+      key: p.id, tone: "red" as const,
+      title: `${WHAT[p.what] ?? p.what}${p.person ? ` (${p.person})` : ""} for ${p.first_name}, ${p.college}`,
+      sub: p.needed_by ? `Needed by ${fmtDay(p.needed_by)}` : "No due date",
+      action: { label: "Mark sent", onClick: () => void markSent(p.id) },
+    })),
+    ...(papers && papers.length > 6 ? [{ key: "more-papers", tone: "red" as const, title: `${papers.length - 6} more papers to send`, sub: "Transcripts and letters", action: { label: "See all", href: "/school/papers" } }] : []),
+    ...(noFafsa ? [{ key: "fafsa", tone: "gold" as const, title: `${noFafsa} ${noFafsa === 1 ? "senior has" : "seniors have"} not filed the FAFSA`, sub: "Send one reminder to grade 12", action: { label: "Remind them", href: fafsaMsg } }] : []),
+    ...(overdue ? [{ key: "overdue", tone: "gold" as const, title: `${overdue} ${overdue === 1 ? "student has" : "students have"} overdue deadlines`, sub: "On their own to-do lists", action: { label: "See who", href: "/school/students?f=overdue" } }] : []),
+    ...(noList ? [{ key: "nolist", tone: "gray" as const, title: `${noList} juniors and seniors have no college list yet`, sub: "A good time for a planning night", action: { label: "See who", href: "/school/students?f=no_list" } }] : []),
+    ...(quiet ? [{ key: "quiet", tone: "gray" as const, title: `${quiet} ${quiet === 1 ? "student hasn't" : "students haven't"} used the app in 30 days`, sub: "Maybe a quick check-in", action: { label: "See who", href: "/school/students?f=quiet" } }] : []),
+    ...(pending ? [{ key: "pending", tone: "gray" as const, title: `${pending} ${pending === 1 ? "family asked" : "families asked"} to connect`, sub: "Waiting for a parent to approve. Nothing for you to do." }] : []),
+  ];
+
   return (
-    <Page title={school ? school.name : "School counselor portal"}>
-      {error && <p className="note note-err" role="alert">{error}</p>}
-      {schools.length > 1 && (
-        <div className="field" style={{ maxWidth: 360 }}>
-          <label htmlFor="pick-school">School</label>
-          <select id="pick-school" className="input" value={current ?? ""} onChange={(e) => setCurrent(e.target.value)}>
-            {schools.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-          </select>
+    <Page>
+      <div className="portal-head">
+        <div>
+          <p className="hint" style={{ margin: 0 }}>{new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}</p>
+          <h1 style={{ margin: 0 }}>{hello}{me ? `, ${me.split(" ")[0]}` : ""}</h1>
         </div>
-      )}
-      {!school && !error && (
+        <div className="share-row">
+          <a className="btn btn-ghost btn-inline" href="/school/settings">Invite families</a>
+          <a className="btn btn-inline" href="/school/messages">Send a message</a>
+        </div>
+      </div>
+
+      {rows !== null && all.length === 0 ? (
         <>
-          <Intro />
-          <SignUp onDone={load} />
-          <JoinStaff onDone={load} />
+          <p className="note note-info">No students yet. Share this code with families. When a parent connects, the student shows up here.</p>
+          <ShareCode school={school} role={role} onChanged={reload} />
         </>
+      ) : (
+        <ul className="portal-stats">
+          <li><b>{all.length}</b><span>students connected{seniors.length ? `, ${seniors.length} seniors` : ""}</span></li>
+          <li><b>{seniors.length - noFafsa} <small>of {seniors.length}</small></b><span>seniors filed the FAFSA</span>
+            {seniors.length > 0 && <span className="portal-bar" aria-hidden="true"><span style={{ width: `${Math.round(((seniors.length - noFafsa) / seniors.length) * 100)}%` }} /></span>}</li>
+          <li><b>{sent}</b><span>college applications sent by seniors</span></li>
+          <li><b>{papers?.length ?? "…"}</b><span>transcripts and letters to send</span></li>
+        </ul>
       )}
-      {school && school.status === "pending" && (
-        <div className="panel">
-          <h2>Thanks! We're checking your school</h2>
-          <p className="hint" style={{ marginBottom: 0 }}>
-            The ScholarTasks team confirms every school before anyone there can see students. This usually takes a school day.
-            We may email you at the address you signed in with. Questions: <a href="mailto:support@scholartasks.com">support@scholartasks.com</a>.
-          </p>
-        </div>
-      )}
-      {school && school.status === "closed" && (
-        <p className="note note-err">This school account is closed. Email <a href="mailto:support@scholartasks.com">support@scholartasks.com</a> if that's a mistake.</p>
-      )}
-      {school && school.status === "approved" && <Dashboard school={school} role={school.my_role} onChanged={load} />}
-      {school && (
-        <details className="perm" style={{ marginTop: 24 }}>
-          <summary>Add another school</summary>
-          <SignUp onDone={load} />
-          <JoinStaff onDone={load} />
-        </details>
-      )}
+
+      {err && <p className="note note-err" role="alert">{err}</p>}
+      <div className="portal-two">
+        <section className="panel">
+          <h2>Needs you today</h2>
+          {rows === null || papers === null ? <p className="hint">Loading…</p> : items.length === 0 ? (
+            <p className="hint" style={{ margin: 0 }}>Nothing needs you right now. 🎉</p>
+          ) : (
+            <ul className="portal-todo">
+              {items.map((i) => (
+                <li key={i.key}>
+                  <span className={`portal-dot portal-dot-${i.tone}`} aria-hidden="true" />
+                  <div><b>{i.title}</b><small>{i.sub}</small></div>
+                  {i.action?.href && <a className="btn btn-ghost btn-inline portal-act" href={i.action.href}>{i.action.label}</a>}
+                  {i.action?.onClick && <button type="button" className="btn btn-ghost btn-inline portal-act" onClick={i.action.onClick}>{i.action.label}</button>}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <section className="panel">
+          <h2>Coming up</h2>
+          {events.length === 0 && local.length === 0 ? (
+            <p className="hint" style={{ margin: 0 }}>Nothing in the next few weeks. <a href="/school/events">Add an event</a></p>
+          ) : (
+            <ul className="portal-dates">
+              {[...events.map((e) => ({ id: e.id, day: e.starts_on, title: e.title, href: "/school/events" })),
+                ...local.map((s) => ({ id: s.id, day: s.deadline!, title: `${s.name} closes`, href: "/school/scholarships" }))]
+                .sort((a, b) => a.day.localeCompare(b.day))
+                .map((d) => <li key={d.id}><span className="portal-date">{fmtDay(d.day)}</span><a href={d.href}>{d.title}</a></li>)}
+            </ul>
+          )}
+        </section>
+      </div>
     </Page>
-  );
-}
-
-function Intro() {
-  return (
-    <div className="panel">
-      <p className="eyebrow">Free for every school</p>
-      <h2>See which students need you, without the spreadsheets</h2>
-      <ul style={{ margin: "8px 0 0", paddingLeft: 20, lineHeight: 1.6 }}>
-        <li>Families connect with your school's code and choose what to share.</li>
-        <li>See who hasn't filed the FAFSA, who has no college list, and who has overdue deadlines.</li>
-        <li>Send a reminder to a whole grade by email in one step.</li>
-        <li>Post local scholarships that only your school's families see.</li>
-      </ul>
-      <p className="hint" style={{ margin: "12px 0 0" }}>
-        The school portal is free. Families use ScholarTasks free, and can upgrade for the AI counselor and tutor.
-        You only see what each family chooses to share, and every look is recorded.
-      </p>
-    </div>
-  );
-}
-
-function SignUp({ onDone }: { onDone: () => void }) {
-  const sb = supabase();
-  const [f, setF] = useState({ name: "", city: "", state: "GA", website: "", phone: "", full_name: "", job_title: "School counselor" });
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
-  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
-  const ok = f.name.trim().length >= 3 && f.city.trim().length >= 2 && f.full_name.trim().length >= 2;
-  return (
-    <div className="panel">
-      <h2>Set up your school</h2>
-      <p className="hint">You'll be the school's admin and can add other counselors with a staff code.</p>
-      <div className="row">
-        <div className="field"><label htmlFor="s-name">School name</label><input id="s-name" className="input" value={f.name} onChange={set("name")} placeholder="e.g. Central High School" /></div>
-        <div className="field"><label htmlFor="s-city">City</label><input id="s-city" className="input" value={f.city} onChange={set("city")} /></div>
-        <div className="field" style={{ flex: "0 1 110px" }}><label htmlFor="s-state">State</label>
-          <input id="s-state" className="input" maxLength={2} value={f.state} onChange={(e) => setF({ ...f, state: e.target.value.toUpperCase() })} /></div>
-      </div>
-      <div className="row" style={{ marginTop: 12 }}>
-        <div className="field"><label htmlFor="s-web">School website (helps us confirm it)</label><input id="s-web" className="input" value={f.website} onChange={set("website")} placeholder="https://" /></div>
-        <div className="field"><label htmlFor="s-phone">School phone</label><input id="s-phone" className="input" value={f.phone} onChange={set("phone")} /></div>
-      </div>
-      <div className="row" style={{ marginTop: 12 }}>
-        <div className="field"><label htmlFor="s-you">Your name</label><input id="s-you" className="input" value={f.full_name} onChange={set("full_name")} /></div>
-        <div className="field"><label htmlFor="s-title">Your job title</label><input id="s-title" className="input" value={f.job_title} onChange={set("job_title")} /></div>
-        <button
-          className="btn btn-inline"
-          disabled={!ok || busy}
-          onClick={async () => {
-            if (!sb) return;
-            setBusy(true); setErr(null);
-            const website = f.website.trim() && !/^https?:\/\//i.test(f.website.trim()) ? `https://${f.website.trim()}` : f.website.trim();
-            const { error } = await sb.rpc("create_school", {
-              p_name: f.name, p_city: f.city, p_state: f.state, p_website: website || null,
-              p_phone: f.phone || null, p_full_name: f.full_name, p_job_title: f.job_title || null,
-            });
-            setBusy(false);
-            if (error) setErr(friendly(error)); else onDone();
-          }}
-        >
-          {busy ? "Sending…" : "Set up school"}
-        </button>
-      </div>
-      {err && <p className="note note-err" role="alert">{err}</p>}
-    </div>
-  );
-}
-
-function JoinStaff({ onDone }: { onDone: () => void }) {
-  const sb = supabase();
-  const [code, setCode] = useState("");
-  const [name, setName] = useState("");
-  const [err, setErr] = useState<string | null>(null);
-  useEffect(() => {
-    const c = new URLSearchParams(window.location.search).get("staff");
-    if (c) setCode(c.toUpperCase());
-  }, []);
-  return (
-    <div className="panel">
-      <h2>Your school is already set up?</h2>
-      <p className="hint">Ask the person who set it up for the staff code.</p>
-      <div className="row">
-        <div className="field"><label htmlFor="j-code">Staff code</label>
-          <input id="j-code" className="input" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} maxLength={8} /></div>
-        <div className="field"><label htmlFor="j-name">Your name</label><input id="j-name" className="input" value={name} onChange={(e) => setName(e.target.value)} /></div>
-        <button
-          className="btn btn-inline"
-          disabled={code.trim().length < 8 || name.trim().length < 2}
-          onClick={async () => {
-            if (!sb) return;
-            setErr(null);
-            const { error } = await sb.rpc("join_school_staff", { p_code: code, p_full_name: name, p_job_title: "School counselor" });
-            if (error) setErr(friendly(error)); else onDone();
-          }}
-        >
-          Join school
-        </button>
-      </div>
-      {err && <p className="note note-err" role="alert">{err}</p>}
-    </div>
   );
 }

@@ -91,7 +91,7 @@ end $$;
 reset role;
 
 -- Ended listings drop off.
-update local_openings set status = 'approved', show_until = current_date - 1 where title = 'Electrical apprentice';
+update local_openings set status = 'approved', show_until = (now() at time zone 'America/New_York')::date - 1 where title = 'Electrical apprentice';
 do $$ begin
   assert (select count(*) from public_openings) = 0, 'ended listings are hidden';
   assert (select count(*) from opening_reports) = 3, 'reports kept for the team';

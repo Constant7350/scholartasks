@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { eventIcs, timeText, type SchoolEvent } from "../school/event-time";
 import { SignConsent } from "../sign-consent";
 
 interface Student { id: string; first_name: string; grade_level: number; birth_date: string }
@@ -38,6 +39,7 @@ export default function MySchool() {
   const [students, setStudents] = useState<Student[]>([]);
   const [links, setLinks] = useState<Link[]>([]);
   const [msgs, setMsgs] = useState<Msg[]>([]);
+  const [events, setEvents] = useState<(SchoolEvent & { school_id: string })[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [approving, setApproving] = useState<string | null>(null);
@@ -47,11 +49,13 @@ export default function MySchool() {
     const { data: s } = await sb.auth.getSession();
     setSignedIn(!!s.session);
     if (!s.session) return;
-    const [mem, st, l, m] = await Promise.all([
+    const [mem, st, l, m, ev] = await Promise.all([
       sb.from("family_members").select("role").eq("user_id", s.session.user.id),
       sb.from("students").select("id, first_name, grade_level, birth_date").order("first_name"),
       sb.rpc("my_school_links"),
       sb.from("school_messages").select("id, school_id, subject, body, sent_at").order("sent_at", { ascending: false }).limit(5),
+      sb.from("school_events").select("id, school_id, title, starts_on, start_time, location, details, grades")
+        .gte("starts_on", new Date().toISOString().slice(0, 10)).order("starts_on").limit(10),
     ]);
     const roles = ((mem.data as { role: string }[]) ?? []).map((r) => r.role);
     setRole(roles.includes("parent") ? "parent" : roles.includes("student") ? "student" : null);
@@ -59,6 +63,7 @@ export default function MySchool() {
     if (l.error && /my_school_links/.test(l.error.message)) setError("This page needs database update 37. Ask the ScholarTasks team.");
     setLinks((l.data as Link[]) ?? []);
     setMsgs((m.data as Msg[]) ?? []);
+    setEvents((ev.data as (SchoolEvent & { school_id: string })[]) ?? []);
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
 
@@ -143,6 +148,28 @@ export default function MySchool() {
           </div>
         );
       })}
+
+      {events.length > 0 && (
+        <div className="panel">
+          <h2>Coming up at school</h2>
+          {events.map((e) => {
+            const school = links.find((l) => l.school_id === e.school_id)?.school_name ?? "School";
+            return (
+              <div key={e.id} style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", padding: "10px 0", borderBottom: "1px solid var(--line)" }}>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <p style={{ margin: 0, fontWeight: 600 }}>{e.title}</p>
+                  <p className="hint" style={{ margin: "2px 0 0", fontSize: 13 }}>
+                    {[new Date(e.starts_on + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }), timeText(e.start_time), e.location, school].filter(Boolean).join(" · ")}
+                  </p>
+                  {e.details && <p style={{ margin: "4px 0 0", whiteSpace: "pre-wrap", fontSize: 14 }}>{e.details}</p>}
+                </div>
+                <a className="btn btn-ghost btn-inline btn-sm" download={`${e.title.replace(/[^a-z0-9]+/gi, "-")}.ics`}
+                  href={`data:text/calendar;charset=utf-8,${encodeURIComponent(eventIcs(e, school))}`}>Add to calendar</a>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {msgs.length > 0 && (
         <div className="panel">

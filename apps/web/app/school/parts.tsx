@@ -1,12 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { computeGpa, displayGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
-import { gpaLabel, packFor } from "../../lib/state-packs";
+import { useEffect, useState } from "react";
+import { computeGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
+import { packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
-import { Roster } from "./roster";
-import { SchoolApplications } from "./applications";
-import { SchoolTranscripts } from "./transcripts";
 
 
 export interface School {
@@ -14,7 +11,7 @@ export interface School {
   status: "pending" | "approved" | "closed"; join_code: string; staff_code: string; ai_plan: string;
 }
 
-interface Row {
+export interface Row {
   link_id: string; student_id: string; first_name: string; grade_level: number; class_of: number;
   share: "progress" | "progress_grades"; linked_at: string;
   colleges: number; applying: number; submitted: number; accepted: number;
@@ -23,175 +20,32 @@ interface Row {
   last_active: string | null;
   grades: { term: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number }[] | null;
 }
-interface Staff { user_id: string; role: "admin" | "counselor"; full_name: string; job_title: string | null }
-interface Msg { id: string; subject: string; grades: number[]; recipients: number; sent_at: string }
-interface LocalSch { id: string; name: string; amount_text: string; deadline: string | null; status: string; url: string }
+export interface Staff { user_id: string; role: "admin" | "counselor"; full_name: string; job_title: string | null }
+export interface Msg { id: string; subject: string; grades: number[]; recipients: number; sent_at: string }
+export interface LocalSch { id: string; name: string; amount_text: string; deadline: string | null; status: string; url: string }
 
-type Filter = "all" | "no_fafsa" | "no_list" | "overdue" | "quiet";
-const FILTERS: [Filter, string][] = [
+export type Filter = "all" | "no_fafsa" | "no_list" | "overdue" | "quiet";
+export const FILTERS: [Filter, string][] = [
   ["all", "Everyone"], ["no_fafsa", "Seniors without FAFSA"], ["no_list", "No college list"],
   ["overdue", "Overdue deadlines"], ["quiet", "Not active in 30 days"],
 ];
 
-const daysAgo = (d: string | null) => (d ? Math.floor((Date.now() - new Date(d + "T12:00:00").getTime()) / 86400000) : null);
+export const daysAgo = (d: string | null) => (d ? Math.max(0, Math.round((Date.now() - new Date(d + "T12:00:00").getTime()) / 86400000)) : null);
 
 /** The school state's scholarship GPA (HOPE GPA in Georgia, Bright Futures GPA in Florida...). */
-function hopeGpa(r: Row, state: string): number | null {
+export function hopeGpa(r: Row, state: string): number | null {
   const main = primaryGpa(packFor(state));
   if (!r.grades || !main) return null;
   const grades: CourseGrade[] = r.grades.map((g) => ({ term: g.term, course: g.course, grade: g.grade, level: g.level, core: g.core, gradeLevel: g.grade_level }));
   return computeGpa(grades, main.formula).gpa;
 }
 
-function csvCell(v: unknown) {
+export function csvCell(v: unknown) {
   const s = v === null || v === undefined ? "" : String(v);
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
-export function Dashboard({ school, role, onChanged }: { school: School; role: "admin" | "counselor"; onChanged: () => void }) {
-  const sb = supabase();
-  const [rows, setRows] = useState<Row[] | null>(null);
-  const [pending, setPending] = useState(0);
-  const [staff, setStaff] = useState<Staff[]>([]);
-  const [msgs, setMsgs] = useState<Msg[]>([]);
-  const [local, setLocal] = useState<LocalSch[]>([]);
-  const [grade, setGrade] = useState<number | 0>(0);
-  const [filter, setFilter] = useState<Filter>("all");
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    if (!sb) return;
-    const [c, p, st, m, l] = await Promise.all([
-      sb.rpc("school_caseload", { p_school: school.id }),
-      sb.rpc("school_pending_count", { p_school: school.id }),
-      sb.from("school_staff").select("user_id, role, full_name, job_title").eq("school_id", school.id).order("added_at"),
-      sb.from("school_messages").select("id, subject, grades, recipients, sent_at").eq("school_id", school.id).order("sent_at", { ascending: false }).limit(10),
-      sb.rpc("school_scholarships", { p_school: school.id }),
-    ]);
-    if (c.error) setError(friendly(c.error));
-    setRows((c.data as Row[]) ?? []);
-    setPending((p.data as number) ?? 0);
-    setStaff((st.data as Staff[]) ?? []);
-    setMsgs((m.data as Msg[]) ?? []);
-    setLocal((l.data as LocalSch[]) ?? []);
-  }, [sb, school.id]);
-  useEffect(() => { void load(); }, [load]);
-
-  const list = useMemo(() => (rows ?? []).filter((r) => {
-    if (grade && r.grade_level !== grade) return false;
-    if (filter === "no_fafsa") return r.grade_level === 12 && !r.fafsa_submitted;
-    if (filter === "no_list") return r.colleges === 0;
-    if (filter === "overdue") return r.tasks_overdue > 0;
-    if (filter === "quiet") { const d = daysAgo(r.last_active); return d === null || d > 30; }
-    return true;
-  }), [rows, grade, filter]);
-
-  const all = rows ?? [];
-  const seniors = all.filter((r) => r.grade_level === 12);
-  const stats = [
-    { n: all.length, label: "students connected" },
-    { n: seniors.filter((r) => r.fafsa_submitted).length + " of " + seniors.length, label: "seniors filed the FAFSA" },
-    { n: all.filter((r) => r.grade_level >= 11 && r.colleges === 0).length, label: "juniors and seniors with no college list" },
-    { n: all.filter((r) => r.tasks_overdue > 0).length, label: "students with overdue deadlines" },
-  ];
-
-  const exportCsv = () => {
-    const head = ["First name", "Grade", "Class of", "Colleges on list", "Applications sent", "Accepted", "FAFSA filed", "Aid steps done",
-      "Scholarships saved", "Overdue deadlines", "Due in 14 days", "SAT", "ACT", `${gpaLabel(school.state)} (if shared)`, "Last active"];
-    const lines = list.map((r) => {
-      const g = hopeGpa(r, school.state);
-      return [r.first_name, r.grade_level, r.class_of, r.colleges, r.submitted, r.accepted, r.fafsa_submitted ? "yes" : "no", r.aid_steps_done,
-        r.scholarships_saved, r.tasks_overdue, r.tasks_next_14, r.sat ?? "", r.act ?? "", g === null ? "" : displayGpa(g), r.last_active ?? ""].map(csvCell).join(",");
-    });
-    const blob = new Blob([[head.join(","), ...lines].join("\n")], { type: "text/csv" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${school.name.replace(/[^a-z0-9]+/gi, "-")}-students.csv`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  };
-
-  return (
-    <>
-      {error && <p className="note note-err" role="alert">{error}</p>}
-      <p className="hint">{school.city}, {school.state} · You're {role === "admin" ? "the school admin" : "a counselor"} here</p>
-
-      <ShareCode school={school} role={role} onChanged={onChanged} />
-
-      <ul className="badge-row" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", margin: "16px 0" }}>
-        {stats.map((s) => <li key={s.label}><span style={{ fontSize: 24, fontWeight: 700 }}>{s.n}</span><span className="hint" style={{ fontSize: 13 }}>{s.label}</span></li>)}
-      </ul>
-      {pending > 0 && <p className="note note-info">{pending} {pending === 1 ? "student has" : "students have"} asked to connect and {pending === 1 ? "is" : "are"} waiting for a parent to approve.</p>}
-
-      <div className="panel">
-        <h2>Your students</h2>
-        <p className="hint">Only students whose families connected to your school appear here, with what they chose to share.</p>
-        <div className="row" style={{ marginBottom: 12 }}>
-          <div className="field" style={{ flex: "0 1 160px" }}>
-            <label htmlFor="f-grade">Grade</label>
-            <select id="f-grade" className="input" value={grade} onChange={(e) => setGrade(Number(e.target.value))}>
-              <option value={0}>All grades</option>
-              {[8, 9, 10, 11, 12].map((g) => <option key={g} value={g}>Grade {g}</option>)}
-            </select>
-          </div>
-          <button className="btn btn-ghost btn-inline" disabled={!list.length} onClick={exportCsv}>Download CSV</button>
-        </div>
-        <div className="chips" style={{ justifyContent: "flex-start", marginBottom: 12 }}>
-          {FILTERS.map(([k, label]) => (
-            <button key={k} className={`chip ${filter === k ? "chip-on" : ""}`} aria-pressed={filter === k} onClick={() => setFilter(k)}>{label}</button>
-          ))}
-        </div>
-        {rows === null ? <p className="hint">Loading…</p> : list.length === 0 ? (
-          <p className="hint" style={{ margin: 0 }}>{all.length === 0 ? "No students yet. Share your school code with families to get started." : "No students match."}</p>
-        ) : (
-          <div style={{ overflowX: "auto" }}>
-            <table className="record-table school-table">
-              <thead>
-                <tr><th>Student</th><th>Grade</th><th>Colleges</th><th>FAFSA</th><th>Scholarships</th><th>Deadlines</th><th>Tests</th><th>{gpaLabel(school.state)}</th><th>Last active</th><th></th></tr>
-              </thead>
-              <tbody>
-                {list.map((r) => {
-                  const g = hopeGpa(r, school.state);
-                  const d = daysAgo(r.last_active);
-                  return (
-                    <tr key={r.link_id}>
-                      <td>{r.first_name}</td>
-                      <td>{r.grade_level}</td>
-                      <td>{r.colleges === 0 ? <span className="pill pill-soon">None yet</span> : `${r.submitted} of ${r.colleges} sent${r.accepted ? `, ${r.accepted} in` : ""}`}</td>
-                      <td>{r.grade_level < 12 ? "—" : r.fafsa_submitted ? <span className="pill pill-ok">Filed</span> : <span className="pill pill-late">Not yet</span>}</td>
-                      <td>{r.scholarships_saved}</td>
-                      <td>{r.tasks_overdue ? <span className="pill pill-late">{r.tasks_overdue} overdue</span> : null} {r.tasks_next_14 ? `${r.tasks_next_14} soon` : r.tasks_overdue ? "" : "—"}</td>
-                      <td>{[r.sat ? `SAT ${r.sat}` : "", r.act ? `ACT ${r.act}` : ""].filter(Boolean).join(", ") || "—"}</td>
-                      <td>{r.share === "progress" ? <span className="hint" style={{ fontSize: 12 }}>Not shared</span> : g === null ? "—" : displayGpa(g)}</td>
-                      <td>{d === null ? "Never" : d === 0 ? "Today" : `${d}d ago`}</td>
-                      <td>
-                        <button className="btn btn-ghost btn-inline" style={{ padding: "4px 10px", fontSize: 13 }}
-                          onClick={async () => {
-                            if (!sb || !window.confirm(`Stop following ${r.first_name}? The family can connect again with your code.`)) return;
-                            const { error: e } = await sb.rpc("end_school_link", { p_link: r.link_id });
-                            if (e) setError(friendly(e)); else void load();
-                          }}>Remove</button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      <Roster school={school} role={role} />
-      <SendMessage schoolId={school.id} sent={msgs} onSent={load} />
-      <LocalScholarships schoolId={school.id} list={local} onPosted={load} />
-      <SchoolTranscripts schoolId={school.id} />
-      <SchoolApplications schoolId={school.id} />
-      <StaffList school={school} role={role} staff={staff} onChanged={load} />
-    </>
-  );
-}
-
-function ShareCode({ school, role, onChanged }: { school: School; role: "admin" | "counselor"; onChanged: () => void }) {
+export function ShareCode({ school, role, onChanged }: { school: School; role: "admin" | "counselor"; onChanged: () => void }) {
   const sb = supabase();
   const [origin, setOrigin] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
@@ -237,10 +91,10 @@ function ShareCode({ school, role, onChanged }: { school: School; role: "admin" 
   );
 }
 
-function SendMessage({ schoolId, sent, onSent }: { schoolId: string; sent: Msg[]; onSent: () => void }) {
+export function SendMessage({ schoolId, sent, onSent, start }: { schoolId: string; sent: Msg[]; onSent: () => void; start?: { grades?: number[]; subject?: string } }) {
   const sb = supabase();
-  const [grades, setGrades] = useState<number[]>([12]);
-  const [subject, setSubject] = useState("");
+  const [grades, setGrades] = useState<number[]>(start?.grades ?? [12]);
+  const [subject, setSubject] = useState(start?.subject ?? "");
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null);
@@ -292,7 +146,7 @@ function SendMessage({ schoolId, sent, onSent }: { schoolId: string; sent: Msg[]
   );
 }
 
-function LocalScholarships({ schoolId, list, onPosted }: { schoolId: string; list: LocalSch[]; onPosted: () => void }) {
+export function LocalScholarships({ schoolId, list, onPosted }: { schoolId: string; list: LocalSch[]; onPosted: () => void }) {
   const sb = supabase();
   const [f, setF] = useState({ name: "", url: "", summary: "", amount_text: "", amount_max: "", deadline: "", how: "" });
   const [err, setErr] = useState<string | null>(null);
@@ -337,7 +191,7 @@ function LocalScholarships({ schoolId, list, onPosted }: { schoolId: string; lis
   );
 }
 
-function StaffList({ school, role, staff, onChanged }: { school: School; role: "admin" | "counselor"; staff: Staff[]; onChanged: () => void }) {
+export function StaffList({ school, role, staff, onChanged }: { school: School; role: "admin" | "counselor"; staff: Staff[]; onChanged: () => void }) {
   const sb = supabase();
   const [me, setMe] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
