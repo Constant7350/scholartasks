@@ -175,6 +175,7 @@ export function TopBar() {
   const moreOn = !!here && !tabs.some((t) => isActive(t.href, path));
 
   return (
+    <>
     <header className="topbar">
       <div className="topbar-inner">
         <Brand href={signedIn ? "/home" : "/"} />
@@ -259,7 +260,9 @@ export function TopBar() {
           </button>
         </nav>
       )}
-      <HelpLayer />
     </header>
+    {/* Help balloons use page coordinates, so they live outside the sticky header. */}
+    <HelpLayer />
+    </>
   );
 }

@@ -1181,7 +1181,7 @@ html[data-theme="sunrise"] .theme-btn, html[data-theme="garden"] .theme-btn { ba
 .pagestrip .student-switch-own .menu-ico { color: #fff; }
 
 /* Top bar must never be wider than the phone (Constant, 2026-11-07: screens slid left to right). */
-html, body { overflow-x: hidden; max-width: 100%; }
+html { overflow-x: hidden; }
 .topbar-inner { min-width: 0; }
 .topbar-inner > nav { flex: none; }
 .topbar .brand { min-width: 0; flex: 1 1 auto; }
@@ -1222,3 +1222,14 @@ html, body { overflow-x: hidden; max-width: 100%; }
   body:has(details.menu[open]) { overflow: hidden; }
 }
 @media (min-width: 721px) { .menu-head { display: none; } }
+
+/* The top bar, student strip and back-to-section line stay put while the page scrolls under them
+   (Constant, 2026-11-07: no scrolling back up to get out of a page). */
+.topbar { position: sticky; top: 0; z-index: 25; }
+@media (max-width: 720px) {
+  .topbar-inner { padding: 8px 12px; }
+  .topbar .brand-mark { width: 44px; height: 44px; border-radius: 12px; }
+  .topbar .brand { font-size: 18px; gap: 8px; }
+  .crumb-inner { padding: 4px 16px; }
+}
+@media print { .topbar { position: static; } }
