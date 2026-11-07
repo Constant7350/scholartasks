@@ -4,6 +4,8 @@ import { NO_SUGGEST, VoiceButton } from "../voice";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { PageTabs } from "../icon-tabs";
+import { STUDY_PAGES } from "../page-groups";
 import { loadStudy, type StudyContext } from "../study/context";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { ReportAi } from "../report-ai";
@@ -114,9 +116,8 @@ export default function PracticePage() {
   const q = round?.[i];
   return (
     <Page title="Practice questions">
-      <p className="hint" style={{ marginTop: -8 }}>
-        Test yourself in core subjects. Multiple-choice questions are checked instantly and free. The tutor can check written answers or explain a question you&apos;re stuck on (1 of today&apos;s 10 AI uses). It teaches; it won&apos;t do homework.
-      </p>
+      <PageTabs label="Study pages" here="/practice" tabs={STUDY_PAGES} />
+      <p className="hint" style={{ marginTop: -8 }}>Test yourself in core subjects. Multiple choice is checked instantly and free; the tutor explains, it never does homework.</p>
       {ctx.role === "parent" && ctx.students.length > 1 && !round && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {ctx.students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}

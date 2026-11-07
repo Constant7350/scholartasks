@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { PageTabs } from "../icon-tabs";
+import { STUDY_PAGES } from "../page-groups";
 import { useShowMore } from "../show-more";
 import { loadStudy, type StudyContext } from "./context";
 import { LESSONS } from "./lessons";
@@ -35,9 +37,8 @@ export default function StudyLibraryPage() {
 
   return (
     <Page title={title}>
-      <p className="hint" style={{ marginTop: -8 }}>
-        Short, free lessons on how to study, each with a quick check and a small project. Ready to test yourself? Try the <a href="/practice">practice questions</a>.
-      </p>
+      <PageTabs label="Study pages" here="/study" tabs={STUDY_PAGES} />
+      <p className="hint" style={{ marginTop: -8 }}>Short, free lessons on how to study, each with a quick check.</p>
       {ctx.role === "parent" && ctx.students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {ctx.students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}

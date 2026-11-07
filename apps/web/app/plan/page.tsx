@@ -315,6 +315,7 @@ export default function PlanPage() {
         )}
       </section>
         </> },
+        { key: "offers", icon: "⚖️", label: "Aid offers", href: "/plan/offers" },
         { key: "state-dates", icon: "🏛️", label: "State dates", body: (packDates.length > 0) ? <>
       {packDates.length > 0 && (
         <section className="panel">

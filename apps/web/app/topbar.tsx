@@ -8,12 +8,14 @@ import { Brand } from "./brand";
 import { HelpButton, HelpLayer } from "./help/balloons";
 import { inPhoneApp } from "../lib/passkeys-client";
 import { appSignOut } from "../lib/share";
-import { ThemePicker } from "./theme-picker";
+import { ThemeButton, ThemePicker } from "./theme-picker";
+import { Icon } from "./icons";
+import { Avatar } from "./avatar";
 import { LangPicker } from "./lang-picker";
 import { UI, navLabel, navShort } from "./nav-es";
 import { useLang } from "../lib/lang-client";
 import { useSpace } from "../lib/parent-space";
-import { NAV, NAV_GROUPS, bestMatch, isActive, type NavItem, type NavRole } from "./nav";
+import { NAV, NAV_GROUPS, bestMatch, isActive, tabOf, type NavItem, type NavRole } from "./nav";
 
 interface Who { role: NavRole; students: { id: string; first_name: string }[]; own: string | null; admin: boolean; tester: boolean }
 
@@ -21,9 +23,10 @@ interface Who { role: NavRole; students: { id: string; first_name: string }[]; o
  * Top navigation for signed-in people:
  * - top bar with the menu (role-aware: students see only student pages, parents also see family pages)
  * - the menu has a search box at the top, then folded sections
- * - on computers, a strip under the top bar with the four main pages and, for parents, which student they are looking at
+ * - on computers, a strip under the top bar with the four main pages and, for parents with more than one student, which one they are looking at
  * - on phones, a tab bar along the bottom with the same four pages and "More" for the full menu
- * The list of pages lives in nav.ts.
+ * - a color button (one tap moves to the next color theme) next to the help button
+ * The list of pages and their order lives in nav.ts.
  */
 export function TopBar() {
   const sb = supabase();
@@ -100,12 +103,12 @@ export function TopBar() {
   // Each time the menu opens, start with the section of the page you are on (or all closed).
   const onMenuToggle = () => { if (menu.current?.open) setOpenGroup(here?.group ?? null); };
   const toggleGroup = (key: string) => setOpenGroup((o) => (o === key ? null : key));
-  const section = (key: string, title: string, body: ReactNode) => {
+  const section = (key: string, title: string, body: ReactNode, icon?: string) => {
     const open = openGroup === key;
     return (
-      <div key={key} className={`menu-group ${open ? "menu-group-open" : ""}`}>
+      <div key={key} className={`menu-group menu-group-${key} ${open ? "menu-group-open" : ""}`}>
         <button type="button" className="menu-heading" aria-expanded={open} aria-controls={`menu-sec-${key}`} onClick={() => toggleGroup(key)}>
-          <span>{title}</span>
+          <span>{icon && <Icon of={icon} className="menu-ico" />}{title}</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
         </button>
         {open && <div id={`menu-sec-${key}`} className="menu-sec">{body}</div>}
@@ -113,31 +116,36 @@ export function TopBar() {
     );
   };
 
-  const groups = NAV_GROUPS.map((g) => ({ key: g.key, title: g.key === "family" && !isParent ? t.connected : g[lang] }));
+  const groups = NAV_GROUPS.map((g) => ({ key: g.key, icon: g.icon, title: g.key === "family" && !isParent ? t.connected : g[lang] }));
 
   const link = (i: NavItem, cls: string, label: string) => (
     <a key={i.href + i.label} className={`${cls} ${here === i ? "nav-on" : ""}`} href={i.href} aria-current={here === i ? "page" : undefined}>
-      <span aria-hidden="true">{i.icon}</span> {label}
+      <Icon of={i.icon} className="menu-ico" /> {label}
     </a>
   );
+  // Pages reached from a tab row on a nearby page stay out of the lists (still found by search); small links sit at the bottom.
+  const listed = items.filter((i) => i.inMenu !== false && !i.small);
+  const smalls = items.filter((i) => i.small);
 
   // In a parent's own space (My parent space, or a search page switched to it) the bar says so,
   // instead of naming the student, so nothing looks like it is being done as the student.
   const ownSpace = isParent && (path === "/parent" || (space === "parent" && ["/colleges", "/majors", "/scholarships"].includes(path)));
   const switcher = ownSpace ? (
-    <a className="student-switch student-switch-own" href="/parent"><b>{t.mySpace}</b></a>
+    <a className="student-switch student-switch-own" href="/parent"><Icon of="👤" className="menu-ico" /> <b>{t.mySpace}</b></a>
   ) : isParent && kids.length > 0 && (
     <label className="student-switch">
-      <span className="student-switch-label">{t.viewing}</span>
       {kids.length === 1 ? (
-        <a href="/students"><b>{kids[0]?.first_name}</b></a>
-      ) : (
+        <a href="/students"><Avatar name={kids[0]!.first_name} size={24} /> <b>{kids[0]?.first_name}</b></a>
+      ) : (<>
+        <Avatar name={kids.find((k) => k.id === current)?.first_name ?? kids[0]!.first_name} size={24} />
         <select value={current ?? ""} onChange={(e) => { setCurrent(e.target.value); rememberStudent(e.target.value); }} aria-label="Choose a student">
           {kids.map((k) => <option key={k.id} value={k.id}>{k.first_name}</option>)}
         </select>
-      )}
+      </>)}
     </label>
   );
+  // With one student there is nothing to switch, so the strip stays empty (and hidden on phones); the menu still names them.
+  const stripSwitcher = ownSpace || kids.length > 1 ? switcher : null;
 
   const openMenu = () => {
     if (menu.current) menu.current.open = !menu.current.open;
@@ -152,7 +160,7 @@ export function TopBar() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const tabs = items.filter((i) => i.tab).sort((a, b) => (a.tab ?? 0) - (b.tab ?? 0));
+  const tabs = items.filter((i) => tabOf(i, role)).sort((a, b) => (tabOf(a, role) ?? 0) - (tabOf(b, role) ?? 0));
   // Search matches the English and Spanish names and the section name, ignoring accents.
   const fold = (x: string) => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const query = fold(q.trim());
@@ -166,6 +174,7 @@ export function TopBar() {
         <Brand href={signedIn ? "/home" : "/"} />
         <nav>
           <HelpButton />
+          {signedIn && <ThemeButton />}
           {signedIn === false && <a href="/signin">{t.signIn}</a>}
           {signedIn && (
             <details className="menu" ref={menu} onToggle={onMenuToggle}>
@@ -182,13 +191,15 @@ export function TopBar() {
                 {query ? (
                   found.length ? found.map((i) => link(i, "menu-item", navLabel(i, lang))) : <p className="menu-none">{t.noMatch}</p>
                 ) : groups.map((g) => {
-                  const list = items.filter((i) => i.group === g.key);
+                  const list = listed.filter((i) => i.group === g.key);
                   if (!list.length) return null;
-                  return section(g.key, g.title, list.map((i) => link(i, "menu-item", navLabel(i, lang))));
+                  return section(g.key, g.title, list.map((i) => link(i, "menu-item", navLabel(i, lang))), g.icon);
                 })}
-                {section("look", t.look, <><ThemePicker /><LangPicker /></>)}
-                <hr />
-                <button role="menuitem" className="menu-item" onClick={signOut}><span aria-hidden="true">🚪</span> {t.signOut}</button>
+                {section("look", t.look, <><ThemePicker /><LangPicker /></>, "🎨")}
+                <div className="menu-small">
+                  {smalls.map((i) => link(i, "menu-small-link", navShort(i, lang)))}
+                  <button role="menuitem" className="menu-small-link" onClick={signOut}><Icon of="🚪" className="menu-ico" /> {t.signOut}</button>
+                </div>
               </div>
             </details>
           )}
@@ -198,7 +209,7 @@ export function TopBar() {
       {signedIn && (
         <div className="pagestrip">
           <div className="pagestrip-inner">
-            {switcher}
+            {stripSwitcher}
             <nav className="strip-links" aria-label="Main pages">
               {tabs.map((i) => (
                 <a key={i.href} className={isActive(i.href, path) ? "nav-on" : ""} href={i.href} aria-current={isActive(i.href, path) ? "page" : undefined}>
@@ -226,12 +237,12 @@ export function TopBar() {
         <nav className="tabbar" aria-label="Main pages">
           {tabs.map((i) => (
             <a key={i.href} className={isActive(i.href, path) ? "nav-on" : ""} href={i.href} aria-current={isActive(i.href, path) ? "page" : undefined}>
-              <span className="tabbar-icon" aria-hidden="true">{i.icon}</span>
+              <Icon of={i.icon} className="tabbar-icon" />
               <span>{navShort(i, lang)}</span>
             </a>
           ))}
           <button type="button" data-menu-toggle className={moreOn ? "nav-on" : ""} onClick={openMenu} aria-label={t.more}>
-            <span className="tabbar-icon" aria-hidden="true">☰</span>
+            <Icon of="☰" className="tabbar-icon" />
             <span>{t.more}</span>
           </button>
         </nav>

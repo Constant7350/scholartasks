@@ -10,6 +10,8 @@ import { PasskeyOffer } from "../passkey-offer";
 import { AdultConsent } from "../adult-consent";
 import { ParentIdeasCard } from "./parent-space-cards";
 import { approveWaiting, loadWaiting, type Waiting } from "../parent/waiting";
+import { useAiConsent } from "../ai-consent";
+import { Icon } from "../icons";
 
 interface Student {
   id: string; first_name: string; grade_level: number; state: string; permissions?: Record<string, boolean> | null;
@@ -40,6 +42,7 @@ export default function Home() {
   const [waiting, setWaiting] = useState<Waiting[]>([]);
   const [role, setRole] = useState<"parent" | "student" | "none">("none");
   const [error, setError] = useState<string | null>(null);
+  const ai = useAiConsent(sb);
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -103,7 +106,7 @@ export default function Home() {
 
   // Set-up steps: each line goes away once it's done, then the whole card goes away.
   const connected = (id: string) => invites.some((i) => i.student_id === id && i.accepted_at);
-  const setup: { key: string; text: string; href: string; go: string }[] = [];
+  const setup: { key: string; text: string; href?: string; go: string; onGo?: () => void }[] = [];
   if (isParent || role === "none") {
     if (students.length === 0) setup.push({ key: "add", text: "Add your student", href: "/family", go: "Add" });
     for (const s of students.filter((x) => !connected(x.id) && x.grade_level >= 8))
@@ -112,6 +115,8 @@ export default function Home() {
   const quizWho = students.filter((s) => !s.match_profile?.career_quiz);
   if (students.length === 0 || quizWho.length > 0)
     setup.push({ key: "quiz", text: role === "student" ? "Take the career quiz (15 minutes)" : `Career quiz: what careers fit ${quizWho.length === 1 ? quizWho[0]!.first_name : "your student"}?`, href: "/career-quiz", go: "Start" });
+  // Allow AI help once here, so the counselor, tutor and essay coach can answer right away (no pop-up on those pages).
+  if (ai.need) setup.push({ key: "ai", text: "Allow AI help (counselor, Homework Helper, essay coach)", go: ai.busy ? "One moment…" : "Allow", onGo: () => void ai.allow() });
 
   const shortcuts: [icon: string, label: string, href: string][] = [
     ["🗂️", "Plan", "/plan"], ["🎓", "Grades", "/grades"], ["💰", "Scholarships", "/scholarships"], ["🔎", "Colleges", "/colleges"],
@@ -126,7 +131,7 @@ export default function Home() {
       {error && <p className="note note-err" role="alert">{error}</p>}
       <nav className="home-grid home-grid-top" aria-label="Shortcuts">
         {shortcuts.map(([icon, label, href]) => (
-          <a key={href} href={href}><span aria-hidden="true">{icon}</span>{label}</a>
+          <a key={href} href={href}><Icon of={icon} />{label}</a>
         ))}
       </nav>
 
@@ -136,7 +141,7 @@ export default function Home() {
           <ul className="home-list">
             {waiting.slice(0, 4).map((w) => (
               <li key={w.key}>
-                <span><span aria-hidden="true">{w.icon}</span> {w.text}</span>
+                <span><Icon of={w.icon} /> {w.text}</span>
                 {w.approve
                   ? <button className="btn btn-inline btn-sm" onClick={() => void run(() => approveWaiting(sb, w.approve!))}>Approve</button>
                   : <a className="btn btn-inline btn-sm link-btn" href={w.href}>{w.action}</a>}
@@ -154,7 +159,7 @@ export default function Home() {
           <h2>Get set up</h2>
           <ul className="home-list">
             {setup.map((s) => (
-              <li key={s.key}><span>{s.text}</span><a className="btn btn-inline btn-sm link-btn" href={s.href}>{s.go}</a></li>
+              <li key={s.key}><span>{s.text}</span>{s.onGo ? <button className="btn btn-inline btn-sm" onClick={s.onGo} disabled={ai.busy}>{s.go}</button> : <a className="btn btn-inline btn-sm link-btn" href={s.href}>{s.go}</a>}</li>
             ))}
           </ul>
         </section>

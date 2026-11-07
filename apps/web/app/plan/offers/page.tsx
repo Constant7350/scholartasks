@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { rankOffers, summarizeOffer, type AidOfferDetail } from "@scholartasks/core";
 import { supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
-import { IconTabs } from "../../icon-tabs";
+import { IconTabs, PageTabs } from "../../icon-tabs";
 import { pickStudent, useCurrentStudent } from "../../../lib/current-student";
 import { money } from "../../../lib/colleges";
 
@@ -118,7 +118,7 @@ export default function CompareOffers() {
 
   return (
     <Page title={isParent ? `${student.first_name}'s aid offers` : "My aid offers"}>
-      <p className="hint"><a href="/plan">← College list</a> · <a href="/aid">FAFSA and aid forms</a></p>
+      <PageTabs label="Money pages" here="/plan/offers" tabs={[{ href: "/plan", icon: "🗂️", label: "College list" }, { href: "/aid", icon: "🧾", label: "FAFSA and aid" }, { href: "/plan/offers", icon: "⚖️", label: "Aid offers" }]} />
       {isParent && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}

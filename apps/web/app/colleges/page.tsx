@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { CHURCH_FAMILIES, INTERESTS, MILITARY_COLLEGE_IDS, SERVICE_ACADEMIES, militaryLabel, INTEREST_PROGRAMS, SCHOOL_TYPES, SOUTHEAST, faithCodes, faithLabel, collegeFit, estimateCost, fitRecord, type CourseGrade, matchScore, sizeOf, type CostInput, type Fit, type MatchAnswers, type MatchProfile } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { PageTabs } from "../icon-tabs";
+import { COLLEGE_PAGES } from "../page-groups";
 import { MoreList } from "../show-more";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
@@ -154,6 +156,7 @@ export default function CollegesPage() {
 
   return (
     <Page title={mine ? "Find colleges" : isParent ? `Find colleges for ${student.first_name}` : "Find colleges"}>
+      <PageTabs label="College pages" here="/colleges" tabs={COLLEGE_PAGES} />
       {isParent && <SpaceSwitch space={space} onChange={setSpace} name={student.first_name} />}
       {isParent && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
@@ -161,8 +164,8 @@ export default function CollegesPage() {
         </div>
       )}
       {mine
-        ? <p className="hint">Answer five quick questions. Prices and Reach, Match or Likely use {student.first_name}&apos;s grades and scores. Tap Save to keep a college on your own list, where you can add a note and share it with {student.first_name} later.</p>
-        : <p className="hint">Answer five quick questions. We look through every four-year college in the federal College Scorecard and show a yearly price for your family. Tap Add to put a college on your list. Know what you want to study? <a href="/majors">Search colleges by major</a>.</p>}
+        ? <p className="hint">Five quick questions, then Save keeps a college on your own list to share with {student.first_name} later.</p>
+        : <p className="hint">Five quick questions, then tap Add to put a college on your list. Prices are for your family.</p>}
 
       <section className="panel quiz">
         {pick("1. Where?", [["home", STATE_NAMES[student.state] ?? "My state"], ["region", "The Southeast"], ["anywhere", "Anywhere in the U.S."]], "where")}
