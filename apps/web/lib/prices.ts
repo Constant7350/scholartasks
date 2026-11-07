@@ -7,7 +7,7 @@
 //   Build, grades 9-10:    $9.99 a month or $79 a year
 //   Apply, grades 11-12:  $12.99 a month or $99 a year
 // The price covers 2 students; each extra student is $2.99 a month (Constant, 2026-11-07).
-// The yearly extra ($25) was suggested but not yet confirmed by Constant.
+// Yearly plans: $30 a year per extra student (Constant, 2026-11-07).
 
 import { extraStudents, type PlanLevel } from "@scholartasks/core";
 
@@ -35,7 +35,7 @@ export const FAMILY_LEVELS: { key: PlanLevel; grades: string; name: string; mont
 ];
 
 /** Each student after the two included, per month or year. */
-export const EXTRA_STUDENT = { month: 299, year: 2500 } as const;
+export const EXTRA_STUDENT = { month: 299, year: 3000 } as const;
 
 /** The Family plan price for this level, billing period and number of students. */
 export function familyCents(level: PlanLevel, interval: "month" | "year", students: number): number {
