@@ -25,7 +25,7 @@ export const NAV_GROUPS: { key: NavGroup; en: string; es: string; icon: string; 
   { key: "apply", en: "Apply", es: "Solicitar", icon: "✍️" },
   { key: "money", en: "Money for college", es: "Dinero para la universidad", icon: "💰" },
   { key: "family", en: "Family and account", es: "Familia y cuenta", icon: "👪" },
-  { key: "team", en: "Team: review", es: "Equipo: revisar", icon: "✅", team: true },
+  { key: "team", en: "ScholarTasks team", es: "Equipo de ScholarTasks", icon: "✅", team: true },
   { key: "teamTools", en: "Team: tools and plans", es: "Equipo: herramientas y planes", icon: "⚙️", team: true },
 ];
 
@@ -105,7 +105,7 @@ export const NAV: NavItem[] = [
   { href: "/invite", label: "Invite a friend", short: "Invite", icon: "💌", roles: ALL, group: "family", small: true },
   { href: "/rate", label: "Rate ScholarTasks", short: "Rate", icon: "⭐", roles: ALL, group: "family", small: true },
 
-  { href: "/admin", label: "Team admin home", icon: "🧭", roles: ALL, group: "team" },
+  { href: "/admin", label: "Team review", short: "Team review", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/answers", label: "Review counselor answers", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/questions", label: "Review practice questions", icon: "✅", roles: ALL, group: "team" },
   { href: "/admin/lessons", label: "Review study lessons", icon: "✅", roles: ALL, group: "team" },

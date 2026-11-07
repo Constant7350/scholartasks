@@ -23,7 +23,10 @@ const ABOUT: Record<string, string> = {
   "/admin/testers": "Invite testers and send test links.",
 };
 
-/** Team home: every team page as a card, in its section. */
+/** "Review counselor answers" reads as "Counselor answers" on a tile; the section already says it is review work. */
+const short = (label: string) => { const s = label.replace(/^Review /, ""); return s.charAt(0).toUpperCase() + s.slice(1); };
+
+/** Team home: every team page as an icon tile, in its section (Constant, 2026-11-07: icons, easy to tap). */
 export default function AdminHome() {
   const sb = supabase();
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
@@ -46,20 +49,18 @@ export default function AdminHome() {
 
   return (
     <Page title={title}>
-      <p className="hint">Everything the team looks after, in one place. A red number means that many things still need someone to look at them.</p>
+      <p className="hint">Tap a tile to do that job. A red number means that many things still wait for someone to look at them.</p>
       {teamSections().map((s) => (
         <section key={s.title}>
           <h2 className="admin-sub">{s.title}</h2>
-          <div className="admin-cards">
-            {s.items.map((i) => {
+          <div className="admin-tiles">
+            {s.items.filter((i) => i.href !== "/admin").map((i) => {
               const { icon, tone } = lookOf(i.href);
               return (
-                <a key={i.href} href={i.href} className={`admin-card${attention[i.href] ? " admin-card-due" : ""}`}>
+                <a key={i.href} href={i.href} className={`admin-tile${attention[i.href] ? " admin-tile-due" : ""}`} title={ABOUT[i.href]}>
                   <span className={`ai-tile ai-tile-lg ai-${tone}`}><Icon name={icon} /></span>
-                  <span>
-                    <b>{i.label}</b>
-                    {ABOUT[i.href] && <small>{ABOUT[i.href]}</small>}
-                  </span>
+                  <b>{short(i.label)}</b>
+                  {ABOUT[i.href] && <small>{ABOUT[i.href]}</small>}
                   <Badge href={i.href} count={attention[i.href]} />
                 </a>
               );
