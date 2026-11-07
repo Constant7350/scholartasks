@@ -13,6 +13,7 @@ import { approveWaiting, loadWaiting, type Waiting } from "../parent/waiting";
 import { useAiConsent } from "../ai-consent";
 import { Icon } from "../icons";
 import { stageOf } from "../nav";
+import { DreamBoardCard } from "./dream-board";
 import { useCurrentStudent } from "../../lib/current-student";
 
 interface Student {
@@ -182,6 +183,12 @@ export default function Home() {
         </section>
       )}
       <PasskeyOffer sb={sb} />
+
+      {/* Dream board: on Home for grades 6 to 10, and later only once it has something in it. */}
+      {stageKid && role !== "none" && (stage !== "apply" || !!(stageKid.match_profile as { dreams?: { wants?: string[] } } | null)?.dreams?.wants?.length) && (
+        <DreamBoardCard sb={sb} student={stageKid} who={isParent ? "parent" : "student"}
+          onSaved={(profile) => setStudents(students.map((x) => (x.id === stageKid.id ? { ...x, match_profile: profile as Student["match_profile"] } : x)))} />
+      )}
 
       {students.length > 0 && (
         <section className="panel home-due" aria-label="Due next">

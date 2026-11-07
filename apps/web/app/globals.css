@@ -1265,3 +1265,12 @@ details.menu[open] summary svg { transform: rotate(180deg); }
 .stage-switch { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0 6px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); cursor: pointer; }
 .stage-switch input { margin-top: 3px; width: 20px; height: 20px; flex: 0 0 auto; }
 .stage-switch small { display: block; color: var(--muted); font-size: 12.5px; line-height: 1.4; margin-top: 2px; }
+
+/* Dream board card on Home (home/dream-board.tsx). */
+.dream { border-color: var(--gold); }
+.dream h2 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+.dream-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.dream-list { margin: 8px 0 4px; padding-left: 22px; font-size: 16px; font-weight: 600; display: grid; gap: 4px; }
+.dream-admire { margin: 0 0 10px; }
+.dream-fields { display: grid; gap: 8px; margin: 10px 0 12px; }
+.dream-fields input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font: inherit; background: var(--card); color: var(--ink); }

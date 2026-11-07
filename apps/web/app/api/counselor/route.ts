@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { limitReached } from "../../../lib/billing";
 import { CHURCH_FAMILIES, MILITARY_COLLEGES, SERVICE_ACADEMIES, displayGpa, primaryGpa, quizLine, type CourseGrade, type SavedQuiz } from "@scholartasks/core";
+import { dreamLine, stageBrief, type DreamBoard } from "../../../lib/stage-brief";
 import { after } from "next/server";
 import { PACKED_STATES, aidOfficeFor, checkStatePrograms, packFor, stateName } from "../../../lib/state-packs";
 import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../lib/ai-consent";
@@ -25,7 +26,7 @@ interface ChatMessage { role: "user" | "assistant"; content: string }
 interface Student {
   id: string; first_name: string; birth_date: string; grade_level: number; state: string;
   sat: number | null; act: number | null; income_band: string | null; permissions: Record<string, boolean>;
-  goal_gpa?: number | null; min_grade?: string | null; match_profile?: { college_type?: string; church?: string | null; career_quiz?: SavedQuiz } | null;
+  goal_gpa?: number | null; min_grade?: string | null; match_profile?: { college_type?: string; church?: string | null; career_quiz?: SavedQuiz; dreams?: DreamBoard | null } | null;
 }
 
 const json = (status: number, error: string) => Response.json({ error }, { status });
@@ -86,6 +87,9 @@ async function studentContext(sb: SupabaseClient, s: Student, isParent: boolean,
     lines.push(`College preference (picked on Find colleges): ${pref.college_type === "military" ? "service academies and military colleges (see /military)" : pref.college_type === "christian" ? `private Christian colleges and universities${church ? ` (church family: ${church})` : ""}` : `${pref.college_type} colleges`}. Suggest colleges of this kind first, in ${stateName(s.state)} and nationwide.`);
   }
   if (pref?.career_quiz?.code) lines.push(quizLine(pref.career_quiz));
+  lines.push(stageBrief(s.grade_level));
+  const dreams = dreamLine(pref);
+  if (dreams) lines.push(dreams);
   if (isParent || s.permissions?.see_income_and_costs) {
     lines.push(`Family income band: ${s.income_band ?? "not entered"}.`);
   }

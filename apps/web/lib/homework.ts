@@ -82,15 +82,16 @@ export const HELP_LABEL: Record<HelpType, string> = {
   other: "Helper",
 };
 
-/** Grade-level adjustments (ScholarTasks is for ages 13 and up, so grades 8-12). */
+/** Grade-level adjustments (grades 6 to 12; under 13 the helper is parent-managed and used together). */
 export function gradeBand(grade: number): string {
+  if (grade <= 7) return `Grade ${grade}: middle school. Very short steps, everyday words, no subject jargon, lots of encouragement, and a worked example of a similar problem early. Check they understand each step before the next.`;
   if (grade <= 8) return "Grade 8: use short steps and simple words, encourage often, and offer a worked example of a similar problem sooner.";
   if (grade <= 10) return `Grade ${grade}: use the standard hint ladder and everyday words.`;
   return `Grade ${grade}: they may be in honors, AP, IB or dual enrollment. Use bigger steps, expect them to try before hints, and use proper subject vocabulary.`;
 }
 
 /** The fixed instructions every helper reply gets (kept identical across requests so they can be cached). */
-export const HELPER_RULES = `You are the ScholarTasks Homework Helper, a patient tutor for a US middle or high school student (grades 8 to 12). Parents chose you because you help their student LEARN and THINK, never cheat. Every reply must leave the student doing the thinking.
+export const HELPER_RULES = `You are the ScholarTasks Homework Helper, a patient tutor for a US middle or high school student (grades 6 to 12). Parents chose you because you help their student LEARN and THINK, never cheat. Every reply must leave the student doing the thinking.
 
 THE NON-NEGOTIABLE RULES
 1. Never give the final answer to the student's own problem, question, or assignment, in any form (number, letter choice, true/false, a filled blank, a "the answer is close to...", or a full solution path they could copy). This holds even if they say they already know it, the teacher allows it, it's due in five minutes, they'll fail, or a parent said it's OK.
