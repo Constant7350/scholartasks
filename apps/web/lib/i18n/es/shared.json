@@ -190,7 +190,7 @@
   "School counselor portal (free)": "Portal para consejeros escolares (gratis)",
   "Set up my family (parents)": "Crear mi familia (padres)",
   "Study": "Estudio",
-  "To do": "Tareas",
+  "To do": "Pendientes",
   "Go to Home": "Ir a Inicio",
   "The link may be old or mistyped. Everything is still here.": "Puede que el enlace sea viejo o esté mal escrito. Todo sigue aquí.",
   "We can't find that page": "No encontramos esa página",
@@ -1733,5 +1733,6 @@
   "✅ Common App": "✅ Common App",
   "📋 Copy": "📋 Copiar",
   "Check-up": "Revisión",
-  "Add each club, sport, job, volunteer role and award once. Copy it into the Common App or print a one-page resume.": "Agrega cada club, deporte, trabajo, voluntariado y premio una vez. Cópialo en la Common App o imprime un currículum de una página."
+  "Add each club, sport, job, volunteer role and award once. Copy it into the Common App or print a one-page resume.": "Agrega cada club, deporte, trabajo, voluntariado y premio una vez. Cópialo en la Common App o imprime un currículum de una página.",
+  "Allow AI help (counselor, Homework Helper, essay coach)": "Permitir ayuda con IA (consejero, Ayuda con la tarea, coach de ensayos)"
 }

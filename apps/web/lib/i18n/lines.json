@@ -2932,7 +2932,7 @@
 {"en":"Dream board","screens":["/home"]},
 {"en":"For example: {PROMPTS}","screens":["/home"]},
 {"en":"Jobs, things to build, places to go. It can change any time. The counselor and the Homework Helper use this to show {name} how school connects to it.","screens":["/home"]},
-{"en":"Looks up to: {admire}","screens":["/home"]},
+{"en":"Looks up to: <1>{admire}</1>","screens":["/home"]},
 {"en":"My dreams","screens":["/home"]},
 {"en":"One more (optional)","screens":["/home"]},
 {"en":"Someone you admire","screens":["/home"]},

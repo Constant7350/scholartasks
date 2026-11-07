@@ -291,7 +291,7 @@
   "What's next": "Lo que sigue",
   "Your next steps": "Tus próximos pasos",
   "course plan, activities, PSAT, early scholarships and a first look at colleges": "el plan de clases, actividades, el PSAT, becas tempranas y un primer vistazo a las universidades",
-  "grades, study skills, the career quiz and careers": "notas, hábitos de estudio, el cuestionario de carreras y carreras",
+  "grades, study skills, the career quiz and careers": "notas, hábitos de estudio, el test de carreras y carreras",
   "In grade {gradelevel}, {firstname}'s menu shows the pages for grades {grades}: {x}. Turn this on to also show the college list, essays, aid forms and the rest now. The full app opens by itself in grade 11.": "En el grado {gradelevel}, el menú de {firstname} muestra las páginas de los grados {grades}: {x}. Activa esto para mostrar también ahora la lista de universidades, los ensayos, los formularios de ayuda y el resto. La app completa se abre sola en el grado 11.",
   "Show every page for {firstname}": "Mostrar todas las páginas para {firstname}",
   "{firstname}'s dreams": "Los sueños de {firstname}",
@@ -302,7 +302,6 @@
   "Dream board": "Tablero de sueños",
   "For example: {PROMPTS}": "Por ejemplo: {PROMPTS}",
   "Jobs, things to build, places to go. It can change any time. The counselor and the Homework Helper use this to show {name} how school connects to it.": "Trabajos, cosas que construir, lugares adonde ir. Puede cambiar en cualquier momento. El consejero y la Ayuda con la tarea lo usan para mostrarle a {name} cómo la escuela se conecta con eso.",
-  "Looks up to: {admire}": "Admira a: {admire}",
   "My dreams": "Mis sueños",
   "One more (optional)": "Uno más (opcional)",
   "Someone you admire": "Alguien a quien admiras",
@@ -330,5 +329,6 @@
   "Study lessons": "Lecciones de estudio",
   "App colors: {name}. Switch to {name2}": "Colores de la app: {name}. Cambiar a {name2}",
   "Colors: {name}. Tap for {name2}": "Colores: {name}. Toca para {name2}",
-  "College application · {x}": "Solicitud universitaria · {x}"
+  "College application · {x}": "Solicitud universitaria · {x}",
+  "Looks up to: <1>{admire}</1>": "Admira a: <1>{admire}</1>"
 }
