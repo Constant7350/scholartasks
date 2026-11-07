@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { IconTabs } from "../icon-tabs";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { ReportAi } from "../report-ai";
 import { EssayBundles } from "./bundles";
@@ -219,6 +220,8 @@ export default function EssaysPage() {
       <p className="hint">Draft the Common App essay and each college&apos;s extra essays here. Everything saves as you type, and the coach gives feedback without writing for you. For scholarship essays, use the coach on each saved scholarship.</p>
       {error && <p className="note note-err" role="alert">{error}</p>}
 
+      <IconTabs label="Parts of essays" tabs={[
+        { key: "essays", icon: "✍️", label: "My essays", count: mine.length, body: <>
       <section className="panel">
         <h2>Essays ({mine.length})</h2>
         <ul className="items">
@@ -264,7 +267,9 @@ export default function EssaysPage() {
 
       {open && <Editor key={open.id} essay={open} colleges={myColleges} onSaved={onSaved} onRemove={() => void remove(open)} />}
 
-      <EssayBundles key={student.id} sb={sb} studentId={student.id} essays={mine} onEssaysChanged={load} />
+        </> },
+        { key: "bundles", icon: "🧩", label: "Essay bundles", body: <EssayBundles key={student.id} sb={sb} studentId={student.id} essays={mine} onEssaysChanged={load} /> },
+      ]} />
       <p className="hint">Short answers you reuse (bio, career goals, service) are ready to copy on your <a href="/activities/profile">Application profile</a>.</p>
     </Page>
   );

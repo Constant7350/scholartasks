@@ -5,6 +5,7 @@ import { deadlineAppliesTo, type CostInput } from "@scholartasks/core";
 import { packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { IconTabs } from "../icon-tabs";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { costInput, type CollegeRow, type CostStudent } from "../../lib/colleges";
 import { CollegePicker } from "../colleges/college-picker";
@@ -165,6 +166,8 @@ export default function PlanPage() {
       )}
       {error && <p className="note note-err" role="alert">{error}</p>}
 
+      <IconTabs label="Parts of the college plan" tabs={[
+        { key: "coming-up", icon: "📅", label: "Coming up", count: upcoming.length, body: <>
       <section className="panel">
         <h2>Coming up</h2>
         {upcoming.length === 0 ? (
@@ -182,12 +185,8 @@ export default function PlanPage() {
         </label>
         <TextReminders sb={sb} />
       </section>
-
-      {ctx && (
-        <CostPanel sb={sb} studentId={student.id} colleges={myColleges} data={collegeData} ctx={ctx}
-          canEdit={mayChangePlan || isParent} onChanged={load} />
-      )}
-
+        </> },
+        { key: "colleges", icon: "🏫", label: "Colleges", count: myColleges.length, body: <>
       <section className="panel">
         <h2>Colleges</h2>
         <p className="hint" style={{ marginTop: 0 }}>Not sure where to apply? <a href="/colleges">Find colleges that fit</a> with five quick questions. Applying? Track your <a href="/plan/papers">transcripts and letters</a>.</p>
@@ -243,7 +242,14 @@ export default function PlanPage() {
           </ul>
         )}
       </section>
-
+        </> },
+        { key: "cost", icon: "💵", label: "Cost", body: (!!ctx) ? <>
+      {ctx && (
+        <CostPanel sb={sb} studentId={student.id} colleges={myColleges} data={collegeData} ctx={ctx}
+          canEdit={mayChangePlan || isParent} onChanged={load} />
+      )}
+        </> : null },
+        { key: "deadlines", icon: "💰", label: "Scholarships and more", count: myTasks.filter((t) => t.status === "todo").length, body: <>
       <section className="panel">
         <h2>Scholarships and other deadlines</h2>
         <form
@@ -308,7 +314,8 @@ export default function PlanPage() {
           </ul>
         )}
       </section>
-
+        </> },
+        { key: "state-dates", icon: "🏛️", label: "State dates", body: (packDates.length > 0) ? <>
       {packDates.length > 0 && (
         <section className="panel">
           <h2 className="state-dates">{pack?.name} dates for grade {student.grade_level}</h2>
@@ -330,6 +337,9 @@ export default function PlanPage() {
           </ul>
         </section>
       )}
+        </> : null },
+      ]} />
+
     </Page>
   );
 }

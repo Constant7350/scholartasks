@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { IconTabs } from "../icon-tabs";
 import { MILITARY_COLLEGES, MILITARY_PATHS, SERVICE_ACADEMIES, militaryTodoDates } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { Page } from "../ui";
@@ -74,6 +75,8 @@ export default function MilitaryPage() {
     <Page title="Military paths">
       <p className="hint">Serving in the military is a real path after high school, with college paid for, job training and a career. There are four main ways in. Compare them here, then talk it over as a family. Every service commitment is serious: read the contract and ask questions before signing anything.</p>
 
+      <IconTabs label="Parts of military paths" tabs={[
+        { key: "ways", icon: "🎖️", label: "Ways in", body: <>
       <section className="panel">
         <h2>Four ways in</h2>
         <div className="mil-paths" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
@@ -89,7 +92,8 @@ export default function MilitaryPage() {
           ))}
         </div>
       </section>
-
+        </> },
+        { key: "steps", icon: "✅", label: "Steps", body: <>
       <section className="panel">
         <h2>Steps on your To-do list</h2>
         <p className="hint">Thinking about an academy or an ROTC scholarship? The timeline starts in grade 11. Add the steps and they show on the To-do list and calendar with reminders.</p>
@@ -112,7 +116,8 @@ export default function MilitaryPage() {
         {error && <p className="note note-err" role="alert">{error}</p>}
         <p className="hint" style={{ marginBottom: 0 }}>Dates are typical. Each academy, ROTC program and congressional office sets its own deadlines every year: check their sites.</p>
       </section>
-
+        </> },
+        { key: "academies", icon: "🏛️", label: "Academies", body: <>
       <section className="panel">
         <h2>The five service academies</h2>
         <p className="hint">Free college with a monthly stipend, then about 5 years of service. Very selective: strong grades, scores, sports, leadership and fitness all count.</p>
@@ -130,7 +135,8 @@ export default function MilitaryPage() {
         </ul>
         <p className="hint" style={{ marginBottom: 0 }}><b>Nominations:</b> apply to both of your U.S. senators and your U.S. representative (each picks a few students a year), and the Vice President. Children of service members and veterans can have extra nomination routes. <a href="https://www.house.gov/representatives/find-your-representative" target="_blank" rel="noreferrer noopener">Find your representative</a> · <a href="https://www.senate.gov/senators/senators-contact.htm" target="_blank" rel="noreferrer noopener">Find your senators</a></p>
       </section>
-
+        </> },
+        { key: "colleges", icon: "🏫", label: "Colleges", body: <>
       <section className="panel">
         <h2>Military colleges</h2>
         <p className="hint">{STATE_NAMES[home] ?? "Your state"} first, then the rest of the U.S. These are regular colleges with a corps of cadets; you can also pick them on <a href="/colleges">Find colleges</a> (What kind of college? Military academies and colleges) to see a yearly price for your family.</p>
@@ -147,7 +153,8 @@ export default function MilitaryPage() {
           ))}
         </ul>
       </section>
-
+        </> },
+        { key: "paying", icon: "💰", label: "Paying", body: <>
       <section className="panel">
         <h2>Paying for college through service</h2>
         <ul>
@@ -159,6 +166,9 @@ export default function MilitaryPage() {
         </ul>
         <p className="hint" style={{ marginBottom: 0 }}>Amounts and rules change. Confirm with <a href="https://www.va.gov/education/about-gi-bill-benefits/" target="_blank" rel="noreferrer noopener">VA.gov</a>, the branch and the college. This is advice to help you compare; the choice is your family&apos;s.</p>
       </section>
+        </> },
+      ]} />
+
     </Page>
   );
 }

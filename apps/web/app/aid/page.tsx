@@ -18,6 +18,7 @@ import { aidOfficeFor, meritNames, packFor, stateName } from "../../lib/state-pa
 import guideJson from "../../../../packs/federal/aid-guide.json";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { IconTabs } from "../icon-tabs";
 import "./aid.css";
 import "../trades/trades.css";
 import { TradeAidList } from "../trades/aid-list";
@@ -191,7 +192,7 @@ export default function AidPage() {
           )}
         </div>
         {summary.next && (
-          <button className="btn btn-inline" onClick={() => { setOpen(summary.next!.id); document.getElementById(`step-${summary.next!.id}`)?.scrollIntoView({ behavior: "smooth", block: "center" }); }}>
+          <button className="btn btn-inline" onClick={() => { setOpen(summary.next!.id); window.location.hash = "steps"; setTimeout(() => document.getElementById(`step-${summary.next!.id}`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 50); }}>
             Next: {fillCycle(summary.next.title, cycle)}
           </button>
         )}
@@ -211,6 +212,52 @@ export default function AidPage() {
         </section>
       )}
 
+      <IconTabs label="Parts of the aid checklist" tabs={[
+        { key: "steps", icon: "📝", label: "Steps", count: summary.left, body: <>
+      {AID_STAGES.map((stage) => {
+        const steps = STEPS.filter((s) => s.stage === stage.id);
+        return (
+          <section key={stage.id} className="panel">
+            <h2>{stage.title}</h2>
+            <ol className="aid-steps">
+              {steps.map((s) => {
+                const st = statusOf(s.id);
+                return (
+                  <li key={s.id} id={`step-${s.id}`} className={`aid-step ${st ? "is-" + st : ""}`}>
+                    <details open={open === s.id} onToggle={(e) => { const o = (e.target as HTMLDetailsElement).open; if (o) setOpen(s.id); else if (open === s.id) setOpen(null); }}>
+                      <summary>
+                        <span className="aid-check" aria-hidden="true">{st === "done" ? "✓" : st === "skipped" ? "–" : ""}</span>
+                        <span className="aid-title">
+                          <b>{fillCycle(s.title, cycle)}</b>
+                          <span className="hint">{WHO[s.who]}{s.minutes ? ` · about ${s.minutes} min` : ""}{st === "skipped" ? " · doesn't apply" : ""}</span>
+                        </span>
+                      </summary>
+                      <div className="aid-body">
+                        <p>{fillCycle(s.summary, cycle)}</p>
+                        <ol>{s.how.map((h) => <li key={h}>{fillCycle(h, cycle)}</li>)}</ol>
+                        {s.watch_out.map((w) => <p key={w} className="note aid-watch">⚠️ {fillCycle(w, cycle)}</p>)}
+                        <div className="item-actions" style={{ marginTop: 12 }}>
+                          {s.link && <a className="btn btn-inline btn-sm link-btn" href={s.link.url} target="_blank" rel="noreferrer noopener">{s.link.label} ↗</a>}
+                          {st === "done" ? (
+                            <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setStep(s.id, null)}>Mark not done</button>
+                          ) : (
+                            <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setStep(s.id, "done")}>✓ Mark done</button>
+                          )}
+                          {s.optional && st !== "skipped" && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setStep(s.id, "skipped")}>Doesn't apply to us</button>}
+                          {st === "skipped" && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setStep(s.id, null)}>It applies after all</button>}
+                          <a className="aid-ask" href={ask(s)}>🤖 Ask the AI counselor (1 AI use)</a>
+                        </div>
+                      </div>
+                    </details>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        );
+      })}
+</> },
+        { key: "who", icon: "👪", label: "Who files", body: <>
       <section className="panel">
         <h2>Who fills in the FAFSA</h2>
         <ul className="aid-people">{who.people.map((p) => <li key={p}>{p}</li>)}</ul>
@@ -254,7 +301,8 @@ export default function AidPage() {
           </fieldset>
         </details>
       </section>
-
+</> },
+        { key: "documents", icon: "📄", label: "Documents", count: docs.length - found.filter((id) => docs.some((d) => d.id === id)).length, body: <>
       <section className="panel">
         <h2>Documents to have ready</h2>
         <p className="hint">{found.filter((id) => docs.some((d) => d.id === id)).length} of {docs.length} found. Check each one when it's in hand. Keep the papers at home; don't upload them here.</p>
@@ -270,7 +318,8 @@ export default function AidPage() {
           ))}
         </ul>
       </section>
-
+</> },
+        { key: "dates", icon: "📅", label: "Dates", body: <>
       <section className="panel">
         <h2>Aid dates and reminders</h2>
         <p className="hint">Add the dates you want email reminders for. Each college's own "priority date" for aid is usually on its financial aid page and is much earlier than the federal deadline.</p>
@@ -312,50 +361,9 @@ export default function AidPage() {
         </ul>
         {myColleges.length === 0 && <p className="hint" style={{ margin: "10px 0 0" }}>Add colleges on your <a href="/plan">college plan</a> to track each one's aid date here.</p>}
       </section>
-
-      {AID_STAGES.map((stage) => {
-        const steps = STEPS.filter((s) => s.stage === stage.id);
-        return (
-          <section key={stage.id} className="panel">
-            <h2>{stage.title}</h2>
-            <ol className="aid-steps">
-              {steps.map((s) => {
-                const st = statusOf(s.id);
-                return (
-                  <li key={s.id} id={`step-${s.id}`} className={`aid-step ${st ? "is-" + st : ""}`}>
-                    <details open={open === s.id} onToggle={(e) => { const o = (e.target as HTMLDetailsElement).open; if (o) setOpen(s.id); else if (open === s.id) setOpen(null); }}>
-                      <summary>
-                        <span className="aid-check" aria-hidden="true">{st === "done" ? "✓" : st === "skipped" ? "–" : ""}</span>
-                        <span className="aid-title">
-                          <b>{fillCycle(s.title, cycle)}</b>
-                          <span className="hint">{WHO[s.who]}{s.minutes ? ` · about ${s.minutes} min` : ""}{st === "skipped" ? " · doesn't apply" : ""}</span>
-                        </span>
-                      </summary>
-                      <div className="aid-body">
-                        <p>{fillCycle(s.summary, cycle)}</p>
-                        <ol>{s.how.map((h) => <li key={h}>{fillCycle(h, cycle)}</li>)}</ol>
-                        {s.watch_out.map((w) => <p key={w} className="note aid-watch">⚠️ {fillCycle(w, cycle)}</p>)}
-                        <div className="item-actions" style={{ marginTop: 12 }}>
-                          {s.link && <a className="btn btn-inline btn-sm link-btn" href={s.link.url} target="_blank" rel="noreferrer noopener">{s.link.label} ↗</a>}
-                          {st === "done" ? (
-                            <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setStep(s.id, null)}>Mark not done</button>
-                          ) : (
-                            <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setStep(s.id, "done")}>✓ Mark done</button>
-                          )}
-                          {s.optional && st !== "skipped" && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setStep(s.id, "skipped")}>Doesn't apply to us</button>}
-                          {st === "skipped" && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setStep(s.id, null)}>It applies after all</button>}
-                          <a className="aid-ask" href={ask(s)}>🤖 Ask the AI counselor (1 AI use)</a>
-                        </div>
-                      </div>
-                    </details>
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
-        );
-      })}
-      <section className="panel" id="state-aid">
+</> },
+        { key: "state-aid", icon: "🏛️", label: "State aid", body: <>
+      <section className="panel" >
         <h2>{stateName(student.state)} state aid</h2>
         {pack ? (
           <>
@@ -383,7 +391,9 @@ export default function AidPage() {
           );
         })()}
       </section>
-      <section className="panel" id="trades">
+</> },
+        { key: "trades", icon: "🔧", label: "Trade school", body: <>
+      <section className="panel" >
         <h2>Paying for trade school or a short program</h2>
         <p className="hint">
           For a technical college, apprenticeship or trade school. The FAFSA above still matters: it unlocks the Pell Grant and {student.state === "GA" ? "the HOPE Grant" : "state grants"}.
@@ -391,6 +401,9 @@ export default function AidPage() {
         </p>
         <TradeAidList homeState={student.state} />
       </section>
+</> },
+      ]} />
+
       <p className="hint" style={{ fontSize: 13 }}>
         Draft guide, being checked against StudentAid.gov and the {pack?.agency.name ?? "state aid offices"}. Always follow the official sites if anything differs.
       </p>

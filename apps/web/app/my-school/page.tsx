@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { IconTabs } from "../icon-tabs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { eventIcs, timeText, type SchoolEvent } from "../school/event-time";
@@ -96,10 +97,11 @@ export default function MySchool() {
       {notice && <p className="note note-ok" role="status">{notice}</p>}
       {students.length === 0 && <p className="note note-info">Add a student on the <a href="/family">Family page</a> first.</p>}
 
-      {students.map((s) => {
+      <IconTabs label="Parts of My school" tabs={[
+      ...students.map((s) => {
         const mine = links.filter((l) => l.student_id === s.id);
         const adult = isAdult(s.birth_date);
-        return (
+        return { key: s.first_name.toLowerCase(), icon: "🏫", label: role === "parent" ? s.first_name : "My school", body: (
           <div key={s.id} className="panel">
             <h2>{role === "parent" ? s.first_name : "Your school"}</h2>
             {mine.map((l) => (
@@ -146,10 +148,10 @@ export default function MySchool() {
                 : `${s.first_name} is connected to ${name}.`)}
             />
           </div>
-        );
-      })}
+        ) };
+      }),
 
-      {events.length > 0 && (
+      { key: "events", icon: "📅", label: "Coming up", count: events.length, body: events.length > 0 && (
         <div className="panel">
           <h2>Coming up at school</h2>
           {events.map((e) => {
@@ -169,9 +171,8 @@ export default function MySchool() {
             );
           })}
         </div>
-      )}
-
-      {msgs.length > 0 && (
+      ) },
+      { key: "messages", icon: "✉️", label: "Messages", count: msgs.length, body: msgs.length > 0 && (
         <div className="panel">
           <h2>Messages from your school</h2>
           {msgs.map((m) => (
@@ -182,7 +183,8 @@ export default function MySchool() {
             </div>
           ))}
         </div>
-      )}
+      ) },
+      ]} />
       <p className="hint" style={{ fontSize: 13 }}>{NEVER}</p>
     </Page>
   );

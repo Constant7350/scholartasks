@@ -5,6 +5,7 @@ import { buildScorecard, countWords, displayGpa, primaryGpa, type CourseGrade } 
 import { PLAIN_GPA, packFor } from "../../../lib/state-packs";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
+import { IconTabs } from "../../icon-tabs";
 import { rememberedStudent } from "../../../lib/current-student";
 import { CopyButton } from "../../copy-button";
 import { CATEGORIES, RECOGNITION, gradeText, hoursPerYear, type Activity } from "../shared";
@@ -121,6 +122,8 @@ export default function ApplicationProfile() {
       <p className="hint">Everything scholarship and college forms ask for, ready to paste. Tap Copy, then paste it into the form. It all comes from your grades, activities and essays, so keep those up to date and this page stays current.</p>
       {error && <p className="note note-err" role="alert">{error}</p>}
 
+      <IconTabs label="Parts of the profile" tabs={[
+        { key: "about", icon: "🙋", label: "About me", body: <>
       <section className="panel">
         <h2>About me</h2>
         <ul className="items">
@@ -133,7 +136,8 @@ export default function ApplicationProfile() {
         </ul>
         {!student.high_school && <p className="hint small">Add the high school name and graduation year on the <a href="/grades/record">Academic record</a> page.</p>}
       </section>
-
+        </> },
+        { key: "grades", icon: "📊", label: "Grades", body: <>
       <section className="panel">
         <h2>Grades and test scores</h2>
         <ul className="items">
@@ -146,7 +150,8 @@ export default function ApplicationProfile() {
         </ul>
         {!cg.length && <p className="hint">No grades yet. <a href="/grades">Add grades</a> and your GPA shows here.</p>}
       </section>
-
+        </> },
+        { key: "activities", icon: "⚽", label: "Activities", body: <>
       <section className="panel">
         <h2>Activities ({activities.length})</h2>
         {activities.length === 0 ? <p className="hint">No activities yet. <a href="/activities">Add them once</a> and they show up here, in the Common App format.</p> : (
@@ -175,7 +180,8 @@ export default function ApplicationProfile() {
           </>
         )}
       </section>
-
+        </> },
+        { key: "honors", icon: "🏅", label: "Honors", body: (honors.length > 0) ? <>
       {honors.length > 0 && (
         <section className="panel">
           <h2>Honors and awards ({honors.length})</h2>
@@ -185,7 +191,8 @@ export default function ApplicationProfile() {
           </ul>
         </section>
       )}
-
+        </> : null },
+        { key: "answers", icon: "✍️", label: "Short answers", body: <>
       <section className="panel">
         <h2>Short answers I reuse</h2>
         <p className="hint">Write these once in <a href="/essays">Essays</a> and paste them into any form that asks. Change a few words for each award so it fits.</p>
@@ -209,6 +216,9 @@ export default function ApplicationProfile() {
           </>
         )}
       </section>
+        </> },
+      ]} />
+
       <p className="hint small">We never fill in or send forms for you. You paste, check and submit each one yourself, so every answer stays in your own words.</p>
     </Page>
   );

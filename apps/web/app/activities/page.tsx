@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { IconTabs } from "../icon-tabs";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { CATEGORIES, LIMITS, RECOGNITION, checkup, descriptionTips, gradeText, hoursPerYear, type Activity, type BragSheet, type Recommender, type ServiceEntry } from "./shared";
 import { Brag, Checkup, Recommenders, ServiceLog } from "./beyond";
@@ -187,6 +188,8 @@ export default function ActivitiesPage() {
 
       {error && <p className="note note-err" role="alert">{error}</p>}
 
+      <IconTabs label="Parts of activities" tabs={[
+        { key: "list", icon: "⚽", label: "Activities and honors", count: activities.length + honors.length, body: <>
       <div className="tabs" role="tablist">
         <button role="tab" aria-selected={tab === "activity"} onClick={() => { setTab("activity"); setDraft(null); }}>Activities ({activities.length})</button>
         <button role="tab" aria-selected={tab === "honor"} onClick={() => { setTab("honor"); setDraft(null); }}>Honors and awards ({honors.length})</button>
@@ -289,13 +292,11 @@ export default function ActivitiesPage() {
         )}
       </section>
 
-      {beyondOn && (
-        <>
-          <ServiceLog sb={sb} studentId={student.id} rows={myService} run={run} />
-          <Recommenders sb={sb} studentId={student.id} rows={myRecs} run={run} grade={student.grade_level} />
-          <Brag sb={sb} studentId={student.id} sheet={myBrag} run={run} firstName={student.first_name} />
-        </>
-      )}
+        </> },
+        { key: "service", icon: "🤝", label: "Service hours", body: beyondOn && <ServiceLog sb={sb} studentId={student.id} rows={myService} run={run} /> },
+        { key: "recs", icon: "✉️", label: "Recommenders", body: beyondOn && <Recommenders sb={sb} studentId={student.id} rows={myRecs} run={run} grade={student.grade_level} /> },
+        { key: "brag", icon: "⭐", label: "Brag sheet", body: beyondOn && <Brag sb={sb} studentId={student.id} sheet={myBrag} run={run} firstName={student.first_name} /> },
+      ]} />
     </Page>
   );
 }

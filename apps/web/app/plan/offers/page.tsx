@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { rankOffers, summarizeOffer, type AidOfferDetail } from "@scholartasks/core";
 import { supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
+import { IconTabs } from "../../icon-tabs";
 import { pickStudent, useCurrentStudent } from "../../../lib/current-student";
 import { money } from "../../../lib/colleges";
 
@@ -125,6 +126,8 @@ export default function CompareOffers() {
       )}
       <p className="hint">When award letters arrive (usually March and April), type each one in. We split free money from loans, so you compare what each college really costs, not the biggest number on the letter.</p>
 
+      <IconTabs label="Parts of aid offers" tabs={[
+        { key: "compare", icon: "⚖️", label: "Side by side", body: (withOffers.length > 0) ? <>
       {withOffers.length > 0 && (
         <section className="panel">
           <h2>Side by side</h2>
@@ -163,7 +166,8 @@ export default function CompareOffers() {
           {[...new Set(withOffers.flatMap((r) => r.summary.warnings))].map((w) => <p key={w} className="note" style={{ margin: "8px 0 0" }}>{w}</p>)}
         </section>
       )}
-
+        </> : null },
+        { key: "letters", icon: "✉️", label: "Award letters", count: withOffers.length, body: <>
       <section className="panel">
         <h2>Award letters ({withOffers.length} of {mine.length})</h2>
         {mine.length === 0 ? <p className="hint" style={{ margin: 0 }}>Add colleges on your <a href="/plan">college list</a> first.</p> : (
@@ -180,6 +184,8 @@ export default function CompareOffers() {
           </ul>
         )}
       </section>
+        </> },
+        { key: "decide", icon: "💡", label: "Before you decide", body: <>
       <section className="panel">
         <h2>Before you decide</h2>
         <ul>
@@ -189,6 +195,9 @@ export default function CompareOffers() {
           <li>Most colleges want your decision and deposit by May 1.</li>
         </ul>
       </section>
+        </> },
+      ]} />
+
     </Page>
   );
 }

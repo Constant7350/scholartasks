@@ -7,6 +7,7 @@ import {
 } from "@scholartasks/core";
 import { supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
+import { IconTabs } from "../../icon-tabs";
 import { rememberedStudent } from "../../../lib/current-student";
 import { CopyButton } from "../../copy-button";
 import { CATEGORIES, RECOGNITION, gradeText, type Activity } from "../shared";
@@ -105,6 +106,8 @@ export default function CommonAppReady() {
         </ul>
       </section>
 
+      <IconTabs label="Parts of the application" tabs={[
+        { key: "school", icon: "🏫", label: "School and tests", body: <>
       <section className="panel">
         <h2>Education</h2>
         <ul className="items">
@@ -140,7 +143,8 @@ export default function CommonAppReady() {
         </ul>
         <p className="hint small">Many colleges are test-optional. Check each college&apos;s rule before you add scores.</p>
       </section>
-
+        </> },
+        { key: "activities", icon: "⚽", label: "Activities", body: <>
       <section className="panel">
         <h2>Activities ({Math.min(activities.length, COMMON_APP.activities)} of {COMMON_APP.activities})</h2>
         <p className="hint">Common App takes your top {COMMON_APP.activities}, in order, so put the most important first on the <a href="/activities">Activities</a> page. Limits: role {COMMON_APP.position}, organization {COMMON_APP.organization}, description {COMMON_APP.description} characters, spaces included.</p>
@@ -165,7 +169,8 @@ export default function CommonAppReady() {
         )}
         {activities.length > COMMON_APP.activities && <p className="hint small">Not sent to Common App: {activities.slice(COMMON_APP.activities).map((a) => a.position).join(", ")}. You can mention them in Additional information.</p>}
       </section>
-
+        </> },
+        { key: "honors", icon: "🏅", label: "Honors", body: <>
       <section className="panel">
         <h2>Honors ({Math.min(honors.length, COMMON_APP.honors)} of {COMMON_APP.honors}, optional)</h2>
         {honors.length === 0 ? <p className="hint">No honors yet. Add awards on the <a href="/activities">Activities</a> page; it&apos;s fine to leave this blank.</p> : (
@@ -184,7 +189,8 @@ export default function CommonAppReady() {
           </ol>
         )}
       </section>
-
+        </> },
+        { key: "essays", icon: "✍️", label: "Essays", body: <>
       <section className="panel">
         <h2>Personal essay</h2>
         {!personal ? <p className="hint">Not started. <a href="/essays">Start it in Essays</a>, where the coach gives feedback without writing it for you.</p> : (
@@ -208,13 +214,17 @@ export default function CommonAppReady() {
           </ul>
         )}
       </section>
-
+        </> },
+        { key: "optional", icon: "➕", label: "Optional", body: <>
       <section className="panel">
         <h2>Optional boxes</h2>
         <p className="hint"><b>Additional information</b> (up to {COMMON_APP.additionalInfo} words): only for something important that doesn&apos;t fit elsewhere, like a school change or a big family duty. <b>Challenges and circumstances</b> (up to {COMMON_APP.challenges} words): for things outside your control that affected school. Both can stay blank.</p>
       </section>
 
       <p className="hint small">Limits checked for the 2026-27 Common App. Always check the counter on the real form before you submit. Common App is a trademark of its owner; ScholarTasks is not connected with it.</p>
+        </> },
+      ]} />
+
     </Page>
   );
 }
