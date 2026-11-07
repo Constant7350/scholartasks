@@ -74,15 +74,18 @@ export const TOPICS: Topic[] = [
     area: "Getting started",
     title: "The Home page and Menu",
     href: "/home",
-    keywords: ["dashboard", "menu", "navigation", "tiles", "main page", "where is", "back", "switch student", "tab bar", "headings", "sections", "back to section", "colors", "theme", "color theme", "dark", "look"],
-    summary: "Home shows your students, each student's GPA scorecard, the main tools and key dates for your home state.",
+    keywords: ["dashboard", "menu", "navigation", "tiles", "search", "find a page", "shortcuts", "approve", "waiting for you", "due next", "main page", "where is", "back", "switch student", "tab bar", "headings", "sections", "back to section", "colors", "theme", "color theme", "dark", "look"],
+    summary: "Home shows what to do next: what's waiting for you, what's due, a box to ask the AI counselor, and shortcuts to the main pages.",
     body: [
-      "Tap a tile to open that tool. The Menu button at the top right lists every page, grouped under headings such as Every day, Colleges and careers, Grades and courses, and Fund college. Only the headings show at first: tap one to open the pages under it, and tap it again (or another heading) to close it. The section of the page you are on opens by itself. Students see only their own pages; parents also see Family and permissions. Help and Sign out are at the bottom of the menu.",
-      "Every page has a back link at the top with its section's name (for example \"‹ Grades and courses\"). Tap it to open the menu on that section and jump to a page next to it.",
-      "On a computer, the main pages sit in a row under the top bar, and the page you are on is underlined. On a phone, they sit along the bottom of the screen, and More opens the full menu.",
+      "Parents: Waiting for you sits at the top of Home. A to-do your student marked done or a college list change has an Approve button right there. Things that need your signature (a job application, a school connection, an essay challenge) open the page where you sign.",
+      "Due next shows the next three things to do, with red for late and yellow for this week. Check the box to mark one done without leaving Home. See all opens the full to-do list.",
+      "Type a question in Ask the AI counselor and tap Ask. The counselor opens and answers right away. Students also get a link to the Homework Helper.",
+      "Get set up lists only the steps you haven't done yet (add your student, send the join code, take the career quiz). Each line goes away when it's done, and then the whole card goes away.",
+      "The shortcuts open the main pages in one tap. The Menu button at the top right lists every page. Type a word in Find a page at the top of the menu (for example \"FAFSA\" or \"compare\") to jump straight to it, or tap a heading such as Colleges and careers, Grades and study or Money for college to see the pages under it. Help, Invite a friend and Sign out are near the bottom of the menu.",
+      "Every page has a back link at the top with its section's name (for example \"‹ Grades and study\"). Tap it to open the menu on that section and jump to a page next to it.",
+      "The four main pages are Home, To do, Plan and Scholarships. On a phone they sit along the bottom of the screen and More opens the full menu. On a computer they sit in a row under the top bar.",
       "Parents: the Student box at the top shows whose plan you are looking at. Pick another name and every page switches to that student, and stays on them as you move around. In My parent space, and on searches switched to your space, it says My parent space instead, so nothing looks like it is being done as your student.",
-      "Parents also have My parent space, right under Home in the menu: your own college, scholarship and career lists, kept separate from your student's plan. Each student's grades, scorecard and progress are on My students, not on a parent's Home.",
-      "Home is always one tap away, in the page row on a computer or the bottom bar on a phone.",
+      "Parents also have My parent space (a shortcut on Home): your own college, scholarship and career lists, kept separate from your student's plan. Each student's grades, scorecard and progress are on My students, not on a parent's Home.",
       "Pick the app's colors near the bottom of the Menu, under Colors and language: Campus (navy and bright colors), Sunrise (cream and peach) or Garden (sage and teal). The choice is saved on that phone or computer, so each person in the family can pick their own.",
     ],
   },
@@ -109,7 +112,7 @@ export const TOPICS: Topic[] = [
     keywords: ["permissions", "sign-offs", "sign off", "consent", "consents", "signed", "signature", "approve", "approvals", "waiting for me", "parent space", "my space", "parent home", "my own list", "as my child", "as the student", "separate", "parent view", "save for myself", "share with student", "suggest", "review quiz", "quiz answers", "other parent", "co-parent"],
     summary: "Parents have their own space. Search colleges and scholarships, save them to your own list with a note, and look over your student's career quiz. Nothing you save there goes on your student's plan or shows as their work.",
     steps: [
-      "Open Menu, then My parent space (or tap Open my space on the Home page).",
+      "Tap My space in the shortcuts on Home (or open Menu, then My parent space).",
       "Tap Find colleges, Search by major or Scholarships. At the top of those pages, My parent space is picked. Tap Save to my list on anything you like.",
       "Back in My parent space, mark each one Like, Maybe or Not for us, and add a note if you want.",
       "Check Share with (your student's name) on anything you want your student to see. It shows on their Home page under Ideas from your parents. They never see a Not for us.",
@@ -268,7 +271,7 @@ export const TOPICS: Topic[] = [
     keywords: ["to do", "todo", "to-do", "done", "finished", "checklist", "late", "overdue", "due this week", "warning", "red", "yellow", "colors", "what do I need to do"],
     summary: "One list of everything your student still has to do, sorted by due date, with a Done tab for what's finished.",
     steps: [
-      "Open Menu, then To-do list, or tap the To-do list tile on Home.",
+      "Tap To do in the main tabs (along the bottom on a phone). The next three items also show on Home under Due next, where you can check them off.",
       "To do shows open items in groups: Late (red), Due this week (yellow), Due this month, Later, and No due date.",
       "Check the box when something is finished. It moves to the Done tab. Uncheck it there to move it back.",
     ],
@@ -1383,8 +1386,14 @@ export const TIPS: Tip[] = [
   { routes: ["/counselor", "/homework", "/practice", "/test-prep", "/essays", "/scholarships", "/grades", "/challenge"], sel: ".voice-btn", body: "Tap Speak and talk instead of typing. Your words appear in the box so you can fix them before sending. Free, and no sound is kept.", topic: "voice" },
   // Every page
   { routes: ["*"], sel: "details.menu summary", body: "Every page is in this menu. Students see their own pages; parents also see Family and permissions. Help and Sign out are at the bottom.", topic: "home" },
-  { routes: ["*"], sel: ".strip-links", body: "The main pages. The underlined one is where you are now. Tap Home to go back to the start.", topic: "home" },
+  { routes: ["*"], sel: ".strip-links", body: "The four main pages. The underlined one is where you are now. Every other page is in the Menu.", topic: "home" },
   { routes: ["*"], sel: ".tabbar", body: "Main pages along the bottom. More opens the full menu.", topic: "home" },
+  { routes: ["/home"], sel: ".home-waiting h2", body: "Things your student asked you to approve or sign. Approve works right here; signing opens the page it belongs to.", topic: "home" },
+  { routes: ["/home"], sel: ".home-due h2", body: "The next three things to do. Check the box when one is done.", topic: "todo" },
+  { routes: ["/home"], sel: ".home-ask-label", body: "Type a question and tap Ask. Each question uses 1 of today's 10 AI uses.", topic: "counselor" },
+  { routes: ["/home"], sel: ".home-setup h2", body: "Only the set-up steps you haven't done yet. The card goes away when they're all done.", topic: "welcome" },
+  { routes: ["/home"], sel: ".home-grid", body: "One tap to the main pages. Every other page is in the Menu.", topic: "home" },
+  { routes: ["*"], sel: ".menu-search input", body: "Type a word, like FAFSA or compare, to find any page.", topic: "home" },
   { routes: ["*"], sel: ".pagestrip .student-switch", body: "Which student you are looking at. Pick another name and every page switches to that student.", topic: "home" },
   { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/homework", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs):not(.space-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
 
@@ -1396,21 +1405,11 @@ export const TIPS: Tip[] = [
   { routes: ["/activities"], sel: "#brag h2", body: "Answer in your own words, then copy it into an email to each teacher who writes you a letter.", topic: "beyond-grades" },
 
   // Home
-  { routes: ["/home"], sel: ".hero h1", body: "This is your home base. Try any tool below. You can add your student whenever you're ready.", topic: "welcome" },
-  { routes: ["/home"], sel: ".ps-card h2", body: "Your own space: search and save colleges, scholarships and careers without it showing as your student's work.", topic: "parent-space" },
   { routes: ["/colleges", "/majors", "/scholarships"], sel: ".space-switch .tabs", body: "My parent space saves to your own list. Switch to your student's plan to add straight to their plan.", topic: "parent-space" },
   { routes: ["/parent"], sel: ".ps-share", body: "Check this to show the pick to your student on their Home page. Uncheck it any time.", topic: "parent-space" },
-  { routes: ["/home"], sel: ".family-card:not(.ps-card) h2", body: "Your students and whether each one has connected their own phone or computer.", topic: "invite-student" },
   { routes: ["/home", "/grades"], sel: ".scorecard .eyebrow", body: "The GPA scorecard: your state scholarship GPA against the goal, whether things are on track, and classes that need attention.", topic: "scorecard" },
-  { routes: ["/home"], sel: ".tile[href='/plan'] b", body: "Colleges, scholarships and forms in one list, with email reminders before each deadline.", topic: "plan-deadlines" },
-  { routes: ["/home"], sel: ".tile[href='/counselor'] b", body: "Ask questions about colleges and aid. Each message uses 1 of today's 10 AI uses.", topic: "counselor" },
-  { routes: ["/home"], sel: ".tile[href='/scholarships'] b", body: "Scholarships and grants matched to your student, sorted by how well they fit.", topic: "scholarship-matches" },
-  { routes: ["/home"], sel: ".tile[href='/practice'] b", body: "Quick self-tests. Multiple choice is free; the tutor gives hints, never homework answers.", topic: "practice" },
-  { routes: ["/home"], sel: ".tile[href='/grades'] b", body: "Grades, test scores and whether your student is on track for state scholarships.", topic: "hope" },
   { routes: ["/homework"], sel: ".hw-start .field span", body: "Type the problem, take a photo, or upload the assignment, then say what you tried. The helper gives hints, never answers.", topic: "homework-helper" },
   { routes: ["/homework"], sel: ".hw-switch", body: "Turn the Homework Helper on or off for this student. You see a summary here, never the full chat.", topic: "homework-helper" },
-  { routes: ["/home"], sel: ".tile[href='/study'] b", body: "Free lessons on how to study. No AI used.", topic: "study" },
-  { routes: ["/home"], sel: ".tile b", text: "Key ", body: "The next aid and college dates for your home state. Draft until checked with the state aid office.", topic: "ga-dates" },
 
   // Family
   { routes: ["/family"], sel: "h2", text: "Name your family", body: "You're the account owner. Name the family, then add students.", topic: "family-setup" },
@@ -1423,12 +1422,10 @@ export const TIPS: Tip[] = [
   { routes: ["/invite"], sel: ".invite .tabs", body: "Pick who you're inviting. The message changes to fit a parent or a student.", topic: "invite-friend" },
   { routes: ["/invite"], sel: ".invite .share-row", body: "Your texting or email app opens with the message ready. Pick your friend and press send.", topic: "invite-friend" },
   { routes: ["/rate"], sel: ".stars", body: "Tap 1 to 5 stars. Add a note if you like, then tap Send my rating.", topic: "rate-app" },
-  { routes: ["/home"], sel: ".share-card b", body: "Send ScholarTasks to another family, or tell us how we're doing.", topic: "invite-friend" },
 
   // Join
   { routes: ["/join"], sel: "h2", text: "Enter your family code", body: "Type the 8-character code your parent sent you, then tap Join my family.", topic: "invite-student" },
 
-  { routes: ["/home"], sel: ".tile[href='/todo'] b", body: "Everything still to do, with red for late and yellow for due this week.", topic: "todo" },
 
   // To-do list
   { routes: ["/todo"], sel: ".todo-summary", body: "How many things are late, due in the next 7 days, and already done.", topic: "todo" },
@@ -1480,7 +1477,6 @@ export const TIPS: Tip[] = [
   { routes: ["/aid"], sel: "h2", text: "Documents to have ready", body: "What to have ready before you start. Check each one off.", topic: "aid-documents" },
   { routes: ["/aid"], sel: "h2", text: "Aid dates", body: "Get reminders for the FAFSA deadline and each college's aid priority date.", topic: "aid-dates" },
   { routes: ["/aid"], sel: ".aid-step summary", body: "Tap a step to see what to do, then Mark done.", topic: "aid-checklist" },
-  { routes: ["/home"], sel: ".tile[href='/aid'] b", body: "Step-by-step FAFSA and state aid checklist with reminders.", topic: "aid-checklist" },
 
   // Study
   { routes: ["/study"], sel: "main h1", body: "Free lessons on how to study. No AI used.", topic: "study" },
@@ -1489,7 +1485,6 @@ export const TIPS: Tip[] = [
   { routes: ["/study/*"], sel: "h2", text: "Try it this week", body: "A small project to try. Tap the finished button below when you're done.", topic: "study" },
 
   // SAT and ACT prep
-  { routes: ["/home"], sel: ".tile[href='/test-prep'] b", body: "Free SAT and ACT drills, plus timed practice tests with a score estimate.", topic: "test-prep" },
   { routes: ["/test-prep"], sel: ".tp-exam-tabs", body: "Switch between SAT and ACT practice.", topic: "test-prep" },
   { routes: ["/test-prep"], sel: "h2", text: "Score plan", body: "Your official score, best practice estimate, the Zell Miller target and the topics to work on first.", topic: "test-prep" },
   { routes: ["/test-prep"], sel: ".practice-tile b", body: "A free, untimed drill of about 10 questions in this section.", topic: "test-prep" },

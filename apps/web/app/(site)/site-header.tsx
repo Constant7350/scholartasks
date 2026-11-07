@@ -6,12 +6,9 @@ import { supabase } from "../../lib/supabase";
 import { Brand } from "../brand";
 
 export const SITE_LINKS = [
+  // Kept short on purpose. How it works, Compare, About and Contact are in the footer.
   { href: "/features", label: "Features" },
-  { href: "/#how", label: "How it works" },
-  { href: "/compare", label: "Compare" },
   { href: "/schools", label: "For schools" },
-  { href: "/about", label: "About us" },
-  { href: "/contact", label: "Contact" },
   { href: "/es", label: "Español" },
 ];
 

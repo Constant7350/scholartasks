@@ -53,15 +53,21 @@ export default function CounselorPage() {
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
   // A question handed over from another page (e.g. "Ask the AI counselor about this goal").
+  // From the Home page's ask box (send=1) the question is sent right away, so it's one tap.
+  const autoSend = useRef<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    const ask = new URLSearchParams(window.location.search).get("ask");
-    if (ask) setDraft(ask.slice(0, 4000));
+    const p = new URLSearchParams(window.location.search);
+    const ask = p.get("ask");
+    if (ask && p.get("send") === "1") autoSend.current = ask.slice(0, 4000);
+    else if (ask) setDraft(ask.slice(0, 4000));
   }, []);
 
   // The conversation stays in this browser tab only; it is not saved to the database.
   useEffect(() => {
     if (role === undefined) return;
     try { setMsgs(JSON.parse(sessionStorage.getItem(storeKey(current)) ?? "[]") as Msg[]); } catch { setMsgs([]); }
+    setLoaded(true);
   }, [current, role]);
   useEffect(() => {
     if (role === undefined || busy) return;
@@ -107,6 +113,17 @@ export default function CounselorPage() {
       setBusy(false);
     }
   };
+
+  useEffect(() => {
+    if (!loaded || !autoSend.current) return;
+    const q = autoSend.current;
+    autoSend.current = null;
+    window.history.replaceState(null, "", "/counselor");
+    const kid = students.find((x) => x.id === current);
+    if (role === "student" && kid && !kid.permissions?.ai_chat) return; // AI chat turned off by a parent
+    void send(q);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded]);
 
   const title = "AI counselor";
   if (!sb) return <Page title={title}><NotConfigured /></Page>;

@@ -215,3 +215,5 @@
   .s-cta .btn { flex: 1 1 100%; text-align: center; }
   .s-form { padding: 20px; }
 }
+.s-pillar-list { margin: 0; padding-left: 18px; color: var(--ink); font-size: 15px; display: grid; gap: 4px; }
+.s-privacy-line .s-lede { margin-left: auto; margin-right: auto; }

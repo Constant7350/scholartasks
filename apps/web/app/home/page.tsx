@@ -1,60 +1,75 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { meritNames, packFor } from "../../lib/state-packs";
-import { supabase } from "../../lib/supabase";
+import { useCallback, useEffect, useState } from "react";
+import { packFor } from "../../lib/state-packs";
+import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { GpaScorecard } from "../grades/scorecard";
 import { ProgressCard } from "./progress-card";
 import { PasskeyOffer } from "../passkey-offer";
 import { AdultConsent } from "../adult-consent";
-import { ParentIdeasCard, ParentSpaceCard } from "./parent-space-cards";
+import { ParentIdeasCard } from "./parent-space-cards";
+import { approveWaiting, loadWaiting, type Waiting } from "../parent/waiting";
 
-interface Student { id: string; first_name: string; grade_level: number; state: string; match_profile?: { career_quiz?: { code: string; at: string } } | null; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string }
+interface Student {
+  id: string; first_name: string; grade_level: number; state: string; permissions?: Record<string, boolean> | null;
+  match_profile?: { career_quiz?: { code: string; at: string } } | null; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string;
+}
 interface Grade { student_id: string; course: string; grade: "A" | "B" | "C" | "D" | "F"; level: "standard" | "honors" | "AP" | "IB" | "DE"; core: boolean; grade_level: number; term: string }
 interface Invite { student_id: string; accepted_at: string | null }
-interface Due { due: string | null; open: boolean }
+/** One open item for "Due next": a to-do (can be checked off here) or a college application (opens the to-do list). */
+interface Due { key: string; studentId: string; title: string; due: string | null; taskId?: string }
 
-const daysUntil = (iso: string) => Math.round((Date.parse(iso + "T12:00:00") - Date.parse(new Date().toLocaleDateString("en-CA") + "T12:00:00")) / 86_400_000);
+const todayIso = () => new Date().toLocaleDateString("en-CA");
+const daysUntil = (iso: string) => Math.round((Date.parse(iso + "T12:00:00") - Date.parse(todayIso() + "T12:00:00")) / 86_400_000);
+const nice = (iso: string) => new Date(iso + "T12:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" });
+const OPEN_COLLEGE = ["considering", "applying"];
 
-const SOON: { icon: string; title: string; text: string }[] = [];
-
+/**
+ * Home is "what to do next": things waiting for a parent (with the button right there), the next
+ * few due items (check them off here), a box to ask the AI counselor, one set-up card that shrinks
+ * as each step is done, and shortcuts to the main pages. Everything else is one tap away in the menu.
+ */
 export default function Home() {
   const sb = supabase();
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
-  const [email, setEmail] = useState("");
   const [students, setStudents] = useState<Student[]>([]);
   const [invites, setInvites] = useState<Invite[]>([]);
   const [grades, setGrades] = useState<Grade[]>([]);
   const [dues, setDues] = useState<Due[]>([]);
+  const [waiting, setWaiting] = useState<Waiting[]>([]);
   const [role, setRole] = useState<"parent" | "student" | "none">("none");
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(async () => {
     if (!sb) return;
-    (async () => {
-      const { data } = await sb.auth.getSession();
-      setSignedIn(!!data.session);
-      if (!data.session) return;
-      setEmail(data.session.user.email ?? "");
-      const [st, inv, gr, tk, col, mem] = await Promise.all([
-        sb.from("students").select("*").order("first_name"),
-        sb.from("family_invites").select("student_id, accepted_at"),
-        sb.from("course_grades").select("student_id, course, grade, level, core, grade_level, term"),
-        sb.from("tasks").select("due_on, status"),
-        sb.from("student_colleges").select("deadline, status"),
-        sb.from("family_members").select("role").eq("user_id", data.session.user.id),
-      ]);
-      const roles = ((mem.data as { role: string }[]) ?? []).map((r) => r.role);
-      setRole(roles.includes("parent") ? "parent" : roles.includes("student") ? "student" : "none");
-      setDues([
-        ...((tk.data as { due_on: string | null; status: string }[]) ?? []).map((t) => ({ due: t.due_on, open: t.status === "todo" })),
-        ...((col.data as { deadline: string | null; status: string }[]) ?? []).map((c) => ({ due: c.deadline, open: ["considering", "applying"].includes(c.status) })),
-      ]);
-      setGrades((gr.data as Grade[]) ?? []);
-      setStudents((st.data as Student[]) ?? []);
-      setInvites((inv.data as Invite[]) ?? []);
-    })();
+    const { data } = await sb.auth.getSession();
+    setSignedIn(!!data.session);
+    if (!data.session) return;
+    const [st, inv, gr, tk, col, mem] = await Promise.all([
+      sb.from("students").select("*").order("first_name"),
+      sb.from("family_invites").select("student_id, accepted_at"),
+      sb.from("course_grades").select("student_id, course, grade, level, core, grade_level, term"),
+      sb.from("tasks").select("id, student_id, title, due_on, status"),
+      sb.from("student_colleges").select("id, student_id, name, deadline, status"),
+      sb.from("family_members").select("role").eq("user_id", data.session.user.id),
+    ]);
+    const roles = ((mem.data as { role: string }[]) ?? []).map((r) => r.role);
+    const r = roles.includes("parent") ? "parent" : roles.includes("student") ? "student" : "none";
+    setRole(r);
+    const kids = (st.data as Student[]) ?? [];
+    setStudents(kids);
+    setDues([
+      ...((tk.data as { id: string; student_id: string; title: string; due_on: string | null; status: string }[]) ?? [])
+        .filter((t) => t.status === "todo").map((t) => ({ key: "t" + t.id, studentId: t.student_id, title: t.title, due: t.due_on, taskId: t.id })),
+      ...((col.data as { id: string; student_id: string; name: string; deadline: string | null; status: string }[]) ?? [])
+        .filter((c) => OPEN_COLLEGE.includes(c.status)).map((c) => ({ key: "c" + c.id, studentId: c.student_id, title: `Apply to ${c.name}`, due: c.deadline })),
+    ].sort((a, b) => (a.due ?? "9999").localeCompare(b.due ?? "9999")));
+    setGrades((gr.data as Grade[]) ?? []);
+    setInvites((inv.data as Invite[]) ?? []);
+    if (r === "parent") setWaiting(await loadWaiting(sb, (id) => kids.find((k) => k.id === id)?.first_name ?? "Your student").catch(() => []));
   }, [sb]);
+  useEffect(() => { void load(); }, [load]);
 
   if (!sb) return <Page title="Home"><NotConfigured /></Page>;
   if (signedIn === null) return <Page><p className="hint">Loading…</p></Page>;
@@ -64,192 +79,146 @@ export default function Home() {
     return <Page><p className="hint">Taking you to sign in…</p></Page>;
   }
 
-  const connected = (id: string) => invites.some((i) => i.student_id === id && i.accepted_at);
-  const open = dues.filter((d) => d.open);
-  const late = open.filter((d) => d.due && daysUntil(d.due) < 0).length;
-  const week = open.filter((d) => d.due && daysUntil(d.due) >= 0 && daysUntil(d.due) <= 7).length;
-  const today = new Date().toLocaleDateString("en-CA");
-  // The family's home state: the first student's state, or Georgia (launch state) before any student.
+  const run = async (fn: () => PromiseLike<{ error: unknown }>) => {
+    setError(null);
+    const { error: e } = await fn();
+    if (e) setError(friendly(e));
+    await load();
+  };
+  const isParent = role === "parent";
+  const many = students.length > 1;
+  const nameOf = (id: string) => students.find((s) => s.id === id)?.first_name ?? "";
+  // Students without "mark done without asking" send a checked item to their parent to approve.
+  const checkOff = (d: Due) => {
+    const kid = students.find((s) => s.id === d.studentId);
+    const ok = isParent || !!kid?.permissions?.mark_done_without_approval;
+    return run(() => sb.from("tasks").update({ status: ok ? "done" : "needs_parent_approval" }).eq("id", d.taskId!));
+  };
+
+  const late = dues.filter((d) => d.due && daysUntil(d.due) < 0).length;
+  const week = dues.filter((d) => d.due && daysUntil(d.due) >= 0 && daysUntil(d.due) <= 7).length;
+  const next = dues.slice(0, 3);
   const home = packFor(students[0]?.state ?? "GA");
-  const dates = (home?.deadlines ?? []).filter((d) => d.date >= today).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
+  const stateDates = (home?.deadlines ?? []).filter((d) => d.date >= todayIso()).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 2);
+
+  // Set-up steps: each line goes away once it's done, then the whole card goes away.
+  const connected = (id: string) => invites.some((i) => i.student_id === id && i.accepted_at);
+  const setup: { key: string; text: string; href: string; go: string }[] = [];
+  if (isParent || role === "none") {
+    if (students.length === 0) setup.push({ key: "add", text: "Add your student", href: "/family", go: "Add" });
+    for (const s of students.filter((x) => !connected(x.id) && x.grade_level >= 8))
+      setup.push({ key: `join-${s.id}`, text: `Send ${s.first_name} the join code for their own app`, href: "/family", go: "Send code" });
+  }
+  const quizWho = students.filter((s) => !s.match_profile?.career_quiz);
+  if (students.length === 0 || quizWho.length > 0)
+    setup.push({ key: "quiz", text: role === "student" ? "Take the career quiz (15 minutes)" : `Career quiz: what careers fit ${quizWho.length === 1 ? quizWho[0]!.first_name : "your student"}?`, href: "/career-quiz", go: "Start" });
+
+  const shortcuts: [icon: string, label: string, href: string][] = [
+    ["🗂️", "Plan", "/plan"], ["🎓", "Grades", "/grades"], ["💰", "Scholarships", "/scholarships"], ["🔎", "Colleges", "/colleges"],
+    ...(isParent
+      ? [["👪", "My students", "/students"], ["👤", "My space", "/parent"], ["🧾", "FAFSA", "/aid"], ["📝", "SAT/ACT", "/test-prep"]] as [string, string, string][]
+      : [["🦉", "Homework", "/homework"], ["📝", "SAT/ACT", "/test-prep"], ["🏅", "Activities", "/activities"], ["✍️", "Essays", "/essays"]] as [string, string, string][]),
+  ];
 
   return (
     <Page>
-      <section className="hero">
-        <p className="eyebrow">Welcome{email ? `, ${email}` : ""}</p>
-        <h1>Your college plan starts here</h1>
-        <p className="hint">Look around and try the tools first. Add your student whenever you're ready.</p>
-      </section>
+      <h1 className="home-title">{isParent ? "What's next" : role === "student" ? "Your next steps" : "Welcome to ScholarTasks"}</h1>
+      {error && <p className="note note-err" role="alert">{error}</p>}
 
-      {role === "parent" && <ParentSpaceCard sb={sb} firstName={students.length === 1 ? students[0]!.first_name : null} />}
-      {role === "student" && <ParentIdeasCard sb={sb} />}
-
-      <AdultConsent sb={sb} mode="ask" />
-      <PasskeyOffer sb={sb} />
-
-      <div className="panel family-card">
-        {students.length === 0 ? (
-          <>
-            <div>
-              <h2>Add your student when you're ready</h2>
-              <p className="hint" style={{ margin: 0 }}>Their plan, reminders and scholarship matches are built from their grade and goals. You choose what they can see and do.</p>
-            </div>
-            <a className="btn btn-ghost btn-inline link-btn" href="/family">Add a student</a>
-          </>
-        ) : (
-          <>
-            <div>
-              <h2>Your students</h2>
-              <ul className="kids">
-                {students.map((s) => (
-                  <li key={s.id}>
-                    <strong>{s.first_name}</strong> · Grade {s.grade_level}{" "}
-                    {connected(s.id) ? <span className="pill pill-ok">Connected</span> : <span className="pill">Not connected yet</span>}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            {role === "parent"
-              ? <a className="btn btn-inline link-btn" href="/students">{students.length === 1 ? `See ${students[0]!.first_name}'s progress` : "See my students"}</a>
-              : <a className="btn btn-ghost btn-inline link-btn" href="/family">Manage family</a>}
-          </>
-        )}
-      </div>
-
-      <CareerQuizCard students={students} />
-
-      {/* Parents see each student's scorecard and streak on My students, not on their own Home. */}
-      {role !== "parent" && students.map((s) => (
-        <GpaScorecard key={s.id} rows={grades.filter((g) => g.student_id === s.id)} currentGrade={s.grade_level} pack={packFor(s.state)} name={s.first_name} compact href="/grades" goal={s.goal_gpa == null ? null : Number(s.goal_gpa)} minGrade={s.min_grade} weights={{ rigor: Number(s.weight_rigor ?? 1), honors: Number(s.weight_honors ?? 0.5) }} />
-      ))}
-
-      {sb && role !== "parent" && students.map((s) => (
-        <ProgressCard key={`p-${s.id}`} sb={sb} studentId={s.id} name={students.length > 1 ? s.first_name : null} />
-      ))}
-
-      <h2 className="section-title">Try it now</h2>
-      <div className="tiles">
-        <a className={`tile${late ? " tile-late" : week ? " tile-week" : ""}`} href="/todo">
-          <span className="tile-icon">✅</span>
-          <b>To-do list</b>
-          <span>What still needs doing and what's done, sorted by due date with warning colors.</span>
-          <span className="tile-alert">
-            {late > 0 && <span className="pill pill-late">{late} late</span>}
-            {week > 0 && <span className="pill pill-soon">{week} due this week</span>}
-            {open.length > 0 && late + week === 0 && <span className="pill">{open.length} to do</span>}
-            {open.length === 0 && <span className="pill pill-ok">All caught up</span>}
-          </span>
-          <span className="tile-go">Open to-do list →</span>
-        </a>
-        <a className="tile" href="/plan">
-          <span className="tile-icon">🗂️</span>
-          <b>College list and deadlines</b>
-          <span>Track every college, scholarship and form, with email reminders before each deadline.</span>
-          <span className="tile-go">Open the plan →</span>
-        </a>
-        <a className="tile" href="/grades">
-          <span className="tile-icon">🎓</span>
-          <b>Grades and {home?.state === "GA" ? "HOPE" : "scholarship"} tracker</b>
-          <span>Save grades and test scores and see if your student is on track for {meritNames(home)}.</span>
-          <span className="tile-go">Open grades →</span>
-        </a>
-        <a className="tile" href="/activities">
-          <span className="tile-icon">🏅</span>
-          <b>Activities and resume</b>
-          <span>Clubs, sports, jobs and awards in Common App format, ready to copy in. Prints as a one-page resume.</span>
-          <span className="tile-go">Add activities →</span>
-        </a>
-        <a className="tile" href="/counselor">
-          <span className="tile-icon">🤖</span>
-          <b>AI counselor</b>
-          <span>Ask anything about colleges, aid and deadlines. Answers are built around your student's grades and plan.</span>
-          <span className="tile-go">Ask a question →</span>
-        </a>
-        <a className="tile" href="/scholarships">
-          <span className="tile-icon">💰</span>
-          <b>Scholarships and grants</b>
-          <span>{home?.state === "GA" ? "Georgia and national" : "National"} awards your student qualifies for, with what to check and what to work on. Checked for changes every week.</span>
-          <span className="tile-go">See matches →</span>
-        </a>
-        <a className="tile" href="/aid">
-          <span className="tile-icon">🧾</span>
-          <b>FAFSA and {home?.name ?? "state"} aid forms</b>
-          <span>A step-by-step FAFSA{home?.aid_site ? `, ${home.aid_site.name.replace(/ \(.*\)$/, "")}` : ""} and state aid checklist with your own document list and reminders. You file on the official sites; we never ask for passwords or SSNs.</span>
-          <span className="tile-go">Open the checklist →</span>
-        </a>
-        <a className="tile" href="/homework">
-          <span className="tile-icon">🦉</span>
-          <b>Homework Helper</b>
-          <span>Stuck on homework in any subject? Get one hint at a time and have your work checked. It never gives the answer, so you still learn it.</span>
-          <span className="tile-go">Get unstuck →</span>
-        </a>
-        <a className="tile" href="/study">
-          <span className="tile-icon">📚</span>
-          <b>Study skills library</b>
-          <span>Short lessons on how to study, with quick checks and a project to try each week. Free, no AI needed.</span>
-          <span className="tile-go">Start a lesson →</span>
-        </a>
-        <a className="tile" href="/practice">
-          <span className="tile-icon">✏️</span>
-          <b>Practice questions</b>
-          <span>Test yourself in Algebra, Biology, U.S. History and more. Multiple choice is free; the AI tutor checks written answers and gives hints, never homework answers.</span>
-          <span className="tile-go">Practice now →</span>
-        </a>
-        <a className="tile" href="/test-prep">
-          <span className="tile-icon">📝</span>
-          <b>SAT and ACT prep</b>
-          <span>Free section drills, timed practice tests with a score estimate, and a score plan that shows what to work on.</span>
-          <span className="tile-go">Start prepping →</span>
-        </a>
-        {home && <div className="tile">
-          <span className="tile-icon">📅</span>
-          <b>Key {home.name} dates</b>
-          <ul className="dates">
-            {dates.map((d) => (
-              <li key={d.id}>
-                <span className="date">{new Date(d.date + "T12:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</span>
-                <span>{d.title}</span>
+      {isParent && waiting.length > 0 && (
+        <section className="panel home-waiting" aria-label="Waiting for you">
+          <h2>Waiting for you <span className="pill pill-soon">{waiting.length}</span></h2>
+          <ul className="home-list">
+            {waiting.slice(0, 4).map((w) => (
+              <li key={w.key}>
+                <span><span aria-hidden="true">{w.icon}</span> {w.text}</span>
+                {w.approve
+                  ? <button className="btn btn-inline btn-sm" onClick={() => void run(() => approveWaiting(sb, w.approve!))}>Approve</button>
+                  : <a className="btn btn-inline btn-sm link-btn" href={w.href}>{w.action}</a>}
               </li>
             ))}
           </ul>
-          <span className="hint" style={{ fontSize: 12 }}>Draft dates, being checked with the {home.agency.name}.</span>
-        </div>}
-      </div>
+          {waiting.length > 4 && <a className="home-more" href="/parent#sign-offs">See all {waiting.length}</a>}
+        </section>
+      )}
 
-      <div className="panel share-card">
-        <p><b>💌 Know a family who would like ScholarTasks?</b><br /><span className="hint">Send it to another parent or a student in one tap, or tell us how we're doing.</span></p>
-        <div className="share-row">
-          <a className="btn btn-inline link-btn" href="/invite">Invite a friend</a>
-          <a className="btn btn-ghost btn-inline link-btn" href="/rate">⭐ Rate the app</a>
-        </div>
-      </div>
+      <AdultConsent sb={sb} mode="ask" />
 
-      {SOON.length > 0 && <h2 className="section-title">Coming soon</h2>}
-      <div className="tiles">
-        {SOON.map((s) => (
-          <div key={s.title} className="tile tile-soon">
-            <span className="tile-icon">{s.icon}</span>
-            <b>{s.title}</b>
-            <span>{s.text}</span>
+      {setup.length > 0 && (
+        <section className="panel home-setup" aria-label="Get set up">
+          <h2>Get set up</h2>
+          <ul className="home-list">
+            {setup.map((s) => (
+              <li key={s.key}><span>{s.text}</span><a className="btn btn-inline btn-sm link-btn" href={s.href}>{s.go}</a></li>
+            ))}
+          </ul>
+        </section>
+      )}
+      <PasskeyOffer sb={sb} />
+
+      {students.length > 0 && (
+        <section className="panel home-due" aria-label="Due next">
+          <div className="home-due-top">
+            <h2>Due next</h2>
+            <span className="tile-alert">
+              {late > 0 && <span className="pill pill-late">{late} late</span>}
+              {week > 0 && <span className="pill pill-soon">{week} this week</span>}
+              {dues.length === 0 && <span className="pill pill-ok">All caught up</span>}
+            </span>
           </div>
-        ))}
-      </div>
-    </Page>
-  );
-}
+          {next.length > 0 ? (
+            <ul className="home-list">
+              {next.map((d) => {
+                const u = d.due ? daysUntil(d.due) : null;
+                return (
+                  <li key={d.key}>
+                    {d.taskId
+                      ? <label className="home-check"><input type="checkbox" onChange={() => void checkOff(d)} /> <span>{d.title}{many ? ` · ${nameOf(d.studentId)}` : ""}</span></label>
+                      : <a href="/todo">{d.title}{many ? ` · ${nameOf(d.studentId)}` : ""}</a>}
+                    {d.due && <span className={`pill ${u! < 0 ? "pill-late" : u! <= 7 ? "pill-soon" : ""}`}>{u! < 0 ? `${-u!} days late` : u === 0 ? "Today" : nice(d.due)}</span>}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : stateDates.length > 0 ? (
+            <ul className="home-list">
+              {stateDates.map((d) => <li key={d.id}><span>{d.title}</span><span className="pill">{nice(d.date)}</span></li>)}
+            </ul>
+          ) : null}
+          <a className="home-more" href="/todo">{dues.length > 3 ? `See all ${dues.length}` : "Open the to-do list"}</a>
+        </section>
+      )}
 
-/** Early in the journey: point each student without saved results to the career interest quiz. */
-function CareerQuizCard({ students }: { students: Student[] }) {
-  const todo = students.filter((s) => !s.match_profile?.career_quiz);
-  if (students.length > 0 && todo.length === 0) return null;
-  const who = todo.length === 1 ? todo[0]!.first_name : todo.length > 1 ? "your students" : "your student";
-  return (
-    <a className="panel family-card cq-home" href="/career-quiz">
-      <div>
-        <h2>🧩 Start here: what careers fit {who}?</h2>
-        <p className="hint" style={{ margin: 0 }}>A 15-minute career interest quiz about what they like to do and what matters to them. It links to majors, trades and military paths, home state first and nationwide.</p>
-      </div>
-      <span className="btn btn-inline link-btn">Take the quiz</span>
-    </a>
+      <form className="panel home-ask" onSubmit={(e) => {
+        e.preventDefault();
+        const q = String(new FormData(e.currentTarget).get("q") ?? "").trim();
+        window.location.href = q ? `/counselor?ask=${encodeURIComponent(q)}&send=1` : "/counselor";
+      }}>
+        <label htmlFor="home-q" className="home-ask-label">💬 Ask the AI counselor</label>
+        <div className="home-ask-row">
+          <input id="home-q" name="q" placeholder="Colleges, scholarships, aid, deadlines…" enterKeyHint="send" autoComplete="off" />
+          <button className="btn btn-inline" type="submit">Ask</button>
+        </div>
+        {!isParent && <a className="home-more" href="/homework">🦉 Stuck on homework? Get a hint</a>}
+      </form>
+
+      {role === "student" && <ParentIdeasCard sb={sb} />}
+
+      <nav className="home-grid" aria-label="Shortcuts">
+        {shortcuts.map(([icon, label, href]) => (
+          <a key={href} href={href}><span aria-hidden="true">{icon}</span>{label}</a>
+        ))}
+      </nav>
+
+      {/* Parents see each student's scorecard and streak on My students, not on their own Home. */}
+      {role === "student" && students.map((s) => (
+        <GpaScorecard key={s.id} rows={grades.filter((g) => g.student_id === s.id)} currentGrade={s.grade_level} pack={packFor(s.state)} name={s.first_name} compact href="/grades" goal={s.goal_gpa == null ? null : Number(s.goal_gpa)} minGrade={s.min_grade} weights={{ rigor: Number(s.weight_rigor ?? 1), honors: Number(s.weight_honors ?? 0.5) }} />
+      ))}
+      {role === "student" && students.map((s) => (
+        <ProgressCard key={`p-${s.id}`} sb={sb} studentId={s.id} name={null} />
+      ))}
+
+      <p className="home-foot"><a href="/invite">💌 Invite a friend</a> · <a href="/rate">⭐ Rate the app</a> · <a href="/help">❓ Help</a></p>
+    </Page>
   );
 }

@@ -20,8 +20,9 @@ interface Who { role: NavRole; students: { id: string; first_name: string }[]; o
 /**
  * Top navigation for signed-in people:
  * - top bar with the menu (role-aware: students see only student pages, parents also see family pages)
- * - a page strip under it with the main pages and, for parents, which student they are looking at
- * - on phones, a tab bar along the bottom with the main pages and "More" for the full menu
+ * - the menu has a search box at the top, then folded sections
+ * - on computers, a strip under the top bar with the four main pages and, for parents, which student they are looking at
+ * - on phones, a tab bar along the bottom with the same four pages and "More" for the full menu
  * The list of pages lives in nav.ts.
  */
 export function TopBar() {
@@ -34,6 +35,8 @@ export function TopBar() {
   const menu = useRef<HTMLDetailsElement>(null);
   // Menu sections fold up: only the headings show, and one section is open at a time.
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  // Menu search: type a word to find any page without knowing its section.
+  const [q, setQ] = useState("");
 
   useEffect(() => {
     if (!sb) return setSignedIn(false);
@@ -73,7 +76,7 @@ export function TopBar() {
   }, []);
 
   // Close the menu after moving to another page.
-  useEffect(() => { if (menu.current) menu.current.open = false; }, [path]);
+  useEffect(() => { if (menu.current) menu.current.open = false; setQ(""); }, [path]);
 
   // Inside the phone app, website-only pages (plans and payments) are left out of the menu.
   const [inApp, setInApp] = useState(false);
@@ -150,6 +153,11 @@ export function TopBar() {
   };
 
   const tabs = items.filter((i) => i.tab).sort((a, b) => (a.tab ?? 0) - (b.tab ?? 0));
+  // Search matches the English and Spanish names and the section name, ignoring accents.
+  const fold = (x: string) => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const query = fold(q.trim());
+  const found = query ? items.filter((i, n, all) => all.findIndex((x) => x.href === i.href) === n && query.split(/\s+/).every((w) =>
+    fold([i.label, navLabel(i, "es"), i.short ?? "", groups.find((g) => g.key === i.group)?.title ?? ""].join(" ")).includes(w))) : [];
   const moreOn = !!here && !tabs.some((t) => isActive(t.href, path));
 
   return (
@@ -167,7 +175,13 @@ export function TopBar() {
               </summary>
               <div className="menu-list" role="menu">
                 {switcher && <div className="menu-switch">{switcher}</div>}
-                {groups.map((g) => {
+                <div className="menu-search">
+                  <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.find} aria-label={t.find} enterKeyHint="go"
+                    onKeyDown={(e) => { if (e.key === "Enter" && found[0]) window.location.href = found[0].href; }} />
+                </div>
+                {query ? (
+                  found.length ? found.map((i) => link(i, "menu-item", navLabel(i, lang))) : <p className="menu-none">{t.noMatch}</p>
+                ) : groups.map((g) => {
                   const list = items.filter((i) => i.group === g.key);
                   if (!list.length) return null;
                   return section(g.key, g.title, list.map((i) => link(i, "menu-item", navLabel(i, lang))));
@@ -186,7 +200,7 @@ export function TopBar() {
           <div className="pagestrip-inner">
             {switcher}
             <nav className="strip-links" aria-label="Main pages">
-              {items.filter((i) => i.strip).map((i) => (
+              {tabs.map((i) => (
                 <a key={i.href} className={isActive(i.href, path) ? "nav-on" : ""} href={i.href} aria-current={isActive(i.href, path) ? "page" : undefined}>
                   {navShort(i, lang)}
                 </a>

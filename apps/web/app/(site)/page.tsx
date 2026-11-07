@@ -8,17 +8,11 @@ export const metadata = {
     "ScholarTasks helps families plan, fund and prepare for college or a trade, from 6th grade to graduation: an AI counselor, matched scholarships, HOPE and Zell tracking, grades, SAT/ACT prep and every deadline in one place.",
 };
 
-const FEATURES = [
-  { icon: "💬", color: "", title: "AI counselor", text: "Answers about your student, not general advice. It knows their grades, college list, deadlines and your state's rules, in English or Spanish. It coaches, but never does homework or writes essays." },
-  { icon: "🎓", color: "gold", title: "Scholarships and grants", text: "Hundreds of Georgia and national awards, sorted into You qualify, Maybe and Not a fit and checked on their official pages. Essay bundles let one draft serve awards with similar questions." },
-  { icon: "📈", color: "green", title: "Grades and HOPE scorecard", text: "See the HOPE GPA next to the school GPA from 8th grade on. A four-year course plan checks graduation credits and HOPE rigor, and Grade Rescue builds a simple plan when a grade slips." },
-  { icon: "🦉", color: "green", title: "Homework Helper", text: "A safe AI tutor for every subject, from math to essays. One hint at a time, checks their work, asks them to explain their thinking, and never gives answers or writes for them. Parents see what was practiced." },
-  { icon: "📝", color: "purple", title: "SAT and ACT prep", text: "Over 600 original practice questions, timed practice tests, a score plan and a tutor that explains instead of giving answers." },
-  { icon: "🏫", color: "", title: "Colleges and majors", text: "Search almost 2,000 colleges across the country by major, with reach, match and likely based on grades and scores, cost after state aid, aid offer compare and community college transfer savings." },
-  { icon: "🔧", color: "coral", title: "Trades and careers", text: "67 skilled trades with earnings, training, licensing and schools in every state, plus apply checklists and ways to fund the training." },
-  { icon: "🧾", color: "gold", title: "FAFSA and Georgia aid", text: "The FAFSA and Georgia's aid form, broken into small steps that explain who does each part. We never ask for FSA IDs or Social Security numbers." },
-  { icon: "✅", color: "green", title: "One to-do list", text: "Every date in one list, sorted into late, this week and coming up. Reminders by email, text, calendar and phone." },
-  { icon: "🌟", color: "purple", title: "Beyond grades", text: "Activities, service hours, leadership and recommendation letters, with milestones for each school year and a resume that builds itself." },
+
+const PILLARS = [
+  { word: "Plan", cls: "", text: "What to do, and when.", items: ["One to-do list with reminders", "College or trade list and deadlines", "AI counselor that knows your student"] },
+  { word: "Fund", cls: "fund", text: "Find the money and keep it.", items: ["Matched scholarships and grants", "State aid like HOPE, tracked", "FAFSA in small steps"] },
+  { word: "Prepare", cls: "prep", text: "Grades, habits and test scores.", items: ["Grades scorecard from 6th grade", "Homework Helper that never gives answers", "SAT and ACT prep with 600+ questions"] },
 ];
 
 const FAQ = [
@@ -60,47 +54,22 @@ export default function Landing() {
 
       <section className="s-section tint">
         <div className="site-wrap">
-          <p className="s-kicker">Why families need it</p>
-          <h2 className="s-title">Deadlines on a dozen websites. Rules nobody explains.</h2>
-          <p className="s-lede">
-            Georgia's HOPE GPA is counted differently from the one on the report card. Scholarships are scattered all over the internet. School counselors have hundreds of students. ScholarTasks pulls it all into one shared plan, in three parts.
-          </p>
-          <div className="s-grid s-grid-3">
-            <div className="s-card s-pillar">
-              <span className="s-word">Plan</span>
-              <p>What to do, and when. A college or trade list, application checklists and one to-do list with reminders.</p>
-            </div>
-            <div className="s-card s-pillar fund">
-              <span className="s-word">Fund</span>
-              <p>How to find and keep the money, from HOPE and Zell Miller to private scholarships and the FAFSA.</p>
-            </div>
-            <div className="s-card s-pillar prep">
-              <span className="s-word">Prepare</span>
-              <p>Grades, study habits and test scores, starting as early as 6th grade, so senior year isn't a scramble.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="s-section">
-        <div className="site-wrap">
           <p className="s-kicker">Everything in one place</p>
           <h2 className="s-title">One app instead of ten</h2>
-          <p className="s-lede">Each part works with the others. Save a scholarship and its deadline lands on the to-do list. Enter a grade and the AI counselor knows about it.</p>
-          <div className="s-grid">
-            {FEATURES.map((f) => (
-              <div className="s-card" key={f.title}>
-                <span className={`s-icon ${f.color}`} aria-hidden="true">{f.icon}</span>
-                <h3>{f.title}</h3>
-                <p>{f.text}</p>
+          <p className="s-lede">Deadlines live on a dozen websites and school counselors have hundreds of students. ScholarTasks puts it all in one plan, and each part works with the others.</p>
+          <div className="s-grid s-grid-3">
+            {PILLARS.map((p) => (
+              <div className={`s-card s-pillar ${p.cls}`} key={p.word}>
+                <span className="s-word">{p.word}</span>
+                <p>{p.text}</p>
+                <ul className="s-pillar-list">{p.items.map((i) => <li key={i}>{i}</li>)}</ul>
               </div>
             ))}
           </div>
           <p style={{ marginTop: 24 }}><a className="btn btn-ghost btn-inline link-btn" href="/features">See every feature</a></p>
         </div>
       </section>
-
-      <section className="s-section tint" id="how">
+      <section className="s-section" id="how">
         <div className="site-wrap">
           <p className="s-kicker">How it works</p>
           <h2 className="s-title">Set up in a few minutes</h2>
@@ -111,41 +80,7 @@ export default function Landing() {
             <li><b>Work from one plan</b><span>Everything the family adds lands in one shared plan, with reminders before every date.</span></li>
           </ol>
 
-          <h3 className="s-title" style={{ fontSize: 26, marginTop: 56 }}>What each year looks like</h3>
-          <div className="s-journey">
-            <div>
-              <span className="g">Grades 8 and 9</span>
-              <h3>Build good habits</h3>
-              <ul><li>Grades scorecard</li><li>Study skills lessons</li><li>Choosing courses</li><li>Goals set together</li></ul>
-            </div>
-            <div>
-              <span className="g">Grade 10</span>
-              <h3>Track HOPE</h3>
-              <ul><li>HOPE GPA tracking</li><li>Harder classes at the right pace</li><li>Activities and service hours</li><li>Explore majors and trades</li></ul>
-            </div>
-            <div>
-              <span className="g">Grade 11</span>
-              <h3>Test and search</h3>
-              <ul><li>SAT and ACT prep</li><li>College or trade list</li><li>Cost after aid</li><li>Who will write letters</li></ul>
-            </div>
-            <div>
-              <span className="g">Grade 12</span>
-              <h3>Apply and fund</h3>
-              <ul><li>Applications and essays</li><li>Scholarships</li><li>FAFSA and Georgia aid</li><li>Every deadline, reminded</li></ul>
-            </div>
-          </div>
           <p className="s-fine">Week to week, it takes a few minutes.</p>
-        </div>
-      </section>
-
-      <section className="s-section navy">
-        <div className="site-wrap">
-          <div className="s-stats">
-            <div><strong>~2,000</strong><span>colleges across the country</span></div>
-            <div><strong>11</strong><span>Southeast states' aid rules</span></div>
-            <div><strong>600+</strong><span>original SAT and ACT questions</span></div>
-            <div><strong>50</strong><span>skilled trades, every state</span></div>
-          </div>
         </div>
       </section>
 
@@ -164,20 +99,12 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="s-section tint">
-        <div className="site-wrap">
-          <p className="s-kicker">Privacy and trust</p>
+      <section className="s-section tint s-privacy-line">
+        <div className="site-wrap s-center">
           <h2 className="s-title">Your child's information stays yours</h2>
-          <div className="s-grid">
-            <div className="s-card"><span className="s-icon green" aria-hidden="true">🔒</span><h3>Never sold</h3><p>We never sell student data, and colleges can't buy access to your child.</p></div>
-            <div className="s-card"><span className="s-icon gold" aria-hidden="true">🪪</span><h3>No sensitive numbers</h3><p>We never ask for or keep FSA IDs, Social Security numbers or tax returns.</p></div>
-            <div className="s-card"><span className="s-icon" aria-hidden="true">👪</span><h3>Parents in control</h3><p>Parents choose what each student can change. At 18, students get a say in what parents see.</p></div>
-            <div className="s-card"><span className="s-icon purple" aria-hidden="true">🗑️</span><h3>Delete any time</h3><p>Students agree before using AI help, and you can delete everything from inside the app.</p></div>
-          </div>
-          <p className="s-fine">For ages 13 and up. Read our <a href="/privacy">privacy policy</a>.</p>
+          <p className="s-lede">We never sell it, never ask for Social Security numbers, FSA IDs or tax returns, and parents decide what each student can change. You can delete everything from inside the app. <a href="/privacy">Read our privacy policy</a>.</p>
         </div>
       </section>
-
       <section className="s-section">
         <div className="site-wrap">
           <p className="s-kicker">Questions</p>
