@@ -160,7 +160,7 @@ export default function ScholarshipsPage() {
   if (!list) return <Page title={title}><p className="hint">Loading…</p></Page>;
 
   return (
-    <Page title={inMySpace ? `${title} (my parent space)` : title}>
+    <Page title={title}>
       {role === "parent" && student && <SpaceSwitch space={space} onChange={setSpace} name={student.first_name} />}
       <p className="hint" style={{ marginTop: -8 }}>
         {student && student.state !== "GA" ? `National scholarships and grants (${stateName(student.state)} state awards like ${meritNames(packFor(student.state))} are on the Grades and Financial aid pages)` : "Georgia and national scholarships and grants"}, checked against {student ? `${student.first_name}'s` : "your student's"} grades, test scores and answers below. A &ldquo;Maybe&rdquo; tells you what to check. Always confirm the details on the official site before applying.

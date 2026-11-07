@@ -152,7 +152,7 @@ export default function CollegesPage() {
   );
 
   return (
-    <Page title={mine ? "Find colleges (my parent space)" : isParent ? `Find colleges for ${student.first_name}` : "Find colleges"}>
+    <Page title={mine ? "Find colleges" : isParent ? `Find colleges for ${student.first_name}` : "Find colleges"}>
       {isParent && <SpaceSwitch space={space} onChange={setSpace} name={student.first_name} />}
       {isParent && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
