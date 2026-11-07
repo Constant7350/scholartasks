@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { IconTabs } from "../icon-tabs";
 import { PERMISSIONS, type PermissionKey } from "@scholartasks/core";
+import { STAGES, stageOf } from "../nav";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { STATE_NAMES } from "../../lib/trades";
@@ -28,6 +29,7 @@ interface Student {
   birth_date?: string | null;
   state: string;
   permissions: Record<PermissionKey, boolean>;
+  match_profile?: { show_all_pages?: boolean } | null;
 }
 interface Family { id: string; name: string }
 interface Invite { student_id: string; code: string; expires_at: string; accepted_at: string | null }
@@ -159,7 +161,7 @@ export default function FamilyPage() {
     if (!s.session) return;
     const [f, st, inv] = await Promise.all([
       sb.from("families").select("id, name"),
-      sb.from("students").select("id, family_id, first_name, grade_level, state, permissions, birth_date").order("first_name"),
+      sb.from("students").select("id, family_id, first_name, grade_level, state, permissions, birth_date, match_profile").order("first_name"),
       sb.from("family_invites").select("student_id, code, expires_at, accepted_at").order("created_at", { ascending: false }),
     ]);
     setFamilies((f.data as Family[]) ?? []);
@@ -315,6 +317,16 @@ export default function FamilyPage() {
                   </>
                 )}
 
+                {stageOf(s.grade_level) !== "apply" && (
+                  <label className="stage-switch">
+                    <input type="checkbox" checked={!!s.match_profile?.show_all_pages}
+                      onChange={(e) => run(() => sb.rpc("set_match_profile", { p_student: s.id, p_profile: { ...(s.match_profile ?? {}), show_all_pages: e.target.checked } }))} />
+                    <span>
+                      <b>Show every page for {s.first_name}</b>
+                      <small>In grade {s.grade_level}, {s.first_name}'s menu shows the pages for grades {STAGES.find((x) => x.key === stageOf(s.grade_level))!.grades}: {stageOf(s.grade_level) === "explore" ? "grades, study skills, the career quiz and careers" : "course plan, activities, PSAT, early scholarships and a first look at colleges"}. Turn this on to also show the college list, essays, aid forms and the rest now. The full app opens by itself in grade 11.</small>
+                    </span>
+                  </label>
+                )}
                 <details className="perm">
                   <summary>What {s.first_name} can do in the student app</summary>
                   {PERMISSIONS.map((p) => (

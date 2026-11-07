@@ -15,9 +15,9 @@ import { LangPicker } from "./lang-picker";
 import { UI, navLabel, navShort } from "./nav-es";
 import { useLang } from "../lib/lang-client";
 import { useSpace } from "../lib/parent-space";
-import { NAV, NAV_GROUPS, bestMatch, isActive, tabOf, type NavItem, type NavRole } from "./nav";
+import { NAV, NAV_GROUPS, STAGES, bestMatch, inStage, isActive, stageOf, tabOf, type NavItem, type NavRole, type Stage } from "./nav";
 
-interface Who { role: NavRole; students: { id: string; first_name: string }[]; own: string | null; admin: boolean; tester: boolean }
+interface Who { role: NavRole; students: { id: string; first_name: string; grade_level: number; match_profile: { show_all_pages?: boolean } | null }[]; own: string | null; admin: boolean; tester: boolean }
 
 /**
  * Top navigation for signed-in people:
@@ -71,7 +71,7 @@ export function TopBar() {
       if (!s.session) return;
       const [mem, st, adm, tst] = await Promise.all([
         sb.from("family_members").select("role, student_id").eq("user_id", s.session.user.id),
-        sb.from("students").select("id, first_name").order("first_name"),
+        sb.from("students").select("id, first_name, grade_level, match_profile").order("first_name"),
         sb.rpc("is_app_admin"),
         sb.rpc("is_tester"),
       ]);
@@ -115,6 +115,13 @@ export function TopBar() {
   const here = bestMatch(items, path);
   const isParent = role === "parent";
   const kids = who?.students ?? [];
+  // The stage follows the student being looked at (parents: the chosen student; students: themselves).
+  // A parent can turn on every page for a student on the Family page; then nothing is hidden.
+  const stageKid = kids.find((k) => k.id === (isParent ? current : who?.own)) ?? kids[0];
+  const stage: Stage = stageOf(stageKid?.grade_level);
+  const showAll = !stageKid || stage === "apply" || !!stageKid.match_profile?.show_all_pages;
+  const shown = (i: NavItem) => showAll || inStage(i, stage);
+  const stageInfo = STAGES.find((x) => x.key === stage)!;
 
   // The menu shows every page at once (Constant, 2026-11-07: no folding): each section is a small
   // heading and a grid of colored tiles, the same look as the tiles on Home. Team sections stay as lists.
@@ -145,7 +152,8 @@ export function TopBar() {
     </a>
   );
   // Pages reached from a tab row on a nearby page stay out of the lists (still found by search); small links sit at the bottom.
-  const listed = items.filter((i) => i.inMenu !== false && !i.small);
+  const listed = items.filter((i) => i.inMenu !== false && !i.small && shown(i));
+  const hiddenCount = items.filter((i) => i.inMenu !== false && !i.small && !shown(i)).length;
   const smalls = items.filter((i) => i.small);
 
   // In a parent's own space (My parent space, or a search page switched to it) the bar says so,
@@ -181,7 +189,9 @@ export function TopBar() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const tabs = items.filter((i) => tabOf(i, role)).sort((a, b) => (tabOf(a, role) ?? 0) - (tabOf(b, role) ?? 0));
+  // Parents of a grade 6 to 10 student get Home, To do, Grades and Career quiz as main tabs instead of Plan and Scholarships.
+  const tabPos = (i: NavItem) => (isParent && !showAll ? i.earlyTab : tabOf(i, role));
+  const tabs = items.filter((i) => tabPos(i) && shown(i)).sort((a, b) => (tabPos(a) ?? 0) - (tabPos(b) ?? 0));
   // Search matches the English and Spanish names and the section name, ignoring accents.
   const fold = (x: string) => x.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const query = fold(q.trim());
@@ -221,6 +231,12 @@ export function TopBar() {
                   if (g.key === "team") return section(g.key, g.title, <div className="menu-tiles">{tile(list.find((i) => i.href === "/admin") ?? list[0]!)}</div>, g.icon);
                   return section(g.key, g.title, <div className="menu-tiles">{list.map(tile)}</div>, g.icon);
                 })}
+                {!query && hiddenCount > 0 && stageKid && (
+                  <p className="menu-stage">
+                    {t.stageNote(stageKid.first_name, stageKid.grade_level, hiddenCount)}{" "}
+                    {isParent ? <a href="/family">{t.showEvery}</a> : <span>{t.askParent}</span>}
+                  </p>
+                )}
                 {!query && section("look", t.look, <><ThemePicker /><LangPicker /></>, "🎨")}
                 <div className="menu-small">
                   {smalls.map((i) => link(i, "menu-small-link", navShort(i, lang)))}

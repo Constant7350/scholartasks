@@ -12,10 +12,12 @@ import { ParentIdeasCard } from "./parent-space-cards";
 import { approveWaiting, loadWaiting, type Waiting } from "../parent/waiting";
 import { useAiConsent } from "../ai-consent";
 import { Icon } from "../icons";
+import { stageOf } from "../nav";
+import { useCurrentStudent } from "../../lib/current-student";
 
 interface Student {
   id: string; first_name: string; grade_level: number; state: string; permissions?: Record<string, boolean> | null;
-  match_profile?: { career_quiz?: { code: string; at: string } } | null; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string;
+  match_profile?: { career_quiz?: { code: string; at: string }; show_all_pages?: boolean } | null; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string;
 }
 interface Grade { student_id: string; course: string; grade: "A" | "B" | "C" | "D" | "F"; level: "standard" | "honors" | "AP" | "IB" | "DE"; core: boolean; grade_level: number; term: string }
 interface Invite { student_id: string; accepted_at: string | null }
@@ -43,6 +45,7 @@ export default function Home() {
   const [role, setRole] = useState<"parent" | "student" | "none">("none");
   const [error, setError] = useState<string | null>(null);
   const ai = useAiConsent(sb);
+  const [current] = useCurrentStudent();
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -118,11 +121,25 @@ export default function Home() {
   // Allow AI help once here, so the counselor, tutor and essay coach can answer right away (no pop-up on those pages).
   if (ai.need) setup.push({ key: "ai", text: "Allow AI help (counselor, Homework Helper, essay coach)", go: ai.busy ? "One moment…" : "Allow", onGo: () => void ai.allow() });
 
-  const shortcuts: [icon: string, label: string, href: string][] = [
+  // Shortcuts follow the student's stage (nav.ts): a 7th grader's family sees habits and careers, not FAFSA.
+  const stageKid = students.find((s) => s.id === current) ?? students[0];
+  const stage = stageKid?.match_profile?.show_all_pages ? "apply" : stageOf(stageKid?.grade_level);
+  type Cut = [icon: string, label: string, href: string];
+  const shortcuts: Cut[] = stage === "explore" ? [
+    ["🧩", "Career quiz", "/career-quiz"], ["🎓", "Grades", "/grades"], ["📚", "Study skills", "/study"], ["🔧", "Careers", "/trades"],
+    ...(isParent
+      ? [["👪", "My students", "/students"], ["👤", "My space", "/parent"], ["🤖", "Counselor", "/counselor"], ["🔎", "Colleges", "/colleges"]] as Cut[]
+      : [["🦉", "Homework", "/homework"], ["✏️", "Practice", "/practice"], ["🏆", "Challenge", "/challenge"], ["🤖", "Counselor", "/counselor"]] as Cut[]),
+  ] : stage === "build" ? [
+    ["🗓️", "Course plan", "/grades/plan"], ["🎓", "Grades", "/grades"], ["🏅", "Activities", "/activities"], ["🔎", "Colleges", "/colleges"],
+    ...(isParent
+      ? [["👪", "My students", "/students"], ["👤", "My space", "/parent"], ["💰", "Scholarships", "/scholarships"], ["📝", "PSAT/SAT", "/test-prep"]] as Cut[]
+      : [["🦉", "Homework", "/homework"], ["📝", "PSAT/SAT", "/test-prep"], ["🧩", "Career quiz", "/career-quiz"], ["🏆", "Challenge", "/challenge"]] as Cut[]),
+  ] : [
     ["🗂️", "Plan", "/plan"], ["🎓", "Grades", "/grades"], ["💰", "Scholarships", "/scholarships"], ["🔎", "Colleges", "/colleges"],
     ...(isParent
-      ? [["👪", "My students", "/students"], ["👤", "My space", "/parent"], ["🧾", "FAFSA", "/aid"], ["📝", "SAT/ACT", "/test-prep"]] as [string, string, string][]
-      : [["🦉", "Homework", "/homework"], ["📝", "SAT/ACT", "/test-prep"], ["🏅", "Activities", "/activities"], ["✍️", "Essays", "/essays"]] as [string, string, string][]),
+      ? [["👪", "My students", "/students"], ["👤", "My space", "/parent"], ["🧾", "FAFSA", "/aid"], ["📝", "SAT/ACT", "/test-prep"]] as Cut[]
+      : [["🦉", "Homework", "/homework"], ["📝", "SAT/ACT", "/test-prep"], ["🏅", "Activities", "/activities"], ["✍️", "Essays", "/essays"]] as Cut[]),
   ];
 
   return (

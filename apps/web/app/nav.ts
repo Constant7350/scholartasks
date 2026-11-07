@@ -15,6 +15,31 @@
  */
 
 export type NavRole = "parent" | "student" | "none";
+
+/**
+ * Stages (Constant, 2026-11-07): a student's grade decides which pages show by default, so a 6th grader's
+ * family is not looking at FAFSA and Common App for five years. Nothing is removed: a parent can turn on
+ * "Show every page" for a student on the Family page, menu search still finds every page, and the stage
+ * moves up by itself when the grade changes.
+ *   explore = grades 6 to 8 (habits, career quiz, grades), build = grades 9 and 10 (course plan, activities,
+ *   PSAT, first look at colleges and costs), apply = grades 11 and 12 (the full college and aid app).
+ */
+export type Stage = "explore" | "build" | "apply";
+export const STAGES: { key: Stage; grades: string; en: string; es: string }[] = [
+  { key: "explore", grades: "6-8", en: "Explore", es: "Explorar" },
+  { key: "build", grades: "9-10", en: "Build", es: "Construir" },
+  { key: "apply", grades: "11-12", en: "Apply", es: "Solicitar" },
+];
+export function stageOf(grade: number | null | undefined): Stage {
+  if (grade == null) return "apply";
+  if (grade <= 8) return "explore";
+  if (grade <= 10) return "build";
+  return "apply";
+}
+/** Does this page show by default at this stage? (No stages listed = every stage.) */
+export function inStage(i: NavItem, stage: Stage): boolean {
+  return !i.stages || i.stages.includes(stage);
+}
 /** Menu sections, shown in the order of NAV_GROUPS. The team sections only show for the ScholarTasks team. */
 export type NavGroup = "today" | "explore" | "school" | "apply" | "money" | "family" | "team" | "teamTools";
 
@@ -40,6 +65,10 @@ export interface NavItem {
   tab?: number;
   /** Position in a student's main tabs (1-4). */
   studentTab?: number;
+  /** Position in a parent's main tabs while the student is in the explore or build stage (grades 6 to 10). */
+  earlyTab?: number;
+  /** Stages where the page shows by default; leave out for every stage. See Stage above. */
+  stages?: Stage[];
   /** false: not listed in the menu sections (reached from a tab row on a nearby page); still found by menu search. */
   inMenu?: boolean;
   /** Small link at the bottom of the menu instead of a row in a section. */
@@ -49,47 +78,49 @@ export interface NavItem {
 }
 
 const ALL: NavRole[] = ["parent", "student", "none"];
+const LATER: Stage[] = ["apply"];
+const HS: Stage[] = ["build", "apply"];
 
 export const NAV: NavItem[] = [
   // Today: what to do now
-  { href: "/home", label: "Home", icon: "🏠", roles: ALL, group: "today", tab: 1, studentTab: 1 },
-  { href: "/todo", label: "To-do list", short: "To do", icon: "✅", roles: ALL, group: "today", tab: 2, studentTab: 2 },
+  { href: "/home", label: "Home", icon: "🏠", roles: ALL, group: "today", tab: 1, studentTab: 1, earlyTab: 1 },
+  { href: "/todo", label: "To-do list", short: "To do", icon: "✅", roles: ALL, group: "today", tab: 2, studentTab: 2, earlyTab: 2 },
   { href: "/parent", label: "My parent space", short: "My space", icon: "👤", roles: ["parent"], group: "today" },
   { href: "/students", label: "My students", short: "My students", icon: "👪", roles: ["parent"], group: "today" },
   { href: "/homework", label: "Homework Helper", short: "Homework", icon: "🦉", roles: ["parent", "student"], group: "today", studentTab: 3 },
   { href: "/counselor", label: "AI counselor", short: "Counselor", icon: "🤖", roles: ALL, group: "today" },
 
   // Explore: what fits, and where it leads
-  { href: "/career-quiz", label: "Career quiz", short: "Career quiz", icon: "🧩", roles: ALL, group: "explore" },
+  { href: "/career-quiz", label: "Career quiz", short: "Career quiz", icon: "🧩", roles: ALL, group: "explore", earlyTab: 4 },
   { href: "/colleges", label: "Find colleges", short: "Find colleges", icon: "🔎", roles: ALL, group: "explore" },
   { href: "/majors", label: "Search colleges by major", short: "Colleges by major", icon: "🧭", roles: ALL, group: "explore", inMenu: false },
-  { href: "/colleges/compare", label: "Compare colleges", short: "Compare", icon: "📊", roles: ALL, group: "explore", inMenu: false },
+  { href: "/colleges/compare", label: "Compare colleges", short: "Compare", icon: "📊", roles: ALL, group: "explore", inMenu: false, stages: HS },
   { href: "/trades", label: "Trades and trade schools", short: "Trades", icon: "🔧", roles: ALL, group: "explore" },
-  { href: "/trades/openings", label: "Apprenticeships and local openings", short: "Apprenticeships", icon: "🧰", roles: ALL, group: "explore" },
-  { href: "/jobs", label: "Weekend and holiday jobs", short: "Jobs", icon: "🛍️", roles: ALL, group: "explore" },
+  { href: "/trades/openings", label: "Apprenticeships and local openings", short: "Apprenticeships", icon: "🧰", roles: ALL, group: "explore", stages: HS },
+  { href: "/jobs", label: "Weekend and holiday jobs", short: "Jobs", icon: "🛍️", roles: ALL, group: "explore", stages: HS },
   { href: "/military", label: "Military paths", short: "Military", icon: "🎖️", roles: ALL, group: "explore" },
 
   // School: grades and getting better at school
-  { href: "/grades", label: "Grades and scholarships", short: "Grades", icon: "🎓", roles: ALL, group: "school", studentTab: 4 },
-  { href: "/grades/plan", label: "Four-year course plan", short: "Course plan", icon: "🗓️", roles: ALL, group: "school" },
+  { href: "/grades", label: "Grades and scholarships", short: "Grades", icon: "🎓", roles: ALL, group: "school", studentTab: 4, earlyTab: 3 },
+  { href: "/grades/plan", label: "Four-year course plan", short: "Course plan", icon: "🗓️", roles: ALL, group: "school", stages: HS },
   { href: "/grades/record", label: "Academic record (print)", short: "Record", icon: "📄", roles: ALL, group: "school", inMenu: false },
   { href: "/study", label: "Study skills library", short: "Study", icon: "📚", roles: ALL, group: "school" },
   { href: "/practice", label: "Practice questions", short: "Practice", icon: "✏️", roles: ALL, group: "school", inMenu: false },
-  { href: "/test-prep", label: "SAT and ACT prep", short: "SAT/ACT", icon: "📝", roles: ALL, group: "school" },
+  { href: "/test-prep", label: "SAT and ACT prep", short: "SAT/ACT", icon: "📝", roles: ALL, group: "school", stages: HS },
 
   // Apply: the college list and everything an application needs
-  { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "apply", tab: 3 },
-  { href: "/essays", label: "College essays", short: "Essays", icon: "✍️", roles: ALL, group: "apply" },
+  { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "apply", tab: 3, stages: LATER },
+  { href: "/essays", label: "College essays", short: "Essays", icon: "✍️", roles: ALL, group: "apply", stages: LATER },
   { href: "/challenge", label: "Essay challenge (win prizes)", short: "Challenge", icon: "🏆", roles: ["parent", "student"], group: "apply", inMenu: false },
-  { href: "/activities", label: "Activities and resume", short: "Activities", icon: "🏅", roles: ALL, group: "apply" },
-  { href: "/activities/profile", label: "Application profile (copy and paste)", short: "Profile", icon: "📋", roles: ALL, group: "apply", inMenu: false },
-  { href: "/activities/common-app", label: "Common App ready", short: "Common App", icon: "✅", roles: ALL, group: "apply", inMenu: false },
-  { href: "/plan/papers", label: "Transcripts and letters", short: "Transcripts", icon: "📨", roles: ALL, group: "apply" },
+  { href: "/activities", label: "Activities and resume", short: "Activities", icon: "🏅", roles: ALL, group: "apply", stages: HS },
+  { href: "/activities/profile", label: "Application profile (copy and paste)", short: "Profile", icon: "📋", roles: ALL, group: "apply", inMenu: false, stages: LATER },
+  { href: "/activities/common-app", label: "Common App ready", short: "Common App", icon: "✅", roles: ALL, group: "apply", inMenu: false, stages: LATER },
+  { href: "/plan/papers", label: "Transcripts and letters", short: "Transcripts", icon: "📨", roles: ALL, group: "apply", stages: LATER },
 
   // Money
-  { href: "/scholarships", label: "Scholarships and grants", short: "Scholarships", icon: "💰", roles: ALL, group: "money", tab: 4 },
-  { href: "/aid", label: "FAFSA and aid forms", short: "Aid forms", icon: "🧾", roles: ALL, group: "money" },
-  { href: "/plan/offers", label: "Compare aid offers", short: "Offers", icon: "⚖️", roles: ALL, group: "money", inMenu: false },
+  { href: "/scholarships", label: "Scholarships and grants", short: "Scholarships", icon: "💰", roles: ALL, group: "money", tab: 4, stages: HS },
+  { href: "/aid", label: "FAFSA and aid forms", short: "Aid forms", icon: "🧾", roles: ALL, group: "money", stages: LATER },
+  { href: "/plan/offers", label: "Compare aid offers", short: "Offers", icon: "⚖️", roles: ALL, group: "money", inMenu: false, stages: LATER },
 
   // Family and account
   { href: "/family", label: "Family, students and permissions", short: "Family", icon: "👪", roles: ["parent"], group: "family" },

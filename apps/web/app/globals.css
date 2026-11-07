@@ -1256,3 +1256,12 @@ details.menu[open] summary svg { transform: rotate(180deg); }
 }
 @media print { .topbar { position: static; } }
 .tile-go { display: inline-block; padding: 6px 0; }
+
+/* Menu note when a student's stage hides later-grade pages (nav.ts Stage). */
+.menu-stage { margin: 6px 6px 2px; padding: 8px 10px; font-size: 13px; color: var(--muted); background: var(--card); border: 1px dashed var(--line); border-radius: 10px; }
+.menu-stage a { font-weight: 600; }
+
+/* Family page: "Show every page" switch for a grade 6 to 10 student. */
+.stage-switch { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0 6px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); cursor: pointer; }
+.stage-switch input { margin-top: 3px; width: 20px; height: 20px; flex: 0 0 auto; }
+.stage-switch small { display: block; color: var(--muted); font-size: 12.5px; line-height: 1.4; margin-top: 2px; }
