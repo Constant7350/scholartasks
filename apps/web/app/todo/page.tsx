@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { MoreList } from "../show-more";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { CalendarCard } from "./calendar-card";
 import { milestoneById, milestoneDue, milestoneId, milestonesFor } from "../../lib/milestones";
@@ -292,7 +293,7 @@ export default function TodoPage() {
               <section key={g.key} className={`panel todo-group todo-group-${g.key}`}>
                 <h2><span className="todo-dot" aria-hidden="true" />{g.title} <span className="hint">({list.length})</span></h2>
                 <p className="hint" style={{ margin: 0 }}>{g.hint}</p>
-                <ul className="items">{list.map(row)}</ul>
+                <MoreList items={list} first={5} render={row} className="items" />
               </section>
             );
           })
@@ -303,7 +304,7 @@ export default function TodoPage() {
         <section className="panel todo-group todo-group-done">
           <h2><span className="todo-dot" aria-hidden="true" />Done <span className="hint">({done.length})</span></h2>
           <p className="hint" style={{ margin: 0 }}>Uncheck one to move it back to To do.</p>
-          <ul className="items">{done.map(row)}</ul>
+          <MoreList items={done} first={8} render={row} className="items" />
         </section>
       )}
 

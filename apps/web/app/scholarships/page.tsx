@@ -8,6 +8,7 @@ import {
 import { PLAIN_GPA, meritNames, packFor, stateName } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { useShowMore } from "../show-more";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import type { Choice, Row } from "./types";
 import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
@@ -156,6 +157,8 @@ export default function ScholarshipsPage() {
   };
 
   const title = "Scholarships and grants";
+  const { shown: someInTab, more: moreInTab } = useShowMore(groups[shownTab], 8, `${shownTab}|${current}|${space}`);
+
   if (!sb) return <Page title={title}><NotConfigured /></Page>;
   if (!list) return <Page title={title}><p className="hint">Loading…</p></Page>;
 
@@ -163,7 +166,7 @@ export default function ScholarshipsPage() {
     <Page title={title}>
       {role === "parent" && student && <SpaceSwitch space={space} onChange={setSpace} name={student.first_name} />}
       <p className="hint" style={{ marginTop: -8 }}>
-        {student && student.state !== "GA" ? `National scholarships and grants (${stateName(student.state)} state awards like ${meritNames(packFor(student.state))} are on the Grades and Financial aid pages)` : "Georgia and national scholarships and grants"}, checked against {student ? `${student.first_name}'s` : "your student's"} grades, test scores and answers below. A &ldquo;Maybe&rdquo; tells you what to check. Always confirm the details on the official site before applying.
+        Matched to the grades, scores and answers below. {student && student.state !== "GA" ? `${stateName(student.state)} state awards are on the Grades and Financial aid pages. ` : ""}Always confirm on the official site.
       </p>
       {role === "parent" && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
@@ -192,10 +195,11 @@ export default function ScholarshipsPage() {
           {shownTab === "later" && <p className="hint">These open in a later grade. What to work on now is listed on each one.</p>}
           {shownTab === "no" && <p className="hint">Something on these doesn&apos;t fit right now. If an answer above changes, they may move up.</p>}
           {groups[shownTab].length === 0 && <p className="hint">Nothing here right now.</p>}
-          {groups[shownTab].map(({ s, r }) => (
+          {someInTab.map(({ s, r }) => (
             <ScholarshipCard key={s.id} s={s} r={r} choice={choiceOf(s.id)} app={appOf(s.id)} applyHref={applyLink(s.id)} onAdd={addToDeadlines} onHide={hide}
               mine={inMySpace ? { saved: onMine.has(s.id), name: student.first_name, onSave: saveMine } : undefined} />
           ))}
+          {moreInTab}
           {hidden.length > 0 && (
             <details className="rescue-more" style={{ marginTop: 16 }}>
               <summary>Hidden ({hidden.length})</summary>

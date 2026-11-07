@@ -1102,3 +1102,14 @@ html.tr-wait body { visibility: hidden; }
 .home-grid.home-grid-top { margin: 0 0 16px; gap: 6px; }
 .home-grid.home-grid-top a { padding: 7px 2px; font-size: 11.5px; gap: 2px; border-radius: 10px; }
 .home-grid.home-grid-top a span { font-size: 18px; }
+.show-more { text-align: center; margin: 12px 0; }
+.trade-quick { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
+.aid-stage > details > summary { cursor: pointer; list-style: none; }
+.aid-stage > details > summary::-webkit-details-marker { display: none; }
+.aid-stage > details > summary h2 { margin: 0; }
+.aid-stage > details > summary h2::after { content: " ▾"; color: var(--muted, #6b7280); font-size: 0.8em; }
+.aid-stage > details[open] > summary h2::after { content: " ▴"; }
+.aid-stage > details[open] > summary { margin-bottom: 10px; }
+.brag-q { border-bottom: 1px solid var(--line); padding: 8px 0; }
+.brag-q > summary { cursor: pointer; font-weight: 600; }
+.brag-q[open] > summary { margin-bottom: 8px; }

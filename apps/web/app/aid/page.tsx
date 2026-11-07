@@ -217,8 +217,9 @@ export default function AidPage() {
       {AID_STAGES.map((stage) => {
         const steps = STEPS.filter((s) => s.stage === stage.id);
         return (
-          <section key={stage.id} className="panel">
-            <h2>{stage.title}</h2>
+          <section key={stage.id} className="panel aid-stage">
+            <details open={steps.some((s) => s.id === summary.next?.id) || steps.some((s) => s.id === open)}>
+            <summary><h2>{stage.title} <span className="hint">({steps.filter((s) => statusOf(s.id)).length} of {steps.length} done)</span></h2></summary>
             <ol className="aid-steps">
               {steps.map((s) => {
                 const st = statusOf(s.id);
@@ -253,6 +254,7 @@ export default function AidPage() {
                 );
               })}
             </ol>
+            </details>
           </section>
         );
       })}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { IconTabs } from "../icon-tabs";
+import { useShowMore } from "../show-more";
 import { MILITARY_COLLEGES, MILITARY_PATHS, SERVICE_ACADEMIES, militaryTodoDates } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { Page } from "../ui";
@@ -71,9 +72,11 @@ export default function MilitaryPage() {
 
   const colleges = [...MILITARY_COLLEGES].sort((a, b) => Number(b.state === home) - Number(a.state === home) || a.name.localeCompare(b.name));
 
+  const { shown: someColleges, more: moreColleges } = useShowMore(colleges, 6);
+
   return (
     <Page title="Military paths">
-      <p className="hint">Serving in the military is a real path after high school, with college paid for, job training and a career. There are four main ways in. Compare them here, then talk it over as a family. Every service commitment is serious: read the contract and ask questions before signing anything.</p>
+      <p className="hint">A real path after high school, with college paid for, job training and a career. Every service commitment is serious: read the contract and ask questions before signing.</p>
 
       <IconTabs label="Parts of military paths" tabs={[
         { key: "ways", icon: "🎖️", label: "Ways in", body: <>
@@ -84,10 +87,13 @@ export default function MilitaryPage() {
             <div key={p.id} className="panel" style={{ margin: 0 }} id={p.id}>
               <h3 style={{ marginTop: 0 }}>{p.title}</h3>
               <p>{p.summary}</p>
-              <p className="hint"><b>Cost:</b> {p.cost}</p>
-              <p className="hint"><b>Service after:</b> {p.serve}</p>
-              <ol>{p.steps.map((s) => <li key={s}>{s}</li>)}</ol>
-              <p className="hint" style={{ margin: 0 }}>{p.links.map((l, i) => <span key={l.url}>{i ? " · " : ""}<a href={l.url} target="_blank" rel="noreferrer noopener">{l.label}</a></span>)}</p>
+              <details>
+                <summary>Cost, service and how to get in</summary>
+                <p className="hint"><b>Cost:</b> {p.cost}</p>
+                <p className="hint"><b>Service after:</b> {p.serve}</p>
+                <ol>{p.steps.map((s) => <li key={s}>{s}</li>)}</ol>
+                <p className="hint" style={{ margin: 0 }}>{p.links.map((l, i) => <span key={l.url}>{i ? " · " : ""}<a href={l.url} target="_blank" rel="noreferrer noopener">{l.label}</a></span>)}</p>
+              </details>
             </div>
           ))}
         </div>
@@ -141,7 +147,7 @@ export default function MilitaryPage() {
         <h2>Military colleges</h2>
         <p className="hint">{STATE_NAMES[home] ?? "Your state"} first, then the rest of the U.S. These are regular colleges with a corps of cadets; you can also pick them on <a href="/colleges">Find colleges</a> (What kind of college? Military academies and colleges) to see a yearly price for your family.</p>
         <ul className="items">
-          {colleges.map((c) => (
+          {someColleges.map((c) => (
             <li key={c.id}>
               <div className="item-main">
                 <b>{c.name}</b>
@@ -152,6 +158,7 @@ export default function MilitaryPage() {
             </li>
           ))}
         </ul>
+        {moreColleges}
       </section>
         </> },
         { key: "paying", icon: "💰", label: "Paying", body: <>

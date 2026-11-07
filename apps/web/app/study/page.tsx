@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { useShowMore } from "../show-more";
 import { loadStudy, type StudyContext } from "./context";
 import { LESSONS } from "./lessons";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
@@ -24,6 +25,9 @@ export default function StudyLibraryPage() {
   }, [sb]);
 
   const title = "Study skills library";
+  const doneNow = new Set(ctx?.students.find((s) => s.id === current) ? ctx!.done[current!] ?? [] : []);
+  const ordered = [...LESSONS].sort((a, b) => Number(doneNow.has(a.id)) - Number(doneNow.has(b.id)));
+  const { shown: someLessons, more: moreLessons } = useShowMore(ordered, 6, current);
   if (!sb) return <Page title={title}><NotConfigured /></Page>;
   if (!ctx) return <Page title={title}><p className="hint">Loading…</p></Page>;
   const student = ctx.students.find((s) => s.id === current);
@@ -32,7 +36,7 @@ export default function StudyLibraryPage() {
   return (
     <Page title={title}>
       <p className="hint" style={{ marginTop: -8 }}>
-        Short lessons on how to study, using methods with strong research behind them. Each one has a quick check and a small project to try this week. Lessons are free and don&apos;t use any AI. Ready to test yourself? Try the <a href="/practice">practice questions</a>.
+        Short, free lessons on how to study, each with a quick check and a small project. Ready to test yourself? Try the <a href="/practice">practice questions</a>.
       </p>
       {ctx.role === "parent" && ctx.students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
@@ -41,7 +45,7 @@ export default function StudyLibraryPage() {
       )}
       {student && <p className="hint"><b>{done.size} of {LESSONS.length}</b> lessons finished{ctx.role === "parent" ? ` by ${student.first_name}` : ""}.</p>}
       <div className="lesson-grid">
-        {LESSONS.map((l) => (
+        {someLessons.map((l) => (
           <a key={l.id} className={`lesson-tile ${done.has(l.id) ? "lesson-done" : ""}`} href={`/study/${l.id}${student && ctx.role === "parent" ? `?student=${student.id}` : ""}`}>
             <span className="lesson-emoji" aria-hidden="true">{l.emoji}</span>
             <b>{l.title}</b>
@@ -54,6 +58,7 @@ export default function StudyLibraryPage() {
           </a>
         ))}
       </div>
+      {moreLessons}
       <p className="hint" style={{ fontSize: 12 }}>Lessons marked Draft are still being checked by our review team.</p>
     </Page>
   );

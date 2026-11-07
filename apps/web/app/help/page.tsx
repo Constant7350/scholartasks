@@ -2,7 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Page } from "../ui";
-import { AREAS, searchTopics, type Topic } from "./content";
+import { AREAS, TOPICS, searchTopics, type Topic } from "./content";
+import { IconTabs } from "../icon-tabs";
+import { useShowMore } from "../show-more";
+
+const AREA_ICON: Record<string, string> = {
+  "Getting started": "🚀", Family: "👪", "College plan": "🏫", "Grades and scholarships": "📊", "AI counselor": "💬",
+  "Activities and resume": "⚽", Scholarships: "💰", "Financial aid forms": "📝", "Study and practice": "✏️", "Account and privacy": "🔐",
+};
+const AREA_KEY = Object.fromEntries(AREAS.map((a) => [a, a.toLowerCase().replace(/[^a-z]+/g, "-")])) as Record<string, string>;
 import { SUPPORT_EMAIL } from "../legal";
 import { setHelpOn } from "./balloons";
 
@@ -49,9 +57,16 @@ function TopicCard({ t, open, onToggle }: { t: Topic; open: boolean; onToggle: (
   );
 }
 
+function AreaTopics({ topics, open, toggle }: { topics: Topic[]; open: Set<string>; toggle: (id: string) => void }) {
+  const { shown, more } = useShowMore(topics, 8);
+  const list = shown.some((t) => open.has(t.id)) || !topics.some((t) => open.has(t.id)) ? shown : topics;
+  return <>{list.map((t) => <TopicCard key={t.id} t={t} open={open.has(t.id)} onToggle={() => toggle(t.id)} />)}{list === shown && more}</>;
+}
+
 export default function HelpPage() {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<Set<string>>(new Set());
+  const [startArea, setStartArea] = useState<string | undefined>(undefined);
 
   // Support /help?q=words and /help#topic-id links.
   useEffect(() => {
@@ -61,7 +76,9 @@ export default function HelpPage() {
     const hash = decodeURIComponent(window.location.hash.slice(1));
     if (hash) {
       setOpen(new Set([hash]));
-      requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ block: "start" }));
+      const topic = TOPICS.find((t) => t.id === hash);
+      if (topic) { setStartArea(AREA_KEY[topic.area]); window.history.replaceState(null, "", `#${AREA_KEY[topic.area]}`); }
+      setTimeout(() => document.getElementById(hash)?.scrollIntoView({ block: "start" }), 150);
     }
   }, []);
 
@@ -106,12 +123,10 @@ export default function HelpPage() {
           )}
         </>
       ) : (
-        AREAS.map((a) => (
-          <section key={a}>
-            <h2 className="section-title">{a}</h2>
-            {results.filter((t) => t.area === a).map((t) => <TopicCard key={t.id} t={t} open={open.has(t.id)} onToggle={() => toggle(t.id)} />)}
-          </section>
-        ))
+        <IconTabs label="Help topics" start={startArea} tabs={AREAS.map((a) => ({
+          key: AREA_KEY[a] ?? a, icon: AREA_ICON[a] ?? "❓", label: a,
+          body: <AreaTopics topics={results.filter((t) => t.area === a)} open={open} toggle={toggle} />,
+        }))} />
       )}
     </Page>
   );

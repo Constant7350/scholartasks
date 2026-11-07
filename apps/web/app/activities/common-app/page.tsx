@@ -84,15 +84,16 @@ export default function CommonAppReady() {
   return (
     <Page title={title}>
       <p className="hint"><a href="/activities">← Activities</a> · <a href="/activities/profile">Application profile</a> · <a href="/essays">Essays</a></p>
-      <p className="hint">
-        Everything the <a href="https://www.commonapp.org" target="_blank" rel="noopener">Common App</a> asks for, section by section, checked against its limits. Fix anything marked here, then copy each part into Common App and submit there. We never fill in or send the application for you.
-      </p>
+      <p className="hint">Everything the <a href="https://www.commonapp.org" target="_blank" rel="noopener">Common App</a> asks for, checked against its limits. Copy each part into Common App and submit there.</p>
 
       <section className="panel">
         <h2>{student.first_name} is {percent}% ready</h2>
         <div style={{ background: "var(--line, #e5e1d6)", borderRadius: 8, height: 12, margin: "8px 0 12px" }} aria-hidden="true">
           <div style={{ width: `${percent}%`, background: "var(--green, #2f7d5b)", height: "100%", borderRadius: 8 }} />
         </div>
+        {sections.some((s) => !s.ready) && <p className="hint" style={{ margin: 0 }}>Still to do: {sections.filter((s) => !s.ready).map((s) => s.label).join(", ")}.</p>}
+        <details>
+        <summary className="hint">See every part</summary>
         <ul className="items">
           {sections.map((s) => (
             <li key={s.key}>
@@ -104,6 +105,7 @@ export default function CommonAppReady() {
             </li>
           ))}
         </ul>
+        </details>
       </section>
 
       <IconTabs label="Parts of the application" tabs={[
