@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { IconTabs } from "../../icon-tabs";
 import { PATH_KINDS, TRADE_CATEGORIES, TRADE_KINDS } from "@scholartasks/core";
 import { Page } from "../../ui";
 import { NATIONAL_FINDERS, TRADES, TRADES_PACK, checklistById, dollars, tradeBySlug } from "../../../lib/trades";
@@ -46,6 +47,8 @@ export default async function TradePage({ params }: { params: Promise<{ slug: st
         <p className="note trade-away"><b>Mostly outside Georgia.</b> {t.thin_in_georgia} The finder below shows programs in every state.</p>
       )}
 
+      <IconTabs label="Parts of this trade" tabs={[
+        { key: "pay", icon: "💵", label: "Pay", body: <>
       <section className="panel">
         <h2>What it pays</h2>
         {t.pay.ga_typical || t.pay.us_typical ? (
@@ -59,7 +62,8 @@ export default async function TradePage({ params }: { params: Promise<{ slug: st
         {t.outlook && <p className="hint">Jobs: {t.outlook}</p>}
         <p className="hint small">Starting means what the lowest-paid 10% earn, often new workers. Typical is the middle (median). {TRADES_PACK.pay_source}</p>
       </section>
-
+        </> },
+        { key: "training", icon: "🎓", label: "Training", body: <>
       <section className="panel">
         <h2>Ways to train</h2>
         <ul className="trade-paths">
@@ -82,7 +86,8 @@ export default async function TradePage({ params }: { params: Promise<{ slug: st
       </section>
 
       <TrainingFinder slug={t.slug} />
-
+        </> },
+        { key: "openings", icon: "🧰", label: "Openings", body: <>
       <section className="panel">
         <h2>Local openings and apprenticeships</h2>
         <p className="hint">Posted by companies and checked by our review team. Your home state first, then across the country.</p>
@@ -98,19 +103,23 @@ export default async function TradePage({ params }: { params: Promise<{ slug: st
           ))}
         </ul>
       </section>
-
+        </> },
+        { key: "apply", icon: "✅", label: "Apply", body: <>
       <section className="panel">
         <h2>Steps to apply</h2>
         <p className="hint">Add a checklist to your To-do list and calendar. You can change the dates there.</p>
         {checklists.map((c) => <AddChecklist key={c!.id} id={c!.id} trade={t.slug} />)}
       </section>
-
+        </> },
+        { key: "paying", icon: "💰", label: "Paying for it", body: <>
       <section className="panel">
         <h2>Paying for it</h2>
         {t.hope_career_grant && <p className="note">Georgia residents: the HOPE Grant plus the HOPE Career Grant cover tuition for this trade at Georgia&apos;s technical colleges. You still pay fees, books and tools.</p>}
         <p className="hint">Georgia&apos;s HOPE money only works at Georgia schools, and out-of-state tuition is usually 2 to 4 times higher. Look for <a href="/scholarships">trade scholarships</a> too, such as mikeroweWORKS and the American Welding Society.</p>
         <TradeAidList />
       </section>
+        </> },
+      ]} />
 
       {t.related_majors.length > 0 && (
         <p className="hint">Thinking about a degree too? <a href={`/majors?q=${encodeURIComponent(t.name)}`}>Search colleges by major</a>.</p>

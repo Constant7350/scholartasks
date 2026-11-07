@@ -7,6 +7,7 @@ import { checkablePrograms, classOf, testsFor } from "@scholartasks/core";
 import { packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { IconTabs } from "../icon-tabs";
 import { loadStudy, type StudyContext } from "../study/context";
 import { BLUEPRINT, estimate, pickQuestions, type Exam, type Section } from "./scoring";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
@@ -349,6 +350,8 @@ export default function TestPrepPage() {
         {(["SAT", "ACT"] as const).map((e) => <button key={e} role="tab" aria-selected={exam === e} onClick={() => setExam(e)}>{e}</button>)}
       </div>
 
+      <IconTabs label="Parts of test prep" tabs={[
+        { key: "score-plan", icon: "🎯", label: "Score plan", body: <>
       <section className="panel">
         <h2>Score plan</h2>
         <div className="tp-stats">
@@ -368,7 +371,8 @@ export default function TestPrepPage() {
           Got an official score? Save it on <a href="/grades">Grades</a> so scholarships and the counselor use it. {exam === "SAT" ? "Most students take the SAT in spring of junior year and again in the fall of senior year." : "Most students take the ACT in spring of junior year and again in the fall of senior year."}{pack && <> Some state scholarships only count a single sitting, others take superscores; check {pack.name}&apos;s rules on <a href={pack.aid_site?.url ?? pack.agency.url} target="_blank" rel="noreferrer">{pack.aid_site?.name ?? pack.agency.name}</a>.</>}
         </p>
       </section>
-
+        </> },
+        { key: "drills", icon: "✏️", label: "Drills", body: <>
       <h2 className="section-title">Section drills <span className="hint" style={{ fontSize: 14, fontWeight: 400 }}>free · untimed</span></h2>
       <div className="lesson-grid">
         {sections.map((s) => {
@@ -384,7 +388,8 @@ export default function TestPrepPage() {
           );
         })}
       </div>
-
+        </> },
+        { key: "practice-test", icon: "⏱️", label: "Practice test", body: <>
       <section className="panel">
         <p className="eyebrow">Homework Helper add-on{STUDY_COACH_OPEN ? " · free during the beta" : ""}</p>
         <h2>Timed {exam} practice test</h2>
@@ -410,7 +415,8 @@ export default function TestPrepPage() {
           </>
         )}
       </section>
-
+        </> },
+        { key: "official", icon: "🔗", label: "Official tests", body: <>
       <section className="panel">
         <h2>Free official practice</h2>
         <p className="hint">Before test day, take at least one full-length official practice test to get used to the real format.</p>
@@ -421,6 +427,8 @@ export default function TestPrepPage() {
           {pack && <li><a href={pack.aid_site?.url ?? pack.agency.url} target="_blank" rel="noreferrer">{pack.aid_site?.name ?? pack.agency.name}</a>: {pack.name}&apos;s state scholarship test score rules.</li>}
         </ul>
       </section>
+        </> },
+        { key: "about", icon: "ℹ️", label: "About", body: <>
       <section className="panel tp-about">
         <h2>How these questions are made</h2>
         <p className="hint">
@@ -433,6 +441,9 @@ export default function TestPrepPage() {
           ACT® is a trademark of ACT Education Corp. Neither organization makes, sponsors or endorses ScholarTasks.
         </p>
       </section>
+        </> },
+      ]} />
+
     </Page>
   );
 }

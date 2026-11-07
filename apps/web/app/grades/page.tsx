@@ -5,6 +5,7 @@ import { displayGpa, primaryGpa, type CourseGrade } from "@scholartasks/core";
 import { checkStatePrograms, packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { IconTabs } from "../icon-tabs";
 import { CoursePicker } from "./course-picker";
 import { levelFromName } from "./courses";
 import { ImportCard } from "./import-card";
@@ -112,6 +113,8 @@ export default function GradesPage() {
       {error && <p className="note note-err" role="alert">{error}</p>}
       {!canEdit && <p className="note note-info">Your parent has turned off grade entry for your account, so this page is view-only.</p>}
 
+      <IconTabs label="Parts of grades" tabs={[
+        { key: "gpa", icon: "📊", label: "GPA and goals", body: <>
       {(
         <GpaScorecard
           rows={mine}
@@ -121,7 +124,7 @@ export default function GradesPage() {
           minGrade={student.min_grade}
           weights={{ rigor: Number(student.weight_rigor ?? 1), honors: Number(student.weight_honors ?? 0.5) }}
           onSaveWeights={canEdit ? (w) => run(() => sb.rpc("set_school_weights", { p_student: student.id, p_rigor: w.rigor, p_honors: w.honors })) : undefined}
-          onRescue={aiAllowed ? (course, grade) => setRescue({ course, grade }) : undefined}
+          onRescue={aiAllowed ? (course, grade) => { setRescue({ course, grade }); window.location.hash = "help"; } : undefined}
         />
       )}
       {(
@@ -134,7 +137,8 @@ export default function GradesPage() {
           onSave={(g, m) => run(() => sb.rpc("set_student_goal", { p_student: student.id, p_goal_gpa: g, p_min_grade: m }))}
         />
       )}
-
+        </> },
+        { key: "state", icon: "🏛️", label: "State scholarships", body: <>
       <section className="tiles" style={{ marginTop: 8 }}>
         {results.map((r) => (
           <div key={r.programId} className={`tile ${r.status === "eligible" ? "tile-ok" : ""}`}>
@@ -155,7 +159,8 @@ export default function GradesPage() {
       ) : (
         <p className="hint" style={{ fontSize: 12 }}>ScholarTasks doesn&apos;t have {student.state} state scholarship rules yet. Grades, the scorecard and national scholarships all still work; see the <a href="/aid">financial aid page</a> for your state&apos;s aid office.</p>
       )}
-
+        </> },
+        { key: "tests", icon: "📝", label: "Test scores", body: <>
       <section className="panel">
         <h2>Test scores</h2>
         <form
@@ -171,7 +176,8 @@ export default function GradesPage() {
           {canEdit && <button className="btn btn-inline">{saved ? "✓ Saved" : "Save scores"}</button>}
         </form>
       </section>
-
+        </> },
+        { key: "help", icon: "🛟", label: "Help and next year", body: <>
       <RescueCard sb={sb} studentId={student.id} name={student.first_name} isParent={role === "parent"} aiAllowed={aiAllowed}
         courses={rescueCourses} target={rescue} onTargetUsed={clearRescue} />
 
@@ -179,7 +185,8 @@ export default function GradesPage() {
         <NextYearCard sb={sb} studentId={student.id} name={student.first_name} gradeLevel={student.grade_level} aiAllowed={aiAllowed} />
       )}
       <p className="hint"><a className="btn btn-ghost btn-inline btn-sm link-btn" href="/grades/plan">🗓️ Plan all four years of classes</a> Lay out grade 9 to 12 and check graduation credits and rigor courses.</p>
-
+        </> },
+        { key: "transcripts", icon: "📄", label: "Transcripts", body: <>
       {canEdit && <ImportCard sb={sb} studentId={student.id} file={importFile} onSaved={() => void load()} />}
 
       <TranscriptsCard sb={sb} studentId={student.id} name={student.first_name} canEdit={canEdit} onRead={(f) => setImportFile(f)} />
@@ -190,7 +197,8 @@ export default function GradesPage() {
         </div>
         <a className="btn btn-inline link-btn" href={`/grades/record?student=${student.id}`}>Open the record</a>
       </section>
-
+        </> },
+        { key: "courses", icon: "📚", label: "Courses", body: <>
       <section className="panel">
         <h2>Courses and grades</h2>
         <p className="hint">Add final grades for each course. Core courses (English, math, science, social studies and world languages) count toward {label === "GPA" ? "most state scholarships" : `the ${label}`}.</p>
@@ -244,6 +252,9 @@ export default function GradesPage() {
           ))
         )}
       </section>
+        </> },
+      ]} />
+
     </Page>
   );
 }

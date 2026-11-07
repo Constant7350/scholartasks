@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { IconTabs } from "../icon-tabs";
 import { PERMISSIONS, type PermissionKey } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
@@ -262,11 +263,11 @@ export default function FamilyPage() {
         </div>
       ) : (
         <>
-          {students.length === 0 && addChildForm}
-          {students.map((s) => {
+          <IconTabs label="Your students" tabs={[
+          ...students.map((s) => {
             const code = activeCode(s.id);
             const isConnected = connected(s.id);
-            return (
+            return { key: s.first_name.toLowerCase(), icon: isConnected ? "🧑‍🎓" : "✉️", label: s.first_name, body: (
               <div key={s.id} className="panel">
                 <h2>{s.first_name}</h2>
                 <div className="row" style={{ alignItems: "flex-end", gap: 8 }}>
@@ -327,9 +328,10 @@ export default function FamilyPage() {
                 </details>
                 <RemoveStudent id={s.id} name={s.first_name} onRemoved={(m) => { setNotice(m); void load(); }} />
               </div>
-            );
-          })}
-          {students.length > 0 && addChildForm}
+            ) };
+          }),
+          { key: "add", icon: "➕", label: "Add a student", body: addChildForm },
+          ]} />
         </>
       )}
     </Page>

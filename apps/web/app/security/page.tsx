@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { IconTabs } from "../icon-tabs";
 import { friendly, supabase } from "../../lib/supabase";
 import { addPasskey, hasBuiltInUnlock, inPhoneApp, passkeysSupported, unlockName } from "../../lib/passkeys-client";
 import { NotConfigured, Page } from "../ui";
@@ -103,6 +104,8 @@ export default function Security() {
 
   return (
     <Page title="Face ID, sign-in and account">
+      <IconTabs label="Account settings" tabs={[
+        { key: "face-id", icon: "🔐", label: unlock, body: <>
       <div className="panel">
         <h2>Sign in with {unlock}</h2>
         <p className="hint">
@@ -142,10 +145,12 @@ export default function Security() {
         <p className="hint" style={{ marginTop: 12, marginBottom: 0 }}>Lost a phone? Remove it here. Your password, email link and Google sign-in keep working as before.</p>
       </div>
 
+        </> },
+        { key: "ai-help", icon: "🛡️", label: "Consent and AI", body: <>
       <AdultConsent sb={sb} mode="manage" />
 
       {aiOn !== null && (
-        <div className="panel" id="ai-help">
+        <div className="panel">
           <h2>AI help {aiOn ? <span className="pill pill-ok">On</span> : <span className="pill">Off</span>}</h2>
           <p className="hint">
             AI features (the counselor, tutor, essay coach, grade rescue and course advice) are powered by Claude, made by Anthropic. When you use one,
@@ -155,7 +160,9 @@ export default function Security() {
         </div>
       )}
 
-      <div className="panel" id="delete-account">
+        </> },
+        { key: "delete-account", icon: "🗑️", label: "Delete account", body: <>
+      <div className="panel">
         <h2>Delete my account</h2>
         <p className="hint">
           <strong>Parents:</strong> if you are the only parent on the account, this deletes your whole family's ScholarTasks information: every student's plan,
@@ -177,6 +184,8 @@ export default function Security() {
         )}
         {delErr && <p className="note note-err" role="alert">{delErr}</p>}
       </div>
+        </> },
+      ]} />
     </Page>
   );
 }
