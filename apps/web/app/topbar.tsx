@@ -42,11 +42,15 @@ export function TopBar() {
   useEffect(() => {
     const el = bar.current;
     if (!el) return;
-    const set = () => document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`);
+    const set = () => {
+      document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`);
+      const row = el.querySelector<HTMLElement>(".topbar-inner");
+      if (row) document.documentElement.style.setProperty("--topbar-row-h", `${row.offsetHeight}px`);
+    };
     set();
     const ro = new ResizeObserver(set);
     ro.observe(el);
-    return () => { ro.disconnect(); document.documentElement.style.removeProperty("--header-h"); };
+    return () => { ro.disconnect(); document.documentElement.style.removeProperty("--header-h"); document.documentElement.style.removeProperty("--topbar-row-h"); };
   });
   // Where the menu scrolls to when opened from a page's "back to section" link.
   const [jumpTo, setJumpTo] = useState<string | null>(null);
@@ -132,7 +136,6 @@ export function TopBar() {
       <span>{navShort(i, lang)}</span>
     </a>
   );
-  const closeMenu = () => { if (menu.current) menu.current.open = false; };
 
   const groups = NAV_GROUPS.map((g) => ({ key: g.key, icon: g.icon, title: g.key === "family" && !isParent ? t.connected : g[lang] }));
 
@@ -202,12 +205,6 @@ export function TopBar() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
               </summary>
               <div className="menu-list" role="menu">
-                <div className="menu-head">
-                  <b>{t.menu}</b>
-                  <button type="button" className="menu-close" onClick={closeMenu} aria-label={t.close}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
-                  </button>
-                </div>
                 {switcher && <div className="menu-switch">{switcher}</div>}
                 <div className="menu-search">
                   <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.find} aria-label={t.find} enterKeyHint="go"

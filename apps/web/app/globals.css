@@ -1212,8 +1212,6 @@ html { overflow-x: hidden; }
 }
 
 /* ---------- Menu as tiles (Constant, 2026-11-07: no folding sections) ---------- */
-.menu-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 6px 12px; font-size: 17px; }
-.menu-close { font: inherit; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--card); color: var(--navy); display: grid; place-items: center; cursor: pointer; padding: 0 !important; }
 .menu-list .menu-group { border-top: 1px solid var(--line); padding: 8px 4px 4px; display: block; }
 .menu-sec-title { margin: 2px 8px 8px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; }
 .menu-sec-title .menu-ico { width: 18px; height: 18px; }
@@ -1230,13 +1228,13 @@ html { overflow-x: hidden; }
 .menu-group-look .theme-pick, .menu-group-look .lang-pick { padding-top: 0; }
 .menu-list { min-width: 560px; max-width: 640px; }
 @media (max-width: 720px) {
-  .menu-list { position: fixed; inset: 0; top: 0; bottom: 0; left: 0; right: 0; border-radius: 0; border: 0; max-height: none; min-width: 0; padding: calc(8px + env(safe-area-inset-top)) 10px calc(90px + env(safe-area-inset-bottom)); }
-  .menu-head { position: sticky; top: calc(-8px - env(safe-area-inset-top)); background: #fff; z-index: 1; margin: -8px -10px 0; padding: calc(10px + env(safe-area-inset-top)) 10px 8px 16px; border-bottom: 1px solid var(--line); }
-  html[data-theme="sunrise"] .menu-head { background: #fffaf2; }
-  html[data-theme="garden"] .menu-head { background: #fbfdfb; }
+  /* Full-screen menu under the top bar, so the logo, ? and Menu button stay in view (Constant, 2026-11-07). */
+  .menu-list { position: fixed; inset: 0; top: var(--topbar-row-h, 64px); bottom: 0; left: 0; right: 0; border-radius: 0; border: 0; border-top: 1px solid var(--line); max-height: none; min-width: 0; padding: 8px 10px calc(90px + env(safe-area-inset-bottom)); }
   body:has(details.menu[open]) { overflow: hidden; }
 }
-@media (min-width: 721px) { .menu-head { display: none; } }
+.menu-head, .menu-close { display: none; }
+details.menu summary svg { transition: transform 0.15s; }
+details.menu[open] summary svg { transform: rotate(180deg); }
 
 /* The top bar, student strip and back-to-section line stay put while the page scrolls under them
    (Constant, 2026-11-07: no scrolling back up to get out of a page). */
