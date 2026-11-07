@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { stripe, subscriptionRow, verifyStripeSignature, type StripeSubscription } from "../../../../lib/billing";
+import { saveSubscriptionRow, stripe, subscriptionRow, verifyStripeSignature, type StripeSubscription } from "../../../../lib/billing";
 
 // Stripe calls this after a payment or any subscription change. The signature
 // check proves the call is from Stripe. Each subscription is re-read from
@@ -28,8 +28,8 @@ export async function POST(req: Request) {
     const sub = await stripe<StripeSubscription>("GET", `subscriptions/${id}`);
     const row = subscriptionRow(sub);
     if (!row.family_id || (row.kind !== "family" && row.kind !== "study_coach")) return; // not one of ours
-    const { error } = await admin.from("billing_subscriptions").upsert(row);
-    if (error) throw new Error(`save subscription: ${error.message}`);
+    const error = await saveSubscriptionRow(admin, row);
+    if (error) throw new Error(`save subscription: ${error}`);
   };
 
   try {

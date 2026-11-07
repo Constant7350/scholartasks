@@ -664,6 +664,8 @@ body.help-on { padding-bottom: 96px; }
 
 .plan-list { margin: 4px 0 0; padding-left: 18px; font-size: 14px; color: var(--muted, #555); }
 .plan-list li { margin: 2px 0; }
+.level-mine { margin: 4px 0; padding: 8px 10px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); font-size: 15px; line-height: 1.5; }
+.level-list li.level-on { color: var(--ink); font-weight: 600; }
 
 
 /* ---------- Bright Campus colors ---------- */

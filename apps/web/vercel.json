@@ -24,6 +24,10 @@
     {
       "path": "/api/cron/progress",
       "schedule": "0 13 * * 1,2"
+    },
+    {
+      "path": "/api/cron/plan-level",
+      "schedule": "0 15 * * *"
     }
   ]
 }

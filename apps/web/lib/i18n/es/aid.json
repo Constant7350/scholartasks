@@ -676,5 +676,18 @@
   "WV Invests Grant": "WV Invests Grant",
   "You can send the FAFSA to up to 20 colleges at once, free. Add every college the student is applying to, even if unsure.": "Puedes enviar la FAFSA a hasta 20 universidades a la vez, gratis. Agrega todas las universidades a las que el estudiante va a solicitar, aunque no esté seguro.",
   "FAFSA": "FAFSA",
-  "ScholarTasks is free while we're in beta, with {FAMILYDAILYLIMIT} AI uses a day per person. Nobody is charged until the beta ends.": "ScholarTasks es gratis mientras estamos en beta, con {FAMILYDAILYLIMIT} usos de IA al día por persona. No se le cobra a nadie hasta que termine la beta."
+  "ScholarTasks is free while we're in beta, with {FAMILYDAILYLIMIT} AI uses a day per person. Nobody is charged until the beta ends.": "ScholarTasks es gratis mientras estamos en beta, con {FAMILYDAILYLIMIT} usos de IA al día por persona. No se le cobra a nadie hasta que termine la beta.",
+  "{length} students": "{length} estudiantes",
+  "{length} students, {extras} additional": "{length} estudiantes, {extras} adicionales",
+  "1 student": "1 estudiante",
+  "{name} level.": "Nivel {name}.",
+  "{x}: <1>{n} a month</1> or <2>{n2} a year</2>": "{x}: <1>{n} al mes</1> o <2>{n2} al año</2>",
+  "<1>{name}</1>, grades {grades}: {n} a month or {n2} a year{x}": "<1>{name}</1>, grados {grades}: {n} al mes o {n2} al año{x}",
+  "<1>Priced by your oldest student's grade. 2 students included, {n} a month for each additional student</1> ({n2} a year on yearly plans).": "<1>El precio depende del grado de tu estudiante mayor. Incluye 2 estudiantes, {n} al mes por cada estudiante adicional</1> ({n2} al año en los planes anuales).",
+  "Priced by your oldest student's grade. 2 students included, {n} a month for each additional student": "El precio depende del grado de tu estudiante mayor. Incluye 2 estudiantes, {n} al mes por cada estudiante adicional",
+  "a month": "al mes",
+  "Add your students on <1>Family and permissions</1> to see your family's price.": "Agrega a tus estudiantes en <1>Familia y permisos</1> para ver el precio de tu familia.",
+  "From {longDate}, your Family plan will be <1>{n} {x}</1> ({name} level, because {student} is in grade {grade}).": "A partir del {longDate}, tu plan Familiar será de <1>{n} {x}</1> (nivel {name}, porque {student} está en el grado {grade}).",
+  "The level follows the oldest student. When their grade moves your family to another level, they graduate or leave the account, or you add or remove an additional student, we tell you by email and on Home about 30 days ahead. The new price starts at your next bill (at renewal for yearly plans).": "El nivel sigue al estudiante mayor. Cuando su grado cambia a tu familia de nivel, se gradúa o sale de la cuenta, o agregas o quitas un estudiante adicional, te avisamos por correo y en Inicio unos 30 días antes. El nuevo precio empieza en tu próximo cobro (al renovar en los planes anuales).",
+  "Your family's level: <1>{name}</1> (oldest student {firstname}, in grade {gradelevel})": "Nivel de tu familia: <1>{name}</1> (estudiante mayor {firstname}, en el grado {gradelevel})"
 }

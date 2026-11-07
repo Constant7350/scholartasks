@@ -19,7 +19,7 @@ const FEATURES = [
 
 const FAQ = [
   { q: "¿Está todo en español?", a: "Sí. Toda la aplicación, los recordatorios y todas las respuestas de la IA (consejero, ayuda con la tarea, comentarios de ensayos y consejos de clases) están en español. Una persona bilingüe revisa cada traducción." },
-  { q: "¿Cuánto cuesta?", a: "Las familias pueden empezar gratis, sin tarjeta de crédito. El plan familiar cubrirá a todos los hijos de la casa y costará menos que la mayoría de las aplicaciones de preparación para exámenes." },
+  { q: "¿Cuánto cuesta?", a: "Las familias pueden empezar gratis, sin tarjeta de crédito. El plan Familiar tiene precio según el grado de su estudiante mayor, con 2 estudiantes incluidos y $2.99 al mes por cada estudiante adicional: grados 6 a 8 (Explorar) $6.99 al mes o $59 al año, grados 9 y 10 (Construir) $9.99 al mes o $79 al año, grados 11 y 12 (Solicitar) $12.99 al mes o $99 al año. Le avisamos unos 30 días antes de que cambie su nivel." },
   { q: "¿Es solo para Georgia?", a: "ScholarTasks se hizo en Georgia y conoce las reglas de HOPE, Zell Miller y la ayuda de Georgia. Las búsquedas siempre incluyen universidades, carreras y oficios de todo el país, y ya funciona en más estados del sureste." },
   { q: "¿Necesito número de Seguro Social o estatus migratorio para usarlo?", a: "No. ScholarTasks nunca pide el número de Seguro Social ni datos migratorios. Para la FAFSA y algunas becas sí hay reglas de ciudadanía; la app le explica cuáles aplican a su familia y muestra becas abiertas a todos." },
   { q: "¿La IA hará la tarea o escribirá los ensayos?", a: "No. Explica, hace preguntas y revisa el trabajo del propio estudiante. Nunca entrega respuestas ni escribe ensayos." },
