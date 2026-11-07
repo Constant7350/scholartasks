@@ -217,7 +217,7 @@ export default function EssaysPage() {
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
         </div>
       )}
-      <p className="hint">Draft the Common App essay and each college&apos;s extra essays here. Everything saves as you type, and the coach gives feedback without writing for you. For scholarship essays, use the coach on each saved scholarship.</p>
+      <p className="hint">Draft the Common App essay and each college&apos;s extra essays here. It saves as you type, and the coach gives feedback without writing for you.</p>
       {error && <p className="note note-err" role="alert">{error}</p>}
 
       <IconTabs label="Parts of essays" tabs={[
@@ -269,6 +269,7 @@ export default function EssaysPage() {
 
         </> },
         { key: "bundles", icon: "🧩", label: "Essay bundles", body: <EssayBundles key={student.id} sb={sb} studentId={student.id} essays={mine} onEssaysChanged={load} /> },
+        { key: "challenge", icon: "🏆", label: "Essay challenge", href: "/challenge" },
       ]} />
       <p className="hint">Short answers you reuse (bio, career goals, service) are ready to copy on your <a href="/activities/profile">Application profile</a>.</p>
     </Page>

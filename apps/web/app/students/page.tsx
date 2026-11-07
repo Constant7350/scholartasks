@@ -6,6 +6,7 @@ import { supabase } from "../../lib/supabase";
 import { rememberStudent } from "../../lib/current-student";
 import { useSpace } from "../../lib/parent-space";
 import { NotConfigured, Page } from "../ui";
+import { Avatar } from "../avatar";
 import { GpaScorecard } from "../grades/scorecard";
 import { ProgressCard } from "../home/progress-card";
 
@@ -68,7 +69,7 @@ export default function StudentsPage() {
 
   return (
     <Page title={title}>
-      <p className="hint" style={{ marginTop: -8 }}>Each student&apos;s own work: grades, deadlines, college list and progress. Your own lists and sign-offs are in <a href="/parent">My parent space</a>.</p>
+      <p className="hint" style={{ marginTop: -8 }}>Each student&apos;s own work and progress. Your own lists are in <a href="/parent">My parent space</a>.</p>
       {students.map((s) => {
         const mine = dues.filter((d) => d.student_id === s.id && d.open);
         const late = mine.filter((d) => d.due && daysUntil(d.due) < 0).length;
@@ -78,7 +79,7 @@ export default function StudentsPage() {
           <section key={s.id} className="kid-block">
             <div className="panel family-card">
               <div>
-                <h2>🎓 {s.first_name} <span className="hint" style={{ fontSize: 15, fontWeight: 600 }}>· Grade {s.grade_level}</span></h2>
+                <h2 className="kid-head"><Avatar name={s.first_name} size={36} />{s.first_name} <span className="hint" style={{ fontSize: 15, fontWeight: 600 }}>· Grade {s.grade_level}</span></h2>
                 <p className="kid-pills">
                   {connected.has(s.id) ? <span className="pill pill-ok">Connected</span> : <span className="pill">Not connected yet</span>}
                   {late > 0 && <span className="pill pill-late">{late} late</span>}

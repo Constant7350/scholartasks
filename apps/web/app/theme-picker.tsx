@@ -17,21 +17,51 @@ function apply(id: ThemeId) {
   else document.documentElement.dataset.theme = id;
 }
 
+function current(): ThemeId {
+  const t = document.documentElement.dataset.theme;
+  return t === "sunrise" || t === "garden" ? t : "campus";
+}
+
+function save(id: ThemeId) {
+  apply(id);
+  try {
+    if (id === "campus") localStorage.removeItem(KEY);
+    else localStorage.setItem(KEY, id);
+  } catch { /* private mode: the choice lasts until the page closes */ }
+  window.dispatchEvent(new Event("st-theme"));
+}
+
+/**
+ * One-tap color button in the top bar (Constant, 2026-11-07): each tap moves to the next
+ * color theme, Campus, Sunrise, Garden. The full picker with names stays in the menu.
+ */
+export function ThemeButton() {
+  const [theme, setTheme] = useState<ThemeId>("campus");
+  useEffect(() => {
+    const sync = () => setTheme(current());
+    sync();
+    window.addEventListener("st-theme", sync);
+    return () => window.removeEventListener("st-theme", sync);
+  }, []);
+  const next = THEMES[(THEMES.findIndex((t) => t.id === theme) + 1) % THEMES.length]!;
+  const now = THEMES.find((t) => t.id === theme) ?? THEMES[0];
+  return (
+    <button type="button" className="theme-btn" onClick={() => save(next.id)} aria-label={`App colors: ${now.name}. Switch to ${next.name}`} title={`Colors: ${now.name}. Tap for ${next.name}`}>
+      <span className="theme-dot theme-dot-sm" style={{ background: now.dot }} aria-hidden="true" />
+    </button>
+  );
+}
+
 export function ThemePicker() {
   const [theme, setTheme] = useState<ThemeId>("campus");
   useEffect(() => {
-    const t = document.documentElement.dataset.theme;
-    if (t === "sunrise" || t === "garden") setTheme(t);
+    const sync = () => setTheme(current());
+    sync();
+    window.addEventListener("st-theme", sync);
+    return () => window.removeEventListener("st-theme", sync);
   }, []);
 
-  const pick = (id: ThemeId) => {
-    setTheme(id);
-    apply(id);
-    try {
-      if (id === "campus") localStorage.removeItem(KEY);
-      else localStorage.setItem(KEY, id);
-    } catch { /* private mode: the choice lasts until the page closes */ }
-  };
+  const pick = (id: ThemeId) => { setTheme(id); save(id); };
 
   return (
     <div className="theme-pick" role="group" aria-label="App colors">

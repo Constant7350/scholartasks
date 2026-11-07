@@ -9,6 +9,8 @@ import {
 } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { PageTabs } from "../icon-tabs";
+import { COLLEGE_PAGES } from "../page-groups";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../lib/colleges";
@@ -356,13 +358,14 @@ export default function MajorsPage() {
 
   return (
     <Page title="Search colleges by major">
+      <PageTabs label="College pages" here="/majors" tabs={COLLEGE_PAGES} />
       {isParent && student && <SpaceSwitch space={space} onChange={setSpace} name={student.first_name} />}
       {isParent && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
         </div>
       )}
-      <p className="hint">Type what you want to study, like marine biology, vet or nurse. You&apos;ll see what that career pays, how many years of school it takes, and the strongest programs in {homeName} first, then across the country, with a yearly price for your family. Not sure yet? Take the <a href="/career-quiz">career quiz</a>.</p>
+      <p className="hint">Type what you want to study and see what it pays and the strongest programs, {homeName} first, with a yearly price for your family. Not sure yet? Take the <a href="/career-quiz">career quiz</a>.</p>
 
       <section className="panel">
         <label htmlFor="major-q">What do you want to study?</label>

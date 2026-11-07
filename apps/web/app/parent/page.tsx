@@ -155,7 +155,7 @@ export default function ParentSpacePage() {
 
   return (
     <Page title={title}>
-      <p className="hint" style={{ marginTop: -8 }}>Your own lists and notes. Nothing here goes on {name}&apos;s plan until you add it, and {name} sees only what you share.</p>
+      <p className="hint" style={{ marginTop: -8 }}>Your own lists and notes; {name} sees only what you share.</p>
       {students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === student.id} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}

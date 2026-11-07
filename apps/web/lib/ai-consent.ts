@@ -1,6 +1,6 @@
 /** Shown when someone uses an AI feature before saying yes to AI help. */
 export const AI_CONSENT_NEEDED =
-  "Please allow AI help first: tap Allow AI help in the notice on this page, or open Menu, then Face ID, sign-in and account.";
+  "Please allow AI help first: tap Allow AI help in the line at the top of this page, or open Menu, then Face ID, sign-in and account.";
 
 /** True when the database refused an AI turn because the person hasn't allowed AI help yet. */
 export const needsAiConsent = (e: { message?: string } | null | undefined) => !!e && /ai consent needed/.test(e.message ?? "");

@@ -8,6 +8,8 @@ import {
 } from "@scholartasks/core";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
+import { PageTabs } from "../../icon-tabs";
+import { COLLEGE_PAGES } from "../../page-groups";
 import { pickStudent, useCurrentStudent } from "../../../lib/current-student";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../../lib/colleges";
 import { STATE_NAMES } from "../../../lib/trades";
@@ -204,6 +206,7 @@ export default function ComparePage() {
 
   return (
     <Page title="Compare colleges">
+      <PageTabs label="College pages" here="/colleges/compare" tabs={COLLEGE_PAGES} />
       {isParent && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}

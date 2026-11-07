@@ -186,6 +186,7 @@ export default function GradesPage() {
       )}
       <p className="hint"><a className="btn btn-ghost btn-inline btn-sm link-btn" href="/grades/plan">🗓️ Plan all four years of classes</a> Lay out grade 9 to 12 and check graduation credits and rigor courses.</p>
         </> },
+        { key: "record", icon: "🖨️", label: "Print record", href: "/grades/record" },
         { key: "transcripts", icon: "📄", label: "Transcripts", body: <>
       {canEdit && <ImportCard sb={sb} studentId={student.id} file={importFile} onSaved={() => void load()} />}
 

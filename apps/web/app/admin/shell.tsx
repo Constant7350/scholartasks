@@ -7,6 +7,7 @@ import { appSignOut } from "../../lib/share";
 import { BrandMark } from "../brand";
 import { NAV, NAV_GROUPS, bestMatch, type NavItem } from "../nav";
 import { attentionLabel, loadAttention, type Attention } from "./attention";
+import { ICONS } from "../icons";
 
 /**
  * Team admin layout: a menu down the left side with a colored icon for each page,
@@ -38,30 +39,7 @@ export function Badge({ href, count }: { href: string; count: number | undefined
 
 type Tone = "navy" | "blue" | "green" | "gold" | "coral" | "purple";
 
-// Line icons (same style as the HiveTask admin).
-const ICONS: Record<string, string> = {
-  home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
-  chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>',
-  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
-  book: '<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 21V5"/><path d="M8 7h7M8 11h5"/>',
-  money: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 9.5v.01M17.5 14.5v.01"/>',
-  gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
-  bag: '<path d="M5 8h14l-1 13H6z"/><path d="M9 8V6a3 3 0 016 0v2"/>',
-  school: '<path d="M2.5 9L12 4l9.5 5-9.5 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5"/><path d="M21.5 9v6"/>',
-  star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
-  globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.5 5.4 3.5 8.5s-1 5.9-3.5 8.5c-2.5-2.6-3.5-5.4-3.5-8.5s1-5.9 3.5-8.5z"/>',
-  upload: '<path d="M12 16V5M7 10l5-5 5 5"/><path d="M4 19h16"/>',
-  slides: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/>',
-  share: '<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/>',
-  bug: '<rect x="7.5" y="8" width="9" height="12" rx="4.5"/><path d="M9.5 8a2.5 2.5 0 015 0M3.5 13h4M16.5 13h4M4.5 8.5l3 2M19.5 8.5l-3 2M4.5 18.5l3-2M19.5 18.5l-3-2"/>',
-  shield: '<path d="M12 3l7.5 3v6c0 4.5-3.2 7.8-7.5 9-4.3-1.2-7.5-4.5-7.5-9V6z"/><path d="M9 12l2 2 4-4"/>',
-  file: '<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h5"/>',
-  back: '<path d="M15 18l-6-6 6-6"/>',
-  calendar: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
-  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 010 6.8M21.5 20c0-3-1.8-5.2-4.5-5.8"/>',
-  logout: '<path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3"/><path d="M10 17l-5-5 5-5M5 12h11"/>',
-};
-
+// Line icons: the one drawn set used across the app (app/icons.tsx).
 /** Icon and color for each team page. Pages not listed get a plain page icon. */
 const LOOK: Record<string, [icon: string, tone: Tone]> = {
   "/admin": ["home", "gold"],

@@ -173,20 +173,19 @@ export default function ActivitiesPage() {
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
         </div>
       )}
-      <p className="hint">Add each club, sport, job, volunteer role and award once. Copy it into the Common App or print a one-page resume.</p>
+      <p className="hint">Add each club, sport, job, volunteer role and award once; the resume and Common App fill themselves.</p>
 
       <div className="todo-summary">
         <span className="todo-count"><b>{activities.length}</b> activities</span>
         <span className="todo-count"><b>{honors.length}</b> honors and awards</span>
         <span className="todo-count"><b>{totalHours.toLocaleString()}</b> hours a year</span>
       </div>
-      <p className="trade-quick"><a className="btn btn-inline btn-sm link-btn" href={`/activities/resume?student=${student.id}`}>📄 Make my resume</a> <a className="btn btn-ghost btn-inline btn-sm link-btn" href="/activities/profile">📋 Copy</a> <a className="btn btn-ghost btn-inline btn-sm link-btn" href="/activities/common-app">✅ Common App</a></p>
-
 
       {error && <p className="note note-err" role="alert">{error}</p>}
 
       <IconTabs label="Parts of activities" tabs={[
         { key: "list", icon: "⚽", label: "Activities and honors", count: activities.length + honors.length, body: <>
+      <p className="trade-quick"><a className="btn btn-inline btn-sm link-btn" href={`/activities/resume?student=${student.id}`}>📄 Make my resume</a></p>
       <div className="tabs" role="tablist">
         <button role="tab" aria-selected={tab === "activity"} onClick={() => { setTab("activity"); setDraft(null); }}>Activities ({activities.length})</button>
         <button role="tab" aria-selected={tab === "honor"} onClick={() => { setTab("honor"); setDraft(null); }}>Honors and awards ({honors.length})</button>
@@ -294,6 +293,8 @@ export default function ActivitiesPage() {
         { key: "service", icon: "🤝", label: "Service hours", body: beyondOn && <ServiceLog sb={sb} studentId={student.id} rows={myService} run={run} /> },
         { key: "recs", icon: "✉️", label: "Recommenders", body: beyondOn && <Recommenders sb={sb} studentId={student.id} rows={myRecs} run={run} grade={student.grade_level} /> },
         { key: "brag", icon: "⭐", label: "Brag sheet", body: beyondOn && <Brag sb={sb} studentId={student.id} sheet={myBrag} run={run} firstName={student.first_name} /> },
+        { key: "profile", icon: "📋", label: "Copy profile", href: "/activities/profile" },
+        { key: "common-app", icon: "✅", label: "Common App", href: "/activities/common-app" },
       ]} />
     </Page>
   );
