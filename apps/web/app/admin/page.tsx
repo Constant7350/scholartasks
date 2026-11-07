@@ -15,6 +15,7 @@ const ABOUT: Record<string, string> = {
   "/admin/openings": "Approve apprenticeships, local openings and weekend jobs.",
   "/admin/schools": "Approve schools that asked for the counselor portal.",
   "/admin/ratings": "What families said on Rate ScholarTasks.",
+  "/admin/families": "Big accounts and possible sharing between households.",
   "/admin/consents": "Parent consent signatures for people on camera.",
   "/check": "Read the Spanish, screen by screen.",
   "/admin/college-data": "Load or refresh the college list.",

@@ -46,6 +46,7 @@ export function supabase(): SupabaseClient | null {
 /** Turns a database error into a message a parent can read. */
 export function friendly(e: unknown): string {
   const m = (e as { message?: string })?.message ?? String(e);
+  if (m.includes("student limit")) return "A family account can have up to 6 students. Big family? Email support@scholartasks.com and we'll add more at no charge.";
   if (m.includes("at least 13")) return "ScholarTasks is for students 13 and older, or 10 to 12 in grades 6 to 8.";
   if (m.includes("under 13")) return "Students get their own sign-in when they turn 13. Until then, use ScholarTasks with them from your account.";
   if (m.includes("invalid or expired")) return "That code is not valid or has expired. Ask your parent for a new one.";

@@ -51,6 +51,7 @@ const LOOK: Record<string, [icon: string, tone: Tone]> = {
   "/admin/openings": ["bag", "coral"],
   "/admin/schools": ["school", "blue"],
   "/admin/ratings": ["star", "gold"],
+  "/admin/families": ["users", "blue"],
   "/admin/consents": ["shield", "purple"],
   "/admin/challenges": ["star", "coral"],
   "/check": ["globe", "green"],
