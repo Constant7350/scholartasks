@@ -179,7 +179,8 @@ function HelpBar({ q, setQ, openTopic, setOpenTopic, pageTopic, path, off }: {
   q: string; setQ: (v: string) => void; openTopic: string | null; setOpenTopic: (id: string | null) => void;
   pageTopic: Topic | undefined; path: string; off: () => void;
 }) {
-  const searching = q.trim().length > 0;
+  const onHelpPage = path === "/help"; // the Help page has its own search box pinned at the top
+  const searching = !onHelpPage && q.trim().length > 0;
   const results = searching ? searchTopics(q).slice(0, 5) : [];
   const shown = openTopic ? results.find((t) => t.id === openTopic) : undefined;
   return (
@@ -207,17 +208,17 @@ function HelpBar({ q, setQ, openTopic, setOpenTopic, pageTopic, path, off }: {
           ))}
         </div>
       )}
-      <form className="help-bar-search" onSubmit={(e) => { e.preventDefault(); if (searching) window.location.href = `/help?q=${encodeURIComponent(q.trim())}`; }}>
+      {!onHelpPage && <form className="help-bar-search" onSubmit={(e) => { e.preventDefault(); if (searching) window.location.href = `/help?q=${encodeURIComponent(q.trim())}`; }}>
         <span className="help-dot" aria-hidden="true">?</span>
         <input
           className="input" type="search" value={q} onChange={(e) => setQ(e.target.value)}
           placeholder="Search help, e.g. remove a student" aria-label="Search the help manual" autoComplete="off" enterKeyHint="search"
         />
-      </form>
+      </form>}
       <div className="help-bar-row">
-        <span>{searching ? "Answers from the manual." : <>Tap any <b className="help-dot">?</b> on the page, or ask above.</>}</span>
+        <span>{searching ? "Answers from the manual." : onHelpPage ? <>Tap any <b className="help-dot">?</b> on the page, or search at the top.</> : <>Tap any <b className="help-dot">?</b> on the page, or ask above.</>}</span>
         <span className="help-bar-actions">
-          <a href={pageTopic && path !== "/help" ? `/help#${pageTopic.id}` : "/help"}>Help manual</a>
+          {!onHelpPage && <a href={pageTopic ? `/help#${pageTopic.id}` : "/help"}>Help manual</a>}
           <button type="button" className="linklike" onClick={off}>Turn off help</button>
         </span>
       </div>
