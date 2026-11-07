@@ -1070,7 +1070,7 @@
 {"en":"Plans aren't managed in the phone app. Everything your family's plan includes works here as usual.","screens":["/billing"]},
 {"en":"Plans need the latest database update first.","screens":["/billing"]},
 {"en":"Renews on {d}.","screens":["/billing"]},
-{"en":"ScholarTasks is free while we're in beta, with {FAMILYDAILYLIMIT} AI uses a day per person. Prices below are not final, and nobody is charged until the beta ends.","screens":["/billing"]},
+{"en":"ScholarTasks is free while we're in beta, with {FAMILYDAILYLIMIT} AI uses a day per person. Nobody is charged until the beta ends.","screens":["/billing"]},
 {"en":"See the Homework Helper","screens":["/billing"]},
 {"en":"Set up your family first on <1>Family and permissions</1>, then come back to choose a plan.","screens":["/billing"]},
 {"en":"Thanks! Homework Helper is being added.","screens":["/billing"]},
