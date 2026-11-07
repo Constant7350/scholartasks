@@ -2935,7 +2935,7 @@
 {"en":"My dreams","screens":["/home"]},
 {"en":"One more (optional)","screens":["/home"]},
 {"en":"Someone you admire","screens":["/home"]},
-{"en":"Someone you look up to, and why (optional)","screens":["/home"]},
+{"en":"Someone you look up to (optional)","screens":["/home"]},
 {"en":"What do you dream of doing?","screens":["/home"]},
 {"en":"What does {firstname} dream of doing?","screens":["/home"]},
 {"en":"{late} late","screens":["/home","/students"]},
