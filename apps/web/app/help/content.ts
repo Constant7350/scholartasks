@@ -641,6 +641,19 @@ export const TOPICS: Topic[] = [
     ],
   },
   {
+    id: "dream-board",
+    area: "Getting started",
+    title: "Dream board: what your student dreams of doing",
+    href: "/home",
+    keywords: ["dream", "dreams", "dream board", "career dream", "want to be", "admire", "look up to", "future", "goal"],
+    summary: "On Home, students in grades 6 to 10 (or their parents) write two or three dreams in their own words and someone they look up to. The AI counselor and the Homework Helper use it to show how this year's classes and activities lead there.",
+    steps: [
+      "Open Home and find the star card. Type up to three dreams, for example a job, something to build or a place to go, and tap Save.",
+      "Tap Ask the counselor how to get there for a plan for this year. Change the board any time; it is a list of ideas, never a limit.",
+      "Parents of a student under 13 fill it in together from the parent account. From grade 11 the card shows only when it has something in it.",
+    ],
+  },
+  {
     id: "younger-students",
     area: "Getting started",
     title: "Students in grades 6 and 7 (under 13)",

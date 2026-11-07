@@ -6,6 +6,7 @@ import { AI_CONSENT_NEEDED, needsAiConsent } from "../../../lib/ai-consent";
 import { aiDailyLimit } from "../../../lib/ai-limit";
 import { HOMEWORK_DAILY_LIMIT, HOMEWORK_MONTHLY_LIMIT, PAYWALL_ON } from "../../../lib/prices";
 import { CHECKER_RULES, HELPER_RULES, HELP_TYPES, SAFE_FALLBACK, gradeBand, subjectById, type HelpType } from "../../../lib/homework";
+import { dreamLine, type DreamBoard } from "../../../lib/stage-brief";
 import { aiLanguageNote } from "../../../lib/lang";
 import { aiOffMessage } from "../../../lib/ai-off";
 
@@ -65,15 +66,16 @@ function textOf(res: { content: { type: string; text?: string }[] }): string {
 }
 
 async function studentContext(sb: SupabaseClient, studentId: string): Promise<{ name: string; text: string } | null> {
-  const { data: st } = await sb.from("students").select("first_name, grade_level").eq("id", studentId).maybeSingle();
+  const { data: st } = await sb.from("students").select("first_name, grade_level, match_profile").eq("id", studentId).maybeSingle();
   if (!st) return null;
-  const s = st as { first_name: string; grade_level: number };
+  const s = st as { first_name: string; grade_level: number; match_profile?: { dreams?: DreamBoard | null } | null };
   const { data: g } = await sb.from("course_grades").select("course, level, grade, grade_level").eq("student_id", studentId).order("created_at", { ascending: false }).limit(20);
   const courses = ((g as { course: string; level: string; grade: string; grade_level: number }[]) ?? [])
     .filter((c) => c.grade_level === s.grade_level)
     .map((c) => `${c.course}${c.level !== "standard" ? ` (${c.level})` : ""}: ${c.grade}`);
   const lines = [
     `The student is in grade ${s.grade_level}. ${gradeBand(s.grade_level)}`,
+    ...(dreamLine(s.match_profile) ? [`${dreamLine(s.match_profile)} When a topic connects to a dream, say so in one short line (why fractions matter to a future builder); never lecture about it.`] : []),
     courses.length ? `Classes this year with latest grades: ${courses.join("; ")}. Be extra patient in classes with a C or lower.` : "",
   ];
   return { name: s.first_name, text: lines.filter(Boolean).join("\n") };
