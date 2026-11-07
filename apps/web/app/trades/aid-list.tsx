@@ -4,14 +4,19 @@ import { STATE_NAMES, TRADE_AID } from "../../lib/trades";
 function Program({ a }: { a: TradeAid }) {
   return (
     <li className="trade-aid">
-      <div className="trade-aid-head">
-        <b><a href={a.url} target="_blank" rel="noreferrer">{a.name}</a></b>
-        <span className="pill">{a.state === "US" ? "Any state" : STATE_NAMES[a.state] ?? a.state}</span>
-      </div>
-      <span className="trade-pay">{a.amount}</span>
-      <span>{a.summary}</span>
-      <span className="hint">Who: {a.who}</span>
-      <span className="hint">How: {a.apply}</span>
+      <details>
+        <summary>
+          <span className="trade-aid-head">
+            <b>{a.name}</b>
+            <span className="pill">{a.state === "US" ? "Any state" : STATE_NAMES[a.state] ?? a.state}</span>
+          </span>
+          <span className="trade-pay">{a.amount}</span>
+        </summary>
+        <span>{a.summary}</span>
+        <span className="hint">Who: {a.who}</span>
+        <span className="hint">How: {a.apply}</span>
+        <a href={a.url} target="_blank" rel="noreferrer">Official site</a>
+      </details>
     </li>
   );
 }

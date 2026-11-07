@@ -73,7 +73,7 @@ export function TradeGradeSteps() {
   };
 
   return (
-    <section className="panel" id="grades">
+    <section className="panel">
       <h2>Planning a trade in grades 8 to 12</h2>
       <p className="hint">Career classes, clubs and free college classes in high school give a big head start. Pick a grade to see what to do this year.</p>
       <div className="chips trade-chips" role="group" aria-label="Grade">

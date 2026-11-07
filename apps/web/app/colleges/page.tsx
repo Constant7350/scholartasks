@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { CHURCH_FAMILIES, INTERESTS, MILITARY_COLLEGE_IDS, SERVICE_ACADEMIES, militaryLabel, INTEREST_PROGRAMS, SCHOOL_TYPES, SOUTHEAST, faithCodes, faithLabel, collegeFit, estimateCost, fitRecord, type CourseGrade, matchScore, sizeOf, type CostInput, type Fit, type MatchAnswers, type MatchProfile } from "@scholartasks/core";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { MoreList } from "../show-more";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../lib/colleges";
@@ -206,8 +207,7 @@ export default function CollegesPage() {
           <h2>{ranked.length ? `${ranked.length} colleges that fit` : "No colleges fit every answer"}</h2>
           {!ranked.length && <p className="hint">Try a bigger area, a higher price, or fewer subjects.{answers.where === "home" && answers.type !== "any" ? " Choose The Southeast or Anywhere in the U.S. to see more " + (answers.type === "christian" ? "Christian" : answers.type) + " colleges." : ""}</p>}
           <p className="hint" style={{ marginTop: 0 }}>Reach, Match and Likely weigh your grades (unweighted GPA{record.gpa != null ? ` ${record.gpa.toFixed(2)}` : ""}), your AP, IB and dual enrollment classes ({record.rigor}), your SAT or ACT, and each college&apos;s admit rate. They&apos;re a rough guide, not a prediction.</p>
-          <ul className="items college-results">
-            {ranked.map(({ r, cost, fit }) => (
+          <MoreList items={ranked} first={8} className="items college-results" render={({ r, cost, fit }) => (
               <li key={r.id}>
                 <div className="item-main">
                   <b>{r.name}</b>
@@ -232,8 +232,7 @@ export default function CollegesPage() {
                   {r.url && <a className="btn btn-ghost btn-inline btn-sm" href={r.url} target="_blank" rel="noreferrer noopener">Website</a>}
                 </div>
               </li>
-            ))}
-          </ul>
+            )} />
           <p className="hint">Data: U.S. Department of Education College Scorecard{results[0]?.data_year ? `, fetched ${results[0].data_year}` : ""}. Check each college&apos;s own net price calculator before you decide.</p>
         </section>
       )}

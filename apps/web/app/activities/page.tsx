@@ -173,18 +173,15 @@ export default function ActivitiesPage() {
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
         </div>
       )}
-      <p className="hint">Add each club, sport, job, volunteer role and award once. It&apos;s set up the way the Common App asks, so you can copy each line straight in, and it prints as a one-page resume for scholarships and jobs.</p>
+      <p className="hint">Add each club, sport, job, volunteer role and award once. Copy it into the Common App or print a one-page resume.</p>
 
       <div className="todo-summary">
         <span className="todo-count"><b>{activities.length}</b> activities</span>
         <span className="todo-count"><b>{honors.length}</b> honors and awards</span>
         <span className="todo-count"><b>{totalHours.toLocaleString()}</b> hours a year</span>
       </div>
-      <p><a className="btn btn-inline link-btn" href={`/activities/resume?student=${student.id}`}>📄 Make my resume</a> <a className="btn btn-ghost btn-inline link-btn" href="/activities/profile">📋 Copy for applications</a> <a className="btn btn-ghost btn-inline link-btn" href="/activities/common-app">✅ Common App ready</a></p>
+      <p className="trade-quick"><a className="btn btn-inline btn-sm link-btn" href={`/activities/resume?student=${student.id}`}>📄 Make my resume</a> <a className="btn btn-ghost btn-inline btn-sm link-btn" href="/activities/profile">📋 Copy</a> <a className="btn btn-ghost btn-inline btn-sm link-btn" href="/activities/common-app">✅ Common App</a></p>
 
-      {beyondOn && (
-        <Checkup grade={student.grade_level} items={checkup(student.grade_level, mine, myService, myRecs, myBrag)} />
-      )}
 
       {error && <p className="note note-err" role="alert">{error}</p>}
 
@@ -293,6 +290,7 @@ export default function ActivitiesPage() {
       </section>
 
         </> },
+        { key: "checkup", icon: "🩺", label: "Check-up", body: beyondOn && <Checkup grade={student.grade_level} items={checkup(student.grade_level, mine, myService, myRecs, myBrag)} /> },
         { key: "service", icon: "🤝", label: "Service hours", body: beyondOn && <ServiceLog sb={sb} studentId={student.id} rows={myService} run={run} /> },
         { key: "recs", icon: "✉️", label: "Recommenders", body: beyondOn && <Recommenders sb={sb} studentId={student.id} rows={myRecs} run={run} grade={student.grade_level} /> },
         { key: "brag", icon: "⭐", label: "Brag sheet", body: beyondOn && <Brag sb={sb} studentId={student.id} sheet={myBrag} run={run} firstName={student.first_name} /> },

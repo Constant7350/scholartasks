@@ -160,6 +160,7 @@ export function Brag({ sb, studentId, sheet, run, firstName }: { sb: SupabaseCli
   const [a, setA] = useState<Record<string, string>>(sheet?.answers ?? {});
   const [saved, setSaved] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [firstOpen] = useState(() => Math.max(0, BRAG_QUESTIONS.findIndex((x) => !(sheet?.answers?.[x.key] ?? "").trim())));
   useEffect(() => { setA(sheet?.answers ?? {}); setSaved(true); }, [sheet, studentId]);
 
   const save = async () => {
@@ -181,12 +182,12 @@ export function Brag({ sb, studentId, sheet, run, firstName }: { sb: SupabaseCli
         Teachers and counselors write better letters when they know your story. Answer in your own words; a few sentences each is plenty.
         Copy it into an email to each recommender. Your essay ideas stay out of the copy.
       </p>
-      {BRAG_QUESTIONS.map((q) => (
-        <div className="field" key={q.key}>
-          <label htmlFor={`b-${q.key}`}>{q.q}</label>
-          <textarea id={`b-${q.key}`} className="input" rows={q.key === "stories" ? 4 : 3} maxLength={2000} placeholder={q.hint}
+      {BRAG_QUESTIONS.map((q, i) => (
+        <details className="field brag-q" key={q.key} open={i === firstOpen ? true : undefined}>
+          <summary>{(a[q.key] ?? "").trim() ? "✓ " : ""}{q.q}</summary>
+          <textarea aria-label={q.q} id={`b-${q.key}`} className="input" rows={q.key === "stories" ? 4 : 3} maxLength={2000} placeholder={q.hint}
             value={a[q.key] ?? ""} onChange={(e) => { setA({ ...a, [q.key]: e.target.value }); setSaved(false); }} onBlur={() => { if (!saved) void save(); }} />
-        </div>
+        </details>
       ))}
       <div className="row">
         <button className="btn btn-inline" disabled={saved} onClick={() => void save()}>{saved ? "Saved ✓" : "Save"}</button>

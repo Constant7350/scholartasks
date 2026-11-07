@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { MoreList } from "../show-more";
 import { OPENING_KINDS, OPENING_SAFETY_TIPS, OPENING_STATES, sortOpenings, type OpeningKind } from "@scholartasks/core";
 import { supabase } from "../../lib/supabase";
 import { STATE_NAMES, TRADES } from "../../lib/trades";
@@ -22,7 +23,6 @@ export function OpeningsList({ trade, compact = false, kinds }: { trade?: string
   const [tradeF, setTradeF] = useState(trade ?? "");
   const [kindF, setKindF] = useState<OpeningKind | "">("");
   const [q, setQ] = useState("");
-  const [showAll, setShowAll] = useState(false);
 
   const load = useCallback(async () => {
     if (!sb) return setRows([]);
@@ -72,7 +72,6 @@ export function OpeningsList({ trade, compact = false, kinds }: { trade?: string
   }
 
   const homeName = STATE_NAMES[home] ?? home;
-  const elsewhereShown = showAll || compact ? elsewhere : elsewhere.slice(0, 12);
 
   return (
     <div className="openings">
@@ -108,15 +107,12 @@ export function OpeningsList({ trade, compact = false, kinds }: { trade?: string
       <h3>In {homeName} ({near.length})</h3>
       {near.length === 0
         ? <p className="hint">No openings in {homeName} match yet. New ones are added as companies post them, so check back.</p>
-        : <ul className="opening-list">{near.map((o) => <OpeningCard key={o.id} o={o} />)}</ul>}
+        : <MoreList items={near} first={5} className="opening-list" render={(o) => <OpeningCard key={o.id} o={o} />} />}
 
       <h3>Across the country ({elsewhere.length})</h3>
       {elsewhere.length === 0
         ? <p className="hint">Nothing outside {homeName} matches yet.</p>
-        : <ul className="opening-list">{elsewhereShown.map((o) => <OpeningCard key={o.id} o={o} />)}</ul>}
-      {!showAll && !compact && elsewhere.length > elsewhereShown.length && (
-        <button className="btn btn-ghost" style={{ width: "auto", marginTop: 12 }} onClick={() => setShowAll(true)}>Show all {elsewhere.length}</button>
-      )}
+        : <MoreList items={elsewhere} first={5} className="opening-list" render={(o) => <OpeningCard key={o.id} o={o} />} />}
 
       <details className="panel" style={{ marginTop: 16 }}>
         <summary><b>Staying safe</b></summary>

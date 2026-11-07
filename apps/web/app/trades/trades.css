@@ -63,3 +63,10 @@ button.trade-callout { text-align: left; font: inherit; cursor: pointer; width: 
 .opening-featured-tag { justify-self: start; margin-left: 0; }
 .opening-stats { display: flex; flex-wrap: wrap; gap: 12px; }
 .opening-flags { margin: 0; padding-left: 20px; color: #8a6514; }
+.trade-aid details { display: grid; gap: 4px; }
+.trade-aid details[open] > :not(summary) { display: block; margin-top: 4px; }
+.trade-aid summary { cursor: pointer; display: grid; gap: 4px; list-style: none; }
+.trade-aid summary::-webkit-details-marker { display: none; }
+.trade-aid summary::after { content: "More ▾"; font-size: 13px; color: var(--muted, #6b7280); }
+.trade-aid details[open] summary::after { content: "Less ▴"; }
+#trade-group { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); font: inherit; background: var(--card, #fff); color: inherit; margin-top: 4px; }

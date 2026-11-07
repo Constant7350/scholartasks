@@ -5,6 +5,7 @@ import { checkPlan, primaryGpa, type CourseLevel, type PlanCourse } from "@schol
 import { packFor } from "../../../lib/state-packs";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
+import { IconTabs } from "../../icon-tabs";
 import { rememberedStudent } from "../../../lib/current-student";
 import { CoursePicker } from "../course-picker";
 import { levelFromName, subjectOf } from "../courses";
@@ -120,15 +121,15 @@ export default function CoursePlanner() {
     }
   };
 
+  const planStart = "grade-" + String(Math.min(12, Math.max(9, student.grade_level)));
   return (
     <Page title="Four-year course plan">
       <p className="hint"><a href="/grades">← Grades</a></p>
-      <section className="panel">
-        <h2>{student.first_name}&apos;s plan, grade 9 to 12</h2>
-        <p className="hint">Add the classes {student.first_name} plans to take each year. Classes with a saved grade show as taken. The checklist shows graduation credits{main?.rigorNeeded ? ` and the ${main.rigorNeeded} rigor courses ${main.program.name} needs` : ""}. This is a plan, not a sign-up: check it with the school counselor, because every school offers different classes.</p>
-        {error && <p className="note note-err" role="alert">{error}</p>}
-      </section>
+      <p className="hint">Add the classes {student.first_name} plans to take each year. It&apos;s a plan, not a sign-up: check it with the school counselor.</p>
+      {error && <p className="note note-err" role="alert">{error}</p>}
 
+      <IconTabs label="Parts of the course plan" start={planStart} tabs={[
+        { key: "checklist", icon: check.ready ? "✅" : "📋", label: "Checklist", body: <>
       <section className="panel">
         <h2>{check.ready ? "✓ On track" : "Checklist"}</h2>
         <ul className="items">
@@ -174,10 +175,11 @@ export default function CoursePlanner() {
         )}
       </section>
 
-      {GRADES.map((g) => {
+        </> },
+      ...GRADES.map((g) => {
         const done = all.filter((c) => c.grade === g && c.done);
         const rows = plan.filter((r) => r.grade_level === g);
-        return (
+        return { key: `grade-${g}`, icon: "📚", label: `Grade ${g}`, count: rows.length + taken.filter((t) => t.grade_level === g).length, body: (
           <section key={g} className="panel">
             <h2>Grade {g} <span className="pill">{check.creditsByGrade[g] ?? 0} credits</span>{(check.rigorByGrade[g] ?? 0) > 0 && <span className="pill">{check.rigorByGrade[g]} rigor</span>}</h2>
             <ul className="items">
@@ -208,8 +210,9 @@ export default function CoursePlanner() {
               <button type="button" className="btn btn-ghost btn-inline" disabled={!(drafts[g] ?? "").trim()} onClick={() => void add(g, drafts[g] ?? "")}>Add</button>
             </div>
           </section>
-        );
-      })}
+        ) };
+      }),
+      ]} />
     </Page>
   );
 }
