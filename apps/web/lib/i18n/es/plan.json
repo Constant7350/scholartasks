@@ -169,5 +169,16 @@
   "Your counselor sends first-semester grades in January or February.": "Tu consejero envía las notas del primer semestre en enero o febrero.",
   "Your counselor writes it. Ask early and give them your brag sheet.": "La escribe tu consejero. Pídela con tiempo y dale tu hoja de logros.",
   "Your school sends it after graduation to the one college you pick.": "Tu escuela lo envía después de la graduación a la universidad que elijas.",
-  "Transcripts": "Certificados"
+  "Transcripts": "Certificados",
+  "Aid offers": "Ofertas de ayuda",
+  "{name}'s {x} date{x2}. Change it if their site says otherwise.": "Fecha de {x} de {name}{x2}. Cámbiala si su sitio dice otra cosa.",
+  "{name}'s site": "sitio de {name}",
+  "and change it if needed.": "y cámbiala si hace falta.",
+  "date. Check": "fecha. Revisa",
+  "e.g. Send SAT scores": "p. ej. Enviar puntajes del SAT",
+  "Rolling admission has no fixed date. Earlier is better; add the date you are aiming for.": "La admisión continua no tiene fecha fija. Antes es mejor; agrega la fecha a la que apuntas.",
+  "Typical": "Típica",
+  "· up to ${amountmax}": "· hasta ${amountmax}",
+  "due {toLocaleDateString}": "vence {toLocaleDateString}",
+  "Money pages": "Páginas de dinero"
 }

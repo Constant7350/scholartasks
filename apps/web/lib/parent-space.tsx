@@ -50,7 +50,7 @@ export function SpaceSwitch({ space, onChange, name }: { space: Space; onChange:
     <div className="space-switch">
       <div className="tabs space-tabs" role="tablist" aria-label="Whose list">
         <button role="tab" aria-selected={space === "parent"} onClick={() => onChange("parent")}><Icon of="👤" /> My parent space</button>
-        <button role="tab" aria-selected={space === "student"} onClick={() => onChange("student")}><Icon of="🎓" /> {name}&apos;s plan</button>
+        <button role="tab" aria-selected={space === "student"} onClick={() => onChange("student")}><Icon of="🎓" /> {`${name}'s plan`}</button>
       </div>
       <p className="hint small">
         {space === "parent"

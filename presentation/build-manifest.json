@@ -22,6 +22,7 @@
     "todo",
     "phone",
     "journey",
+    "stages",
     "compare1",
     "compare2",
     "compare3",
@@ -43,9 +44,9 @@
       "seconds": 21.8
     },
     "what": {
-      "slideHash": "2589c03c674e1300",
-      "narrationHash": "99a043de6fb735bf",
-      "seconds": 20.5
+      "slideHash": "5ae74871a0a297b7",
+      "narrationHash": "73187a445f27efe2",
+      "seconds": 21.1
     },
     "howitworks": {
       "slideHash": "ed66b8e32c415dbc",
@@ -128,14 +129,19 @@
       "seconds": 27.8
     },
     "phone": {
-      "slideHash": "a0918b70dfb04481",
-      "narrationHash": "b10b9fc78057588b",
-      "seconds": 37.3
+      "slideHash": "372c4d7ab7928eea",
+      "narrationHash": "8a7b41eb47fb0a90",
+      "seconds": 50.6
     },
     "journey": {
-      "slideHash": "c837ece1cb0fc67f",
-      "narrationHash": "9709e1614bcfc7d1",
-      "seconds": 36.3
+      "slideHash": "84c00a048b23b32a",
+      "narrationHash": "c4dbecc41c88f2f1",
+      "seconds": 48.7
+    },
+    "stages": {
+      "slideHash": "c7825421e05cc939",
+      "narrationHash": "9dcdf072c0dc2ac0",
+      "seconds": 53.5
     },
     "compare1": {
       "slideHash": "befd6b43da1ee2ba",

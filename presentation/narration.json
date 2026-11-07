@@ -16,7 +16,7 @@
     {
       "id": "what",
       "title": "What it is",
-      "narration": "Think of it in three parts. Plan: what to do, and when. Fund: how to find and keep the money, from your state's programs to private scholarships. Prepare: grades, study habits and test scores, starting as early as eighth grade."
+      "narration": "Think of it in three parts. Plan: what to do, and when. Fund: how to find and keep the money, from your state's programs to private scholarships. Prepare: grades, study habits and test scores, starting as early as sixth grade."
     },
     {
       "id": "howitworks",
@@ -101,12 +101,17 @@
     {
       "id": "phone",
       "title": "Phone app",
-      "narration": "Families live on their phones, so ScholarTasks does too. The iPhone and Android apps are in testing now, and the website works on any device. Sign-in is quick with Face ID or a fingerprint, which helps, because teenagers forget passwords. Remember me keeps you signed in at home, and on a shared computer you just uncheck it. What you add on the phone shows up on the computer too. The menu stays short: only the headings show until you tap one, and every page links back to its section."
+      "narration": "Families live on their phones, so ScholarTasks does too. The iPhone and Android apps are in testing now, and the website works on any device. Sign-in is quick with Face ID or a fingerprint, which helps, because teenagers forget passwords. Remember me keeps you signed in at home, and on a shared computer you just uncheck it. What you add on the phone shows up on the computer too. The top bar stays put on every page, so Home, help and the menu are always one tap away. The menu shows every page as colored tiles in the order of the journey, and a search box finds any page. Tap the question mark and small help balloons appear, with a search box that answers from the manual."
     },
     {
       "id": "journey",
-      "title": "Grade 8 to graduation",
-      "narration": "Here's how a family uses it over the years. In sixth and seventh grade, a parent and student start with study habits and the career quiz. In eighth and ninth grade, it's the scorecard, study skills and choosing courses. Tenth grade adds state scholarship tracking, harder classes, and exploring majors and trades. Eleventh grade is test prep and the college list. Senior year is applications, scholarships and aid forms. Week to week, it takes a few minutes."
+      "title": "Grade 6 to graduation",
+      "narration": "Here's how a family uses it over the years, in three stages. Explore, in grades six to eight: the career quiz, a dream board, grades, study skills and a Homework Helper that explains instead of answering. Build, in grades nine and ten: course choices, activities, the PSAT, early scholarships and a first look at colleges. Apply, in grades eleven and twelve: test prep, the college list, essays, scholarships and aid forms. The app shows each student only their stage's pages, so a seventh grader never sees a FAFSA checklist. Parents can switch on every page any time, and the full app opens by itself in grade eleven."
+    },
+    {
+      "id": "stages",
+      "title": "Younger students",
+      "narration": "Younger students need a different app than seniors, and now they get one, inside the same app. A sixth, seventh or eighth grader sees the Explore pages: the career quiz, grades, study skills, the Homework Helper and careers to try. Ninth and tenth graders add the course plan, activities, the PSAT and a first look at colleges. Juniors and seniors see everything. On Home, a younger student writes two or three dreams in their own words, and someone they look up to. The AI counselor and the Homework Helper use that to show how this year's math class or that robotics club leads there. Nothing is taken away: a parent can switch on every page any time, and the full app opens by itself in grade eleven."
     },
     {
       "id": "compare1",

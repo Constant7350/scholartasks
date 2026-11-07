@@ -11,7 +11,7 @@ import { LANG_BOOT } from "../lib/lang";
 export const metadata = {
   metadataBase: new URL("https://scholartasks.com"),
   title: "ScholarTasks",
-  description: "College, scholarships, state aid, grades and test prep for families, from 8th grade to graduation.",
+  description: "College, scholarships, state aid, grades and test prep for families, from 6th grade to graduation.",
   openGraph: { siteName: "ScholarTasks", type: "website", images: ["/presentation/slide-cover.jpg"] },
   // Opened from the phone's home screen, run full screen like an app (no browser bars).
   appleWebApp: { capable: true, title: "ScholarTasks", statusBarStyle: "default" as const },

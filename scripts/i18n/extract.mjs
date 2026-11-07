@@ -23,7 +23,7 @@ const OUT = join(web, "lib/i18n/lines.json");
 
 // Folders that are not part of the family app (team-only pages stay in English).
 const SKIP_DIRS = new Set(["node_modules", ".next", "admin", "i18n", "check"]);
-const SKIP_FILES = [/app\/translator\.tsx$/, /lib\/ics\.ts$/, /lib\/progress-email\.ts$/, /nav-es\.ts$/, /\(site\)\/es\//, /help\/content-es\.ts$/];
+const SKIP_FILES = [/app\/translator\.tsx$/, /lib\/ics\.ts$/, /lib\/progress-email\.ts$/, /nav-es\.ts$/, /\(site\)\/es\//, /help\/content-es\.ts$/, /lib\/stage-brief\.ts$/];
 
 function files(dir, list = []) {
   for (const name of readdirSync(dir)) {
@@ -55,10 +55,10 @@ const CODE_ATTRS = new Set([
   "anchor", "tab", "section", "topic",
 ]);
 // Calls whose string arguments are code, not words.
-const CODE_CALLS = /^(require|import|fetch|from|select|eq|neq|in|is|order|rpc|match|ilike|like|gte|lte|gt|lt|or|not|contains|upsert|insert|update|delete|limit|range|single|maybeSingle|querySelector|querySelectorAll|getElementById|addEventListener|removeEventListener|getItem|setItem|removeItem|get|set|has|startsWith|endsWith|includes|indexOf|split|replace|replaceAll|join|padStart|toLocaleString|toLocaleDateString|toLocaleTimeString|Intl|DateTimeFormat|NumberFormat|createElement|setAttribute|getAttribute|closest|matches|log|warn|error|info|debug|redirect|push|replaceState|pushState|test|exec|RegExp|URL|URLSearchParams|append|searchParams|cookies|headers|env|Date|parse|stringify|localeCompare|toFixed|createHmac|createHash|digest|update|sign|verify|storage|upload|download|createSignedUrl|getPublicUrl|channel|on|emit|track|postMessage|encodeURIComponent|decodeURIComponent|atob|btoa|Buffer|TextEncoder|charCodeAt|fromCharCode|normalize|toLowerCase|toUpperCase|cookie|header|setHeader|NextResponse\.redirect|useSearchParams|usePathname|useRouter|dynamic|notFound)$/;
+const CODE_CALLS = /^(require|import|fetch|from|select|eq|neq|in|is|order|rpc|match|ilike|like|gte|lte|gt|lt|or|not|contains|upsert|insert|update|delete|limit|range|single|maybeSingle|querySelector|querySelectorAll|getElementById|addEventListener|removeEventListener|getItem|setItem|removeItem|get|set|has|startsWith|endsWith|includes|indexOf|split|replace|replaceAll|join|padStart|toLocaleString|toLocaleDateString|toLocaleTimeString|Intl|DateTimeFormat|NumberFormat|createElement|setAttribute|setProperty|getAttribute|closest|matches|log|warn|error|info|debug|redirect|push|replaceState|pushState|test|exec|RegExp|URL|URLSearchParams|append|searchParams|cookies|headers|env|Date|parse|stringify|localeCompare|toFixed|createHmac|createHash|digest|update|sign|verify|storage|upload|download|createSignedUrl|getPublicUrl|channel|on|emit|track|postMessage|encodeURIComponent|decodeURIComponent|atob|btoa|Buffer|TextEncoder|charCodeAt|fromCharCode|normalize|toLowerCase|toUpperCase|cookie|header|setHeader|NextResponse\.redirect|useSearchParams|usePathname|useRouter|dynamic|notFound)$/;
 
 // Variables and properties that hold AI instructions, ids, styles or other code text.
-const CODE_NAMES = /(prompt|system|instruction|regex|pattern|class|css|style|url|href|path|route|key|slug|id|ids|table|column|cols|select|query|sql|cookie|header|mime|type|types|ext|accept|format|tag|token|secret|env|model|status|kind|mode|role|field|fields|sort|order|lang|locale|icon|color|tone|variant|endpoint|bucket|file|filename|cron|schedule|code|codes|cip|soc|unitid|fips|zip|state_code|action|event|method|selector|storagekey|storage_key|tz|timezone)$/i;
+const CODE_NAMES = /(prompt|system|instruction|regex|pattern|class|css|style|url|href|path|route|key|slug|id|ids|table|column|cols|select|query|sql|cookie|header|mime|type|types|ext|accept|format|tag|token|secret|env|model|status|kind|mode|role|field|fields|sort|order|lang|locale|icon|color|tone|variant|endpoint|bucket|file|filename|cron|schedule|code|codes|es|cip|soc|unitid|fips|zip|state_code|action|event|method|selector|storagekey|storage_key|tz|timezone)$/i;
 
 // Strings that look like code even when they are not caught by where they are.
 function looksLikeCode(s) {
@@ -77,7 +77,7 @@ function looksLikeCode(s) {
   if (/^(auto|none|inherit|hidden|visible|block|flex|grid|nowrap|center|left|right|top|bottom)\b/.test(s) && s.length < 30) return true;
   if (/\b\d+(px|rem|em|vh|vw|%)\b/.test(s) && !/[a-z]{4,} [a-z]{4,}/.test(s)) return true;
   if (/^(Bearer |st-|aid:|license:|tg:|tr:|bg:|Pack |Student state |Invalid packs|Today is |Stripe error|Slide Xx:|Xx<w:|Xx=Xx;|XxFrom Xx)/.test(s) || /<w:|max-age=|\?e=Xx|Xx\/join\?|Xx\/unsubscribe/.test(s)) return true;
-  if (/^[A-Z]{2}$/.test(s) || /^(LANGUAGE:|Grade (Xx|\{\w+\}|\d+): (use|they))/.test(s) || /^ScholarTasks: \{lines\}/.test(s)) return true;
+  if (/^[A-Z]{2}$/.test(s) || /^(LANGUAGE:|Grade (Xx|\{\w+\}|\d+): (use|they|middle))/.test(s) || /^ScholarTasks: \{lines\}/.test(s)) return true;
   if (/^rgba?\(|^#[0-9a-f]{3,8}$/i.test(s) || /gradient\(|^(TRUE|FALSE|ScholarTasks)$/.test(s)) return true;
   // Already Spanish (the menu's own Spanish, the /es page).
   if (/[áéíóúñ¿¡]/.test(s) && !/\b(the|and|your|you|with|for|of)\b/.test(s)) return true;
