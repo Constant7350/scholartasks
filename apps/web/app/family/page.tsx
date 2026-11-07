@@ -149,6 +149,8 @@ export default function FamilyPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const [familyName, setFamilyName] = useState("");
   const [child, setChild] = useState({ first_name: "", birth_date: "", grade_level: "9", state: "GA" });
+  // A second student most likely lives in the same state as the first, so start there.
+  useEffect(() => { const st = students[0]?.state; if (st && !child.first_name) setChild((c) => ({ ...c, state: st })); }, [students]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const load = useCallback(async () => {
     if (!sb) return;
@@ -231,7 +233,7 @@ export default function FamilyPage() {
                 p_state: child.state,
               }),
             );
-            if (ok !== null) setChild({ first_name: "", birth_date: "", grade_level: "9", state: "GA" });
+            if (ok !== null) setChild({ first_name: "", birth_date: "", grade_level: "9", state: child.state });
           }}
         >
           Add student

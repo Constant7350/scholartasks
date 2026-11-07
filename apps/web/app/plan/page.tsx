@@ -1,14 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { deadlineAppliesTo, type CostInput } from "@scholartasks/core";
+import { deadlineAppliesTo, fillDeadline, type CollegeDeadline, type CostInput, type FilledDeadline } from "@scholartasks/core";
 import { packFor } from "../../lib/state-packs";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
 import { IconTabs } from "../icon-tabs";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
-import { costInput, type CollegeRow, type CostStudent } from "../../lib/colleges";
+import { costInput, loadCollegeDeadlines, type CollegeRow, type CostStudent } from "../../lib/colleges";
 import { CollegePicker } from "../colleges/college-picker";
+import { ScholarshipPicker } from "./scholarship-picker";
 import { CostPanel } from "./cost-panel";
 import { TextReminders } from "./text-reminders";
 
@@ -57,7 +58,28 @@ export default function PlanPage() {
   const [reminders, setReminders] = useState(true);
   const [offline, setOffline] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [college, setCollege] = useState<{ name: string; plan: string; deadline: string; collegeId: number | null }>({ name: "", plan: "EA", deadline: "", collegeId: null });
+  const [college, setCollege] = useState<{ name: string; plan: string; deadline: string; collegeId: number | null; url: string | null }>({ name: "", plan: "EA", deadline: "", collegeId: null, url: null });
+  // The deadline fills itself from the college's own dates (team table) or the typical date for the plan,
+  // until the family types a date of their own (then we leave it alone).
+  const [known, setKnown] = useState<CollegeDeadline[]>([]);
+  const [filled, setFilled] = useState<FilledDeadline | null>(null);
+  const [typedDate, setTypedDate] = useState(false);
+  const pickCollege = async (name: string, c: CollegeRow | null) => {
+    setCollege((x) => ({ ...x, name, collegeId: c?.id ?? null, url: c?.url ?? null }));
+    const dates = c ? await loadCollegeDeadlines(sb!, [c.id]) : [];
+    setKnown(dates);
+    if (!typedDate) {
+      const f = c ? fillDeadline(college.plan, dates, todayIso()) : null;
+      setFilled(f);
+      setCollege((x) => ({ ...x, deadline: f?.date ?? (c ? "" : x.deadline) }));
+    }
+  };
+  const pickPlan = (plan: string) => {
+    const f = college.collegeId ? fillDeadline(plan, known, todayIso()) : null;
+    if (typedDate) return setCollege((x) => ({ ...x, plan }));
+    setFilled(f);
+    setCollege((x) => ({ ...x, plan, deadline: f?.date ?? "" }));
+  };
   const [collegeData, setCollegeData] = useState<Map<number, CollegeRow>>(new Map());
   const [ctx, setCtx] = useState<CostInput | null>(null);
   const [task, setTask] = useState({ title: "", kind: "scholarship", due_on: "", amount: "", url: "" });
@@ -199,20 +221,28 @@ export default function PlanPage() {
               student_id: student.id, name: college.name.trim(), plan: college.plan, deadline: college.deadline || null, approved: mayChangePlan,
               college_id: college.collegeId,
             }));
-            if (ok) setCollege({ name: "", plan: college.plan, deadline: "", collegeId: null });
+            if (ok) { setCollege({ name: "", plan: college.plan, deadline: "", collegeId: null, url: null }); setFilled(null); setKnown([]); setTypedDate(false); }
           }}
         >
           <div className="field"><label htmlFor="c-name">College</label>
-            <CollegePicker sb={sb} id="c-name" value={college.name} onChange={(name, c) => setCollege({ ...college, name, collegeId: c?.id ?? null })} /></div>
+            <CollegePicker sb={sb} id="c-name" value={college.name} onChange={(name, c) => void pickCollege(name, c)} /></div>
           <div className="field" style={{ flex: "0 1 190px" }}>
             <label htmlFor="c-plan">Applying</label>
-            <select id="c-plan" className="input" value={college.plan} onChange={(e) => setCollege({ ...college, plan: e.target.value })}>
+            <select id="c-plan" className="input" value={college.plan} onChange={(e) => pickPlan(e.target.value)}>
               {Object.entries(PLANS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
           </div>
-          <div className="field" style={{ flex: "0 1 170px" }}><label htmlFor="c-date">Deadline</label><input id="c-date" type="date" className="input" value={college.deadline} onChange={(e) => setCollege({ ...college, deadline: e.target.value })} /></div>
+          <div className="field" style={{ flex: "0 1 170px" }}><label htmlFor="c-date">Deadline</label><input id="c-date" type="date" className="input" value={college.deadline} onChange={(e) => { setTypedDate(true); setFilled(null); setCollege({ ...college, deadline: e.target.value }); }} /></div>
           <button className="btn btn-inline" disabled={!college.name.trim()}>Add college</button>
         </form>
+        {filled && college.deadline && (
+          <p className="hint fill-note" style={{ marginTop: -6 }}>
+            {filled.source === "college"
+              ? <>{college.name}&apos;s {PLANS[college.plan] ?? college.plan} date{filled.note ? ` (${filled.note})` : ""}. Change it if their site says otherwise.</>
+              : <>Typical {PLANS[college.plan] ?? college.plan} date. Check {college.url ? <a href={college.url} target="_blank" rel="noopener noreferrer">{college.name}&apos;s site</a> : `${college.name}'s site`} and change it if needed.</>}
+          </p>
+        )}
+        {college.collegeId && !college.deadline && college.plan === "rolling" && <p className="hint fill-note" style={{ marginTop: -6 }}>Rolling admission has no fixed date. Earlier is better; add the date you are aiming for.</p>}
 
         {myColleges.length > 0 && (
           <ul className="items">
@@ -264,7 +294,11 @@ export default function PlanPage() {
             if (ok) setTask({ title: "", kind: task.kind, due_on: "", amount: "", url: "" });
           }}
         >
-          <div className="field"><label htmlFor="t-title">What</label><input id="t-title" className="input" placeholder="e.g. Coca-Cola Scholars" value={task.title} onChange={(e) => setTask({ ...task, title: e.target.value })} /></div>
+          <div className="field"><label htmlFor="t-title">What</label>
+            {task.kind === "scholarship"
+              ? <ScholarshipPicker sb={sb} id="t-title" value={task.title} onChange={(title, h) => setTask(h ? { ...task, title, due_on: h.deadline ?? task.due_on, amount: h.amount_max ? String(h.amount_max) : task.amount, url: h.url } : { ...task, title })} />
+              : <input id="t-title" className="input" placeholder="e.g. Send SAT scores" value={task.title} onChange={(e) => setTask({ ...task, title: e.target.value })} />}
+          </div>
           <div className="field" style={{ flex: "0 1 180px" }}>
             <label htmlFor="t-kind">Type</label>
             <select id="t-kind" className="input" value={task.kind} onChange={(e) => setTask({ ...task, kind: e.target.value })}>

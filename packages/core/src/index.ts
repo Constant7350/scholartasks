@@ -22,3 +22,4 @@ export * from "./faith";
 export * from "./military";
 export * from "./scholarship-apply";
 export * from "./career-quiz";
+export * from "./deadlines";

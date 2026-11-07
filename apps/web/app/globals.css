@@ -1179,3 +1179,19 @@ html[data-theme="sunrise"] { --c-blue-soft: #e9e3f6; --c-green-soft: #e3efe4; --
 html[data-theme="garden"] { --c-blue-soft: #dfeaf3; --c-green-soft: #daeee2; --c-gold-soft: #f3efd7; --c-coral-soft: #f2e3dd; --c-purple-soft: #e6e6f1; }
 html[data-theme="sunrise"] .theme-btn, html[data-theme="garden"] .theme-btn { background: var(--card); }
 .pagestrip .student-switch-own .menu-ico { color: #fff; }
+
+/* Top bar must never be wider than the phone (Constant, 2026-11-07: screens slid left to right). */
+html, body { overflow-x: hidden; max-width: 100%; }
+.topbar-inner { min-width: 0; }
+.topbar-inner > nav { flex: none; }
+.topbar .brand { min-width: 0; flex: 1 1 auto; }
+.topbar .brand > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.theme-btn { width: 30px; height: 30px; }
+.theme-dot-sm { width: 16px; height: 16px; }
+@media (max-width: 400px) {
+  .topbar-inner { gap: 8px; }
+  .topbar .brand { font-size: 17px; gap: 8px; }
+  .topbar .brand-mark { width: 48px; height: 48px; }
+  .topbar-inner > nav { gap: 8px; }
+  details.menu summary { padding: 5px 8px; }
+}

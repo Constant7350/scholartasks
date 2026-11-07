@@ -17,7 +17,10 @@ export function TextReminders({ sb }: { sb: SupabaseClient }) {
 
   const load = async () => {
     const { data } = await sb.from("sms_settings").select("phone, sms_on, verified_at, pending_phone").maybeSingle();
-    setSms((data as Sms | null) ?? null);
+    const row = (data as Sms | null) ?? null;
+    setSms(row);
+    // Start from the number already on file, so a change is one edit, not a retype.
+    setPhone((p) => p || row?.pending_phone || row?.phone || "");
   };
   useEffect(() => { void load(); }, [sb]); // eslint-disable-line react-hooks/exhaustive-deps
 
