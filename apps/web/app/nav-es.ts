@@ -38,11 +38,11 @@ const ES: Record<string, [label: string, short?: string]> = {
   "Study skills library": ["Técnicas de estudio", "Estudio"],
   "Practice questions": ["Preguntas de práctica", "Práctica"],
   "SAT and ACT prep": ["Preparación SAT y ACT", "SAT/ACT"],
-  "Family, students and permissions": ["Familia, estudiantes y permisos"],
-  "Set up my family (parents)": ["Crear mi familia (padres)"],
-  "I'm a student: join with a code": ["Soy estudiante: unirme con un código"],
+  "Family, students and permissions": ["Familia, estudiantes y permisos", "Familia"],
+  "Set up my family (parents)": ["Crear mi familia (padres)", "Crear familia"],
+  "I'm a student: join with a code": ["Soy estudiante: unirme con un código", "Unirme con código"],
   "My school (connect to your counselor)": ["Mi escuela (conectar con su consejero)", "Mi escuela"],
-  "School counselor portal (free)": ["Portal para consejeros escolares (gratis)"],
+  "School counselor portal (free)": ["Portal para consejeros escolares (gratis)", "Portal escolar"],
   "Face ID, sign-in and account": ["Face ID, inicio de sesión y cuenta", "Cuenta"],
   "Plan and billing": ["Plan y pagos", "Pagos"],
   "Help and how-to": ["Ayuda y guías"],
@@ -61,6 +61,6 @@ export function navShort(i: NavItem, lang: "en" | "es"): string {
 
 /** Words in the top bar and menu. */
 export const UI = {
-  en: { menu: "Menu", openMenu: "Open menu", signIn: "Sign in", signOut: "Sign out", more: "More", viewing: "Student", mySpace: "My parent space", myPages: "My pages", pages: "Pages", pagesOf: (n: string) => `${n}'s pages`, family: "Family", connected: "Get connected", help: "Help", team: "ScholarTasks team", look: "Colors and language", backTo: "Back to", find: "Find a page", noMatch: "No page matches. Try another word." },
-  es: { menu: "Menú", openMenu: "Abrir menú", signIn: "Iniciar sesión", signOut: "Cerrar sesión", more: "Más", viewing: "Estudiante", mySpace: "Mi espacio de padres", myPages: "Mis páginas", pages: "Páginas", pagesOf: (n: string) => `Páginas de ${n}`, family: "Familia", connected: "Conectarse", help: "Ayuda", team: "Equipo de ScholarTasks", look: "Colores e idioma", backTo: "Volver a", find: "Buscar una página", noMatch: "Ninguna página coincide. Pruebe otra palabra." },
+  en: { menu: "Menu", openMenu: "Open menu", signIn: "Sign in", signOut: "Sign out", more: "More", viewing: "Student", mySpace: "My parent space", myPages: "My pages", pages: "Pages", pagesOf: (n: string) => `${n}'s pages`, family: "Family", connected: "Get connected", help: "Help", team: "ScholarTasks team", look: "Colors and language", close: "Close menu", backTo: "Back to", find: "Find a page", noMatch: "No page matches. Try another word." },
+  es: { menu: "Menú", openMenu: "Abrir menú", signIn: "Iniciar sesión", signOut: "Cerrar sesión", more: "Más", viewing: "Estudiante", mySpace: "Mi espacio de padres", myPages: "Mis páginas", pages: "Páginas", pagesOf: (n: string) => `Páginas de ${n}`, family: "Familia", connected: "Conectarse", help: "Ayuda", team: "Equipo de ScholarTasks", look: "Colores e idioma", close: "Cerrar menú", backTo: "Volver a", find: "Buscar una página", noMatch: "Ninguna página coincide. Pruebe otra palabra." },
 } as const;

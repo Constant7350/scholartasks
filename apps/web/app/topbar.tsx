@@ -36,8 +36,8 @@ export function TopBar() {
   const [current, setCurrent] = useCurrentStudent();
   const [space] = useSpace();
   const menu = useRef<HTMLDetailsElement>(null);
-  // Menu sections fold up: only the headings show, and one section is open at a time.
-  const [openGroup, setOpenGroup] = useState<string | null>(null);
+  // Where the menu scrolls to when opened from a page's "back to section" link.
+  const [jumpTo, setJumpTo] = useState<string | null>(null);
   // Menu search: type a word to find any page without knowing its section.
   const [q, setQ] = useState("");
 
@@ -100,21 +100,27 @@ export function TopBar() {
   const isParent = role === "parent";
   const kids = who?.students ?? [];
 
-  // Each time the menu opens, start with the section of the page you are on (or all closed).
-  const onMenuToggle = () => { if (menu.current?.open) setOpenGroup(here?.group ?? null); };
-  const toggleGroup = (key: string) => setOpenGroup((o) => (o === key ? null : key));
-  const section = (key: string, title: string, body: ReactNode, icon?: string) => {
-    const open = openGroup === key;
-    return (
-      <div key={key} className={`menu-group menu-group-${key} ${open ? "menu-group-open" : ""}`}>
-        <button type="button" className="menu-heading" aria-expanded={open} aria-controls={`menu-sec-${key}`} onClick={() => toggleGroup(key)}>
-          <span>{icon && <Icon of={icon} className="menu-ico" />}{title}</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
-        </button>
-        {open && <div id={`menu-sec-${key}`} className="menu-sec">{body}</div>}
-      </div>
-    );
+  // The menu shows every page at once (Constant, 2026-11-07: no folding): each section is a small
+  // heading and a grid of colored tiles, the same look as the tiles on Home. Team sections stay as lists.
+  const onMenuToggle = () => {
+    if (!menu.current?.open) return setJumpTo(null);
+    const key = jumpTo;
+    if (key) setTimeout(() => document.getElementById(`menu-sec-${key}`)?.scrollIntoView({ block: "start" }), 0);
+    else menu.current.querySelector(".menu-list")?.scrollTo({ top: 0 });
   };
+  const section = (key: string, title: string, body: ReactNode, icon?: string) => (
+    <section key={key} id={`menu-sec-${key}`} className={`menu-group menu-group-${key}`}>
+      <h3 className="menu-sec-title">{icon && <Icon of={icon} className="menu-ico" />}{title}</h3>
+      {body}
+    </section>
+  );
+  const tile = (i: NavItem) => (
+    <a key={i.href + i.label} className={`menu-tile ${here === i ? "nav-on" : ""}`} href={i.href} aria-current={here === i ? "page" : undefined}>
+      <Icon of={i.icon} />
+      <span>{navShort(i, lang)}</span>
+    </a>
+  );
+  const closeMenu = () => { if (menu.current) menu.current.open = false; };
 
   const groups = NAV_GROUPS.map((g) => ({ key: g.key, icon: g.icon, title: g.key === "family" && !isParent ? t.connected : g[lang] }));
 
@@ -155,8 +161,8 @@ export function TopBar() {
   const crumbGroup = here && here.href !== "/home" ? groups.find((g) => g.key === here.group) : undefined;
   const openSection = () => {
     if (!menu.current) return;
+    setJumpTo(here?.group ?? null);
     menu.current.open = true;
-    setOpenGroup(here?.group ?? null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -183,6 +189,12 @@ export function TopBar() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
               </summary>
               <div className="menu-list" role="menu">
+                <div className="menu-head">
+                  <b>{t.menu}</b>
+                  <button type="button" className="menu-close" onClick={closeMenu} aria-label={t.close}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+                  </button>
+                </div>
                 {switcher && <div className="menu-switch">{switcher}</div>}
                 <div className="menu-search">
                   <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.find} aria-label={t.find} enterKeyHint="go"
@@ -193,9 +205,9 @@ export function TopBar() {
                 ) : groups.map((g) => {
                   const list = listed.filter((i) => i.group === g.key);
                   if (!list.length) return null;
-                  return section(g.key, g.title, list.map((i) => link(i, "menu-item", navLabel(i, lang))), g.icon);
+                  return section(g.key, g.title, g.key.startsWith("team") ? list.map((i) => link(i, "menu-item", navLabel(i, lang))) : <div className="menu-tiles">{list.map(tile)}</div>, g.icon);
                 })}
-                {section("look", t.look, <><ThemePicker /><LangPicker /></>, "🎨")}
+                {!query && section("look", t.look, <><ThemePicker /><LangPicker /></>, "🎨")}
                 <div className="menu-small">
                   {smalls.map((i) => link(i, "menu-small-link", navShort(i, lang)))}
                   <button role="menuitem" className="menu-small-link" onClick={signOut}><Icon of="🚪" className="menu-ico" /> {t.signOut}</button>
