@@ -47,6 +47,16 @@ export default function Terms() {
         and your plan stays active until the end of the period you paid for. Monthly and yearly plans renew automatically at the price shown until
         you cancel. You can cancel online in a few taps, the same way you signed up, or in your App Store or Google Play subscriptions if you paid there.
       </p>
+      <p>
+        The Family plan is priced by your oldest student&apos;s grade: Explore for grades 6 to 8, Build for grades 9 and 10, and Apply for grades 11
+        and 12. The price includes 2 students, and each additional student is $2.99 a month ($25 a year on yearly plans). When your oldest student&apos;s grade moves your family to another level, or they graduate or leave the
+        account, or you add or remove an additional student, we tell you by email and in the app about 30 days before your next bill. The new price starts at that next billing date (at renewal for
+        yearly plans), never in the middle of a period you already paid for.
+      </p>
+      <p>
+        Students on a family account must be the parent&apos;s own children or children in their legal care. The parent is responsible for the
+        consents they sign for each student.
+      </p>
 
       <h2>Text messages</h2>
       <p>

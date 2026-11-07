@@ -6,6 +6,7 @@ import { PERMISSIONS, type PermissionKey } from "@scholartasks/core";
 import { STAGES, stageOf } from "../nav";
 import { friendly, supabase } from "../../lib/supabase";
 import { NotConfigured, Page } from "../ui";
+import { EXTRA_STUDENT, money } from "../../lib/prices";
 import { STATE_NAMES } from "../../lib/trades";
 import { STATE_PACKS } from "../../lib/state-packs";
 
@@ -202,6 +203,9 @@ export default function FamilyPage() {
     <div className="panel">
       {step === 2 && <p className="eyebrow">Step 2 of 3</p>}
       <h2>{students.length ? "Add another student" : "Add your student"}</h2>
+      {students.length >= 2 && (
+        <p className="note">The Family plan includes 2 students. Each additional student is {money(EXTRA_STUDENT.month)} a month ({money(EXTRA_STUDENT.year)} a year on yearly plans), starting at your next bill. See <a href="/billing#family-plan">Plan and billing</a>.</p>
+      )}
       <p className="hint">Students must be 13 or older. Full state aid help is ready for 11 Southeast states, and families in every state can join.</p>
       <div className="row">
         <div className="field">

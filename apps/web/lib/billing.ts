@@ -1,10 +1,12 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { isPlanLevel, type LevelNotice } from "@scholartasks/core";
 
 // Server-only Stripe helpers. Talks to Stripe's REST API directly (no SDK), so
 // there is nothing extra to install. STRIPE_SECRET_KEY and
 // STRIPE_WEBHOOK_SECRET live only in Vercel and never reach the browser.
 
-export { CATALOG, STUDY_COACH_DAILY_LIMIT, type BillingItem, type CatalogEntry } from "./prices";
+export { CATALOG, EXTRA_STUDENT, FAMILY_LEVELS, STUDY_COACH_DAILY_LIMIT, familyCents, familyItem, type BillingItem, type CatalogEntry } from "./prices";
 
 /** The message shown when the day's free AI uses (and any message packs) are used up. */
 export function limitReached(limit: number, what = "AI uses"): string {
@@ -79,11 +81,20 @@ export function verifyStripeSignature(payload: string, header: string | null, se
 
 export interface StripeSubscription {
   id: string;
+  customer: string;
   status: string;
   cancel_at_period_end: boolean;
   current_period_end?: number;
   metadata: Record<string, string>;
-  items: { data: { current_period_end?: number; price: { recurring: { interval: string } | null } }[] };
+  items: { data: { id: string; current_period_end?: number; price: { id: string; product: string; unit_amount: number | null; recurring: { interval: string } | null } }[] };
+}
+
+/** The level notice saved on the subscription (metadata.level_notice, JSON), if any. */
+function noticeFrom(md: Record<string, string>): LevelNotice | null {
+  try {
+    const n = md.level_notice ? (JSON.parse(md.level_notice) as LevelNotice) : null;
+    return n && isPlanLevel(n.to) ? n : null;
+  } catch { return null; }
 }
 
 /** The row we keep for a subscription. Newer Stripe API versions put the period end on the item. */
@@ -99,6 +110,25 @@ export function subscriptionRow(sub: StripeSubscription) {
     billing_interval: interval === "month" || interval === "year" ? interval : null,
     current_period_end: end ? new Date(end * 1000).toISOString() : null,
     cancel_at_period_end: !!sub.cancel_at_period_end,
+    // Family plan price level (database update 65). Plans from before the levels were the top price.
+    ...(sub.metadata.kind === "family"
+      ? { level: isPlanLevel(sub.metadata.level) ? sub.metadata.level : "apply", level_notice: noticeFrom(sub.metadata) }
+      : {}),
     updated_at: new Date().toISOString(),
   };
+}
+
+/**
+ * Saves a subscription row. If database update 65 hasn't been run yet, saves it without the
+ * price level columns instead of failing, so payments keep working.
+ */
+export async function saveSubscriptionRow(admin: SupabaseClient, row: ReturnType<typeof subscriptionRow>): Promise<string | null> {
+  const { error } = await admin.from("billing_subscriptions").upsert(row);
+  if (!error) return null;
+  if (/level/.test(error.message) && ("level" in row || "level_notice" in row)) {
+    const { level: _l, level_notice: _n, ...rest } = row as typeof row & { level?: unknown; level_notice?: unknown };
+    const again = await admin.from("billing_subscriptions").upsert(rest);
+    return again.error ? again.error.message : null;
+  }
+  return error.message;
 }

@@ -1,8 +1,12 @@
-import { CATALOG, StripeError, stripe, type BillingItem } from "../../../../lib/billing";
+import { extraStudents, familyPlanLevel } from "@scholartasks/core";
+import { CATALOG, StripeError, familyCents, familyItem, stripe, type BillingItem } from "../../../../lib/billing";
 import { customerFor, parentFromRequest } from "../../../../lib/billing-auth";
 
-// Starts a Stripe Checkout page for the family plan, the Study Coach add-on or
-// a message pack. Stripe hosts the card form; card numbers never touch
+// Starts a Stripe Checkout page for the family plan, the Homework Helper add-on or
+// a message pack. For the Family plan the page asks for "family_month" or "family_year"
+// and the price level is worked out here from the oldest student's grade, so nobody can
+// pick a cheaper level than their family's. Two students are included; each extra student
+// is added to the same line (one price on the bill: "Family plan, Build, 3 students"). Stripe hosts the card form; card numbers never touch
 // ScholarTasks. What was bought is recorded by the webhook, not here.
 export const dynamic = "force-dynamic";
 
@@ -14,7 +18,18 @@ export async function POST(req: Request) {
 
   let body: { item?: unknown };
   try { body = await req.json(); } catch { return json(400, "Bad request."); }
-  const item = typeof body.item === "string" && body.item in CATALOG ? (body.item as BillingItem) : null;
+  let item: BillingItem | null = null;
+  let students = 0;
+  if (body.item === "family_month" || body.item === "family_year") {
+    const { data: kids } = await who.admin.from("students").select("grade_level").eq("family_id", who.familyId);
+    const grades = ((kids as { grade_level: number }[]) ?? []).map((k) => k.grade_level);
+    students = grades.length;
+    const level = familyPlanLevel(grades);
+    if (!level) return json(400, "Add your student on the Family page first. The price depends on the oldest student's grade.");
+    item = familyItem(level, body.item === "family_month" ? "month" : "year");
+  } else if (typeof body.item === "string" && body.item in CATALOG && !body.item.startsWith("family_")) {
+    item = body.item as BillingItem;
+  }
   if (!item) return json(400, "Pick a plan first.");
   const entry = CATALOG[item];
 
@@ -27,19 +42,22 @@ export async function POST(req: Request) {
       (await stripe<{ id: string }>("POST", "customers", { email, metadata: { family_id: familyId } }, `customer-${familyId}`)).id,
     );
     const origin = new URL(req.url).origin;
-    const price = process.env[entry.priceEnv];
+    const extras = entry.kind === "family" ? extraStudents(students) : 0;
+    const cents = entry.level && entry.interval ? familyCents(entry.level, entry.interval, students) : entry.cents;
+    // A Stripe dashboard price only fits the plain plan; with extra students the amount is built here.
+    const price = extras ? undefined : process.env[entry.priceEnv];
     const line = price
       ? { price, quantity: 1 }
       : {
           quantity: 1,
           price_data: {
             currency: "usd",
-            unit_amount: entry.cents,
-            product_data: { name: entry.name },
+            unit_amount: cents,
+            product_data: { name: extras ? `${entry.name}, ${students} students` : entry.name },
             ...(entry.interval ? { recurring: { interval: entry.interval } } : {}),
           },
         };
-    const metadata = { family_id: who.familyId, kind: entry.kind, item, ...(entry.credits ? { credits: String(entry.credits) } : {}), bought_by: who.userId };
+    const metadata = { family_id: who.familyId, kind: entry.kind, item, ...(entry.level ? { level: entry.level, students: String(students), extras: String(extras) } : {}), ...(entry.credits ? { credits: String(entry.credits) } : {}), bought_by: who.userId };
     const session = await stripe<{ url: string }>("POST", "checkout/sessions", {
       mode: entry.interval ? "subscription" : "payment",
       customer,
@@ -48,7 +66,7 @@ export async function POST(req: Request) {
       metadata,
       ...(entry.interval ? { subscription_data: { metadata } } : { payment_intent_data: { metadata } }),
       allow_promotion_codes: "true",
-      success_url: `${origin}/billing?done=${item}`,
+      success_url: `${origin}/billing?done=${entry.kind === "family" ? "family" : item}`,
       cancel_url: `${origin}/billing`,
     });
     return Response.json({ url: session.url }, { headers: { "Cache-Control": "no-store" } });

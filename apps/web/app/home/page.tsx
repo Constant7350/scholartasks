@@ -14,6 +14,7 @@ import { useAiConsent } from "../ai-consent";
 import { Icon } from "../icons";
 import { stageOf } from "../nav";
 import { DreamBoardCard } from "./dream-board";
+import { PlanLevelNotice } from "./plan-level-notice";
 import { useCurrentStudent } from "../../lib/current-student";
 
 interface Student {
@@ -170,6 +171,7 @@ export default function Home() {
         </section>
       )}
 
+      {isParent && <PlanLevelNotice sb={sb} />}
       <AdultConsent sb={sb} mode="ask" />
 
       {setup.length > 0 && (

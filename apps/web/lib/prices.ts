@@ -1,8 +1,18 @@
-// ALL PRICES LIVE HERE. Set by Constant on 2026-11-07: Family $12.99 a month or $99 a year.
-// Change a number here and the Plan and billing page and Stripe checkout both
-// follow (amounts are in cents). Safe to import in the browser.
+// ALL PRICES LIVE HERE. Change a number here and the Plan and billing page and Stripe
+// checkout both follow (amounts are in cents). Safe to import in the browser.
+//
+// Family plan: three price levels, set by Constant on 2026-11-07. One price covers every child
+// in the family and is set by the OLDEST student's grade (rules in @scholartasks/core plan-level):
+//   Explore, grades 6-8:   $6.99 a month or $59 a year
+//   Build, grades 9-10:    $9.99 a month or $79 a year
+//   Apply, grades 11-12:  $12.99 a month or $99 a year
+// The price covers 2 students; each extra student is $2.99 a month (Constant, 2026-11-07).
+// The yearly extra ($25) was suggested but not yet confirmed by Constant.
 
-export type BillingItem = "family_month" | "family_year" | "coach_month" | "coach_year" | "pack_100";
+import { extraStudents, type PlanLevel } from "@scholartasks/core";
+
+export type FamilyItem = `family_${PlanLevel}_${"month" | "year"}`;
+export type BillingItem = FamilyItem | "coach_month" | "coach_year" | "pack_100";
 
 export interface CatalogEntry {
   name: string;
@@ -10,14 +20,49 @@ export interface CatalogEntry {
   /** Subscriptions renew every month or year; packs are one-time. */
   interval: "month" | "year" | null;
   kind: "family" | "study_coach" | "pack";
+  /** Family plan only: the price level. */
+  level?: PlanLevel;
   credits?: number;
   /** Optional Stripe Price id from Vercel, if prices are made in the Stripe dashboard instead. */
   priceEnv: string;
 }
 
+/** The three Family plan levels, youngest first. */
+export const FAMILY_LEVELS: { key: PlanLevel; grades: string; name: string; month: number; year: number }[] = [
+  { key: "explore", grades: "6-8", name: "Explore", month: 699, year: 5900 },
+  { key: "build", grades: "9-10", name: "Build", month: 999, year: 7900 },
+  { key: "apply", grades: "11-12", name: "Apply", month: 1299, year: 9900 },
+];
+
+/** Each student after the two included, per month or year. */
+export const EXTRA_STUDENT = { month: 299, year: 2500 } as const;
+
+/** The Family plan price for this level, billing period and number of students. */
+export function familyCents(level: PlanLevel, interval: "month" | "year", students: number): number {
+  const l = FAMILY_LEVELS.find((x) => x.key === level)!;
+  return (interval === "month" ? l.month : l.year) + extraStudents(students) * EXTRA_STUDENT[interval];
+}
+
+export function familyItem(level: PlanLevel, interval: "month" | "year"): FamilyItem {
+  return `family_${level}_${interval}`;
+}
+
+const familyEntries = Object.fromEntries(
+  FAMILY_LEVELS.flatMap((l) => (["month", "year"] as const).map((iv) => [
+    familyItem(l.key, iv),
+    {
+      name: `ScholarTasks Family plan, ${l.name} (grades ${l.grades}, ${iv === "month" ? "monthly" : "yearly"})`,
+      cents: iv === "month" ? l.month : l.year,
+      interval: iv,
+      kind: "family",
+      level: l.key,
+      priceEnv: `STRIPE_PRICE_FAMILY_${l.key.toUpperCase()}_${iv.toUpperCase()}`,
+    } satisfies CatalogEntry,
+  ])),
+) as Record<FamilyItem, CatalogEntry>;
+
 export const CATALOG: Record<BillingItem, CatalogEntry> = {
-  family_month: { name: "ScholarTasks Family plan (monthly)", cents: 1299, interval: "month", kind: "family", priceEnv: "STRIPE_PRICE_FAMILY_MONTH" },
-  family_year: { name: "ScholarTasks Family plan (yearly)", cents: 9900, interval: "year", kind: "family", priceEnv: "STRIPE_PRICE_FAMILY_YEAR" },
+  ...familyEntries,
   // Homework Helper add-on. It took over from "Study Coach", so the item keys and
   // the subscription kind ("coach_*", "study_coach") keep their old names.
   coach_month: { name: "ScholarTasks Homework Helper add-on (monthly)", cents: 999, interval: "month", kind: "study_coach", priceEnv: "STRIPE_PRICE_COACH_MONTH" },

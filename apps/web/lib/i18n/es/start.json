@@ -330,5 +330,16 @@
   "App colors: {name}. Switch to {name2}": "Colores de la app: {name}. Cambiar a {name2}",
   "Colors: {name}. Tap for {name2}": "Colores: {name}. Toca para {name2}",
   "College application · {x}": "Solicitud universitaria · {x}",
-  "Looks up to: <1>{admire}</1>": "Admira a: <1>{admire}</1>"
+  "Looks up to: <1>{admire}</1>": "Admira a: <1>{admire}</1>",
+  "The Family plan includes 2 students. Each additional student is {n} a month ({n2} a year on yearly plans), starting at your next bill. See <1>Plan and billing</1>.": "El plan Familiar incluye 2 estudiantes. Cada estudiante adicional cuesta {n} al mes ({n2} al año en los planes anuales), a partir de tu próximo cobro. Mira <1>Plan y pagos</1>.",
+  "{student} (grade {grade}) is now your oldest student, so your family moves to the <1>{name}</1> level (grades {grades}).": "{student} (grado {grade}) es ahora tu estudiante mayor, así que tu familia pasa al nivel <1>{name}</1> (grados {grades}).",
+  "{student} is now in grade {grade}, so your family moves to the <1>{name}</1> level (grades {grades}).": "{student} ahora está en el grado {grade}, así que tu familia pasa al nivel <1>{name}</1> (grados {grades}).",
+  "Plan price change": "Cambio de precio del plan",
+  "See Plan and billing": "Ver Plan y pagos",
+  "Your family now has {students} students on the account ({x} additional beyond the 2 included).": "Tu familia ahora tiene {students} estudiantes en la cuenta ({x} adicionales además de los 2 incluidos).",
+  "Your plan price is changing": "El precio de tu plan va a cambiar",
+  "Your plan price is going down": "El precio de tu plan va a bajar",
+  "From your bill on <1>{when}</1>, the Family plan is <2>{n} {per}</2>{x}. Nothing is charged before then.": "A partir de tu cobro del <1>{when}</1>, el plan Familiar cuesta <2>{n} {per}</2>{x}. No se cobra nada antes.",
+  ", {n} more than now": ", {n} más que ahora",
+  ", {n} less than now": ", {n} menos que ahora"
 }

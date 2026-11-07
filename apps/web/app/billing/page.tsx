@@ -2,17 +2,22 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { friendly, supabase } from "../../lib/supabase";
-import { CATALOG as C, FAMILY_DAILY_LIMIT, FREE_DAILY_LIMIT, FREE_PLAN_INCLUDES, HOMEWORK_DAILY_LIMIT, HOMEWORK_MONTHLY_LIMIT, PAYWALL_ON, money } from "../../lib/prices";
+import { extraStudents, familyPlanLevel, noticeShowing, type LevelNotice, type PlanLevel } from "@scholartasks/core";
+import { CATALOG as C, EXTRA_STUDENT, FAMILY_LEVELS, familyCents, FAMILY_DAILY_LIMIT, FREE_DAILY_LIMIT, FREE_PLAN_INCLUDES, HOMEWORK_DAILY_LIMIT, HOMEWORK_MONTHLY_LIMIT, PAYWALL_ON, money } from "../../lib/prices";
 import { inPhoneApp } from "../../lib/passkeys-client";
 import { NotConfigured, Page } from "../ui";
 
 interface Plan { family_id: string | null; family_plan: boolean; study_coach: boolean; ai_credits: number }
-interface Sub { id: string; kind: "family" | "study_coach"; status: string; billing_interval: "month" | "year" | null; current_period_end: string | null; cancel_at_period_end: boolean }
+interface Sub { id: string; kind: "family" | "study_coach"; status: string; billing_interval: "month" | "year" | null; current_period_end: string | null; cancel_at_period_end: boolean; level?: PlanLevel | null; level_notice?: LevelNotice | null }
+interface Kid { first_name: string; grade_level: number }
+
+const levelOf = (k: PlanLevel) => FAMILY_LEVELS.find((l) => l.key === k)!;
+const longDate = (iso: string) => new Date(`${iso.slice(0, 10)}T12:00:00Z`).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+const todayIso = () => new Date().toLocaleDateString("en-CA");
 
 const ACTIVE = ["active", "trialing", "past_due"];
 const DONE_TEXT: Record<string, string> = {
-  family_month: "Thanks! Your Family plan is starting.",
-  family_year: "Thanks! Your Family plan is starting.",
+  family: "Thanks! Your Family plan is starting.",
   coach_month: "Thanks! Homework Helper is being added.",
   coach_year: "Thanks! Homework Helper is being added.",
   pack_100: "Thanks! Your extra AI messages are being added.",
@@ -30,6 +35,7 @@ export default function BillingPage() {
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [plan, setPlan] = useState<Plan | null>(null);
   const [subs, setSubs] = useState<Sub[]>([]);
+  const [kids, setKids] = useState<Kid[]>([]);
   const [isParent, setIsParent] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -52,9 +58,17 @@ export default function BillingPage() {
     const m = await sb.from("family_members").select("role").eq("user_id", u.user.id);
     const parent = ((m.data as { role: string }[]) ?? []).some((r) => r.role === "parent");
     setIsParent(parent);
+    if (row?.family_id) {
+      const k = await sb.from("students").select("first_name, grade_level").eq("family_id", row.family_id)
+        .order("grade_level", { ascending: false }).order("first_name");
+      setKids((k.data as Kid[]) ?? []);
+    }
     if (parent && row?.family_id) {
-      const s = await sb.from("billing_subscriptions").select("id, kind, status, billing_interval, current_period_end, cancel_at_period_end").eq("family_id", row.family_id);
-      setSubs((s.data as Sub[]) ?? []);
+      const cols = "id, kind, status, billing_interval, current_period_end, cancel_at_period_end";
+      const s = await sb.from("billing_subscriptions").select(`${cols}, level, level_notice`).eq("family_id", row.family_id);
+      // Before database update 65 there are no level columns yet.
+      const rows = s.error ? (await sb.from("billing_subscriptions").select(cols).eq("family_id", row.family_id)).data : s.data;
+      setSubs((rows as Sub[]) ?? []);
     }
     return row;
   }, [sb]);
@@ -106,6 +120,12 @@ export default function BillingPage() {
   const coachSub = subs.find((s) => s.kind === "study_coach" && ACTIVE.includes(s.status));
   const hasFamily = !!plan?.family_plan;
   const hasCoach = !!plan?.study_coach;
+  const oldest = kids[0];
+  const myLevel = familyPlanLevel(kids.map((k) => k.grade_level));
+  const extras = extraStudents(kids.length);
+  const myMonth = myLevel ? familyCents(myLevel, "month", kids.length) : 0;
+  const myYear = myLevel ? familyCents(myLevel, "year", kids.length) : 0;
+  const levelNotice = noticeShowing(familySub?.level_notice, todayIso()) ? familySub!.level_notice! : null;
 
   return (
     <Page title={title}>
@@ -136,17 +156,40 @@ export default function BillingPage() {
           </ul>
         </div>
 
-        <div className={`tile${hasFamily ? " tile-ok" : ""}`}>
+        <div className={`tile${hasFamily ? " tile-ok" : ""}`} id="family-plan">
           <span className="tile-icon">👪</span>
           <b>Family plan {hasFamily && <span className="pill pill-ok">Active</span>}</b>
           <span>Everything in the free plan, plus the AI counselor and coaches for every student in your family: {FAMILY_DAILY_LIMIT} AI uses a day per person instead of {FREE_DAILY_LIMIT}.</span>
-          <span><b>{money(C.family_month.cents)} a month</b> or <b>{money(C.family_year.cents)} a year</b>{C.family_month.cents * 12 > C.family_year.cents ? ` (save ${money(C.family_month.cents * 12 - C.family_year.cents)})` : ""}.</span>
+          <span><b>Priced by your oldest student&apos;s grade. 2 students included, {money(EXTRA_STUDENT.month)} a month for each additional student</b> ({money(EXTRA_STUDENT.year)} a year on yearly plans).</span>
+          {myLevel && oldest ? (
+            <p className="level-mine">
+              <span>Your family&apos;s level: <b>{levelOf(myLevel).name}</b> (oldest student {oldest.first_name}, in grade {oldest.grade_level})</span>
+              <br />
+              <span>{kids.length === 1 ? "1 student" : extras ? `${kids.length} students, ${extras} additional` : `${kids.length} students`}: <b>{money(myMonth)} a month</b> or <b>{money(myYear)} a year</b></span>
+              {myMonth * 12 > myYear ? <span>{` (save ${money(myMonth * 12 - myYear)})`}</span> : null}
+            </p>
+          ) : (
+            <span className="hint">Add your students on <a href="/family">Family and permissions</a> to see your family&apos;s price.</span>
+          )}
+          <ul className="plan-list level-list">
+            {FAMILY_LEVELS.map((l) => (
+              <li key={l.key} className={l.key === myLevel ? "level-on" : undefined}>
+                <b>{l.name}</b>, grades {l.grades}: {money(l.month)} a month or {money(l.year)} a year{l.key === myLevel ? " ✓" : ""}
+              </li>
+            ))}
+          </ul>
+          <span className="hint">The level follows the oldest student. When their grade moves your family to another level, they graduate or leave the account, or you add or remove an additional student, we tell you by email and on Home about 30 days ahead. The new price starts at your next bill (at renewal for yearly plans).</span>
+          {levelNotice && (
+            <p className="note" role="status">
+              From {longDate(levelNotice.starts_on)}, your Family plan will be <b>{money(levelNotice.cents)} {levelNotice.interval === "year" ? "a year" : "a month"}</b> ({levelOf(levelNotice.to).name} level, because {levelNotice.student} is in grade {levelNotice.grade}).
+            </p>
+          )}
           {hasFamily ? (
-            <span>{familySub?.billing_interval === "year" ? "Yearly." : familySub?.billing_interval === "month" ? "Monthly." : ""}{renewal(familySub)}</span>
-          ) : isParent && plan?.family_id ? (
+            <span>{familySub?.level ? <span>{`${levelOf(familySub.level).name} level.`} </span> : null}{familySub?.billing_interval === "year" ? "Yearly." : familySub?.billing_interval === "month" ? "Monthly." : ""}{renewal(familySub)}</span>
+          ) : isParent && plan?.family_id && myLevel ? (
             <div className="share-row">
-              <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "family_year")}>{busy === "family_year" ? "Opening…" : `${money(C.family_year.cents)} a year`}</button>
-              <button className="btn btn-ghost btn-inline" disabled={!!busy} onClick={() => go("checkout", "family_month")}>{busy === "family_month" ? "Opening…" : `${money(C.family_month.cents)} a month`}</button>
+              <button className="btn btn-inline" disabled={!!busy} onClick={() => go("checkout", "family_year")}>{busy === "family_year" ? "Opening…" : `${money(myYear)} a year`}</button>
+              <button className="btn btn-ghost btn-inline" disabled={!!busy} onClick={() => go("checkout", "family_month")}>{busy === "family_month" ? "Opening…" : `${money(myMonth)} a month`}</button>
             </div>
           ) : null}
         </div>
