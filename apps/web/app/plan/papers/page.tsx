@@ -123,7 +123,6 @@ export default function TranscriptsAndLetters() {
 
   return (
     <Page title={isParent ? `${student.first_name}'s transcripts and letters` : "My transcripts and letters"}>
-      <p className="hint"><a href="/plan">← College list</a> · <a href="/activities/common-app">Common App ready</a> · <a href="/my-school">My school</a></p>
       <div className="panel">
         <p style={{ marginTop: 0 }}>You send your own application on Common App or the college&apos;s site. Your <b>school</b> sends the transcript and counselor letter, and <b>teachers</b> send their letters. Use this page to ask on time and see what has gone out.</p>
         <p className="hint" style={{ margin: 0 }}>

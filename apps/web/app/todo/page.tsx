@@ -143,7 +143,7 @@ export default function TodoPage() {
       const open = OPEN_COLLEGE.includes(c.status);
       if (!open && !DONE_COLLEGE[c.status]) continue; // withdrawn
       out.push({
-        key: "c" + c.id, title: `Apply to ${c.name}`, kind: `College application · ${PLANS[c.plan] ?? c.plan}`, due: c.deadline,
+        key: "c" + c.id, title: `Apply to ${c.name}`, kind: c.plan ? `College application · ${PLANS[c.plan] ?? c.plan}` : "College application", due: c.deadline,
         done: !open, pending: false, doneLabel: DONE_COLLEGE[c.status], college: c,
       });
     }

@@ -36,6 +36,18 @@ export function TopBar() {
   const [current, setCurrent] = useCurrentStudent();
   const [space] = useSpace();
   const menu = useRef<HTMLDetailsElement>(null);
+  const bar = useRef<HTMLElement>(null);
+  // The header is sticky, so pages that pin something under it (the Help search box, the test-prep bar)
+  // read its height from --header-h instead of guessing.
+  useEffect(() => {
+    const el = bar.current;
+    if (!el) return;
+    const set = () => document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => { ro.disconnect(); document.documentElement.style.removeProperty("--header-h"); };
+  });
   // Where the menu scrolls to when opened from a page's "back to section" link.
   const [jumpTo, setJumpTo] = useState<string | null>(null);
   // Menu search: type a word to find any page without knowing its section.
@@ -176,7 +188,7 @@ export function TopBar() {
 
   return (
     <>
-    <header className="topbar">
+    <header className="topbar" ref={bar}>
       <div className="topbar-inner">
         <Brand href={signedIn ? "/home" : "/"} />
         <nav>

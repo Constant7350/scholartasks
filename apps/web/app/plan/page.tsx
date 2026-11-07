@@ -135,7 +135,7 @@ export default function PlanPage() {
   const upcoming = useMemo(() => {
     const items = [
       ...myColleges.filter((c) => c.deadline && ["considering", "applying"].includes(c.status))
-        .map((c) => ({ key: "c" + c.id, title: `${c.name} · ${PLANS[c.plan] ?? c.plan}`, due: c.deadline!, done: false })),
+        .map((c) => ({ key: "c" + c.id, title: c.plan ? `${c.name} · ${PLANS[c.plan] ?? c.plan}` : c.name, due: c.deadline!, done: false })),
       ...myTasks.filter((t) => t.due_on && t.status !== "done").map((t) => ({ key: "t" + t.id, title: t.title, due: t.due_on!, done: false })),
     ];
     return items.sort((a, b) => a.due.localeCompare(b.due)).filter((i) => daysUntil(i.due) <= 60).slice(0, 8);

@@ -98,14 +98,13 @@ export default function ResumePage() {
   return (
     <Page>
       <div className="no-print">
-        <a href="/activities" className="hint">← Back to activities</a>
         <h1 style={{ marginBottom: 6 }}>Resume</h1>
         <p className="hint">Built from your activities and grades. Type the name and contact line you want at the top (they stay on this device only), then print or save it as a PDF for scholarship, job and college forms that ask for a resume.</p>
         <div className="row panel" style={{ alignItems: "end" }}>
           <div className="field"><label htmlFor="r-name">Full name</label>
             <input id="r-name" className="input" maxLength={80} value={head.name} onChange={(e) => setHead({ ...head, name: e.target.value })} /></div>
           <div className="field"><label htmlFor="r-contact">Email, phone or city (optional)</label>
-            <input id="r-contact" className="input" maxLength={140} value={head.contact} placeholder="name@email.com · Athens, GA" onChange={(e) => setHead({ ...head, contact: e.target.value })} /></div>
+            <input id="r-contact" className="input" maxLength={140} value={head.contact} placeholder="email · city" onChange={(e) => setHead({ ...head, contact: e.target.value })} /></div>
           <label className="item-check" style={{ paddingBottom: 10 }}>
             <input type="checkbox" checked={head.showGpa} onChange={(e) => setHead({ ...head, showGpa: e.target.checked })} /><span>Show GPA</span>
           </label>

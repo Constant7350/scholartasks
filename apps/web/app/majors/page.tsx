@@ -369,7 +369,7 @@ export default function MajorsPage() {
 
       <section className="panel">
         <label htmlFor="major-q">What do you want to study?</label>
-        <input id="major-q" className="input" placeholder="e.g. marine biology, veterinarian, nursing" value={query} autoComplete="off"
+        <input id="major-q" className="input" placeholder="e.g. nursing, marine biology" value={query} autoComplete="off"
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && matches[0]) { e.preventDefault(); choose(matches[0]); } }} />
         {(matches.length > 0 || others.length > 0) && (

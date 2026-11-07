@@ -118,7 +118,6 @@ export default function ApplicationProfile() {
 
   return (
     <Page title="Application profile">
-      <p className="hint"><a href="/activities">← Activities</a> · <a href={`/activities/resume?student=${student.id}`}>Resume</a> · <a href="/activities/common-app">Common App ready</a></p>
       <p className="hint">Everything forms ask for, ready to paste: tap Copy, then paste it into the form.</p>
       {error && <p className="note note-err" role="alert">{error}</p>}
 

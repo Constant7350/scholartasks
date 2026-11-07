@@ -86,7 +86,6 @@ export default function RecordPage() {
   return (
     <Page>
       <div className="no-print">
-        <a href="/grades" className="hint">← Back to grades</a>
         <h1 style={{ marginBottom: 6 }}>Self-reported academic record</h1>
         <p className="hint">Some colleges let students report their own grades when they apply (for example through SRAR or the college&apos;s own portal), and ask for the official transcript only after admission. Use this sheet to copy from, or print it or save it as a PDF where a college accepts an unofficial copy. Double-check every grade against the school&apos;s transcript first, because colleges compare them later.</p>
         {canEdit && (

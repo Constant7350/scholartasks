@@ -83,7 +83,6 @@ export default function CommonAppReady() {
 
   return (
     <Page title={title}>
-      <p className="hint"><a href="/activities">← Activities</a> · <a href="/activities/profile">Application profile</a></p>
       <p className="hint">Everything the <a href="https://www.commonapp.org" target="_blank" rel="noopener">Common App</a> asks for, checked against its limits. Copy each part in and submit there.</p>
 
       <section className="panel">
