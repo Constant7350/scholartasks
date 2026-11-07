@@ -2725,7 +2725,7 @@
 {"en":"Tap Stop when you're done, fix anything it heard wrong, then send.","screens":["/help"]},
 {"en":"Tap Take the challenge, read the topic and the official rules, and check the box.","screens":["/help"]},
 {"en":"Tap Text it or Email it. Your texting or email app opens with the message ready.","screens":["/help"]},
-{"en":"Tap the ? button again, or \"Turn off help\" at the bottom of the screen, to hide the balloons.","screens":["/help"]},
+{"en":"Tap the ? button again, or \"Turn off help\" at the bottom of the screen, to hide the balloons. Opening this manual hides them for you.","screens":["/help"]},
 {"en":"Tap the ? button at the top of any page to turn on help balloons and a search box that answers from this manual. Tap ? again to turn them off.","screens":["/help"]},
 {"en":"Tap the questions box any time to change answers. Matches update when you save.","screens":["/help"]},
 {"en":"Tap the round ? button in the top bar. Small ? marks appear next to parts of the page, and a help bar opens at the bottom.","screens":["/help"]},

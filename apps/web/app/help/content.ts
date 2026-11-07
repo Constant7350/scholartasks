@@ -65,7 +65,7 @@ export const TOPICS: Topic[] = [
       "Tap the round ? button in the top bar. Small ? marks appear next to parts of the page, and a help bar opens at the bottom.",
       "Tap any ? mark to open a short explanation. Tap \"Read more\" in the balloon to jump to the full topic in this manual.",
       "To look anything up, type a few words in the help bar, for example \"remove a student\". Tap an answer to see the steps right there.",
-      "Tap the ? button again, or \"Turn off help\" at the bottom of the screen, to hide the balloons.",
+      "Tap the ? button again, or \"Turn off help\" at the bottom of the screen, to hide the balloons. Opening this manual hides them for you.",
     ],
     body: ["Your choice is remembered on this device, so help stays on or off until you change it."],
   },
