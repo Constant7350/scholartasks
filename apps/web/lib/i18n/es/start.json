@@ -341,5 +341,10 @@
   "Your plan price is going down": "El precio de tu plan va a bajar",
   "From your bill on <1>{when}</1>, the Family plan is <2>{n} {per}</2>{x}. Nothing is charged before then.": "A partir de tu cobro del <1>{when}</1>, el plan Familiar cuesta <2>{n} {per}</2>{x}. No se cobra nada antes.",
   ", {n} more than now": ", {n} más que ahora",
-  ", {n} less than now": ", {n} menos que ahora"
+  ", {n} less than now": ", {n} menos que ahora",
+  "{firstname} graduated, so {firstname2} no longer counts toward your price or your 6 student places. Their account and records stay open.": "{firstname} se graduó, así que {firstname2} ya no cuenta en su precio ni en sus 6 lugares para estudiantes. Su cuenta y sus registros siguen abiertos.",
+  "🎓 Graduated": "🎓 Graduado",
+  "Grade this fall": "Grado este otoño",
+  "Grades move up by themselves every August 1, and we email you the changes. The home state decides which state scholarships, grants and deadlines {firstname} sees. College searches always include every state.": "Los grados suben solos cada 1 de agosto, y le enviamos los cambios por correo. El estado de residencia decide qué becas, subvenciones y fechas límite estatales ve {firstname}. Las búsquedas de universidades siempre incluyen todos los estados.",
+  "Graduated": "Graduado"
 }

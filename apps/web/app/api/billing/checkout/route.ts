@@ -1,6 +1,7 @@
 import { extraStudents, familyPlanLevel } from "@scholartasks/core";
 import { CATALOG, StripeError, familyCents, familyItem, stripe, type BillingItem } from "../../../../lib/billing";
 import { customerFor, parentFromRequest } from "../../../../lib/billing-auth";
+import { currentStudents } from "../../../../lib/current-students";
 
 // Starts a Stripe Checkout page for the family plan, the Homework Helper add-on or
 // a message pack. For the Family plan the page asks for "family_month" or "family_year"
@@ -21,8 +22,8 @@ export async function POST(req: Request) {
   let item: BillingItem | null = null;
   let students = 0;
   if (body.item === "family_month" || body.item === "family_year") {
-    const { data: kids } = await who.admin.from("students").select("grade_level").eq("family_id", who.familyId);
-    const grades = ((kids as { grade_level: number }[]) ?? []).map((k) => k.grade_level);
+    const kids = await currentStudents<{ grade_level: number }>(who.admin, who.familyId, "first_name, grade_level");
+    const grades = kids.map((k) => k.grade_level);
     students = grades.length;
     const level = familyPlanLevel(grades);
     if (!level) return json(400, "Add your student on the Family page first. The price depends on the oldest student's grade.");

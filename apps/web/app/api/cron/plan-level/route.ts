@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { extraStudents, familyPlanLevel, isPlanLevel, levelStep, type LevelNotice, type PlanLevel } from "@scholartasks/core";
 import { CATALOG, EXTRA_STUDENT, FAMILY_LEVELS, familyCents, familyItem, saveSubscriptionRow, stripe, subscriptionRow, type StripeSubscription } from "../../../../lib/billing";
 import { money } from "../../../../lib/prices";
+import { currentStudents } from "../../../../lib/current-students";
 
 // Daily Family plan price check (Vercel Cron, "Authorization: Bearer $CRON_SECRET").
 // One price covers the whole family and follows the OLDEST student's grade; 2 students are
@@ -83,9 +84,8 @@ export async function GET(req: Request) {
       const end = sub.current_period_end ?? item.current_period_end;
       const nextBill = sub.cancel_at_period_end || !end ? null : new Date(end * 1000).toISOString().slice(0, 10);
 
-      const { data: kids } = await sb.from("students").select("first_name, grade_level").eq("family_id", row.family_id)
-        .order("grade_level", { ascending: false }).order("first_name");
-      const list = (kids as { first_name: string; grade_level: number }[]) ?? [];
+      // Graduated students don't count toward the price.
+      const list = await currentStudents<{ first_name: string; grade_level: number }>(sb, row.family_id, "first_name, grade_level");
       const step = levelStep({ current, target: { level: familyPlanLevel(list.map((k) => k.grade_level)), extras: extraStudents(list.length) }, today, nextBill });
       if (step.action === "none") continue;
       if (step.action === "wait") { counts.waiting++; continue; }
