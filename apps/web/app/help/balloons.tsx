@@ -21,15 +21,18 @@ export function setHelpOn(on: boolean) {
   window.dispatchEvent(new CustomEvent(EVENT, { detail: on }));
 }
 
-export function useHelpOn(): [boolean, (on: boolean) => void] {
+/** [on, set, ready]: ready is true once the remembered choice has been read on this device. */
+export function useHelpOn(): [boolean, (on: boolean) => void, boolean] {
   const [on, setOn] = useState(false);
+  const [ready, setReady] = useState(false);
   useEffect(() => {
     try { setOn(localStorage.getItem(KEY) === "1"); } catch { /* ignore */ }
+    setReady(true);
     const fn = (e: Event) => setOn(!!(e as CustomEvent<boolean>).detail);
     window.addEventListener(EVENT, fn);
     return () => window.removeEventListener(EVENT, fn);
   }, []);
-  return [on, setHelpOn];
+  return [on, setHelpOn, ready];
 }
 
 export function HelpButton() {
@@ -87,7 +90,7 @@ function measure(path: string): Mark[] {
 }
 
 export function HelpLayer() {
-  const [on, set] = useHelpOn();
+  const [on, set, ready] = useHelpOn();
   const path = usePathname() ?? "/";
   const [marks, setMarks] = useState<Mark[]>([]);
   const [active, setActive] = useState<number | null>(null);
@@ -123,6 +126,17 @@ export function HelpLayer() {
   }, [on, update]);
 
   useEffect(() => { setActive(null); setQ(""); setOpenTopic(null); }, [path]);
+
+  // Arriving on the Help page (from "Help manual", "More in the manual" or Enter in the search box)
+  // turns the balloons off by itself: the manual is open, so the balloons and bottom bar only get in the way
+  // (Constant, 2026-11-07). Pressing ? while already on the Help page still works.
+  const helpPageSeen = useRef(false);
+  useEffect(() => {
+    if (path !== "/help") { helpPageSeen.current = false; return; }
+    if (!ready || helpPageSeen.current) return;
+    helpPageSeen.current = true;
+    if (on) set(false);
+  }, [path, on, ready, set]);
 
   useEffect(() => {
     if (active === null) return;
