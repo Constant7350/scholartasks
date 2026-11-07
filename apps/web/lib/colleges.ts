@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { CollegeFacts, CostInput, CourseGrade, IncomeBand } from "@scholartasks/core";
+import type { CollegeDeadline, CollegeFacts, CostInput, CourseGrade, IncomeBand } from "@scholartasks/core";
 import { checkStatePrograms, packFor } from "./state-packs";
 
 /** A row of the colleges table (College Scorecard data). */
@@ -57,4 +57,12 @@ export async function searchColleges(sb: SupabaseClient, q: string, limit = 8): 
   if (term.length < 2) return [];
   const { data } = await sb.from("colleges").select("*").ilike("name", `%${term.split(/\s+/).join("%")}%`).order("size", { ascending: false, nullsFirst: false }).limit(limit);
   return (data as CollegeRow[]) ?? [];
+}
+
+/** The team's own deadline dates for these colleges (college_deadlines table); empty before database update 64. */
+export async function loadCollegeDeadlines(sb: SupabaseClient, collegeIds: number[]): Promise<CollegeDeadline[]> {
+  if (!collegeIds.length) return [];
+  const { data, error } = await sb.from("college_deadlines").select("college_id, plan, month, day, note").in("college_id", collegeIds);
+  if (error) return [];
+  return (data as CollegeDeadline[]) ?? [];
 }

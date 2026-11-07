@@ -392,7 +392,7 @@ function SendToSchool({ s, student, app, sub, linked, gpa, acts, essay, onSent }
   s: Row; student: Student; app: App; sub: Submission | null; linked: boolean; gpa: string; acts: Activity[]; essay: string; onSent: () => void;
 }) {
   const sb = supabase();
-  const [fullName, setFullName] = useState(sub?.packet.full_name ?? "");
+  const [fullName, setFullName] = useState(sub?.packet.full_name ?? student.first_name);
   const [email, setEmail] = useState(sub?.packet.email ?? "");
   const [inc, setInc] = useState({ scores: true, activities: true, essay: !!essay.trim() });
   const [busy, setBusy] = useState(false);

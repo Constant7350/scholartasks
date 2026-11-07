@@ -248,6 +248,7 @@ export const TOPICS: Topic[] = [
     steps: [
       "Open Menu, then College list and deadlines.",
       "Under Colleges, type the college name, pick the plan (for example Early action) and add the deadline if you know it.",
+      "Pick the college from the list as you type and the Deadline fills in by itself: the college's own date when we have it, otherwise the typical date for that plan (Early Action November 1, Regular Decision January 1), with a note to check the college's site. Change the plan and the date follows. Type a date of your own and it stays. Rolling admission has no fixed date.",
       "Tap Add college. Remove a college any time with Remove.",
     ],
     body: ["If a student adds a college and isn't allowed to change the plan alone, it shows as waiting until a parent taps Approve."],
@@ -1124,7 +1125,9 @@ export const TOPICS: Topic[] = [
       "Tap Remind me on the FAFSA dates.",
       "For each college, look up its financial aid priority date on its website, pick the date and tap Add.",
     ],
-    body: ["Colleges' own dates are usually months before the federal deadline. Filing early helps, because some money runs out."],
+    body: [
+      "Colleges on the list whose aid priority date we know already have the date filled in; just tap Add to get reminders for it.",
+"Colleges' own dates are usually months before the federal deadline. Filing early helps, because some money runs out."],
   },
   {
     id: "aid-safety",

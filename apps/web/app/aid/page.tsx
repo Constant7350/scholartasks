@@ -12,6 +12,7 @@ import {
   documentsFor,
   fafsaContributors,
   fillCycle,
+  nextOn,
   type HouseholdAnswers,
 } from "@scholartasks/core";
 import { aidOfficeFor, meritNames, packFor, stateName } from "../../lib/state-packs";
@@ -23,12 +24,13 @@ import "./aid.css";
 import "../trades/trades.css";
 import { TradeAidList } from "../trades/aid-list";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
+import { loadCollegeDeadlines } from "../../lib/colleges";
 
 const GUIDE = AidGuide.parse(guideJson);
 const TYPE: Record<string, string> = { merit: "Grades and scores", need: "Based on need", merit_and_need: "Grades and need", grant: "Grant", tuition_discount: "Lower tuition" };
 
 interface Student { id: string; first_name: string; grade_level: number; state: string }
-interface College { id: string; student_id: string; name: string; status: string }
+interface College { id: string; student_id: string; name: string; status: string; college_id: number | null }
 interface Task { id: string; student_id: string; title: string; kind: string; due_on: string | null; status: string; deadline_id: string | null; college_id: string | null }
 interface Progress { step_id: string; status: "done" | "skipped"; cycle: string; student_id: string }
 interface Household { student_id: string; answers: HouseholdAnswers; docs_found: string[] }
@@ -89,15 +91,24 @@ export default function AidPage() {
     const [pr, hh, col, tk] = await Promise.all([
       sb.from("aid_progress").select("student_id, cycle, step_id, status"),
       sb.from("aid_households").select("student_id, answers, docs_found"),
-      sb.from("student_colleges").select("id, student_id, name, status").order("name"),
+      sb.from("student_colleges").select("id, student_id, name, status, college_id").order("name"),
       sb.from("tasks").select("id, student_id, title, kind, due_on, status, deadline_id, college_id").eq("kind", "aid"),
     ]);
     if (missingTables(pr.error) || missingTables(hh.error)) return setOffline(true);
     setOffline(false);
     setProgress((pr.data as Progress[]) ?? []);
     setHouseholds((hh.data as Household[]) ?? []);
-    setColleges((col.data as College[]) ?? []);
+    const cols = (col.data as College[]) ?? [];
+    setColleges(cols);
     setTasks((tk.data as Task[]) ?? []);
+    // Fill each college's aid priority date from the team's table, so the family only has to tap Add.
+    const ids = [...new Set(cols.map((c) => c.college_id).filter((x): x is number => x != null))];
+    const known = (await loadCollegeDeadlines(sb, ids)).filter((d) => d.plan === "aid_priority");
+    if (known.length) setDates((d) => {
+      const next = { ...d };
+      for (const c of cols) { const k = known.find((x) => x.college_id === c.college_id); if (k && !next[c.id]) next[c.id] = nextOn(k.month, k.day, todayIso()); }
+      return next;
+    });
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
 
