@@ -27,8 +27,8 @@ const OPEN_COLLEGE = ["considering", "applying"];
 
 /**
  * Home is "what to do next": things waiting for a parent (with the button right there), the next
- * few due items (check them off here), a box to ask the AI counselor, one set-up card that shrinks
- * as each step is done, and shortcuts to the main pages. Everything else is one tap away in the menu.
+ * few due items (check them off here), a box to ask the AI counselor and one set-up card that shrinks
+ * as each step is done, under a small row of shortcut icons to the main pages. Everything else is one tap away in the menu.
  */
 export default function Home() {
   const sb = supabase();
@@ -124,6 +124,11 @@ export default function Home() {
     <Page>
       <h1 className="home-title">{isParent ? "What's next" : role === "student" ? "Your next steps" : "Welcome to ScholarTasks"}</h1>
       {error && <p className="note note-err" role="alert">{error}</p>}
+      <nav className="home-grid home-grid-top" aria-label="Shortcuts">
+        {shortcuts.map(([icon, label, href]) => (
+          <a key={href} href={href}><span aria-hidden="true">{icon}</span>{label}</a>
+        ))}
+      </nav>
 
       {isParent && waiting.length > 0 && (
         <section className="panel home-waiting" aria-label="Waiting for you">
@@ -204,11 +209,6 @@ export default function Home() {
 
       {role === "student" && <ParentIdeasCard sb={sb} />}
 
-      <nav className="home-grid" aria-label="Shortcuts">
-        {shortcuts.map(([icon, label, href]) => (
-          <a key={href} href={href}><span aria-hidden="true">{icon}</span>{label}</a>
-        ))}
-      </nav>
 
       {/* Parents see each student's scorecard and streak on My students, not on their own Home. */}
       {role === "student" && students.map((s) => (

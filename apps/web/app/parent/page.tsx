@@ -12,6 +12,7 @@ import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { PICKS, savePick, useSpace, type ParentSave, type PickValue, type PickKind } from "../../lib/parent-space";
 import { TRADES } from "../../lib/trades";
 import { SignOffs } from "./sign-offs";
+import { loadWaiting } from "./waiting";
 
 interface Student { id: string; first_name: string; state: string; permissions?: Record<string, boolean> | null; match_profile: { career_quiz?: SavedQuiz } | null }
 interface QuizAnswers { student_id: string; answers: Record<string, Answer>; seconds: number | null; saved_at: string }
@@ -37,6 +38,7 @@ export default function ParentSpacePage() {
   const [planColleges, setPlanColleges] = useState<{ student_id: string; college_id: number | null }[]>([]);
   const [planScholarships, setPlanScholarships] = useState<{ student_id: string; scholarship_id: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [waiting, setWaiting] = useState(0);
   const [, setSpace] = useSpace();
 
   const load = useCallback(async () => {
@@ -61,6 +63,7 @@ export default function ParentSpacePage() {
     setQuiz((qa.data as QuizAnswers[]) ?? []);
     setPlanColleges((pc.data as { student_id: string; college_id: number | null }[]) ?? []);
     setPlanScholarships((ch.data as { student_id: string; scholarship_id: string }[]) ?? []);
+    setWaiting((await loadWaiting(sb, () => "").catch(() => [])).length);
   }, [sb, setCurrent]);
   useEffect(() => { void load(); }, [load]);
 
@@ -69,6 +72,16 @@ export default function ParentSpacePage() {
   const mine = forKid.filter((x) => x.user_id === me);
   const others = forKid.filter((x) => x.user_id !== me && x.pick !== "no");
   const pickOf = (kind: PickKind, key: string) => mine.find((x) => x.kind === kind && x.item_key === key);
+
+  // One part of the page shows at a time. The address (#quiz, #sign-offs...) picks it, so links can open a part directly.
+  const [tab, setTab] = useState<Tab>("sign-offs");
+  useEffect(() => {
+    const fromHash = () => { const h = window.location.hash.slice(1) as Tab; if (TABS.includes(h)) setTab(h); };
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    return () => window.removeEventListener("hashchange", fromHash);
+  }, []);
+  const pickTab = (t: Tab) => { setTab(t); window.history.replaceState(null, "", `#${t}`); };
 
   const title = "My parent space";
   if (!sb) return <Page title={title}><NotConfigured /></Page>;
@@ -127,14 +140,22 @@ export default function ParentSpacePage() {
   const colleges = mine.filter((x) => x.kind === "college");
   const scholarships = mine.filter((x) => x.kind === "scholarship");
   const careers = mine.filter((x) => x.kind === "career" || x.kind === "trade");
-  const shared = mine.filter((x) => x.shared).length;
   const answers = quiz.find((q) => q.student_id === student.id);
   const summary = student.match_profile?.career_quiz;
   const go = () => setSpace("parent");
+  const tabs: { key: Tab; icon: string; label: string; count: number }[] = [
+    { key: "sign-offs", icon: "✍️", label: "Sign-offs", count: waiting },
+    { key: "look", icon: "🔎", label: "Search", count: 0 },
+    { key: "quiz", icon: "🧩", label: "Career quiz", count: 0 },
+    { key: "colleges", icon: "🏫", label: "Colleges", count: colleges.length },
+    { key: "scholarships", icon: "💰", label: "Scholarships", count: scholarships.length },
+    { key: "careers", icon: "🧭", label: "Careers", count: careers.length },
+    ...(others.length ? [{ key: "others" as Tab, icon: "👥", label: "Other parent", count: others.length }] : []),
+  ];
 
   return (
     <Page title={title}>
-      <p className="hint" style={{ marginTop: -8 }}>Your own place to look around and keep notes. Colleges, scholarships and careers you save here are yours: they don&apos;t go on {name}&apos;s plan and don&apos;t show as {name}&apos;s work. When you want {name} to see one, tap <b>Share with {name}</b>.</p>
+      <p className="hint" style={{ marginTop: -8 }}>Your own lists and notes. Nothing here goes on {name}&apos;s plan until you add it, and {name} sees only what you share.</p>
       {students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === student.id} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
@@ -142,49 +163,40 @@ export default function ParentSpacePage() {
       )}
       {error && <p className="note note-err" role="alert">{error}</p>}
 
-      <div className="ps-stats">
-        <span className="pill">{colleges.length} colleges</span>
-        <span className="pill">{scholarships.length} scholarships</span>
-        <span className="pill">{careers.length} careers and trades</span>
-        <span className="pill pill-ok">{shared} shared with {name}</span>
-      </div>
+      <nav className="icon-tabs" aria-label="Parts of my parent space">
+        {tabs.map((t) => (
+          <button key={t.key} type="button" aria-pressed={tab === t.key} onClick={() => pickTab(t.key)}>
+            <span className="icon-tabs-icon" aria-hidden="true">{t.icon}</span>
+            <span>{t.label}</span>
+            {t.count > 0 && <span className="icon-tabs-count">{t.count}</span>}
+          </button>
+        ))}
+      </nav>
 
-      {me && <SignOffs sb={sb} me={me} kids={students} onChanged={() => void load()} />}
+      {tab === "sign-offs" && me && <SignOffs sb={sb} me={me} kids={students} onChanged={() => void load()} />}
 
-      <h2 className="section-title">Look around in your own space</h2>
-      <div className="tiles">
-        <a className="tile" href="/colleges" onClick={go}>
-          <span className="tile-icon">🔎</span><b>Find colleges</b>
-          <span>Five quick questions, then colleges with a yearly price for your family. Save the ones you like to your list.</span>
-          <span className="tile-go">Search colleges →</span>
-        </a>
-        <a className="tile" href="/majors" onClick={go}>
-          <span className="tile-icon">🧭</span><b>Search by major</b>
-          <span>Type a career or subject and see the strongest programs in your state first, then nationwide.</span>
-          <span className="tile-go">Search by major →</span>
-        </a>
-        <a className="tile" href="/scholarships" onClick={go}>
-          <span className="tile-icon">💰</span><b>Scholarships and grants</b>
-          <span>Matched to {name}&apos;s grades and answers. Save the ones worth a look without adding them to {name}&apos;s deadlines.</span>
-          <span className="tile-go">Search scholarships →</span>
-        </a>
-        <a className="tile" href="#quiz">
-          <span className="tile-icon">🧩</span><b>{name}&apos;s career quiz</b>
-          <span>{answers || summary ? `See what ${name} liked and mark the careers you like too.` : `${name} hasn't saved the career quiz yet.`}</span>
-          <span className="tile-go">Look it over →</span>
-        </a>
-      </div>
+      {tab === "look" && (
+        <section className="panel">
+          <h2>Look around in your own space</h2>
+          <p className="hint">What you save from these searches goes on your own lists here, not on {name}&apos;s plan.</p>
+          <div className="ps-look">
+            <a className="btn btn-ghost btn-inline link-btn" href="/colleges" onClick={go}>🔎 Find colleges</a>
+            <a className="btn btn-ghost btn-inline link-btn" href="/majors" onClick={go}>🧭 Search by major</a>
+            <a className="btn btn-ghost btn-inline link-btn" href="/scholarships" onClick={go}>💰 Scholarships and grants</a>
+          </div>
+        </section>
+      )}
 
-      <QuizReview id="quiz" name={name} answers={answers} summary={summary} pickOf={pickOf} onPick={setPick} />
+      {tab === "quiz" && <QuizReview id="quiz" name={name} answers={answers} summary={summary} pickOf={pickOf} onPick={setPick} />}
 
-      <PickList title="My colleges" empty={<>No colleges yet. <a href="/colleges" onClick={go}>Find colleges</a> and tap Save to my list.</>}
-        rows={colleges} name={name} onUpdate={update} onRemove={remove} onPlan={onPlan} onAddToPlan={addToPlan} addLabel={`Add to ${name}'s college list`} />
-      <PickList title="My scholarships" empty={<>No scholarships yet. <a href="/scholarships" onClick={go}>Search scholarships</a> and tap Save to my list.</>}
-        rows={scholarships} name={name} onUpdate={update} onRemove={remove} onPlan={onPlan} onAddToPlan={addToPlan} addLabel={`Add to ${name}'s deadlines`} />
-      <PickList title="My career and trade picks" empty={<>No picks yet. Mark careers you like in {name}&apos;s career quiz above.</>}
-        rows={careers} name={name} onUpdate={update} onRemove={remove} onPlan={onPlan} onAddToPlan={addToPlan} addLabel="" />
+      {tab === "colleges" && <PickList title="My colleges" empty={<>No colleges yet. <a href="/colleges" onClick={go}>Find colleges</a> and tap Save to my list.</>}
+        rows={colleges} name={name} onUpdate={update} onRemove={remove} onPlan={onPlan} onAddToPlan={addToPlan} addLabel={`Add to ${name}'s college list`} />}
+      {tab === "scholarships" && <PickList title="My scholarships" empty={<>No scholarships yet. <a href="/scholarships" onClick={go}>Search scholarships</a> and tap Save to my list.</>}
+        rows={scholarships} name={name} onUpdate={update} onRemove={remove} onPlan={onPlan} onAddToPlan={addToPlan} addLabel={`Add to ${name}'s deadlines`} />}
+      {tab === "careers" && <PickList title="My career and trade picks" empty={<>No picks yet. Mark careers you like in {name}&apos;s career quiz.</>}
+        rows={careers} name={name} onUpdate={update} onRemove={remove} onPlan={onPlan} onAddToPlan={addToPlan} addLabel="" />}
 
-      {others.length > 0 && (
+      {tab === "others" && (
         <section className="panel">
           <h2>Picks from the other parent</h2>
           <p className="hint">Saved by another parent in your family. Only they can change these.</p>
@@ -206,6 +218,9 @@ export default function ParentSpacePage() {
     </Page>
   );
 }
+
+type Tab = "sign-offs" | "look" | "quiz" | "colleges" | "scholarships" | "careers" | "others";
+const TABS: Tab[] = ["sign-offs", "look", "quiz", "colleges", "scholarships", "careers", "others"];
 
 const KIND: Record<PickKind, string> = { college: "College", scholarship: "Scholarship", career: "Career", trade: "Trade" };
 
