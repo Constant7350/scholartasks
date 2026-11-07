@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
-import { tipsFor, topicForPath, type Tip } from "./content";
+import { searchTopics, tipsFor, topicForPath, type Tip, type Topic } from "./content";
 
 /**
  * Help balloons, shown only when someone asks for them.
  * The ? button in the top bar turns them on and off; the choice is remembered on this device.
  * Balloons attach to existing page elements by selector (see TIPS in content.ts), so pages need no changes.
+ * The bar at the bottom also searches the whole manual (Constant, 2026-11-07: the manual should be
+ * right there when ? is pressed), so an answer is one tap away without finding the Help page.
  */
 
 const KEY = "st-help-balloons";
@@ -89,6 +91,8 @@ export function HelpLayer() {
   const path = usePathname() ?? "/";
   const [marks, setMarks] = useState<Mark[]>([]);
   const [active, setActive] = useState<number | null>(null);
+  const [q, setQ] = useState("");
+  const [openTopic, setOpenTopic] = useState<string | null>(null);
   const last = useRef("");
   const frame = useRef(0);
 
@@ -118,7 +122,7 @@ export function HelpLayer() {
     return () => { document.body.classList.remove("help-on"); obs.disconnect(); window.removeEventListener("resize", update); window.removeEventListener("load", update); cancelAnimationFrame(frame.current); };
   }, [on, update]);
 
-  useEffect(() => setActive(null), [path]);
+  useEffect(() => { setActive(null); setQ(""); setOpenTopic(null); }, [path]);
 
   useEffect(() => {
     if (active === null) return;
@@ -164,14 +168,59 @@ export function HelpLayer() {
           </div>
         </div>
       )}
-      <div className="help-bar" role="status">
-        <span>Help is on. Tap any <b className="help-dot">?</b> to learn about that part.</span>
-        <span className="help-bar-actions">
-          <a href={pageTopic && path !== "/help" ? `/help#${pageTopic.id}` : "/help"}>Help manual</a>
-          <button type="button" className="linklike" onClick={() => set(false)}>Turn off help</button>
-        </span>
-      </div>
+      <HelpBar q={q} setQ={(v) => { setQ(v); setOpenTopic(null); }} openTopic={openTopic} setOpenTopic={setOpenTopic} pageTopic={pageTopic} path={path} off={() => set(false)} />
     </div>,
     document.body,
+  );
+}
+
+/** The bar at the bottom while help is on: a search box over the whole manual, with answers shown right there. */
+function HelpBar({ q, setQ, openTopic, setOpenTopic, pageTopic, path, off }: {
+  q: string; setQ: (v: string) => void; openTopic: string | null; setOpenTopic: (id: string | null) => void;
+  pageTopic: Topic | undefined; path: string; off: () => void;
+}) {
+  const searching = q.trim().length > 0;
+  const results = searching ? searchTopics(q).slice(0, 5) : [];
+  const shown = openTopic ? results.find((t) => t.id === openTopic) : undefined;
+  return (
+    <div className="help-bar" role="region" aria-label="Help">
+      {searching && (
+        <div className="help-bar-results">
+          {!results.length && <p className="hint" style={{ margin: 0 }}>Nothing found. Try fewer or different words.</p>}
+          {results.map((t) => (
+            <div key={t.id} className={`help-bar-hit ${shown?.id === t.id ? "help-bar-hit-open" : ""}`}>
+              <button type="button" className="help-bar-hit-head" aria-expanded={shown?.id === t.id} onClick={() => setOpenTopic(shown?.id === t.id ? null : t.id)}>
+                <span><b>{t.title}</b><span className="hint" style={{ margin: 0, fontSize: 13 }}>{t.summary}</span></span>
+                <span className="help-chev" aria-hidden="true">{shown?.id === t.id ? "–" : "+"}</span>
+              </button>
+              {shown?.id === t.id && (
+                <div className="help-bar-hit-body">
+                  {t.steps && <ol>{t.steps.map((st, i) => <li key={i}>{st}</li>)}</ol>}
+                  {t.body?.map((b, i) => <p key={i}>{b}</p>)}
+                  <div className="help-bar-actions">
+                    {t.href && t.href !== path && <a href={t.href}>Open this page</a>}
+                    <a href={`/help#${t.id}`}>More in the manual</a>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      <form className="help-bar-search" onSubmit={(e) => { e.preventDefault(); if (searching) window.location.href = `/help?q=${encodeURIComponent(q.trim())}`; }}>
+        <span className="help-dot" aria-hidden="true">?</span>
+        <input
+          className="input" type="search" value={q} onChange={(e) => setQ(e.target.value)}
+          placeholder="Search help, e.g. remove a student" aria-label="Search the help manual" autoComplete="off" enterKeyHint="search"
+        />
+      </form>
+      <div className="help-bar-row">
+        <span>{searching ? "Answers from the manual." : <>Tap any <b className="help-dot">?</b> on the page, or ask above.</>}</span>
+        <span className="help-bar-actions">
+          <a href={pageTopic && path !== "/help" ? `/help#${pageTopic.id}` : "/help"}>Help manual</a>
+          <button type="button" className="linklike" onClick={off}>Turn off help</button>
+        </span>
+      </div>
+    </div>
   );
 }
