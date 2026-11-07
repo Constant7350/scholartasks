@@ -191,6 +191,13 @@ export function TopBar() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Back: the page you came from on this site, else Home (or the front page when signed out).
+  const goBack = () => {
+    const fromHere = typeof document !== "undefined" && document.referrer.startsWith(window.location.origin);
+    if (fromHere && window.history.length > 1) window.history.back();
+    else window.location.href = signedIn ? "/home" : "/";
+  };
+
   // Parents of a grade 6 to 10 student get Home, To do, Grades and Career quiz as main tabs instead of Plan and Scholarships.
   const tabPos = (i: NavItem) => (isParent && !showAll ? i.earlyTab : tabOf(i, role));
   const tabs = items.filter((i) => tabPos(i) && shown(i)).sort((a, b) => (tabPos(a) ?? 0) - (tabPos(b) ?? 0));
@@ -265,14 +272,20 @@ export function TopBar() {
         </div>
       )}
 
-      {signedIn && crumbGroup && here && (
+      {/* A Back button on every page but Home (Constant, 2026-11-07), then the section this page is in. */}
+      {signedIn !== null && path !== "/home" && path !== "/" && (
         <div className="crumb">
           <div className="crumb-inner">
-            <button type="button" data-menu-toggle onClick={openSection} aria-label={`${t.backTo} ${crumbGroup.title}`}>
+            <button type="button" className="crumb-back" onClick={goBack}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
-              {crumbGroup.title}
+              {t.back}
             </button>
-            <span className="crumb-here" aria-current="page">{navLabel(here, lang)}</span>
+            {signedIn && crumbGroup && here && (<>
+              <button type="button" className="crumb-section" data-menu-toggle onClick={openSection} aria-label={`${t.backTo} ${crumbGroup.title}`}>
+                {crumbGroup.title}
+              </button>
+              <span className="crumb-here" aria-current="page">{navLabel(here, lang)}</span>
+            </>)}
           </div>
         </div>
       )}

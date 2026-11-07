@@ -85,6 +85,9 @@ a { color: var(--navy); }
 .btn:hover:not(:disabled) { background: #1b3f74; }
 .btn:active:not(:disabled) { transform: translateY(1px); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+/* A link styled as a button stays one box: it never splits across lines or overlaps its neighbor. */
+a:where(.btn) { display: inline-block; text-align: center; text-decoration: none; box-sizing: border-box; vertical-align: middle; }
+a:where(.btn-inline) { margin: 4px 0; max-width: 100%; }
 .btn-ghost { background: transparent; color: var(--navy); border: 1.5px solid var(--line); }
 .btn-ghost:hover:not(:disabled) { background: var(--warm-tint); }
 
@@ -205,6 +208,8 @@ details.menu[open] summary { background: #eef2f9; border-color: var(--navy); }
 .crumb button:hover { text-decoration: underline; }
 .crumb-here { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .crumb-here::before { content: "/"; margin-right: 8px; color: var(--line); }
+.crumb-back { border-right: 1px solid var(--line) !important; padding-right: 12px !important; margin-right: 4px; }
+.crumb-section { padding-left: 0 !important; }
 .tabbar { display: none; }
 @media (max-width: 720px) {
   .strip-links { display: none; }
