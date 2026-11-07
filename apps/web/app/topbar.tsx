@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { supabase } from "../lib/supabase";
+import { noteSignIn } from "../lib/signin-seen";
 import { pickStudent, rememberStudent, useCurrentStudent } from "../lib/current-student";
 import { Brand } from "./brand";
 import { HelpButton, HelpLayer } from "./help/balloons";
@@ -80,6 +81,7 @@ export function TopBar() {
       const role: NavRole = rows.some((r) => r.role === "parent") ? "parent" : own ? "student" : "none";
       const students = (st.data as Who["students"]) ?? [];
       setWho({ role, students, own, admin: adm.data === true, tester: tst.data === true });
+      if (role !== "none") void noteSignIn(sb);
       setCurrent((c) => (c && students.some((x) => x.id === c) ? c : role === "parent" ? pickStudent(students, students[0]?.id) : own));
     })();
   }, [sb, signedIn, setCurrent]);

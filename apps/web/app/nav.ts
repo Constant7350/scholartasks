@@ -145,6 +145,7 @@ export const NAV: NavItem[] = [
   { href: "/admin/openings", label: "Review local openings", icon: "🧰", roles: ALL, group: "team" },
   { href: "/admin/schools", label: "Approve schools", icon: "🏫", roles: ALL, group: "team" },
   { href: "/admin/ratings", label: "App ratings and notes", icon: "⭐", roles: ALL, group: "team" },
+  { href: "/admin/families", label: "Family accounts to look at", icon: "👪", roles: ALL, group: "team" },
   { href: "/admin/challenges", label: "Essay challenges: judge and prizes", icon: "🏆", roles: ALL, group: "team" },
   { href: "/admin/consents", label: "Signed consents and audit trail", icon: "✍️", roles: ALL, group: "team" },
   { href: "/check", label: "Spanish check page", icon: "🇪🇸", roles: ALL, group: "team" },

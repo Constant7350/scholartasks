@@ -25,6 +25,7 @@ export default function Privacy() {
         <li><strong>Family details:</strong> your family name, and for each student their first name, birth date, grade, state and the permissions you choose.</li>
         <li><strong>Planning details you add:</strong> such as courses, grades, test scores, colleges and scholarships you are interested in, and deadlines.</li>
         <li><strong>Basic technical data:</strong> sign-in times, device and browser type, and error logs, used to keep the service secure and working.</li>
+        <li><strong>Sign-in device and network:</strong> we keep sign-in device and network information to keep accounts secure and to spot account sharing. This is a random device id made by the app, a scrambled (one-way) form of the network address and the day, kept for 90 days. We never keep it for students under 13 and never use it for location or ads.</li>
       </ul>
       <p>
         We never ask for or store FAFSA FSA ID passwords, Social Security numbers or bank account numbers. When a form needs those, you enter them
