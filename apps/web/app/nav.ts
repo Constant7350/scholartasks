@@ -62,10 +62,10 @@ export const NAV: NavItem[] = [
   // Explore: what fits, and where it leads
   { href: "/career-quiz", label: "Career quiz", short: "Career quiz", icon: "🧩", roles: ALL, group: "explore" },
   { href: "/colleges", label: "Find colleges", short: "Find colleges", icon: "🔎", roles: ALL, group: "explore" },
-  { href: "/majors", label: "Search colleges by major", short: "By major", icon: "🧭", roles: ALL, group: "explore", inMenu: false },
+  { href: "/majors", label: "Search colleges by major", short: "Colleges by major", icon: "🧭", roles: ALL, group: "explore", inMenu: false },
   { href: "/colleges/compare", label: "Compare colleges", short: "Compare", icon: "📊", roles: ALL, group: "explore", inMenu: false },
   { href: "/trades", label: "Trades and trade schools", short: "Trades", icon: "🔧", roles: ALL, group: "explore" },
-  { href: "/trades/openings", label: "Apprenticeships and local openings", short: "Openings", icon: "🧰", roles: ALL, group: "explore" },
+  { href: "/trades/openings", label: "Apprenticeships and local openings", short: "Apprenticeships", icon: "🧰", roles: ALL, group: "explore" },
   { href: "/jobs", label: "Weekend and holiday jobs", short: "Jobs", icon: "🛍️", roles: ALL, group: "explore" },
   { href: "/military", label: "Military paths", short: "Military", icon: "🎖️", roles: ALL, group: "explore" },
 
@@ -92,11 +92,11 @@ export const NAV: NavItem[] = [
   { href: "/plan/offers", label: "Compare aid offers", short: "Offers", icon: "⚖️", roles: ALL, group: "money", inMenu: false },
 
   // Family and account
-  { href: "/family", label: "Family, students and permissions", icon: "👪", roles: ["parent"], group: "family" },
-  { href: "/family", label: "Set up my family (parents)", icon: "👪", roles: ["none"], group: "family" },
-  { href: "/join", label: "I'm a student: join with a code", icon: "🔑", roles: ["none"], group: "family" },
+  { href: "/family", label: "Family, students and permissions", short: "Family", icon: "👪", roles: ["parent"], group: "family" },
+  { href: "/family", label: "Set up my family (parents)", short: "Set up family", icon: "👪", roles: ["none"], group: "family" },
+  { href: "/join", label: "I'm a student: join with a code", short: "Join with a code", icon: "🔑", roles: ["none"], group: "family" },
   { href: "/my-school", label: "My school (connect to your counselor)", short: "My school", icon: "🏫", roles: ["parent", "student"], group: "family" },
-  { href: "/school", label: "School counselor portal (free)", icon: "🏫", roles: ["none", "parent"], group: "family" },
+  { href: "/school", label: "School counselor portal (free)", short: "Counselor portal", icon: "🏫", roles: ["none", "parent"], group: "family" },
   { href: "/security", label: "Face ID, sign-in and account", short: "Account", icon: "🔐", roles: ALL, group: "family" },
   { href: "/billing", label: "Plan and billing", short: "Billing", icon: "💳", roles: ["parent", "student"], group: "family", webOnly: true },
 
