@@ -215,7 +215,11 @@ export function TopBar() {
                 ) : groups.map((g) => {
                   const list = listed.filter((i) => i.group === g.key);
                   if (!list.length) return null;
-                  return section(g.key, g.title, g.key.startsWith("team") ? list.map((i) => link(i, "menu-item", navLabel(i, lang))) : <div className="menu-tiles">{list.map(tile)}</div>, g.icon);
+                  // Team pages: one "Team review" tile opens the admin home, which lists every team page
+                  // as an icon (Constant, 2026-11-07). A tester who is not on the team only has the Spanish check.
+                  if (g.key === "teamTools") return null;
+                  if (g.key === "team") return section(g.key, g.title, <div className="menu-tiles">{tile(list.find((i) => i.href === "/admin") ?? list[0]!)}</div>, g.icon);
+                  return section(g.key, g.title, <div className="menu-tiles">{list.map(tile)}</div>, g.icon);
                 })}
                 {!query && section("look", t.look, <><ThemePicker /><LangPicker /></>, "🎨")}
                 <div className="menu-small">
