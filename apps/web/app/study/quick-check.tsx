@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Check } from "./lessons";
 
 /** Multiple-choice checks with instant feedback. Free, no AI. */
-export function QuickCheck({ checks }: { checks: Check[] }) {
+export function QuickCheck({ checks, onDone }: { checks: Check[]; onDone?: (right: number) => void }) {
   const [picked, setPicked] = useState<(number | null)[]>(checks.map(() => null));
   const answered = picked.filter((p) => p !== null).length;
   const right = picked.filter((p, i) => p === checks[i]!.answer).length;
+  useEffect(() => { if (answered === checks.length) onDone?.(right); }, [answered]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div>
       {checks.map((c, i) => {

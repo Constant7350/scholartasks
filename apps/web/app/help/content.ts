@@ -1226,9 +1226,11 @@ export const TOPICS: Topic[] = [
     area: "Study and practice",
     title: "The study skills library",
     href: "/study",
-    keywords: ["study", "lessons", "skills", "how to study", "focus", "timer", "planner", "spacing", "free"],
-    summary: "Short lessons on how to study, each with a quick check and a small project to try this week. Free, and no AI used.",
+    keywords: ["study", "lessons", "skills", "how to study", "focus", "timer", "planner", "spacing", "free", "drills", "practice test", "math", "science", "history", "english", "memorize", "flashcards"],
+    summary: "Short lessons on how to study, each with a quick check, practice drills in four subjects and a small project to try this week. Free, and no AI used.",
     body: [
+      "Every lesson has practice drills in math, science, history and English, because each method works differently by subject. Math and science drills build understanding: worked examples, find the mistake, explain why. History drills build memory: study a short card, hide it, then recall names, dates and causes.",
+      "Pick a subject with the buttons at the top of the drills. The app remembers your pick for the next lesson, and a ✓ shows the subjects you finished on this device.",
       "Some lessons include tools: a review planner that spreads study out before a test, a focus timer, and a weekly plan saved on this device.",
       "Tap \"I finished this lesson\" when done (parents see \"Mark finished\"). Parents can see how many lessons their student has finished.",
       "Lessons marked Draft are still being checked by our review team.",
@@ -1453,6 +1455,7 @@ export const TIPS: Tip[] = [
   { routes: ["*"], sel: ".icon-tabs", body: "Tap an icon to open that part of the page. Only one part shows at a time, so there is no long scrolling.", topic: "home" },
   { routes: ["*"], sel: ".menu-search input", body: "Type a word, like FAFSA or compare, to find any page.", topic: "home" },
   { routes: ["*"], sel: ".pagestrip .student-switch", body: "Which student you are looking at. Pick another name and every page switches to that student.", topic: "home" },
+  { routes: ["/study/*"], sel: ".drill-tabs", body: "Pick a subject to practice this method in. Math and science drills build understanding; history drills build memory.", topic: "study" },
   { routes: ["/home", "/plan", "/todo", "/grades", "/counselor", "/homework", "/scholarships", "/aid", "/study", "/practice"], sel: ".tabs:not(.sch-tabs):not(.todo-tabs):not(.space-tabs)", body: "Tap a name to switch between your students.", topic: "home" },
 
   // Transcripts and letters
