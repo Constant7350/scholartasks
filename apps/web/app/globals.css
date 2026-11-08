@@ -466,6 +466,21 @@ a.tile:hover { border-color: var(--navy); box-shadow: 0 6px 18px rgba(12, 31, 61
 .timer-num { font-size: 44px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
 .lesson-review-head { all: unset; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
 .checkin-q .chips { justify-content: flex-start; }
+.drill-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; background: var(--warm-tint); border-radius: 10px; padding: 4px; margin: 4px 0 14px; }
+.drill-tabs button { font: inherit; font-size: 14px; font-weight: 600; border: 0; background: none; padding: 9px 4px; border-radius: 8px; color: var(--muted); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drill-tabs button[aria-selected="true"] { background: #fff; color: var(--navy); box-shadow: 0 1px 3px rgba(12, 31, 61, 0.12); }
+.drill-title { margin: 0 0 4px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.drill-title .pill { margin: 0; }
+.pill-understand { background: #e7eefb; color: #1f4e9c; }
+.pill-memory { background: #f6ebd9; color: #8a5a00; }
+.drill-how { margin: 0 0 12px; }
+.drill-card { margin: 0 0 14px; padding: 14px 16px; border: 1px dashed var(--line); border-radius: var(--radius); background: #fdfaf5; }
+.drill-card ul { margin: 6px 0 10px; padding-left: 20px; }
+.drill-card li { margin-bottom: 6px; }
+.drill-explain { margin: 4px 0 14px; }
+.drill-explain textarea { min-height: 72px; resize: vertical; }
+.drill-turn { margin: 8px 0 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+@media (max-width: 420px) { .drill-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .practice-tile { font: inherit; text-align: left; cursor: pointer; }
 .tutor-box { margin-top: 12px; }
 

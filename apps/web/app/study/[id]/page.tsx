@@ -7,6 +7,7 @@ import { NotConfigured, Page } from "../../ui";
 import { loadStudy, type StudyContext } from "../context";
 import { bandFor, lessonById, LESSONS } from "../lessons";
 import { QuickCheck } from "../quick-check";
+import { DrillPractice } from "../drill-practice";
 import { FocusTimer, SpacingPlanner, WeekPlanner } from "../tools";
 import { rememberedStudent } from "../../../lib/current-student";
 
@@ -77,6 +78,13 @@ export default function LessonPage() {
       <section className="panel">
         <h2>Quick check</h2>
         <QuickCheck checks={lesson.checks} />
+      </section>
+
+      <section className="panel">
+        <h2>Practice it in your subjects</h2>
+        <p className="hint" style={{ marginTop: 0 }}>The same method works differently in each class. Pick a subject.</p>
+        {ctx.reviews[`${lesson.id}-drills`] !== "approved" && <p className="hint" style={{ fontSize: 12, marginTop: -6 }}>Draft: our review team is still checking these drills.</p>}
+        <DrillPractice lessonId={lesson.id} />
       </section>
 
       <section className="panel">

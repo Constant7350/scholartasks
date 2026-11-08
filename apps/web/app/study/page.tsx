@@ -38,7 +38,7 @@ export default function StudyLibraryPage() {
   return (
     <Page title={title}>
       <PageTabs label="Study pages" here="/study" tabs={STUDY_PAGES} />
-      <p className="hint" style={{ marginTop: -8 }}>Short, free lessons on how to study, each with a quick check.</p>
+      <p className="hint" style={{ marginTop: -8 }}>Short, free lessons on how to study, each with a quick check and practice drills in math, science, history and English.</p>
       {ctx.role === "parent" && ctx.students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {ctx.students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>)}
@@ -52,7 +52,7 @@ export default function StudyLibraryPage() {
             <b>{l.title}</b>
             <span className="hint">{l.summary}</span>
             <span className="lesson-meta">
-              {l.minutes} min{l.tool ? " · interactive tool" : ""}
+              {l.minutes} min{" · 4 subject drills"}{l.tool ? " · interactive tool" : ""}
               {done.has(l.id) && <span className="pill pill-ok">✓ Done</span>}
               {ctx.reviews[l.id] !== "approved" && <span className="pill">Draft</span>}
             </span>
