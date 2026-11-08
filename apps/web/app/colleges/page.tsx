@@ -11,7 +11,8 @@ import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../lib/colleges";
 import { STATE_NAMES } from "../../lib/trades";
-import { exploreView } from "../nav";
+import { exploreView, youngView } from "../nav";
+import { ParentsOnlyForNow } from "../look-ahead/gate";
 
 interface Student extends CostStudent { first_name: string; match_profile: (MatchProfile & { show_all_pages?: boolean }) | null }
 
@@ -102,6 +103,7 @@ export default function CollegesPage() {
   if (!ready) return <Page title="Find colleges"><p className="hint">Loading…</p></Page>;
   if (offline) return <Page title="Find colleges"><div className="panel"><h2>Almost ready</h2><p className="hint" style={{ margin: 0 }}>The college list is switching on. Check back shortly.</p></div></Page>;
   if (!student) return <Page title="Find colleges"><p className="hint">Add a student on the <a href="/family">Family</a> page first.</p></Page>;
+  if (!isParent && youngView(student)) return <ParentsOnlyForNow title="Find colleges" />;
 
   const search = async () => {
     setBusy(true); setError(null);

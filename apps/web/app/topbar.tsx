@@ -122,7 +122,9 @@ export function TopBar() {
   const stageKid = kids.find((k) => k.id === (isParent ? current : who?.own)) ?? kids[0];
   const stage: Stage = stageOf(stageKid?.grade_level);
   const showAll = !stageKid || stage === "apply" || !!stageKid.match_profile?.show_all_pages;
-  const shown = (i: NavItem) => showAll || inStage(i, stage);
+  const shown = (i: NavItem) => i.onlyIn
+    ? !!stageKid && !stageKid.match_profile?.show_all_pages && i.onlyIn.includes(stage)
+    : showAll || inStage(i, stage);
   const stageInfo = STAGES.find((x) => x.key === stage)!;
 
   // The menu shows every page at once (Constant, 2026-11-07: no folding): each section is a small

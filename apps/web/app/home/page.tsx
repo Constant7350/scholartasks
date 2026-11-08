@@ -130,7 +130,7 @@ export default function Home() {
   const shortcuts: Cut[] = stage === "explore" ? [
     ["🧩", "Career quiz", "/career-quiz"], ["🎓", "Grades", "/grades"], ["📚", "Study skills", "/study"], ["🔧", "Careers", "/trades"],
     ...(isParent
-      ? [["👪", "My students", "/students"], ["👤", "My space", "/parent"], ["🤖", "Counselor", "/counselor"], ["🔎", "Colleges", "/colleges"]] as Cut[]
+      ? [["👪", "My students", "/students"], ["👤", "My space", "/parent"], ["🤖", "Counselor", "/counselor"], ["🔭", "Look ahead", "/look-ahead"]] as Cut[]
       : [["🦉", "Homework", "/homework"], ["✏️", "Practice", "/practice"], ["🏆", "Challenge", "/challenge"], ["🤖", "Counselor", "/counselor"]] as Cut[]),
   ] : stage === "build" ? [
     ["🗓️", "Course plan", "/grades/plan"], ["🎓", "Grades", "/grades"], ["🏅", "Activities", "/activities"], ["🔎", "Colleges", "/colleges"],

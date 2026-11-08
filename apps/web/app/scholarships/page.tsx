@@ -12,7 +12,8 @@ import { useShowMore } from "../show-more";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import type { Choice, Row } from "./types";
 import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
-import { exploreView } from "../nav";
+import { exploreView, youngView } from "../nav";
+import { ParentsOnlyForNow } from "../look-ahead/gate";
 
 
 interface Student {
@@ -174,6 +175,8 @@ export default function ScholarshipsPage() {
 
   if (!sb) return <Page title={title}><NotConfigured /></Page>;
   if (!list) return <Page title={title}><p className="hint">Loading…</p></Page>;
+
+  if (role === "student" && youngView(student)) return <ParentsOnlyForNow title={title} />;
 
   return (
     <Page title={title}>

@@ -102,7 +102,7 @@ export const EMOJI: Record<string, string> = {
   "🦉": "owl", "🤖": "robot", "📚": "book", "📖": "book", "🔑": "key", "🏫": "school", "🏛️": "bank", "🔐": "lock", "🔒": "lock",
   "❓": "help", "⭐": "star", "🌟": "spark", "✨": "spark", "☰": "menu", "🚪": "logout", "⚽": "ball", "💡": "bulb", "➕": "plus", "🩺": "steth",
   "🛡️": "shield", "🛟": "ring", "🗑️": "trash", "🔗": "link", "💬": "chat", "🎯": "target", "⏱️": "timer", "⏰": "timer", "ℹ️": "info", "🎨": "palette",
-  "⚙️": "gear", "🌎": "globe", "🌍": "globe", "🎤": "mic", "🔊": "mic", "🚩": "flag", "❤️": "heart", "💛": "heart", "☀️": "sun", "🌱": "leaf", "📍": "pin", "📱": "phone", "👀": "eye", "🖨️": "print",
+  "⚙️": "gear", "🌎": "globe", "🌍": "globe", "🎤": "mic", "🔊": "mic", "🚩": "flag", "❤️": "heart", "💛": "heart", "☀️": "sun", "🌱": "leaf", "📍": "pin", "📱": "phone", "👀": "eye", "🔭": "eye", "🖨️": "print",
   "📣": "share", "🧪": "bug", "🎵": "music", "🌲": "trees", "🐴": "horse", "🧬": "flask", "🚀": "rocket", "❌": "cross", "⚠️": "warn", "📜": "file", "🎒": "bag", "🗒️": "note", "🗃️": "folder", "📌": "pin", "🧮": "chart",
 };
 
