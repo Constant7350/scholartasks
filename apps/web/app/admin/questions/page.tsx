@@ -5,8 +5,9 @@ import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
 import { ReviewNav, chunks, DoneRow, OneHeader, ReviewBar, StatusPill, useMode, whenOf, type Done } from "../review-kit";
 
-interface Q { id: string; reviewed_at: string | null; passage: string | null; subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null; status: "pending" | "approved" | "rejected" }
+interface Q { id: string; level: number | null; reviewed_at: string | null; passage: string | null; subject: string; topic: string; kind: "mc" | "written"; question: string; options: string[] | null; answer_index: number | null; model_answer: string | null; explanation: string | null; status: "pending" | "approved" | "rejected" }
 interface Edit { passage: string; question: string; options: string[]; answer_index: number; model_answer: string; explanation: string; topic: string }
+const LEVEL_NAMES = ["Foundation", "Core", "Strong", "Advanced", "Expert"];
 const TABS = [["pending", "Waiting for review"], ["approved", "Approved"], ["rejected", "Rejected"]] as const;
 
 export default function QuestionReviewPage() {
@@ -29,11 +30,16 @@ export default function QuestionReviewPage() {
     const isAdmin = await sb.rpc("is_app_admin");
     setAdmin(isAdmin.data === true);
     if (isAdmin.data !== true) return;
-    const { data, error: e } = await sb.from("practice_questions")
-      .select("id, passage, subject, topic, kind, question, options, answer_index, model_answer, explanation, status, reviewed_at")
-      .eq("status", tab).order("subject").order("kind").order("passage", { nullsFirst: true }).order("topic").limit(1000);
-    if (e) setError(friendly(e));
-    const list = (data as Q[]) ?? [];
+    // The bank has more than 1,000 questions, so read it a page at a time.
+    const list: Q[] = [];
+    for (let from = 0; from < 10000; from += 1000) {
+      const { data, error: e } = await sb.from("practice_questions")
+        .select("*")
+        .eq("status", tab).order("subject").order("kind").order("passage", { nullsFirst: true }).order("topic").order("id").range(from, from + 999);
+      if (e) { setError(friendly(e)); break; }
+      list.push(...((data as Q[]) ?? []));
+      if ((data ?? []).length < 1000) break;
+    }
     setRows(list);
     setDone({}); setSkipped([]); setEdits({});
     setSubjects((prev) => Array.from(new Set([...prev, ...list.map((q) => q.subject)])).sort());
@@ -139,7 +145,7 @@ export default function QuestionReviewPage() {
           <section key={q.id} className="panel review">
             <div className="review-head">
               <StatusPill status={q.status === "approved" ? "ok" : q.status === "pending" ? "wait" : "off"} label={q.status === "approved" ? "✓ Approved" : q.status === "pending" ? "Waiting for review" : "Rejected"} />
-              <span className="hint" style={{ fontSize: 12 }}>{q.subject} · {q.kind === "mc" ? "Multiple choice" : "Written answer (AI checks it)"}{q.reviewed_at && !d ? ` · last saved ${whenOf(q.reviewed_at)}` : ""}</span>
+              <span className="hint" style={{ fontSize: 12 }}>{q.subject} · {q.kind === "mc" ? "Multiple choice" : "Written answer (AI checks it)"}{q.level ? ` · ${LEVEL_NAMES[q.level - 1]} level` : ""}{q.reviewed_at && !d ? ` · last saved ${whenOf(q.reviewed_at)}` : ""}</span>
               {d && <span className="pill pill-ok" role="status">✓ Changes saved {d.at.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}</span>}
               {edits[q.id] && <span className="unsaved">● Not saved yet</span>}
             </div>
