@@ -650,10 +650,11 @@ export const TOPICS: Topic[] = [
     area: "Getting started",
     title: "Why a younger student sees fewer pages (grades 6 to 10)",
     href: "/family",
-    keywords: ["stage", "hidden", "missing page", "where is", "grade 6", "grade 7", "grade 8", "grade 9", "grade 10", "middle school", "freshman", "sophomore", "show every page", "college list missing", "FAFSA missing"],
+    keywords: ["stage", "hidden", "missing page", "where is", "grade 6", "grade 7", "grade 8", "grade 9", "grade 10", "middle school", "freshman", "sophomore", "show every page", "college list missing", "FAFSA missing", "too many scholarships", "all colleges", "seventh grader"],
     summary: "The menu, main tabs and Home follow each student's grade. Grades 6 to 8 see grades, study skills, the career quiz and careers; grades 9 and 10 add the course plan, activities, PSAT, early scholarships and a first look at colleges; grades 11 and 12 see everything.",
     steps: [
       "Nothing is removed. Menu search still finds every page, and the full app opens by itself when the grade changes to 11.",
+      "Scholarships shows the awards and essay contests open to the student's grade now, so a 7th grader never gets a senior's list. Until grade 11, College list shows ways to explore colleges instead of application deadlines. Each page has a button to see the full list anyway.",
       "To see every page sooner, open Menu, then Family, pick the student's tab and check Show every page.",
       "Parents with students in different grades see each student's pages when that student is chosen at the top.",
     ],

@@ -204,5 +204,12 @@
   "<1>Remember me</1> on this device<2>{x}</2>": "<1>Recordarme</1> en este dispositivo<2>{x}</2>",
   "Stay signed in and keep your email filled in.": "Mantener la sesión iniciada y recordar mi correo.",
   "You'll be signed out when you close this browser. Good for shared or school computers.": "Se cerrará tu sesión cuando cierres este navegador. Bueno para computadoras compartidas o de la escuela.",
-  "Made ready step by step; school awards sent here": "Se preparan paso a paso; las becas de la escuela se envían aquí"
+  "Made ready step by step; school awards sent here": "Se preparan paso a paso; las becas de la escuela se envían aquí",
+  "Open to {firstname} in grade {g} now": "Abiertas para {firstname} en el grado {g} ahora",
+  "· essay challenge · closes {dateText}": "· reto de ensayo · cierra el {dateText}",
+  "Nothing is open for grade {g} right now. New contests come out from time to time, so check back.": "No hay nada abierto para el grado {g} por ahora. Salen concursos nuevos de vez en cuando, así que vuelve a revisar.",
+  "🎓 Grades": "🎓 Notas",
+  "Later grades": "Grados más adelante",
+  "{laterCount} more scholarships open in a later grade, most in 11th and 12th grade. What helps most now: good grades (from 9th grade on they count for most scholarships), trying a few activities, and the career quiz.": "{laterCount} becas más se abren en un grado más adelante, la mayoría en los grados 11 y 12. Lo que más ayuda ahora: buenas notas (desde el grado 9 cuentan para la mayoría de las becas), probar algunas actividades y el test «¿Qué carrera me queda?».",
+  "See the full list anyway": "Ver la lista completa de todos modos"
 }

@@ -11,8 +11,9 @@ import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
 import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostStudent } from "../../lib/colleges";
 import { STATE_NAMES } from "../../lib/trades";
+import { exploreView } from "../nav";
 
-interface Student extends CostStudent { first_name: string; match_profile: MatchProfile | null }
+interface Student extends CostStudent { first_name: string; match_profile: (MatchProfile & { show_all_pages?: boolean }) | null }
 
 const FIT: Record<Fit, { label: string; cls: string; hint: string }> = {
   likely: { label: "Likely", cls: "pill-ok", hint: "Your grades, rigor and scores are above most admitted students'." },
@@ -166,6 +167,7 @@ export default function CollegesPage() {
       {mine
         ? <p className="hint">Five quick questions, then Save keeps a college on your own list to share with {student.first_name} later.</p>
         : <p className="hint">Five quick questions, then tap Add to put a college on your list. Prices are for your family.</p>}
+      {!mine && exploreView(student) && <p className="note note-info">Just exploring: in grade {student.grade_level} there is nothing to apply to yet. Look around and add any college you like, to come back to later.</p>}
 
       <section className="panel quiz">
         {pick("1. Where?", [["home", STATE_NAMES[student.state] ?? "My state"], ["region", "The Southeast"], ["anywhere", "Anywhere in the U.S."]], "where")}

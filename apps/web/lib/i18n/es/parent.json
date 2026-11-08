@@ -150,5 +150,7 @@
   "Sign-offs": "Firmas",
   "What you save from these searches goes on your own lists here, not on {name}'s plan.": "Lo que guarde en estas búsquedas va a sus propias listas aquí, no al plan de {name}.",
   "Your own lists and notes. Nothing here goes on {name}'s plan until you add it, and {name2} sees only what you share.": "Sus propias listas y notas. Nada de aquí va al plan de {name} hasta que usted lo agregue, y {name2} solo ve lo que usted comparte.",
-  "{name}'s plan": "Plan de {name}"
+  "{name}'s plan": "Plan de {name}",
+  "Explore stage (grades 6-8)": "Etapa Explorar (grados 6 a 8)",
+  "Build stage (grades 9-10)": "Etapa Construir (grados 9 y 10)"
 }

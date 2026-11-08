@@ -12,13 +12,15 @@ import { useShowMore } from "../show-more";
 import { pickStudent, useCurrentStudent } from "../../lib/current-student";
 import type { Choice, Row } from "./types";
 import { SpaceSwitch, myPicks, savePick, useSpace } from "../../lib/parent-space";
+import { exploreView } from "../nav";
 
 
 interface Student {
   id: string; first_name: string; grade_level: number; state: string; sat: number | null; act: number | null;
   income_band: IncomeBand | null; permissions: Record<string, boolean>; weight_rigor?: number; weight_honors?: number;
-  match_profile: MatchProfile | null;
+  match_profile: (MatchProfile & { show_all_pages?: boolean }) | null;
 }
+interface OpenChallenge { id: string; title: string; grade_min: number; grade_max: number; closes_at: string; status: string }
 interface AppRow { student_id: string; scholarship_id: string; status: ApplicationStatus; amount_won: number | null }
 interface GradeRow { student_id: string; course: string; grade: CourseGrade["grade"]; level: CourseGrade["level"]; core: boolean; grade_level: number; term: string }
 
@@ -45,7 +47,10 @@ export default function ScholarshipsPage() {
   const [tab, setTab] = useState<Tab | null>(null);
   const [space, setSpace] = useSpace();
   const [onMine, setOnMine] = useState<Set<string>>(new Set());
-  useEffect(() => setTab(null), [current]);
+  const [challenges, setChallenges] = useState<OpenChallenge[]>([]);
+  // Grades 6 to 10 see only what is open to their grade now; this shows the full high school list anyway.
+  const [seeAll, setSeeAll] = useState(false);
+  useEffect(() => { setTab(null); setSeeAll(false); }, [current]);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -72,6 +77,9 @@ export default function ScholarshipsPage() {
     setChoices((ch.data as Choice[]) ?? []);
     setColleges((cl.data as { student_id: string; name: string }[]) ?? []);
     setApps((ap.data as AppRow[]) ?? []);
+    // Essay challenges (contests) open now; missing table or no rows just means none to show.
+    const chal = await sb.from("challenges").select("id, title, grade_min, grade_max, closes_at, status").eq("status", "open");
+    setChallenges(chal.error ? [] : (chal.data as OpenChallenge[]) ?? []);
     if (sc.error) setError(friendly(sc.error));
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
@@ -157,6 +165,11 @@ export default function ScholarshipsPage() {
   };
 
   const title = "Scholarships and grants";
+  const early = !!student && exploreView(student) && !seeAll;
+  const g = student?.grade_level ?? 0;
+  const openNow = early ? results.filter((x) => choiceOf(x.s.id)?.choice !== "hidden" && (choiceOf(x.s.id)?.choice === "added" || (x.s.grades.includes(g) && (x.r.status === "match" || x.r.status === "maybe")))) : [];
+  const laterCount = early ? results.filter((x) => !openNow.includes(x)).length : 0;
+  const contests = early ? challenges.filter((c) => g >= c.grade_min && g <= c.grade_max && new Date(c.closes_at).getTime() > Date.now()) : [];
   const { shown: someInTab, more: moreInTab } = useShowMore(groups[shownTab], 8, `${shownTab}|${current}|${space}`);
 
   if (!sb) return <Page title={title}><NotConfigured /></Page>;
@@ -176,7 +189,33 @@ export default function ScholarshipsPage() {
       {!student && <p className="note note-info">Add a student on the <a href="/family">Family</a> page to see matches.</p>}
       {error && <p className="note note-err" role="alert">{error}</p>}
 
-      {student && (
+      {student && early && (
+        <>
+          <section className="panel">
+            <h2>Open to {student.first_name} in grade {g} now</h2>
+            {contests.map((c) => (
+              <p key={c.id} style={{ margin: "0 0 8px" }}>🏆 <a href="/challenge">{c.title}</a> <span className="hint">· essay challenge · closes {dateText(c.closes_at.slice(0, 10))}</span></p>
+            ))}
+            {openNow.length === 0 && contests.length === 0 && <p className="hint" style={{ margin: 0 }}>Nothing is open for grade {g} right now. New contests come out from time to time, so check back.</p>}
+          </section>
+          {openNow.map(({ s, r }) => (
+            <ScholarshipCard key={s.id} s={s} r={r} choice={choiceOf(s.id)} app={appOf(s.id)} applyHref={applyLink(s.id)} onAdd={addToDeadlines} onHide={hide}
+              mine={inMySpace ? { saved: onMine.has(s.id), name: student.first_name, onSave: saveMine } : undefined} />
+          ))}
+          <section className="panel">
+            <h2>Later grades</h2>
+            <p className="hint" style={{ marginTop: 0 }}>{laterCount} more scholarships open in a later grade, most in 11th and 12th grade. What helps most now: good grades (from 9th grade on they count for most scholarships), trying a few activities, and the career quiz.</p>
+            <div className="kid-links">
+              <a className="btn btn-ghost btn-inline btn-sm link-btn" href="/career-quiz">🧩 Career quiz</a>
+              <a className="btn btn-ghost btn-inline btn-sm link-btn" href="/grades">🎓 Grades</a>
+              <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setSeeAll(true)}>See the full list anyway</button>
+            </div>
+            {role === "parent" && <p className="hint" style={{ margin: "10px 0 0", fontSize: 13 }}>To show every page for {student.first_name} all the time, turn on Show every page on the <a href="/family">Family</a> page.</p>}
+          </section>
+        </>
+      )}
+
+      {student && !early && (
         <>
           <ProfileCard key={student.id} student={student} isParent={role === "parent"} seesIncome={seesIncome} onSaved={load} />
           {myApps.length > 0 && (

@@ -12,8 +12,9 @@ import { CollegePicker } from "../colleges/college-picker";
 import { ScholarshipPicker } from "./scholarship-picker";
 import { CostPanel } from "./cost-panel";
 import { TextReminders } from "./text-reminders";
+import { exploreView } from "../nav";
 
-interface Student extends CostStudent { first_name: string; permissions: Record<string, boolean> }
+interface Student extends CostStudent { first_name: string; permissions: Record<string, boolean>; match_profile?: { show_all_pages?: boolean } | null }
 interface College {
   id: string; student_id: string; name: string; plan: string; deadline: string | null; status: string; approved: boolean; notes: string | null;
   college_id: number | null; aid_offer: number | null; created_by: string | null;
@@ -64,6 +65,9 @@ export default function PlanPage() {
   const [known, setKnown] = useState<CollegeDeadline[]>([]);
   const [filled, setFilled] = useState<FilledDeadline | null>(null);
   const [typedDate, setTypedDate] = useState(false);
+  // Grades 6 to 10 start on a light "explore colleges" view; this opens the full list and deadlines anyway.
+  const [seeAll, setSeeAll] = useState(false);
+  useEffect(() => setSeeAll(false), [current]);
   const pickCollege = async (name: string, c: CollegeRow | null) => {
     setCollege((x) => ({ ...x, name, collegeId: c?.id ?? null, url: c?.url ?? null }));
     const dates = c ? await loadCollegeDeadlines(sb!, [c.id]) : [];
@@ -174,6 +178,32 @@ export default function PlanPage() {
           </div>
           <a className="btn btn-inline link-btn" href="/family">Add a student</a>
         </div>
+      </Page>
+    );
+
+  // Grades 6 to 10 with nothing on the list yet: no application deadlines, just ways to look around.
+  if (exploreView(student) && !seeAll && myColleges.length === 0)
+    return (
+      <Page title={isParent ? `Colleges for ${student.first_name}` : "Colleges"}>
+        {isParent && students.length > 1 && (
+          <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
+            {students.map((s) => (
+              <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => setCurrent(s.id)}>{s.first_name}</button>
+            ))}
+          </div>
+        )}
+        <section className="panel">
+          <h2>No college applications yet in grade {student.grade_level}</h2>
+          <p className="hint" style={{ marginTop: 0 }}>The college list, application deadlines and reminders open in 11th grade. For now, look around and see what fits.</p>
+          <div className="kid-links">
+            <a className="btn btn-inline btn-sm link-btn" href="/colleges">🔎 Explore colleges</a>
+            <a className="btn btn-ghost btn-inline btn-sm link-btn" href="/career-quiz">🧩 Career quiz</a>
+            <a className="btn btn-ghost btn-inline btn-sm link-btn" href="/trades">🔧 Trades</a>
+            <a className="btn btn-ghost btn-inline btn-sm link-btn" href="/military">🎖️ Military paths</a>
+          </div>
+        </section>
+        <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setSeeAll(true)}>Open the full college list anyway</button>
+        {isParent && <p className="hint" style={{ fontSize: 13 }}>To show every page for {student.first_name} all the time, turn on Show every page on the <a href="/family">Family</a> page.</p>}
       </Page>
     );
 
