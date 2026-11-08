@@ -26,7 +26,7 @@ export function waitingFrom(name: (id: string | null) => string, r: Rows): Waiti
   const okd = new Set(((r.perms as { challenge_id: string; student_id: string }[] | null) ?? []).map((p) => `${p.challenge_id}:${p.student_id}`));
   for (const e of (r.entries as { challenge_id: string; student_id: string; challenges: { title: string; status: string } | null }[] | null) ?? []) {
     if (okd.has(`${e.challenge_id}:${e.student_id}`) || e.challenges?.status !== "open") continue;
-    w.push({ key: `challenge-${e.challenge_id}-${e.student_id}`, icon: "🏆", text: `${name(e.student_id)} is writing for the essay challenge "${e.challenges.title}"`, href: "/challenge", action: "Read the rules and sign" });
+    w.push({ key: `challenge-${e.challenge_id}-${e.student_id}`, icon: "🏆", text: `${name(e.student_id)} wants to take part in the challenge "${e.challenges.title}"`, href: "/challenge", action: "Read the rules and sign" });
   }
   return w;
 }

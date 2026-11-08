@@ -7,15 +7,15 @@ import { NotConfigured, Page } from "../ui";
 import { SignConsent } from "../sign-consent";
 import { ReportAi } from "../report-ai";
 import { VoiceButton } from "../voice";
+import { PrizePickup, type MyPrize } from "./prize-pickup";
+import { Competition } from "./competition";
 import {
-  type Challenge, type Entry, POLISH, RULES_VERSION, countWords, day, grades, level, money, permissionWording, prizeText, steps,
+  type Challenge, type Entry, POLISH, isCompetition, RULES_VERSION, countWords, day, grades, level, money, permissionWording, prizeText, steps,
 } from "../../lib/challenge";
 
 interface Student { id: string; first_name: string; grade_level: number; birth_date: string }
 interface Permission { challenge_id: string; student_id: string; public_name_ok: boolean }
 interface Coach { strengths: string[]; improve: string[]; answers_topic: string; next_step: string }
-interface MyPrize { kind: string; amount: number; status: string; paid_on: string | null; brand: string | null; ready: boolean; picked_up_at: string | null }
-interface Gift { brand: string | null; amount: number; code: string | null; link: string | null }
 
 const missing = (e: { code?: string; message?: string } | null) =>
   !!e && (e.code === "42P01" || e.code === "PGRST205" || /could not find the table|does not exist/i.test(e.message ?? ""));
@@ -43,49 +43,6 @@ function Scoreboard({ list }: { list: ReturnType<typeof steps> }) {
           </li>
         ))}
       </ul>
-    </div>
-  );
-}
-
-/** A winner's gift card: the parent picks it up here after Face ID or an email code and a signed receipt. */
-function PrizePickup({ entry, student, prize, mayPick, onPicked }: { entry: Entry; student: Student; prize: MyPrize; mayPick: boolean; onPicked: (p: MyPrize) => void }) {
-  const sb = supabase()!;
-  const [signing, setSigning] = useState(false);
-  const [gift, setGift] = useState<Gift | null>(null);
-  const [msg, setMsg] = useState<string | null>(null);
-  const store = prize.brand ? `${prize.brand} ` : "";
-  const open = async () => {
-    setMsg(null);
-    const { data, error } = await sb.rpc("challenge_pickup_prize", { p_entry: entry.id });
-    if (error) throw new Error(friendly(error));
-    setGift(data as Gift);
-    setSigning(false);
-    onPicked({ ...prize, status: "paid", picked_up_at: prize.picked_up_at ?? new Date().toISOString() });
-  };
-  return (
-    <div className="note note-info" style={{ display: "grid", gap: 8 }}>
-      <b>🎁 Prize: {money(prize.amount)} {store}digital gift card</b>
-      {!prize.ready ? <span>Your prize is being prepared. It will be ready here within 30 days of the results.</span>
-        : !mayPick ? <span>{prize.picked_up_at ? "Your parent picked up the prize. 🎉" : "Ready! Ask a parent to open this page in their own ScholarTasks login to pick it up."}</span>
-        : gift ? (
-          <span>
-            {gift.code && <>Gift card code: <b className="gift-code">{gift.code}</b><br /></>}
-            {gift.link && <><a href={gift.link} target="_blank" rel="noopener noreferrer">Open the gift card</a><br /></>}
-            <span className="hint small">Keep this code private. Anyone with it can spend it.</span>
-          </span>
-        ) : prize.picked_up_at ? (
-          <button className="btn btn-inline btn-sm" onClick={() => void open().catch((e) => setMsg((e as Error).message))}>Show the gift card again</button>
-        ) : signing ? (
-          <SignConsent kind="prize" student={student.id} target={entry.id} title="Prize receipt" button="Sign and show my prize"
-            wording={`I am ${student.first_name}'s parent or legal guardian (or the winner, 18 or older). I received the ${money(prize.amount)} ${store}digital gift card prize for ${student.first_name} from the ScholarTasks essay challenge. I understand prizes may count as taxable income.`}
-            onSigned={open} onDecline={() => setSigning(false)} declineLabel="Not now" />
-        ) : (
-          <>
-            <span>Ready to pick up! For safety, prizes are never emailed or mailed. Confirm it&apos;s you and sign a receipt to see the gift card.</span>
-            <button className="btn btn-inline btn-sm" style={{ justifySelf: "start" }} onClick={() => setSigning(true)}>Pick up the prize</button>
-          </>
-        )}
-      {msg && <span className="note note-err" style={{ margin: 0 }}>{msg}</span>}
     </div>
   );
 }
@@ -313,7 +270,7 @@ function Workspace({ c, entry, student, writer, isParent, permission, onChanged 
                   <button className="btn btn-inline btn-sm" onClick={() => setSigning(true)}>Read and sign permission</button>
                 </>
               )
-            ) : <p className="hint">Ask a parent to open <b>Essay challenge</b> in their own ScholarTasks login and sign. It takes one minute.</p>}
+            ) : <p className="hint">Ask a parent to open <b>Challenges</b> in their own ScholarTasks login and sign. It takes one minute.</p>}
           </section>
 
           <section className="challenge-step">
@@ -383,11 +340,11 @@ export default function ChallengePage() {
   }, [sb, setCurrent]);
   useEffect(() => { void load(); }, [load]);
 
-  if (!sb) return <Page title="Essay challenge"><NotConfigured /></Page>;
-  if (!ready) return <Page title="Essay challenge"><p className="hint">Loading…</p></Page>;
-  if (offline) return <Page title="Essay challenge"><div className="panel"><h2>Almost ready</h2><p className="hint" style={{ margin: 0 }}>The essay challenge is switching on. Check back shortly.</p></div></Page>;
+  if (!sb) return <Page title="Challenges"><NotConfigured /></Page>;
+  if (!ready) return <Page title="Challenges"><p className="hint">Loading…</p></Page>;
+  if (offline) return <Page title="Challenges"><div className="panel"><h2>Almost ready</h2><p className="hint" style={{ margin: 0 }}>The essay challenge is switching on. Check back shortly.</p></div></Page>;
   const student = students.find((s) => s.id === current);
-  if (!student) return <Page title="Essay challenge"><p className="hint">Add a student on the <a href="/family">Family</a> page first.</p></Page>;
+  if (!student) return <Page title="Challenges"><p className="hint">Add a student on the <a href="/family">Family</a> page first.</p></Page>;
 
   const forGrade = challenges.filter((c) => student.grade_level >= c.grade_min && student.grade_level <= c.grade_max);
   const entryOf = (c: Challenge) => entries.find((e) => e.challenge_id === c.id && e.student_id === student.id) ?? null;
@@ -397,22 +354,25 @@ export default function ChallengePage() {
   const writer = own === student.id;
 
   return (
-    <Page title="Essay challenge">
+    <Page title="Challenges">
       {isParent && students.length > 1 && (
         <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
           {students.map((s) => <button key={s.id} role="tab" aria-selected={s.id === current} onClick={() => { setCurrent(s.id); setOpenId(null); }}>{s.first_name}</button>)}
         </div>
       )}
       <p className="hint">
-        Write a short essay right here in ScholarTasks, step by step. Earn badges as you go, send it in, and claim a certificate. Winners in each grade group win gift card prizes. Free and paid accounts have the same chance.
+        Two kinds of challenges: essays you write right here, step by step, and timed practice competitions in a class, scored by the app. Everyone who finishes gets a certificate, and winners in each grade group win gift card prizes. Free and paid accounts have the same chance.
       </p>
       {error && <p className="note note-err" role="alert">{error}</p>}
 
       {opened ? (
         <>
           <button className="btn-link" onClick={() => setOpenId(null)}>← All challenges</button>
-          <Workspace key={`${opened.id}-${student.id}`} c={opened} entry={entryOf(opened)} student={student} writer={writer} isParent={isParent}
-            permission={perms.find((p) => p.challenge_id === opened.id && p.student_id === student.id) ?? null} onChanged={load} />
+          {isCompetition(opened)
+            ? <Competition key={`${opened.id}-${student.id}`} c={opened} entry={entryOf(opened)} student={student} writer={writer} isParent={isParent}
+                permission={perms.find((p) => p.challenge_id === opened.id && p.student_id === student.id) ?? null} onChanged={load} />
+            : <Workspace key={`${opened.id}-${student.id}`} c={opened} entry={entryOf(opened)} student={student} writer={writer} isParent={isParent}
+                permission={perms.find((p) => p.challenge_id === opened.id && p.student_id === student.id) ?? null} onChanged={load} />}
         </>
       ) : (
         <>
@@ -426,12 +386,12 @@ export default function ChallengePage() {
                   return (
                     <li key={c.id}>
                       <div className="item-main">
-                        <b>🏆 {c.title}</b>
-                        <span className="hint">{c.subject} · {grades(c)} · closes {day(c.closes_at)}{top && top.amount ? ` · top prize ${money(top.amount)}` : ""}</span>
+                        <b>{isCompetition(c) ? "🏁" : "🏆"} {c.title}</b>
+                        <span className="hint"><span>{isCompetition(c) ? "Practice competition" : "Essay"}</span> · <span>{`${c.subject} · ${grades(c)} · closes ${day(c.closes_at)}${top && top.amount ? ` · top prize ${money(top.amount)}` : ""}`}</span></span>
                       </div>
                       <div className="item-actions">
-                        {e?.status === "submitted" ? <span className="pill pill-ok">Sent in ✓</span> : e ? <span className="pill">{e.words} words</span> : null}
-                        <button className="btn btn-inline btn-sm" onClick={() => setOpenId(c.id)}>{e ? "Open" : writer ? "Take the challenge" : "Look"}</button>
+                        {e?.status === "submitted" ? <span className="pill pill-ok">Sent in ✓</span> : e && !isCompetition(c) ? <span className="pill">{e.words} words</span> : null}
+                        <button className="btn btn-inline btn-sm" onClick={() => setOpenId(c.id)}>{e ? "Open" : writer ? (isCompetition(c) ? "Take part" : "Take the challenge") : "Look"}</button>
                       </div>
                     </li>
                   );
@@ -461,7 +421,7 @@ export default function ChallengePage() {
               </ul>
             </section>
           )}
-          <p className="hint small">How it works: read the topic, jot ideas, plan, write, come back another day to improve it, ask the coach for tips, polish, and send it in. A parent signs permission once. Every finished essay earns a certificate. <a href="/help#essay-challenge">More help</a></p>
+          <p className="hint small">Essays: read the topic, jot ideas, plan, write, come back another day to improve it, ask the coach for tips, polish, and send it in. Practice competitions: everyone gets the same new questions and a timer; harder questions count more and the app scores it. A parent signs permission once for each. <a href="/help#essay-challenge">More help</a></p>
         </>
       )}
     </Page>

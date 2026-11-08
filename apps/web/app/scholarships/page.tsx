@@ -197,7 +197,7 @@ export default function ScholarshipsPage() {
           <section className="panel">
             <h2>Open to {student.first_name} in grade {g} now</h2>
             {contests.map((c) => (
-              <p key={c.id} style={{ margin: "0 0 8px" }}>🏆 <a href="/challenge">{c.title}</a> <span className="hint">· essay challenge · closes {dateText(c.closes_at.slice(0, 10))}</span></p>
+              <p key={c.id} style={{ margin: "0 0 8px" }}>🏆 <a href="/challenge">{c.title}</a> <span className="hint">· challenge · closes {dateText(c.closes_at.slice(0, 10))}</span></p>
             ))}
             {openNow.length === 0 && contests.length === 0 && <p className="hint" style={{ margin: 0 }}>Nothing is open for grade {g} right now. New contests come out from time to time, so check back.</p>}
           </section>

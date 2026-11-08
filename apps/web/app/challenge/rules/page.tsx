@@ -18,13 +18,13 @@ export default function ChallengeRules() {
       .then(({ data }) => setList((data as Challenge[]) ?? []));
   }, [sb]);
 
-  if (!sb) return <Page title="Essay challenge rules"><NotConfigured /></Page>;
-  if (list === null) return <Page title="Essay challenge rules"><p className="hint">Loading…</p></Page>;
+  if (!sb) return <Page title="Challenge rules"><NotConfigured /></Page>;
+  if (list === null) return <Page title="Challenge rules"><p className="hint">Loading…</p></Page>;
   const c = list.find((x) => x.id === id);
 
   if (!c) {
     return (
-      <Page title="Essay challenge rules">
+      <Page title="Challenge rules">
         <p className="hint">Pick a challenge to read its official rules.</p>
         {list.length === 0 ? <p className="hint">No challenges have been published yet.</p> : (
           <ul className="items">

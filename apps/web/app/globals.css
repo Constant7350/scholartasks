@@ -1036,6 +1036,16 @@ html.tr-wait body { visibility: hidden; }
 .challenge-badges li.is-earned { opacity: 1; filter: none; border-style: solid; border-color: var(--ok); }
 .challenge-step { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 14px; }
 .challenge-step h3 { margin: 0 0 8px; font-size: 16px; }
+.competition-run .score-head b { font-size: 20px; font-variant-numeric: tabular-nums; }
+.time-low { color: var(--err); }
+.competition-dots { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.competition-dots button { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); background: #fff; padding: 0; cursor: pointer; }
+.competition-dots button.on { background: var(--navy); border-color: var(--navy); }
+.competition-dots button.here { outline: 2px solid var(--navy); outline-offset: 2px; }
+.competition-review { display: grid; gap: 12px; padding-left: 20px; }
+.competition-review li { display: grid; gap: 4px; font-size: 14px; }
+.competition-review .ok { color: #1d5c37; }
+.competition-review .miss { color: var(--err); }
 .challenge-step textarea { width: 100%; resize: vertical; }
 .challenge-prompt { font-size: 17px; font-weight: 600; margin: 0 0 8px; white-space: pre-wrap; }
 .essay-box { font-size: 16px; line-height: 1.6; }

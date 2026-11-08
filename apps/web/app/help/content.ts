@@ -604,7 +604,7 @@ export const TOPICS: Topic[] = [
     keywords: ["challenge", "contest", "competition", "prize", "gift card", "win", "certificate", "badge", "points", "level", "game", "essay contest", "writing contest", "rules"],
     summary: "From time to time our team opens an essay challenge for each grade group, with its own topic and subject. Students write the essay right in the app, earn badges step by step, and every finished essay earns a certificate. Winners get gift card prizes.",
     steps: [
-      "Open Menu, then Essay challenge (win prizes). You see the challenges open for your grade.",
+      "Open Menu, then Challenges (win prizes). You see the challenges open for your grade.",
       "Tap Take the challenge, read the topic and the official rules, and check the box.",
       "Write down three ideas, then a short plan: beginning, middle and end.",
       "Write the essay in the box. It saves as you type. Pasting is turned off, so type it yourself.",
@@ -624,6 +624,28 @@ export const TOPICS: Topic[] = [
     faq: [
       { q: "Can my parent type it for me?", a: "No. The essay has to be written in the student's own login, in the student's own words. Parents can read it and sign permission." },
       { q: "When will I know if I won?", a: "Each challenge shows its results date. When results are out, the challenge page and your certificate show if you won or were a finalist." },
+    ],
+  },
+  {
+    id: "practice-competition",
+    area: "Scholarships",
+    title: "Practice competitions: beat the top score",
+    href: "/challenge",
+    keywords: ["competition", "practice competition", "contest", "prize", "gift card", "win", "ranking", "top student", "timer", "quiz contest", "math contest", "science contest"],
+    summary: "From time to time our team opens a timed practice competition in one class. Everyone in the grade group gets the same new questions, the app scores them, and the top scores win gift cards. Winners are never named in public.",
+    steps: [
+      "Open Menu, then Challenges (win prizes). Competitions show a 🏁 flag.",
+      "A parent signs permission once, in their own login. A student can tap Ask my parent to sign, and the parent sees it on Home.",
+      "When you're in a quiet spot, tap I'm ready to start, then Start now. The timer begins and doesn't stop.",
+      "Answer each question once. Use the dots to jump between questions, then tap Finish and send in. When time runs out, your answers are sent in for you.",
+      "After it closes, open it again to see the right answers and explanations, claim your certificate, and see if you won.",
+    ],
+    body: [
+      "Harder questions are worth more: Strong 3 points, Advanced 4, Expert 5. If two students tie, the faster finish ranks higher.",
+      "Right and wrong stay hidden until the competition closes, so everyone has the same fair chance.",
+      "The app scores every answer, so there's no judging. Free and paid accounts have the same chance.",
+      "Work alone: no help from another person, a website or an AI tool, including the ScholarTasks helpers.",
+      "Prizes are digital gift cards, picked up by a parent inside the app after Face ID or an email code and a signed receipt.",
     ],
   },
   {

@@ -1,6 +1,6 @@
 {
   "note": "Made by presentation/build.mjs. Do not edit by hand.",
-  "minutes": 22,
+  "minutes": 23,
   "slides": [
     {
       "id": "cover",
@@ -32,7 +32,7 @@
     },
     {
       "id": "contest",
-      "title": "Essay challenge"
+      "title": "Challenges"
     },
     {
       "id": "grades",

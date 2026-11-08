@@ -8,6 +8,8 @@ export interface Challenge {
   grade_min: number; grade_max: number; min_words: number; max_words: number;
   opens_at: string; closes_at: string; results_on: string | null; prizes: Prize[];
   status: "draft" | "open" | "judging" | "done";
+  /** "practice": a timed practice-question competition in one class (migration 0067). */
+  kind?: "essay" | "practice"; time_minutes?: number;
 }
 
 export interface Entry {
@@ -16,7 +18,10 @@ export interface Entry {
   saves: number; paste_blocked: number; coach_checks: number; team_family: boolean;
   status: "draft" | "submitted" | "withdrawn"; submitted_at: string | null; result: "finisher" | "finalist" | "winner" | null;
   place: number | null; certificate_code: string | null; claimed_at: string | null; updated_at: string;
+  started_at?: string | null; finished_at?: string | null; answered?: number; correct?: number; points?: number;
 }
+
+export const isCompetition = (c: Pick<Challenge, "kind">) => c.kind === "practice";
 
 export const countWords = (t: string) => t.trim().split(/\s+/).filter(Boolean).length;
 
@@ -87,8 +92,11 @@ export const RUBRIC = [
 export const RULES_VERSION = "challenge-rules-2026-11-06b";
 
 /** The words a parent signs. */
-export const permissionWording = (student: string, c: Challenge, publicOk: boolean) =>
-  `I am ${student}'s parent or legal guardian. I give permission for ${student} to enter the ScholarTasks "${c.title}" essay challenge, and I have read the official rules (scholartasks.com/challenge/rules?id=${c.id}).\n` +
+export const permissionWording = (student: string, c: Challenge, publicOk: boolean) => isCompetition(c)
+  ? `I am ${student}'s parent or legal guardian. I give permission for ${student} to enter the ScholarTasks "${c.title}" practice competition, and I have read the official rules (scholartasks.com/challenge/rules?id=${c.id}).\n` +
+    `I understand: ${student} answers the questions alone, in the app, in their own login, within the time limit; the app scores the answers; if ${student} wins, the prize (a digital gift card) is given to me as parent or guardian inside the app, may count as taxable income, and I may be asked for a tax form before a larger prize is given.\n` +
+    `ScholarTasks never shares the names of competition winners in public.`
+  : `I am ${student}'s parent or legal guardian. I give permission for ${student} to enter the ScholarTasks "${c.title}" essay challenge, and I have read the official rules (scholartasks.com/challenge/rules?id=${c.id}).\n` +
   `I understand: ${student} must write the essay in the ScholarTasks app in their own words; the essay is read only by our review team; if ${student} wins, the prize (a digital gift card) is given to me as parent or guardian inside the app, may count as taxable income, and I may be asked for a tax form before a larger prize is given.\n` +
   (publicOk
     ? `If ${student} wins, ScholarTasks may share ${student}'s first name, grade and state with the result. Never the essay, last name, school or photo without asking me again.`
@@ -97,6 +105,7 @@ export const permissionWording = (student: string, c: Challenge, publicOk: boole
 /** The official rules, built from the challenge's own settings. */
 export function rulesFor(c: Challenge): { title: string; lines: string[] }[] {
   const cash = c.prizes.filter((p) => p.kind !== "certificate" && p.amount > 0);
+  if (isCompetition(c)) return competitionRules(c, cash.length > 0);
   return [
     { title: "Who can enter", lines: [
       `${grades(c)} students who live in the United States and have a ScholarTasks student account. A free account is enough. No purchase or paid plan is needed, and paying does not improve the chance of winning.`,
@@ -134,6 +143,49 @@ export function rulesFor(c: Challenge): { title: string; lines: string[] }[] {
     { title: "Other rules", lines: [
       "Apple and Google are not part of this challenge and are not responsible for it in any way.",
       "We may change or cancel a challenge if something outside our control stops it from running fairly. Void where the law does not allow it.",
+      "Questions: support@scholartasks.com.",
+    ] },
+  ];
+}
+
+/** The official rules of a practice competition, built from its settings. */
+function competitionRules(c: Challenge, cash: boolean): { title: string; lines: string[] }[] {
+  return [
+    { title: "Who can enter", lines: [
+      `${grades(c)} students who live in the United States and have a ScholarTasks student account. A free account is enough. No purchase or paid plan is needed, and paying does not improve the chance of winning.`,
+      "Students under 18 need a parent or guardian to sign permission in the app. Students 18 or older sign for themselves.",
+      "Families of the ScholarTasks team may take part for practice and get a certificate, but cannot win a prize.",
+    ] },
+    { title: "Dates", lines: [
+      `The competition opens ${day(c.opens_at)} and closes ${new Date(c.closes_at).toLocaleString("en-US", { timeZone: "America/New_York", dateStyle: "long", timeStyle: "short" })} (Eastern time).`,
+      c.results_on ? `Results are shared by ${day(c.results_on)}.` : "Results are shared after the competition closes.",
+    ] },
+    { title: "How it works", lines: [
+      `Class: ${c.subject}. Every student gets the same set of new multiple-choice questions, shown only when they start.`,
+      `Once a student starts, they have ${c.time_minutes ?? 30} minutes. Each question can be answered once. One try per student.`,
+      "The student must work alone, without help from another person, a website or an AI tool, including the ScholarTasks helpers.",
+      `About: ${c.prompt}`,
+    ] },
+    { title: "How winners are picked", lines: [
+      "This is a contest of skill, not luck. The app scores every answer the same way for everyone: Strong questions are worth 3 points, Advanced 4 and Expert 5.",
+      "The highest total wins. If two students tie, the one who finished in less time ranks higher.",
+      "We may check unusual results and disqualify an entry that breaks the rules. Our team's decisions are final.",
+    ] },
+    { title: "Prizes", lines: [
+      ...(c.prizes.length ? c.prizes.map(prizeText) : ["Winners get a winner's certificate."]),
+      "Every student who finishes gets a certificate to claim and print.",
+      ...(cash ? [
+        "Prizes are digital gift cards, ready within 30 days after results are published. They are never sent by email, text or mail: the parent or guardian (or a winner who is 18 or older) picks the gift card up inside their own ScholarTasks login, after confirming it's them and signing a receipt.",
+        "Prizes may count as taxable income. If the law requires a tax form for the amount won, we will ask for one (Form W-9) before paying.",
+      ] : []),
+      "Prizes can't be traded or swapped. If a winner can't be reached within 30 days, the prize may go to the next-highest score.",
+    ] },
+    { title: "Privacy", lines: [
+      "We never share the names of competition winners in public, not even the top student's. Answers are seen only by the student, their parents and our team.",
+    ] },
+    { title: "Other rules", lines: [
+      "Apple and Google are not part of this competition and are not responsible for it in any way.",
+      "We may change or cancel a competition if something outside our control stops it from running fairly. Void where the law does not allow it.",
       "Questions: support@scholartasks.com.",
     ] },
   ];
