@@ -129,7 +129,7 @@ export const NAV: NavItem[] = [
   // Apply: the college list and everything an application needs
   { href: "/plan", label: "College list and deadlines", short: "Plan", icon: "🗂️", roles: ALL, group: "apply", tab: 3, stages: LATER },
   { href: "/essays", label: "College essays", short: "Essays", icon: "✍️", roles: ALL, group: "apply", stages: LATER },
-  { href: "/challenge", label: "Essay challenge (win prizes)", short: "Challenge", icon: "🏆", roles: ["parent", "student"], group: "apply", inMenu: false },
+  { href: "/challenge", label: "Challenges (win prizes)", short: "Challenges", icon: "🏆", roles: ["parent", "student"], group: "apply", inMenu: false },
   { href: "/activities", label: "Activities and resume", short: "Activities", icon: "🏅", roles: ALL, group: "apply", stages: HS },
   { href: "/activities/profile", label: "Application profile (copy and paste)", short: "Profile", icon: "📋", roles: ALL, group: "apply", inMenu: false, stages: LATER },
   { href: "/activities/common-app", label: "Common App ready", short: "Common App", icon: "✅", roles: ALL, group: "apply", inMenu: false, stages: LATER },
@@ -164,7 +164,7 @@ export const NAV: NavItem[] = [
   { href: "/admin/schools", label: "Approve schools", icon: "🏫", roles: ALL, group: "team" },
   { href: "/admin/ratings", label: "App ratings and notes", icon: "⭐", roles: ALL, group: "team" },
   { href: "/admin/families", label: "Family accounts to look at", icon: "👪", roles: ALL, group: "team" },
-  { href: "/admin/challenges", label: "Essay challenges: judge and prizes", icon: "🏆", roles: ALL, group: "team" },
+  { href: "/admin/challenges", label: "Challenges: judge and prizes", icon: "🏆", roles: ALL, group: "team" },
   { href: "/admin/consents", label: "Signed consents and audit trail", icon: "✍️", roles: ALL, group: "team" },
   { href: "/check", label: "Spanish check page", icon: "🇪🇸", roles: ALL, group: "team" },
   { href: "/admin/college-data", label: "Load college data", icon: "🏫", roles: ALL, group: "teamTools" },

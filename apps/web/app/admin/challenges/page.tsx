@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { friendly, supabase } from "../../../lib/supabase";
 import { NotConfigured, Page } from "../../ui";
-import { type Challenge, type Prize, RUBRIC, day, grades, money, prizeText } from "../../../lib/challenge";
+import { type Challenge, type Prize, RUBRIC, day, grades, isCompetition, money, prizeText } from "../../../lib/challenge";
+import { COURSES } from "../../practice/catalog";
 
 /**
  * Team page for the Essay Challenge: start a round (topic, subject, grades, gift card prizes),
@@ -38,7 +39,11 @@ interface Judge {
 interface Result {
   entry_id: string; number: number; first_name: string; grade_level: number; state: string; parent_emails: string | null; public_name_ok: boolean;
   team_family: boolean; average: number | null; judges: number; result: string | null; place: number | null; certificate_code: string | null;
+  /** Practice competitions only. */
+  points?: number; correct?: number; answered?: number; seconds?: number | null;
 }
+interface CQ { id: string; n: number; topic: string; level: number; question: string; options: string[]; answer_index: number; explanation: string | null; status: "pending" | "approved" | "rejected" }
+const LEVEL = ["", "", "", "Strong (3 points)", "Advanced (4 points)", "Expert (5 points)"];
 interface Payout { entry_id: string; kind: string; amount: number; paid_to: string | null; method: string | null; reference: string | null; status: string; paid_on: string | null; tax_form: boolean; note: string | null; gift_brand: string | null; gift_code: string | null; gift_link: string | null; picked_up_at: string | null }
 
 interface Idea { subject: string; title: string; prompt: string; tips: string }
@@ -98,7 +103,9 @@ function Form({ sb, start, onDone }: { sb: SupabaseClient; start: Partial<Challe
     closes_at: toLocal(start?.closes_at ? new Date(start.closes_at) : new Date(now.getTime() + 30 * 86400000)),
     results_on: start?.results_on ?? new Date(now.getTime() + 45 * 86400000).toISOString().slice(0, 10),
     prizes: start?.prizes ?? DEFAULT_PRIZES,
+    kind: start?.kind ?? "essay", time_minutes: start?.time_minutes ?? 30,
   });
+  const practice = f.kind === "practice";
   const [allGroups, setAllGroups] = useState(!start?.id);
   const [error, setError] = useState<string | null>(null);
   const set = (k: string, v: unknown) => setF({ ...f, [k]: v });
@@ -106,8 +113,10 @@ function Form({ sb, start, onDone }: { sb: SupabaseClient; start: Partial<Challe
 
   const save = async () => {
     setError(null);
-    const row = { ...f, tips: f.tips.trim() || null, opens_at: new Date(f.opens_at).toISOString(), closes_at: new Date(f.closes_at).toISOString(), results_on: f.results_on || null };
-    if (row.title.trim().length < 3 || row.prompt.trim().length < 10) return setError("Give it a title and a topic.");
+    const { kind, time_minutes, ...base } = f;
+    // Essays don't send the competition columns, so they still save before database update 69.
+    const row = { ...base, ...(kind === "practice" ? { kind, time_minutes } : {}), tips: f.tips.trim() || null, opens_at: new Date(f.opens_at).toISOString(), closes_at: new Date(f.closes_at).toISOString(), results_on: f.results_on || null };
+    if (row.title.trim().length < 3 || row.prompt.trim().length < 10) return setError(practice ? "Give it a title and a short description." : "Give it a title and a topic.");
     const r = start?.id
       ? await sb.from("challenges").update(row).eq("id", start.id)
       : allGroups
@@ -121,18 +130,30 @@ function Form({ sb, start, onDone }: { sb: SupabaseClient; start: Partial<Challe
   return (
     <div className="panel">
       <h2 style={{ marginTop: 0 }}>{start?.id ? "Change challenge" : "New challenge"}</h2>
+      {!start?.id && (
+        <div className="tabs" role="tablist" style={{ maxWidth: 420, marginBottom: 12 }}>
+          <button role="tab" aria-selected={!practice} onClick={() => setF({ ...f, kind: "essay", subject: "Writing" })}>Essay</button>
+          <button role="tab" aria-selected={practice} onClick={() => { setF({ ...f, kind: "practice", subject: "Algebra I", prompt: f.prompt || "Answer as many questions as you can before the timer runs out. Harder questions count more." }); setAllGroups(false); }}>Practice competition</button>
+        </div>
+      )}
+      {practice ? <p className="hint">Everyone in these grades gets the same new questions and a timer. The app scores it (Strong 3, Advanced 4, Expert 5 points; faster wins ties), so there&apos;s nothing to grade. After saving, open it and press <b>Write questions with AI</b>.</p> : <>
       <AiIdeas sb={sb} gradeMin={allGroups ? 6 : f.grade_min} gradeMax={allGroups ? 12 : f.grade_max}
         onPick={(i) => setF({ ...f, title: i.title, subject: i.subject, prompt: i.prompt, tips: i.tips })} />
       <details style={{ marginBottom: 10 }}><summary>Ready-made topic ideas</summary>
         <ul>{TOPIC_IDEAS.map((t) => <li key={t}><button className="btn-link" onClick={() => { const [s, ...p] = t.split(": "); setF({ ...f, subject: s === "Animals and agriculture" || SUBJECTS.includes(s!) ? s! : f.subject, prompt: p.join(": ") }); }}>{t}</button></li>)}</ul>
-      </details>
+      </details></>}
       <div className="row">
         <div className="field"><label htmlFor="c-title">Title</label><input id="c-title" className="input" maxLength={100} placeholder="Winter Essay Challenge" value={f.title} onChange={(e) => set("title", e.target.value)} /></div>
-        <div className="field"><label htmlFor="c-subject">Subject</label>
-          <input id="c-subject" className="input" list="c-subjects" maxLength={60} value={f.subject} onChange={(e) => set("subject", e.target.value)} />
-          <datalist id="c-subjects">{SUBJECTS.map((s) => <option key={s} value={s} />)}</datalist></div>
+        {practice ? (
+          <div className="field"><label htmlFor="c-class">Class</label>
+            <select id="c-class" className="input" value={f.subject} onChange={(e) => set("subject", e.target.value)}>{COURSES.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}</select></div>
+        ) : (
+          <div className="field"><label htmlFor="c-subject">Subject</label>
+            <input id="c-subject" className="input" list="c-subjects" maxLength={60} value={f.subject} onChange={(e) => set("subject", e.target.value)} />
+            <datalist id="c-subjects">{SUBJECTS.map((s) => <option key={s} value={s} />)}</datalist></div>
+        )}
       </div>
-      <div className="field"><label htmlFor="c-prompt">Topic (what students write about)</label><textarea id="c-prompt" className="input" rows={3} maxLength={2000} value={f.prompt} onChange={(e) => set("prompt", e.target.value)} /></div>
+      <div className="field"><label htmlFor="c-prompt">{practice ? "Short description for students" : "Topic (what students write about)"}</label><textarea id="c-prompt" className="input" rows={3} maxLength={2000} value={f.prompt} onChange={(e) => set("prompt", e.target.value)} /></div>
       <div className="field"><label htmlFor="c-tips">Tips for students (optional)</label><textarea id="c-tips" className="input" rows={2} maxLength={4000} value={f.tips} onChange={(e) => set("tips", e.target.value)} /></div>
       {!start?.id && (
         <label className="item-check" style={{ display: "flex", marginBottom: 10 }}>
@@ -145,8 +166,12 @@ function Form({ sb, start, onDone }: { sb: SupabaseClient; start: Partial<Challe
           <div className="field"><label htmlFor="c-gmin">From grade</label><input id="c-gmin" type="number" className="input" min={6} max={12} value={f.grade_min} onChange={(e) => set("grade_min", Number(e.target.value))} /></div>
           <div className="field"><label htmlFor="c-gmax">To grade</label><input id="c-gmax" type="number" className="input" min={6} max={12} value={f.grade_max} onChange={(e) => set("grade_max", Number(e.target.value))} /></div>
         </>}
-        <div className="field"><label htmlFor="c-wmin">Fewest words</label><input id="c-wmin" type="number" className="input" min={50} max={3000} value={f.min_words} onChange={(e) => set("min_words", Number(e.target.value))} /></div>
-        <div className="field"><label htmlFor="c-wmax">Most words</label><input id="c-wmax" type="number" className="input" min={100} max={5000} value={f.max_words} onChange={(e) => set("max_words", Number(e.target.value))} /></div>
+        {practice ? (
+          <div className="field"><label htmlFor="c-time">Minutes once started</label><input id="c-time" type="number" className="input" min={5} max={120} value={f.time_minutes} onChange={(e) => set("time_minutes", Number(e.target.value))} /></div>
+        ) : <>
+          <div className="field"><label htmlFor="c-wmin">Fewest words</label><input id="c-wmin" type="number" className="input" min={50} max={3000} value={f.min_words} onChange={(e) => set("min_words", Number(e.target.value))} /></div>
+          <div className="field"><label htmlFor="c-wmax">Most words</label><input id="c-wmax" type="number" className="input" min={100} max={5000} value={f.max_words} onChange={(e) => set("max_words", Number(e.target.value))} /></div>
+        </>}
       </div>
       <div className="row">
         <div className="field"><label htmlFor="c-open">Opens</label><input id="c-open" type="datetime-local" className="input" value={f.opens_at} onChange={(e) => set("opens_at", e.target.value)} /></div>
@@ -242,15 +267,83 @@ function JudgeTab({ sb, c }: { sb: SupabaseClient; c: Challenge }) {
   );
 }
 
+/** A competition's questions: AI writes them, a second AI pass checks every key, the team approves. */
+function QuestionsTab({ sb, c }: { sb: SupabaseClient; c: Challenge }) {
+  const [list, setList] = useState<CQ[] | null>(null);
+  const [count, setCount] = useState(20);
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const load = useCallback(async () => {
+    const { data, error: e } = await sb.from("challenge_questions").select("*").eq("challenge_id", c.id).order("n");
+    if (e) setError(/challenge_questions/.test(e.message) ? "Run database update 69 in Supabase first." : friendly(e));
+    setList((data as CQ[]) ?? []);
+  }, [sb, c.id]);
+  useEffect(() => { void load(); }, [load]);
+  const write = async () => {
+    setBusy(true); setError(null); setNote(null);
+    try {
+      const { data } = await sb.auth.getSession();
+      const r = await fetch("/api/challenge/questions", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session?.access_token ?? ""}` }, body: JSON.stringify({ challengeId: c.id, count }) });
+      const out = await r.json();
+      if (!r.ok) throw new Error(out.error ?? "Something went wrong.");
+      setNote(`${out.added} questions added. ${out.dropped ? `${out.dropped} were dropped because the answer check didn't agree. ` : ""}Read them, then approve.`);
+      await load();
+    } catch (e) { setError((e as Error).message); }
+    setBusy(false);
+  };
+  const setStatus = async (ids: string[], status: CQ["status"]) => {
+    const { error: e } = await sb.from("challenge_questions").update({ status }).in("id", ids);
+    if (e) return setError(friendly(e));
+    await load();
+  };
+  if (!list) return <p className="hint">Loading…</p>;
+  const pending = list.filter((q) => q.status === "pending");
+  const approved = list.filter((q) => q.status === "approved").length;
+  const locked = c.status !== "draft";
+  return (
+    <>
+      {error && <p className="note note-err">{error}</p>}
+      <p className="hint">{approved} approved, {pending.length} waiting. Students see only approved questions, never the answers, and only once they start. Change questions before you open the competition: once it&apos;s open, everyone must get the same set.</p>
+      {!locked && (
+        <div className="row">
+          <div className="field"><label htmlFor="cq-n">How many to write</label><input id="cq-n" type="number" className="input" min={5} max={40} value={count} onChange={(e) => setCount(Number(e.target.value))} /></div>
+          <button className="btn btn-inline btn-sm" disabled={busy} onClick={() => void write()}>{busy ? "Writing and checking… (about a minute)" : "✨ Write questions with AI"}</button>
+          {pending.length > 0 && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => void setStatus(pending.map((q) => q.id), "approved")}>Approve all {pending.length}</button>}
+        </div>
+      )}
+      {note && <p className="note note-ok">{note}</p>}
+      <ol className="competition-review">
+        {list.map((q) => (
+          <li key={q.id}>
+            <b>{q.question}</b>
+            <span className="hint">{q.topic} · {LEVEL[q.level]} · {q.status}</span>
+            <span>{q.options.map((o, i) => (i === q.answer_index ? `✓ ${o}` : o)).join("  ·  ")}</span>
+            {q.explanation && <span className="hint">{q.explanation}</span>}
+            {!locked && (
+              <span className="row">
+                {q.status !== "approved" && <button className="btn-link" onClick={() => void setStatus([q.id], "approved")}>Approve</button>}
+                {q.status !== "rejected" && <button className="btn-link" onClick={() => void setStatus([q.id], "rejected")}>Reject</button>}
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+      {list.length === 0 && <p className="hint">No questions yet. Press Write questions with AI.</p>}
+    </>
+  );
+}
+
 function ResultsTab({ sb, c }: { sb: SupabaseClient; c: Challenge }) {
+  const practice = isCompetition(c);
   const [rows, setRows] = useState<Result[] | null>(null);
   const [pay, setPay] = useState<Record<string, Payout>>({});
   const [edit, setEdit] = useState<Payout | null>(null);
   const [error, setError] = useState<string | null>(null);
   const load = useCallback(async () => {
-    const [r, p] = await Promise.all([sb.rpc("challenge_results", { p_challenge: c.id }), sb.from("challenge_payouts").select("*")]);
+    const [r, p] = await Promise.all([sb.rpc(practice ? "challenge_practice_results" : "challenge_results", { p_challenge: c.id }), sb.from("challenge_payouts").select("*")]);
     if (r.error) setError(friendly(r.error));
-    setRows((r.data as Result[]) ?? []);
+    setRows(((r.data as (Result & { rank?: number })[]) ?? []).map((x) => ({ ...x, number: x.rank ?? x.number, average: x.average ?? null, judges: x.judges ?? 0, public_name_ok: x.public_name_ok ?? false })));
     setPay(Object.fromEntries(((p.data as Payout[]) ?? []).map((x) => [x.entry_id, x])));
   }, [sb, c.id]);
   useEffect(() => { void load(); }, [load]);
@@ -269,22 +362,31 @@ function ResultsTab({ sb, c }: { sb: SupabaseClient; c: Challenge }) {
     setEdit(null); await load();
   };
   const prizeFor = (r: Result) => c.prizes.find((p) => p.place === r.place);
+  const award = async () => {
+    if (!window.confirm("Mark the top scores as winners (one per prize, team families skipped)? You can still change any result by hand.")) return;
+    const { data, error: e } = await sb.rpc("challenge_practice_award", { p_challenge: c.id });
+    if (e) return setError(friendly(e));
+    setError(null);
+    window.alert(`${data as number} winner(s) marked. Add each gift card, then press Publish results.`);
+    await load();
+  };
 
   if (!rows) return <p className="hint">Loading…</p>;
   return (
     <>
       {error && <p className="note note-err">{error}</p>}
-      <p className="hint">Highest average first. Pick winners and finalists, then press <b>Publish results</b> above so families see them. Prizes are digital gift cards: add the code, and the parent picks it up in their own login (Face ID or email code, plus a signed receipt). Nothing is emailed or mailed, so it can&apos;t be stolen or faked. Ask for a W-9 only when a family&apos;s prizes in a year reach the amount the IRS requires a form for (check with the CPA).</p>
+      {practice && <p className="hint">Ranked by points, then the faster finish. Students who started but never pressed Finish are sent in when you pick winners. Names are only for contacting families; winners are never shown in public. <button className="btn btn-inline btn-sm" disabled={c.status === "open" && new Date(c.closes_at) > new Date()} onClick={() => void award()}>Pick winners from the scores</button></p>}
+      <p className="hint">{practice ? "" : "Highest average first. "}Pick winners and finalists, then press <b>Publish results</b> above so families see them. Prizes are digital gift cards: add the code, and the parent picks it up in their own login (Face ID or email code, plus a signed receipt). Nothing is emailed or mailed, so it can&apos;t be stolen or faked. Ask for a W-9 only when a family&apos;s prizes in a year reach the amount the IRS requires a form for (check with the CPA).</p>
       <div className="table-wrap"><table className="table">
-        <thead><tr><th>#</th><th>Student</th><th>Average</th><th>Result</th><th>Prize</th></tr></thead>
+        <thead><tr><th>#</th><th>Student</th><th>{practice ? "Score" : "Average"}</th><th>Result</th><th>Prize</th></tr></thead>
         <tbody>
           {rows.map((r) => {
             const p = pay[r.entry_id];
             return (
               <tr key={r.entry_id}>
                 <td>{r.number}</td>
-                <td>{r.first_name}, grade {r.grade_level}, {r.state}{r.team_family ? " (team family, can't win)" : ""}<br /><span className="hint small">{r.parent_emails}{r.public_name_ok ? " · OK to share first name" : " · keep name private"}</span></td>
-                <td>{r.average ?? "–"} <span className="hint small">({r.judges})</span></td>
+                <td>{r.first_name}, grade {r.grade_level}, {r.state}{r.team_family ? " (team family, can't win)" : ""}<br /><span className="hint small">{r.parent_emails}{r.public_name_ok && !practice ? " · OK to share first name" : " · keep name private"}</span></td>
+                <td>{practice ? <>{r.points} pts <span className="hint small">({r.correct}/{r.answered} right{r.seconds != null ? `, ${Math.round(r.seconds / 60)} min` : ""})</span></> : <>{r.average ?? "–"} <span className="hint small">({r.judges})</span></>}</td>
                 <td>
                   <select className="input input-sm" disabled={r.team_family} value={r.result === "winner" ? `w${r.place}` : r.result ?? "finisher"}
                     onChange={(e) => { const v = e.target.value; void setResult(r, v.startsWith("w") ? "winner" : v, v.startsWith("w") ? Number(v.slice(1)) : null); }}>
@@ -305,7 +407,7 @@ function ResultsTab({ sb, c }: { sb: SupabaseClient; c: Challenge }) {
           })}
         </tbody>
       </table></div>
-      {rows.length === 0 && <p className="hint">No essays sent in yet.</p>}
+      {rows.length === 0 && <p className="hint">{practice ? "Nobody has finished yet." : "No essays sent in yet."}</p>}
       {edit && (
         <div className="panel">
           <h3 style={{ marginTop: 0 }}>Prize: digital gift card</h3>
@@ -337,7 +439,7 @@ export default function AdminChallenges() {
   const [counts, setCounts] = useState<Count[]>([]);
   const [form, setForm] = useState<Partial<Challenge> | null>(null);
   const [open, setOpen] = useState<string | null>(null);
-  const [tab, setTab] = useState<"judge" | "results">("judge");
+  const [tab, setTab] = useState<"judge" | "results" | "questions">("judge");
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -357,11 +459,15 @@ export default function AdminChallenges() {
   }, [sb]);
   useEffect(() => { void load(); }, [load]);
 
-  if (!sb) return <Page title="Essay challenges"><NotConfigured /></Page>;
-  if (admin === undefined) return <Page title="Essay challenges"><p className="hint">Loading…</p></Page>;
-  if (!admin) return <Page title="Essay challenges"><p className="note note-err">This page is for the ScholarTasks team.</p></Page>;
+  if (!sb) return <Page title="Challenges"><NotConfigured /></Page>;
+  if (admin === undefined) return <Page title="Challenges"><p className="hint">Loading…</p></Page>;
+  if (!admin) return <Page title="Challenges"><p className="note note-err">This page is for the ScholarTasks team.</p></Page>;
 
   const setStatus = async (c: Challenge, status: Challenge["status"]) => {
+    if (status === "open" && isCompetition(c)) {
+      const { count } = await sb.from("challenge_questions").select("id", { count: "exact", head: true }).eq("challenge_id", c.id).eq("status", "approved");
+      if (!count) return setError("Approve at least one question before opening this competition (press Questions).");
+    }
     const ask: Record<string, string> = { open: "Open this challenge? Students in these grades will see it.", judging: "Close entries and start judging?", done: "Publish results? Families will see winners and finalists, and certificates update." };
     if (ask[status] && !window.confirm(ask[status])) return;
     const { error: e } = await sb.from("challenges").update({ status }).eq("id", c.id);
@@ -377,7 +483,7 @@ export default function AdminChallenges() {
   const current = list.find((c) => c.id === open);
 
   return (
-    <Page title="Essay challenges">
+    <Page title="Challenges">
       <p className="hint">Start a round with its own topic and subject for each grade group. Students write in the app, earn badges and a certificate; winners get digital gift cards ($50 to $250 suggested), picked up safely in the app. Prizes are separate from scholarships. <a href="/challenge/rules">Official rules</a> are built from each challenge&apos;s settings.</p>
       {error && <p className="note note-err" role="alert">{error}</p>}
       {form ? <Form sb={sb} start={form} onDone={() => { setForm(null); void load(); }} /> : <button className="btn btn-inline" onClick={() => setForm({})}>+ New challenge</button>}
@@ -391,12 +497,13 @@ export default function AdminChallenges() {
             return (
               <li key={c.id}>
                 <div className="item-main"><b>{c.title}</b>
-                  <span className="hint">{c.subject} · {grades(c)} · {day(c.opens_at)} to {day(c.closes_at)} · {STATUS[c.status]} · {n.length} started, {sent} sent in</span></div>
+                  <span className="hint">{isCompetition(c) ? `Practice competition, ${c.time_minutes ?? 30} min · ` : ""}{c.subject} · {grades(c)} · {day(c.opens_at)} to {day(c.closes_at)} · {STATUS[c.status]} · {n.length} started, {sent} sent in</span></div>
                 <div className="item-actions">
                   {c.status === "draft" && <button className="btn btn-inline btn-sm" onClick={() => void setStatus(c, "open")}>Open</button>}
+                  {isCompetition(c) && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => { setOpen(c.id); setTab("questions"); }}>Questions</button>}
                   {c.status === "open" && <button className="btn btn-inline btn-sm" onClick={() => void setStatus(c, "judging")}>Close and judge</button>}
                   {c.status === "judging" && <button className="btn btn-inline btn-sm" onClick={() => void setStatus(c, "done")}>Publish results</button>}
-                  {c.status !== "draft" && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setOpen(c.id === open ? null : c.id)}>{c.id === open ? "Close" : "Judge and prizes"}</button>}
+                  {c.status !== "draft" && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => { setOpen(c.id === open ? null : c.id); setTab(isCompetition(c) ? "results" : "judge"); }}>{c.id === open ? "Close" : isCompetition(c) ? "Scores and prizes" : "Judge and prizes"}</button>}
                   <button className="btn btn-ghost btn-inline btn-sm" onClick={() => setForm(c)}>Change</button>
                   {c.status === "draft" && <button className="btn btn-ghost btn-inline btn-sm" onClick={() => void remove(c)}>Delete</button>}
                 </div>
@@ -411,10 +518,14 @@ export default function AdminChallenges() {
         <section className="panel">
           <h2 style={{ marginTop: 0 }}>{current.title}</h2>
           <div className="tabs" role="tablist" style={{ maxWidth: 420 }}>
-            <button role="tab" aria-selected={tab === "judge"} onClick={() => setTab("judge")}>Judge (names hidden)</button>
+            {isCompetition(current)
+              ? <button role="tab" aria-selected={tab === "questions"} onClick={() => setTab("questions")}>Questions</button>
+              : <button role="tab" aria-selected={tab === "judge"} onClick={() => setTab("judge")}>Judge (names hidden)</button>}
             <button role="tab" aria-selected={tab === "results"} onClick={() => setTab("results")}>Results and prizes</button>
           </div>
-          {tab === "judge" ? <JudgeTab key={current.id} sb={sb} c={current} /> : <ResultsTab key={current.id} sb={sb} c={current} />}
+          {tab === "results" ? <ResultsTab key={current.id} sb={sb} c={current} />
+            : isCompetition(current) ? <QuestionsTab key={current.id} sb={sb} c={current} />
+            : <JudgeTab key={current.id} sb={sb} c={current} />}
         </section>
       )}
     </Page>

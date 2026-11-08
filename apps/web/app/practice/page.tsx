@@ -300,13 +300,13 @@ export default function PracticePage() {
             <p className="eyebrow" style={{ margin: 0 }}>{q.subject} · {q.topic} · {levelName(q.level)}{q.status !== "approved" ? " · Draft" : ""}</p>
             <span className="hint" style={{ margin: 0 }}>Question {i + 1} of {round.length}</span>
           </div>
-          <p style={{ fontSize: 18, margin: "12px 0" }}><b>{q.question}</b></p>
+          <p style={{ fontSize: 18, margin: "12px 0" }} translate="no"><b>{q.question}</b></p>
 
           {q.kind === "mc" && q.options && (
             <div className="checkin-q">
               <div className="chips">
                 {q.order.map((j) => (
-                  <button key={j} type="button" disabled={picked !== null}
+                  <button key={j} type="button" translate="no" disabled={picked !== null}
                     className={`chip ${picked !== null && j === q.answer_index ? "chip-right" : ""} ${picked === j && j !== q.answer_index ? "chip-wrong" : ""}`}
                     onClick={() => { setPicked(j); void record(q, j === q.answer_index); }}>{q.options![j]}</button>
                 ))}
@@ -390,10 +390,10 @@ export default function PracticePage() {
             return (
               <div className="ai-challenge">
                 <p className="eyebrow">AI challenge {aiQs.at + 1} of {aiQs.list.length} · {a.topic}</p>
-                <p style={{ fontSize: 17 }}><b>{a.question}</b></p>
+                <p style={{ fontSize: 17 }} translate="no"><b>{a.question}</b></p>
                 <div className="chips" style={{ justifyContent: "flex-start" }}>
                   {a.options.map((o, j) => (
-                    <button key={j} type="button" disabled={aiQs.picked !== null}
+                    <button key={j} type="button" translate="no" disabled={aiQs.picked !== null}
                       className={`chip ${aiQs.picked !== null && j === a.answer_index ? "chip-right" : ""} ${aiQs.picked === j && j !== a.answer_index ? "chip-wrong" : ""}`}
                       onClick={() => setAiQs({ ...aiQs, picked: j, right: aiQs.right + (j === a.answer_index ? 1 : 0) })}>{o}</button>
                   ))}

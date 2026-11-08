@@ -26,7 +26,7 @@ const ES: Record<string, [label: string, short?: string]> = {
   "Four-year course plan": ["Plan de clases de 4 años", "Plan de clases"],
   "Academic record (print)": ["Historial académico (imprimir)", "Historial"],
   "College essays": ["Ensayos universitarios", "Ensayos"],
-  "Essay challenge (win prizes)": ["Concurso de ensayos (gana premios)", "Concurso"],
+  "Challenges (win prizes)": ["Concursos (gana premios)", "Concursos"],
   "Activities and resume": ["Actividades y currículum", "Actividades"],
   "Application profile (copy and paste)": ["Perfil para solicitudes (copiar y pegar)", "Perfil"],
   "Common App ready": ["Listo para el Common App", "Common App"],
