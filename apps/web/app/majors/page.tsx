@@ -17,10 +17,12 @@ import { OWNERSHIP, costInput, money, pct, toFacts, type CollegeRow, type CostSt
 import { STATE_NAMES } from "../../lib/trades";
 import { packFor } from "../../lib/state-packs";
 import acmJson from "../../../../packs/regions/ACM.json";
+import { youngView } from "../nav";
+import { ParentsOnlyForNow } from "../look-ahead/gate";
 
 const ACM_MEMBERS: string[] = acmJson.members;
 
-interface Student extends CostStudent { first_name: string; match_profile?: { college_type?: SchoolType; church?: string | null } | null }
+interface Student extends CostStudent { first_name: string; match_profile?: { college_type?: SchoolType; church?: string | null; show_all_pages?: boolean } | null }
 interface ProgRow { college_id: number; cip: string; level: number; grads: number; earn_1yr: number | null; earn_4yr: number | null; debt: number | null; online: boolean; college: CollegeRow }
 interface NationalRow { cip: string; level: number; programs: number; grads: number; earn_1yr: number | null; earn_4yr: number | null; debt: number | null }
 interface Hit { college: CollegeRow; grads: number; earn1: number | null; earn4: number | null; debt: number | null; online: boolean; score: number; cost: CostEstimate; parts: Record<string, number | null> }
@@ -183,6 +185,7 @@ export default function MajorsPage() {
 
   if (!sb) return <Page title="Search by major"><NotConfigured /></Page>;
   if (!ready || !signedIn) return <Page title="Search by major"><p className="hint">Loading…</p></Page>;
+  if (!isParent && youngView(student)) return <ParentsOnlyForNow title="Search by major" />;
 
   const choose = (f: StudyField) => { setField(f); setGroupIx(0); setQuery(f.label); setOthers([]); };
   const matches = query.trim() && (!field || query !== field.label) ? findFields(query).slice(0, 6) : [];

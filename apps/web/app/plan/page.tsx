@@ -12,7 +12,8 @@ import { CollegePicker } from "../colleges/college-picker";
 import { ScholarshipPicker } from "./scholarship-picker";
 import { CostPanel } from "./cost-panel";
 import { TextReminders } from "./text-reminders";
-import { exploreView } from "../nav";
+import { exploreView, youngView } from "../nav";
+import { ParentsOnlyForNow } from "../look-ahead/gate";
 
 interface Student extends CostStudent { first_name: string; permissions: Record<string, boolean>; match_profile?: { show_all_pages?: boolean } | null }
 interface College {
@@ -181,6 +182,7 @@ export default function PlanPage() {
       </Page>
     );
 
+  if (!isParent && youngView(student)) return <ParentsOnlyForNow title="Colleges" />;
   // Grades 6 to 10 with nothing on the list yet: no application deadlines, just ways to look around.
   if (exploreView(student) && !seeAll && myColleges.length === 0)
     return (

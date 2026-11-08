@@ -9,7 +9,7 @@ import { NotConfigured, Page } from "../ui";
 import { Avatar } from "../avatar";
 import { GpaScorecard } from "../grades/scorecard";
 import { ProgressCard } from "../home/progress-card";
-import { exploreView } from "../nav";
+import { exploreView, youngView } from "../nav";
 
 interface Student { id: string; first_name: string; grade_level: number; state: string; match_profile?: { career_quiz?: { at: string }; show_all_pages?: boolean } | null; weight_rigor?: number; weight_honors?: number; goal_gpa?: number | null; min_grade?: string }
 interface Grade { student_id: string; course: string; grade: "A" | "B" | "C" | "D" | "F"; level: "standard" | "honors" | "AP" | "IB" | "DE"; core: boolean; grade_level: number; term: string }
@@ -78,6 +78,8 @@ export default function StudentsPage() {
         const nColleges = colleges.filter((c) => c.student_id === s.id).length;
         // Grades 6 to 10: no college list or application pages yet, just ways to explore (unless Show every page is on).
         const early = exploreView(s) && nColleges === 0;
+        // Grades 6 to 8: colleges and scholarships are for parents only, behind one Look ahead button.
+        const young = youngView(s);
         return (
           <section key={s.id} className="kid-block">
             <div className="panel family-card">
@@ -95,11 +97,13 @@ export default function StudentsPage() {
             </div>
             <div className="kid-links">
               <button className="btn btn-ghost btn-inline btn-sm" onClick={open(s.id, "/todo")}>✅ To-do list</button>
-              {early
-                ? <button className="btn btn-ghost btn-inline btn-sm" onClick={open(s.id, "/colleges")}>🔎 Explore colleges</button>
-                : <button className="btn btn-ghost btn-inline btn-sm" onClick={open(s.id, "/plan")}>🗂️ College list</button>}
+              {young
+                ? <button className="btn btn-ghost btn-inline btn-sm" onClick={() => { rememberStudent(s.id); window.location.assign("/look-ahead"); }}>🔭 Look ahead</button>
+                : early
+                  ? <button className="btn btn-ghost btn-inline btn-sm" onClick={open(s.id, "/colleges")}>🔎 Explore colleges</button>
+                  : <button className="btn btn-ghost btn-inline btn-sm" onClick={open(s.id, "/plan")}>🗂️ College list</button>}
               <button className="btn btn-ghost btn-inline btn-sm" onClick={open(s.id, "/grades")}>🎓 Grades</button>
-              <button className="btn btn-ghost btn-inline btn-sm" onClick={open(s.id, "/scholarships")}>💰 Scholarships</button>
+              {!young && <button className="btn btn-ghost btn-inline btn-sm" onClick={open(s.id, "/scholarships")}>💰 Scholarships</button>}
               {(!early || s.grade_level >= 9) && <button className="btn btn-ghost btn-inline btn-sm" onClick={open(s.id, "/activities")}>🏅 Activities</button>}
               <button className="btn btn-ghost btn-inline btn-sm" onClick={() => { rememberStudent(s.id); window.location.assign("/parent#quiz"); }}>🧩 Career quiz answers</button>
             </div>

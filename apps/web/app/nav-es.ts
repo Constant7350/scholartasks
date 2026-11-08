@@ -13,6 +13,7 @@ const ES: Record<string, [label: string, short?: string]> = {
   "My students": ["Mis estudiantes", "Mis estudiantes"],
   "To-do list": ["Lista de pendientes", "Pendientes"],
   "College list and deadlines": ["Universidades y fechas límite", "Plan"],
+  "Look ahead: colleges and scholarships": ["Mirar hacia adelante: universidades y becas", "Mirar adelante"],
   "Find colleges": ["Buscar universidades", "Universidades"],
   "Search colleges by major": ["Buscar por carrera", "Por carrera"],
   "Compare colleges": ["Comparar universidades", "Comparar"],

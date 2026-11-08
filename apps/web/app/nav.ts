@@ -44,6 +44,13 @@ export function stageOf(grade: number | null | undefined): Stage {
 export function exploreView(s: { grade_level?: number | null; match_profile?: { show_all_pages?: boolean } | null } | null | undefined): boolean {
   return !!s && s.grade_level != null && stageOf(s.grade_level) !== "apply" && !s.match_profile?.show_all_pages;
 }
+/**
+ * True while a student is in grades 6 to 8 and no parent has turned on "Show every page". Then colleges and
+ * scholarships are for parents only, behind the Look ahead tile (Constant, 2026-11-08).
+ */
+export function youngView(s: { grade_level?: number | null; match_profile?: { show_all_pages?: boolean } | null } | null | undefined): boolean {
+  return !!s && s.grade_level != null && stageOf(s.grade_level) === "explore" && !s.match_profile?.show_all_pages;
+}
 /** Does this page show by default at this stage? (No stages listed = every stage.) */
 export function inStage(i: NavItem, stage: Stage): boolean {
   return !i.stages || i.stages.includes(stage);
@@ -77,6 +84,8 @@ export interface NavItem {
   earlyTab?: number;
   /** Stages where the page shows by default; leave out for every stage. See Stage above. */
   stages?: Stage[];
+  /** Shows ONLY at these stages, and only while "Show every page" is off (for example Look ahead in grades 6 to 8). */
+  onlyIn?: Stage[];
   /** false: not listed in the menu sections (reached from a tab row on a nearby page); still found by menu search. */
   inMenu?: boolean;
   /** Small link at the bottom of the menu instead of a row in a section. */
@@ -100,8 +109,9 @@ export const NAV: NavItem[] = [
 
   // Explore: what fits, and where it leads
   { href: "/career-quiz", label: "Career quiz", short: "Career quiz", icon: "🧩", roles: ALL, group: "explore", earlyTab: 4 },
-  { href: "/colleges", label: "Find colleges", short: "Find colleges", icon: "🔎", roles: ALL, group: "explore" },
-  { href: "/majors", label: "Search colleges by major", short: "Colleges by major", icon: "🧭", roles: ALL, group: "explore", inMenu: false },
+  { href: "/look-ahead", label: "Look ahead: colleges and scholarships", short: "Look ahead", icon: "🔭", roles: ["parent"], group: "explore", onlyIn: ["explore"] },
+  { href: "/colleges", label: "Find colleges", short: "Find colleges", icon: "🔎", roles: ALL, group: "explore", stages: HS },
+  { href: "/majors", label: "Search colleges by major", short: "Colleges by major", icon: "🧭", roles: ALL, group: "explore", inMenu: false, stages: HS },
   { href: "/colleges/compare", label: "Compare colleges", short: "Compare", icon: "📊", roles: ALL, group: "explore", inMenu: false, stages: HS },
   { href: "/trades", label: "Trades and trade schools", short: "Trades", icon: "🔧", roles: ALL, group: "explore" },
   { href: "/trades/openings", label: "Apprenticeships and local openings", short: "Apprenticeships", icon: "🧰", roles: ALL, group: "explore", stages: HS },
