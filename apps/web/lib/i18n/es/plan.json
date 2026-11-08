@@ -180,5 +180,14 @@
   "Typical": "Típica",
   "· up to ${amountmax}": "· hasta ${amountmax}",
   "due {toLocaleDateString}": "vence {toLocaleDateString}",
-  "Money pages": "Páginas de dinero"
+  "Money pages": "Páginas de dinero",
+  "Colleges for {firstname}": "Universidades para {firstname}",
+  "🔎 Explore colleges": "🔎 Explorar universidades",
+  "🧩 Career quiz": "🧩 ¿Qué carrera me queda?",
+  "🔧 Trades": "🔧 Oficios",
+  "🎖️ Military paths": "🎖️ Caminos militares",
+  "Open the full college list anyway": "Abrir la lista completa de todos modos",
+  "To show every page for {firstname} all the time, turn on Show every page on the <1>Family</1> page.": "Para mostrar siempre todas las páginas de {firstname}, activa «Mostrar todas las páginas» en la página de <1>Familia</1>.",
+  "No college applications yet in grade {gradelevel}": "Todavía no hay solicitudes a universidades en el grado {gradelevel}",
+  "The college list, application deadlines and reminders open in 11th grade. For now, look around and see what fits.": "La lista de universidades, las fechas límite y los recordatorios se abren en el grado 11. Por ahora, miren con calma y vean qué les gusta."
 }

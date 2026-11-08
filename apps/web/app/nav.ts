@@ -36,6 +36,14 @@ export function stageOf(grade: number | null | undefined): Stage {
   if (grade <= 10) return "build";
   return "apply";
 }
+/**
+ * True while a student is in grades 6 to 10 (explore or build stage) and no parent has turned on "Show every page".
+ * Pages that would otherwise show college applications or senior scholarships use it to show what fits the
+ * student's grade first (Constant, 2026-11-08: a 7th grader saw every college and scholarship; "apply to all grades").
+ */
+export function exploreView(s: { grade_level?: number | null; match_profile?: { show_all_pages?: boolean } | null } | null | undefined): boolean {
+  return !!s && s.grade_level != null && stageOf(s.grade_level) !== "apply" && !s.match_profile?.show_all_pages;
+}
 /** Does this page show by default at this stage? (No stages listed = every stage.) */
 export function inStage(i: NavItem, stage: Stage): boolean {
   return !i.stages || i.stages.includes(stage);
